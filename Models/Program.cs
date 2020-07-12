@@ -27,6 +27,8 @@ namespace Judge1.Models
 
     public enum Verdict
     {
+        Failed = -1,
+        Pending = 0,
         InQueue = 1,
         Running = 2,
         Accepted = 3,

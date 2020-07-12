@@ -11,13 +11,13 @@ namespace Judge1.Models
 
         #region Relationships
         
-        public string UserId { get; set; }
+        [Required] public string UserId { get; set; }
         public ApplicationUser User { get; set; }
 
         public int ProblemId { get; set; }
         public Problem Problem { get; set; }
         
-        public int AssignmentId { get; set; }
+        public int? AssignmentId { get; set; }
         public Assignment Assignment { get; set; }
 
         #endregion
@@ -39,15 +39,14 @@ namespace Judge1.Models
         #region Submission Verdict
 
         public Verdict Verdict { get; set; }
+        public int LastTestCase { get; set; }
         public DateTime JudgedAt { get; set; }
 
         #endregion
 
         #region Submission Hacking
         
-        public bool IsHacked { get; set; }
         public DateTime HackedAt { get; set; }
-
         public string HackerId { get; set; }
         [ForeignKey("HackerId")] public ApplicationUser Hacker { get; set; }
 
@@ -60,13 +59,13 @@ namespace Judge1.Models
 
         #region Relationships
 
-        public string UserId { get; set; }
+        [Required] public string UserId { get; set; }
         public ApplicationUser User { get; set; }
         
         public int ProblemId { get; set; }
         public Problem Problem { get; set; }
         
-        public int AssignmentId { get; set; }
+        public int? AssignmentId { get; set; }
         public Assignment Assignment { get; set; }
         
         public int SubmissionId { get; set; }
@@ -78,10 +77,10 @@ namespace Judge1.Models
 
         [Required, Column(TypeName = "text")] public string Input { get; set; }
         
-        public bool IsValid { get; set; }
+        public bool? IsValid { get; set; }
         public DateTime ValidatedAt { get; set; }
         
-        public bool IsSuccessful { get; set; }
+        public bool? IsSuccessful { get; set; }
         public DateTime JudgedAt { get; set; }
 
         #endregion

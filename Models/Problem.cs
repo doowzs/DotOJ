@@ -21,7 +21,7 @@ namespace Judge1.Models
 
         #region Problem Designer
 
-        public string UserId { get; set; }
+        [Required] public string UserId { get; set; }
         public ApplicationUser User { get; set; }
 
         #endregion
@@ -89,7 +89,7 @@ namespace Judge1.Models
                     : JsonConvert.DeserializeObject<List<TestCase>>(value);
         }
 
-        [Column("TestCases", TypeName = "text")]
+        [Required, Column("TestCases", TypeName = "text")]
         public string TestCasesSerialized
         {
             get => JsonConvert.SerializeObject(TestCases);

@@ -265,7 +265,7 @@ namespace Judge1.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("AssignmentId")
+                    b.Property<int?>("AssignmentId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CreatedAt")
@@ -276,10 +276,10 @@ namespace Judge1.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<bool>("IsSuccessful")
+                    b.Property<bool?>("IsSuccessful")
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("IsValid")
+                    b.Property<bool?>("IsValid")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("JudgedAt")
@@ -296,6 +296,7 @@ namespace Judge1.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("ValidatedAt")
@@ -369,6 +370,7 @@ namespace Judge1.Data.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("TestCasesSerialized")
+                        .IsRequired()
                         .HasColumnName("TestCases")
                         .HasColumnType("text");
 
@@ -380,6 +382,7 @@ namespace Judge1.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ValidatorProgramSerialized")
@@ -402,7 +405,7 @@ namespace Judge1.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("AssignmentId")
+                    b.Property<int?>("AssignmentId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CreatedAt")
@@ -415,11 +418,11 @@ namespace Judge1.Data.Migrations
                     b.Property<string>("HackerId")
                         .HasColumnType("TEXT");
 
-                    b.Property<bool>("IsHacked")
-                        .HasColumnType("INTEGER");
-
                     b.Property<DateTime>("JudgedAt")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("LastTestCase")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("ProblemId")
                         .HasColumnType("INTEGER");
@@ -434,6 +437,7 @@ namespace Judge1.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Verdict")
@@ -612,9 +616,7 @@ namespace Judge1.Data.Migrations
                 {
                     b.HasOne("Judge1.Models.Assignment", "Assignment")
                         .WithMany()
-                        .HasForeignKey("AssignmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AssignmentId");
 
                     b.HasOne("Judge1.Models.Problem", "Problem")
                         .WithMany()
@@ -630,7 +632,9 @@ namespace Judge1.Data.Migrations
 
                     b.HasOne("Judge1.Models.ApplicationUser", "User")
                         .WithMany("Hacks")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Judge1.Models.Problem", b =>
@@ -641,16 +645,16 @@ namespace Judge1.Data.Migrations
 
                     b.HasOne("Judge1.Models.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Judge1.Models.Submission", b =>
                 {
                     b.HasOne("Judge1.Models.Assignment", "Assignment")
                         .WithMany()
-                        .HasForeignKey("AssignmentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AssignmentId");
 
                     b.HasOne("Judge1.Models.ApplicationUser", "Hacker")
                         .WithMany()
@@ -664,7 +668,9 @@ namespace Judge1.Data.Migrations
 
                     b.HasOne("Judge1.Models.ApplicationUser", "User")
                         .WithMany("Submissions")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
