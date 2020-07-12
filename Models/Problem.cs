@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore.Storage;
 using Newtonsoft.Json;
 
 namespace Judge1.Models
@@ -58,10 +58,10 @@ namespace Judge1.Models
 
         #region Problem Description
 
-        public string Name { get; set; }
-        [Column(TypeName = "text")] public string Description { get; set; }
-        [Column(TypeName = "text")] public string InputFormat { get; set; }
-        [Column(TypeName = "text")] public string OutputFormat { get; set; }
+        [Required] public string Name { get; set; }
+        [Required, Column(TypeName = "text")] public string Description { get; set; }
+        [Required, Column(TypeName = "text")] public string InputFormat { get; set; }
+        [Required, Column(TypeName = "text")] public string OutputFormat { get; set; }
         [Column(TypeName = "text")] public string FootNote { get; set; }
 
         #endregion
@@ -97,7 +97,7 @@ namespace Judge1.Models
 
         [NotMapped] public Program ValidatorProgram { get; set; }
 
-        [Column("ValidatorProgram", TypeName = "text")]
+        [Required, Column("ValidatorProgram", TypeName = "text")]
         public string ValidatorProgramSerialized
         {
             get => JsonConvert.SerializeObject(ValidatorProgram);
@@ -109,7 +109,7 @@ namespace Judge1.Models
         [NotMapped] public List<TestCase> SampleCases;
         [NotMapped] public List<TestCase> TestCases;
 
-        [Column("SampleCases", TypeName = "text")]
+        [Required, Column("SampleCases", TypeName = "text")]
         public string SampleCasesSerialized
         {
             get => JsonConvert.SerializeObject(SampleCases);
