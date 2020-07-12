@@ -6,28 +6,6 @@ using Newtonsoft.Json;
 
 namespace Judge1.Models
 {
-    public enum Language
-    {
-        C99 = 50,
-        C11 = 150,
-        C14 = 250,
-        CSharp = 51,
-        Cpp03 = 54,
-        Cpp11 = 154,
-        Cpp14 = 254,
-        Cpp17 = 354,
-        Go = 60,
-        Haskell = 61,
-        Java8 = 27,
-        Java13 = 62,
-        JavaScript = 63,
-        Lua = 64,
-        Php = 68,
-        Python3 = 71,
-        Ruby = 72,
-        Rust = 73,
-        TypeScript = 74,
-    }
 
     [NotMapped]
     public class TestCase
@@ -36,13 +14,6 @@ namespace Judge1.Models
         // When used as test cases, Input and Output are path to files.
         public string Input { get; set; }
         public string Output { get; set; }
-    }
-
-    [NotMapped]
-    public class Program
-    {
-        public Language Language { get; set; }
-        public string Code { get; set; }
     }
 
     public class Problem : ModelWithTimestamps
