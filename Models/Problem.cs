@@ -45,7 +45,7 @@ namespace Judge1.Models
         public string Code { get; set; }
     }
 
-    public class Problem
+    public class Problem : ModelWithTimestamps
     {
         public int Id { get; set; }
 
@@ -128,16 +128,6 @@ namespace Judge1.Models
                     ? new List<TestCase>()
                     : JsonConvert.DeserializeObject<List<TestCase>>(value);
         }
-
-        #endregion
-
-        #region Timestamps
-
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public DateTime CreatedAt;
-
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime UpdatedAt;
 
         #endregion
     }
