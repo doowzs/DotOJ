@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore.Storage;
 using Newtonsoft.Json;
 
 namespace Judge1.Models
@@ -26,7 +28,7 @@ namespace Judge1.Models
         Rust = 73,
         TypeScript = 74,
     }
-    
+
     [NotMapped]
     public class TestCase
     {
@@ -46,26 +48,32 @@ namespace Judge1.Models
     public class Problem
     {
         public int Id { get; set; }
-        
+
         #region Problem Designer
+
         public int UserId { get; set; }
         public ApplicationUser User { get; set; }
+
         #endregion
-        
+
         #region Problem Description
+
         public string Name { get; set; }
         [Column(TypeName = "text")] public string Description { get; set; }
         [Column(TypeName = "text")] public string InputFormat { get; set; }
         [Column(TypeName = "text")] public string OutputFormat { get; set; }
         [Column(TypeName = "text")] public string FootNote { get; set; }
+
         #endregion
 
         #region Judgement Protocol
+
         public double TimeLimit { get; set; }
         public double MemoryLimit { get; set; }
-        
+
         public bool HasSpecialJudge { get; set; }
         [NotMapped] public Program SpecialJudgeProgram { get; set; }
+
         [Column("SpecialJudgeProgram", TypeName = "text")]
         public string SpecialJudgeProgramSerialized
         {
@@ -74,9 +82,10 @@ namespace Judge1.Models
                 ? null
                 : JsonConvert.DeserializeObject<Program>(value);
         }
-        
+
         public bool HasHacking { get; set; }
         [NotMapped] public Program StandardProgram { get; set; }
+
         [Column("StandardProgram", TypeName = "text")]
         public string StandardProgramSerialized
         {
@@ -85,7 +94,9 @@ namespace Judge1.Models
                 ? null
                 : JsonConvert.DeserializeObject<Program>(value);
         }
+
         [NotMapped] public Program ValidatorProgram { get; set; }
+
         [Column("ValidatorProgram", TypeName = "text")]
         public string ValidatorProgramSerialized
         {
@@ -94,9 +105,10 @@ namespace Judge1.Models
                 ? null
                 : JsonConvert.DeserializeObject<Program>(value);
         }
-        
+
         [NotMapped] public List<TestCase> SampleCases;
         [NotMapped] public List<TestCase> TestCases;
+
         [Column("SampleCases", TypeName = "text")]
         public string SampleCasesSerialized
         {
@@ -106,6 +118,7 @@ namespace Judge1.Models
                     ? new List<TestCase>()
                     : JsonConvert.DeserializeObject<List<TestCase>>(value);
         }
+
         [Column("TestCases", TypeName = "text")]
         public string TestCasesSerialized
         {
@@ -115,6 +128,17 @@ namespace Judge1.Models
                     ? new List<TestCase>()
                     : JsonConvert.DeserializeObject<List<TestCase>>(value);
         }
+
+        #endregion
+
+        #region Timestamps
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public DateTime CreatedAt;
+
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
+        public DateTime UpdatedAt;
+
         #endregion
     }
 }
