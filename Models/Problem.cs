@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
@@ -22,7 +21,7 @@ namespace Judge1.Models
 
         #region Problem Designer
 
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public ApplicationUser User { get; set; }
 
         #endregion

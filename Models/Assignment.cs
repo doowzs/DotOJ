@@ -75,10 +75,10 @@ namespace Judge1.Models
 
     public class AssignmentRegistration : ModelWithTimestamps
     {
-        public int UserId { get; set; }
-        public ApplicationUser User { get; set; }
-
+        // Table uses composite key: (UserID, AssignmentId).
+        public string UserId { get; set; }
         public int AssignmentId { get; set; }
+        public ApplicationUser User { get; set; }
         public Assignment Assignment { get; set; }
 
         public bool IsParticipant { get; set; }

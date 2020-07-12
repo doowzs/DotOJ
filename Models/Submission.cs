@@ -11,7 +11,7 @@ namespace Judge1.Models
 
         #region Relationships
         
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public ApplicationUser User { get; set; }
 
         public int ProblemId { get; set; }
@@ -48,19 +48,19 @@ namespace Judge1.Models
         public bool IsHacked { get; set; }
         public DateTime HackedAt { get; set; }
 
-        public int HackerId { get; set; }
-        public ApplicationUser Hacker { get; set; }
+        public string HackerId { get; set; }
+        [ForeignKey("HackerId")] public ApplicationUser Hacker { get; set; }
 
         #endregion
     }
 
-    public class Hacking : ModelWithTimestamps
+    public class Hack : ModelWithTimestamps
     {
         public int Id { get; set; }
 
         #region Relationships
 
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public ApplicationUser User { get; set; }
         
         public int ProblemId { get; set; }
