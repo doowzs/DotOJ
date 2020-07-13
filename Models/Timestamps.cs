@@ -12,6 +12,23 @@ namespace Judge1.Models
         
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime UpdatedAt { get; set; }
+        
+        #endregion
+    }
+
+    [NotMapped]
+    public abstract class DtoWithTimestamps
+    {
+        #region Timestamps
+        
+        public DateTime CreatedAt { get; }
+        public DateTime UpdatedAt { get; }
+
+        public DtoWithTimestamps(ModelWithTimestamps model)
+        {
+            CreatedAt = model.CreatedAt;
+            UpdatedAt = model.UpdatedAt;
+        }
 
         #endregion
     }

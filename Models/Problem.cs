@@ -100,5 +100,124 @@ namespace Judge1.Models
         }
 
         #endregion
+        
+        #region Constructors
+
+        public Problem()
+        {
+            
+        }
+
+        public Problem(ProblemEditDto dto)
+        {
+            Id = dto.Id;
+            UserId = dto.UserId;
+            Name = dto.Name;
+            Description = dto.Description;
+            InputFormat = dto.InputFormat;
+            OutputFormat = dto.OutputFormat;
+            FootNote = dto.FootNote;
+            TimeLimit = dto.TimeLimit;
+            MemoryLimit = dto.MemoryLimit;
+            HasSpecialJudge = dto.HasSpecialJudge;
+            SpecialJudgeProgramSerialized = dto.SpecialJudgeProgram;
+            HasHacking = dto.HasHacking;
+            StandardProgramSerialized = dto.StandardProgram;
+            ValidatorProgramSerialized = dto.ValidatorProgram;
+            SampleCasesSerialized = dto.SampleCases;
+            TestCasesSerialized = dto.TestCases;
+        }
+        
+        #endregion
     }
+
+    #region Data Transfer Objects
+    
+    [NotMapped]
+    public class ProblemViewDto : DtoWithTimestamps
+    {
+        public int Id { get; }
+        public string UserId { get; }
+        public string UserName { get; }
+
+        public string Name { get; }
+        public string Description { get; }
+        public string InputFormat { get; }
+        public string OutputFormat { get; }
+        public string FootNote { get; }
+
+        public double TimeLimit { get; }
+        public double MemoryLimit { get; }
+
+        public bool HasSpecialJudge { get; }
+        public bool HasHacking { get; }
+        public string SampleCases { get; }
+
+        public ProblemViewDto(Problem problem) : base(problem)
+        {
+            Id = problem.Id;
+            UserId = problem.UserId;
+            UserName = problem.User?.UserName;
+            Name = problem.Name;
+            Description = problem.Description;
+            InputFormat = problem.InputFormat;
+            OutputFormat = problem.OutputFormat;
+            FootNote = problem.FootNote;
+            TimeLimit = problem.TimeLimit;
+            MemoryLimit = problem.MemoryLimit;
+            HasSpecialJudge = problem.HasSpecialJudge;
+            HasHacking = problem.HasHacking;
+            SampleCases = problem.SampleCasesSerialized;
+        }
+    }
+
+    [NotMapped]
+    public class ProblemEditDto : DtoWithTimestamps
+    {
+        public int Id { get; set; }
+        public string UserId { get; set; }
+        public string UserName { get; set; }
+
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string InputFormat { get; set; }
+        public string OutputFormat { get; set; }
+        public string FootNote { get; set; }
+
+        public double TimeLimit { get; set; }
+        public double MemoryLimit { get; set; }
+
+        public bool HasSpecialJudge { get; set; }
+        public string SpecialJudgeProgram { get; set; }
+
+        public bool HasHacking { get; set; }
+        public string StandardProgram { get; set; }
+        public string ValidatorProgram { get; set; }
+
+        public string SampleCases { get; set; }
+        public string TestCases { get; set; }
+
+        public ProblemEditDto(Problem problem) : base(problem)
+        {
+            Id = problem.Id;
+            UserId = problem.UserId;
+            UserName = problem.User?.UserName;
+            Name = problem.Name;
+            Description = problem.Description;
+            InputFormat = problem.InputFormat;
+            OutputFormat = problem.OutputFormat;
+            FootNote = problem.FootNote;
+            TimeLimit = problem.TimeLimit;
+            MemoryLimit = problem.MemoryLimit;
+            HasSpecialJudge = problem.HasSpecialJudge;
+            SpecialJudgeProgram = problem.SpecialJudgeProgramSerialized;
+            HasHacking = problem.HasHacking;
+            StandardProgram = problem.StandardProgramSerialized;
+            ValidatorProgram = problem.ValidatorProgramSerialized;
+            SampleCases = problem.SampleCasesSerialized;
+            TestCases = problem.TestCasesSerialized;
+        }
+    }
+
+    #endregion
 }
