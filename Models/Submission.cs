@@ -85,4 +85,37 @@ namespace Judge1.Models
 
         #endregion
     }
+
+    public class Test : ModelWithTimestamps
+    {
+        public int Id { get; set; }
+        
+        [Required] public string UserId { get; set; }
+        public ApplicationUser User { get; set; }
+        
+        public int? ProblemId { get; set; }
+        public Problem Problem { get; set; }
+        
+        public int? AssignmentId { get; set; }
+        public Assignment Assignment { get; set; }
+        
+        public int? SubmissionId { get; set; }
+        public Submission Submission { get; set; }
+        
+        [NotMapped] public Program Program { get; set; }
+        [Required, Column("program", TypeName = "text")]
+        public string ProgramSerialized
+        {
+            get => JsonConvert.ToString(Program);
+            set => Program = string.IsNullOrEmpty(value)
+                ? null
+                : JsonConvert.DeserializeObject<Program>(value);
+        }
+        
+        [Required, Column(TypeName = "text")] public string Input { get; set; }
+        [Column(TypeName = "text")] public string Output { get; set; }
+
+        public Verdict Verdict { get; set; }
+        public DateTime JudgedAt { get; set; }
+    }
 }

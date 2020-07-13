@@ -14,6 +14,7 @@ namespace Judge1.Data
         public DbSet<AssignmentRegistration> AssignmentRegistrations { get; set; }
         public DbSet<Submission> Submissions { get; set; }
         public DbSet<Hack> Hacks { get; set; }
+        public DbSet<Test> Tests { get; set; }
 
         public ApplicationDbContext(DbContextOptions options, IOptions<OperationalStoreOptions> operationalStoreOptions)
             : base(options, operationalStoreOptions)
