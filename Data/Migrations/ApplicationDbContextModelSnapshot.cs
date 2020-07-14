@@ -456,6 +456,64 @@ namespace Judge1.Data.Migrations
                     b.ToTable("Submissions");
                 });
 
+            modelBuilder.Entity("Judge1.Models.Test", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("AssignmentId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Input")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("JudgedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Output")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("ProblemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ProgramSerialized")
+                        .IsRequired()
+                        .HasColumnName("program")
+                        .HasColumnType("text");
+
+                    b.Property<int?>("SubmissionId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("Verdict")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssignmentId");
+
+                    b.HasIndex("ProblemId");
+
+                    b.HasIndex("SubmissionId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Tests");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -668,6 +726,27 @@ namespace Judge1.Data.Migrations
 
                     b.HasOne("Judge1.Models.ApplicationUser", "User")
                         .WithMany("Submissions")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Judge1.Models.Test", b =>
+                {
+                    b.HasOne("Judge1.Models.Assignment", "Assignment")
+                        .WithMany()
+                        .HasForeignKey("AssignmentId");
+
+                    b.HasOne("Judge1.Models.Problem", "Problem")
+                        .WithMany()
+                        .HasForeignKey("ProblemId");
+
+                    b.HasOne("Judge1.Models.Submission", "Submission")
+                        .WithMany()
+                        .HasForeignKey("SubmissionId");
+
+                    b.HasOne("Judge1.Models.ApplicationUser", "User")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
