@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace Judge1.Services
+namespace Judge1.Models
 {
     public class PaginatedList<T>
     {
@@ -25,7 +26,7 @@ namespace Judge1.Services
         }
     }
     
-    public static class PaginationService
+    public static class PaginationExtension
     {
         public static PaginatedList<T> Paginate<T>(this IQueryable<T> source, int pageIndex, int pageSize)
         {
@@ -39,6 +40,22 @@ namespace Judge1.Services
             var total = await source.CountAsync();
             var items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
             return new PaginatedList<T>(total, pageIndex, pageSize, items);
+        }
+
+        public static PaginatedList<TR> Paginate<TE, TR>
+            (this IQueryable<TE> source, Expression<Func<TE, TR>> selector, int pageIndex, int pageSize)
+        {
+            var total = source.Count();
+            var items = source.Skip((pageIndex - 1) * pageSize).Take(pageSize).Select(selector).ToList();
+            return new PaginatedList<TR>(total, pageIndex, pageSize, items);
+        }
+
+        public static async Task<PaginatedList<TR>> PaginateAsync<TE, TR> 
+            (this IQueryable<TE> source, Expression<Func<TE, TR>> selector, int pageIndex, int pageSize)
+        {
+            var total = await source.CountAsync();
+            var items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).Select(selector).ToListAsync();
+            return new PaginatedList<TR>(total, pageIndex, pageSize, items);
         }
     }
 }
