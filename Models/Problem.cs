@@ -100,38 +100,33 @@ namespace Judge1.Models
         }
 
         #endregion
-        
-        #region Constructors
 
-        public Problem()
-        {
-            
-        }
+        #region Submission Statistics
 
-        public Problem(ProblemEditDto dto)
-        {
-            Id = dto.Id;
-            UserId = dto.UserId;
-            Name = dto.Name;
-            Description = dto.Description;
-            InputFormat = dto.InputFormat;
-            OutputFormat = dto.OutputFormat;
-            FootNote = dto.FootNote;
-            TimeLimit = dto.TimeLimit;
-            MemoryLimit = dto.MemoryLimit;
-            HasSpecialJudge = dto.HasSpecialJudge;
-            SpecialJudgeProgramSerialized = dto.SpecialJudgeProgram;
-            HasHacking = dto.HasHacking;
-            StandardProgramSerialized = dto.StandardProgram;
-            ValidatorProgramSerialized = dto.ValidatorProgram;
-            SampleCasesSerialized = dto.SampleCases;
-            TestCasesSerialized = dto.TestCases;
-        }
-        
+        public int AcceptedSubmissions;
+        public int TotalSubmissions;
+
         #endregion
     }
 
     #region Data Transfer Objects
+
+    [NotMapped]
+    public class ProblemInfoDto
+    {
+        public int Id { get; }
+        public string Name { get; }
+        public int AcceptedSubmissions { get; }
+        public int TotalSubmissions { get; }
+
+        public ProblemInfoDto(Problem problem)
+        {
+            Id = problem.Id;
+            Name = problem.Name;
+            AcceptedSubmissions = problem.AcceptedSubmissions;
+            TotalSubmissions = problem.TotalSubmissions;
+        }
+    }
     
     [NotMapped]
     public class ProblemViewDto : DtoWithTimestamps
@@ -152,6 +147,9 @@ namespace Judge1.Models
         public bool HasSpecialJudge { get; }
         public bool HasHacking { get; }
         public string SampleCases { get; }
+        
+        public int AcceptedSubmissions { get; set; }
+        public int TotalSubmissions { get; set; }
 
         public ProblemViewDto(Problem problem) : base(problem)
         {
@@ -168,6 +166,8 @@ namespace Judge1.Models
             HasSpecialJudge = problem.HasSpecialJudge;
             HasHacking = problem.HasHacking;
             SampleCases = problem.SampleCasesSerialized;
+            AcceptedSubmissions = problem.AcceptedSubmissions;
+            TotalSubmissions = problem.TotalSubmissions;
         }
     }
 
