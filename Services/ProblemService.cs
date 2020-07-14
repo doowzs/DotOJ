@@ -1,12 +1,21 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Judge1.Data;
 using Judge1.Models;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Judge1.Services
 {
-    public class ProblemService
+    public interface IProblemService
+    {
+        public Task<ProblemViewDto> GetProblemViewAsync(int id);
+        public Task<PaginatedList<ProblemInfoDto>> GetPaginatedProblemInfosAsync(int? pageIndex);
+        public Task CreateProblemAsync(ProblemEditDto dto);
+        public Task UpdateProblemAsync(ProblemEditDto dto);
+        public Task DeleteProblemAsync(int id);
+    }
+    
+    public class ProblemService : IProblemService
     {
         private const int PageSize = 50;
         
@@ -19,26 +28,24 @@ namespace Judge1.Services
             _logger = _logger;
         }
 
-        public async Task<Problem> GetProblemAsync(int id)
+        public async Task<ProblemViewDto> GetProblemViewAsync(int id)
         {
-            return await _context.Problems.SingleAsync(p => p.Id == id);
+            return new ProblemViewDto(await _context.Problems.FindAsync(id));
         }
 
-        public async Task<PaginatedList<Problem>> GetPaginatedProblems(int pageIndex)
+        public async Task<PaginatedList<ProblemInfoDto>> GetPaginatedProblemInfosAsync(int? pageIndex)
         {
-            return await _context.Problems.PaginateAsync(pageIndex, PageSize);
+            return await _context.Problems.PaginateAsync(p => new ProblemInfoDto(p), pageIndex ?? 1, PageSize);
         }
 
-        public async Task CreateProblemAsync(Problem problem)
+        public async Task CreateProblemAsync(ProblemEditDto dto)
         {
-            _context.Problems.Add(problem);
-            await _context.SaveChangesAsync();
+            throw new NotImplementedException();
         }
 
-        public async Task UpdateProblemAsync(Problem problem)
+        public async Task UpdateProblemAsync(ProblemEditDto dto)
         {
-            _context.Problems.Update(problem);
-            await _context.SaveChangesAsync();
+            throw new NotImplementedException();
         }
 
         public async Task DeleteProblemAsync(int id)
