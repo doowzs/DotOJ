@@ -264,7 +264,6 @@ namespace Judge1.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false),
-                    UserId = table.Column<string>(nullable: false),
                     Name = table.Column<string>(nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     InputFormat = table.Column<string>(type: "text", nullable: false),
@@ -290,12 +289,6 @@ namespace Judge1.Migrations
                         principalTable: "Assignments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Problems_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -533,11 +526,6 @@ namespace Judge1.Migrations
                 column: "AssignmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Problems_UserId",
-                table: "Problems",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Submissions_AssignmentId",
                 table: "Submissions",
                 column: "AssignmentId");
@@ -620,13 +608,13 @@ namespace Judge1.Migrations
                 name: "Submissions");
 
             migrationBuilder.DropTable(
+                name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
                 name: "Problems");
 
             migrationBuilder.DropTable(
                 name: "Assignments");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
         }
     }
 }

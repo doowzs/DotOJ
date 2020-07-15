@@ -381,10 +381,6 @@ namespace Judge1.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("ValidatorProgramSerialized")
                         .HasColumnName("ValidatorProgram")
                         .HasColumnType("text");
@@ -392,8 +388,6 @@ namespace Judge1.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AssignmentId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Problems");
                 });
@@ -699,12 +693,6 @@ namespace Judge1.Migrations
                     b.HasOne("Judge1.Models.Assignment", null)
                         .WithMany("Problems")
                         .HasForeignKey("AssignmentId");
-
-                    b.HasOne("Judge1.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Judge1.Models.Submission", b =>
