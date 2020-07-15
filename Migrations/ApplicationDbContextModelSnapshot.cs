@@ -3,16 +3,14 @@ using System;
 using Judge1.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Judge1.Data.Migrations
+namespace Judge1.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200714184645_InitialCreate")]
-    partial class InitialCreate
+    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -388,7 +386,6 @@ namespace Judge1.Data.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ValidatorProgramSerialized")
-                        .IsRequired()
                         .HasColumnName("ValidatorProgram")
                         .HasColumnType("text");
 

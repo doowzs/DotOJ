@@ -67,7 +67,7 @@ namespace Judge1.Models
 
         [NotMapped] public Program ValidatorProgram { get; set; }
 
-        [Required, Column("ValidatorProgram", TypeName = "text")]
+        [Column("ValidatorProgram", TypeName = "text")]
         public string ValidatorProgramSerialized
         {
             get => JsonConvert.SerializeObject(ValidatorProgram);

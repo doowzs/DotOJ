@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Judge1.Data.Migrations
+namespace Judge1.Migrations
 {
     public partial class InitialCreate : Migration
     {
@@ -276,7 +276,7 @@ namespace Judge1.Data.Migrations
                     SpecialJudgeProgram = table.Column<string>(type: "text", nullable: true),
                     HasHacking = table.Column<bool>(nullable: false),
                     StandardProgram = table.Column<string>(type: "text", nullable: true),
-                    ValidatorProgram = table.Column<string>(type: "text", nullable: false),
+                    ValidatorProgram = table.Column<string>(type: "text", nullable: true),
                     SampleCases = table.Column<string>(type: "text", nullable: false),
                     TestCases = table.Column<string>(type: "text", nullable: false),
                     AssignmentId = table.Column<int>(nullable: true)
