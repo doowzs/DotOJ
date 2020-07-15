@@ -56,6 +56,7 @@ namespace Judge1.Migrations
                     UpdatedAt = table.Column<DateTime>(nullable: false),
                     Name = table.Column<string>(nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
+                    IsPublic = table.Column<bool>(nullable: false),
                     Mode = table.Column<int>(nullable: false),
                     BeginTime = table.Column<DateTime>(nullable: false),
                     EndTime = table.Column<DateTime>(nullable: false)

@@ -47,6 +47,7 @@ namespace Judge1.Models
         [Required] public string Name { get; set; }
         [Required, Column(TypeName = "text")] public string Description { get; set; }
 
+        [Required] public bool IsPublic { get; set; }
         [Required] public AssignmentMode Mode { get; set; }
 
         [Required] public DateTime BeginTime { get; set; }

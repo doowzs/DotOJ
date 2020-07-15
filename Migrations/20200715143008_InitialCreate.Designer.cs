@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Judge1.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200715142726_InitialCreate")]
+    [Migration("20200715143008_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -183,6 +183,9 @@ namespace Judge1.Migrations
 
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("TEXT");
+
+                    b.Property<bool>("IsPublic")
+                        .HasColumnType("INTEGER");
 
                     b.Property<int>("Mode")
                         .HasColumnType("INTEGER");

@@ -8,10 +8,10 @@ namespace Judge1.Data
 {
     public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>
     {
-        public DbSet<Problem> Problems { get; set; }
         public DbSet<Assignment> Assignments { get; set; }
         public DbSet<AssignmentNotice> AssignmentNotices { get; set; }
         public DbSet<AssignmentRegistration> AssignmentRegistrations { get; set; }
+        public DbSet<Problem> Problems { get; set; }
         public DbSet<Submission> Submissions { get; set; }
         public DbSet<Hack> Hacks { get; set; }
         public DbSet<Test> Tests { get; set; }
