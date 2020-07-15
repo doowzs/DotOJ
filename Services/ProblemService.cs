@@ -10,7 +10,7 @@ namespace Judge1.Services
     {
         public Task<ProblemViewDto> GetProblemViewAsync(int id);
         public Task<PaginatedList<ProblemInfoDto>> GetPaginatedProblemInfosAsync(int? pageIndex);
-        public Task CreateProblemAsync(ProblemEditDto dto);
+        public Task<Problem> CreateProblemAsync(ProblemEditDto dto);
         public Task UpdateProblemAsync(ProblemEditDto dto);
         public Task DeleteProblemAsync(int id);
     }
@@ -38,7 +38,7 @@ namespace Judge1.Services
             return await _context.Problems.PaginateAsync(p => new ProblemInfoDto(p), pageIndex ?? 1, PageSize);
         }
 
-        public async Task CreateProblemAsync(ProblemEditDto dto)
+        public async Task<Problem> CreateProblemAsync(ProblemEditDto dto)
         {
             throw new NotImplementedException();
         }
