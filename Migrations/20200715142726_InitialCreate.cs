@@ -264,6 +264,7 @@ namespace Judge1.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false),
+                    AssignmentId = table.Column<int>(nullable: false),
                     Name = table.Column<string>(nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     InputFormat = table.Column<string>(type: "text", nullable: false),
@@ -278,7 +279,10 @@ namespace Judge1.Migrations
                     ValidatorProgram = table.Column<string>(type: "text", nullable: true),
                     SampleCases = table.Column<string>(type: "text", nullable: false),
                     TestCases = table.Column<string>(type: "text", nullable: false),
-                    AssignmentId = table.Column<int>(nullable: true)
+                    AcceptedSubmissions = table.Column<int>(nullable: false),
+                    TotalSubmissions = table.Column<int>(nullable: false),
+                    CanBeViewedAfter = table.Column<DateTime>(nullable: false),
+                    CanBeListedAfter = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -288,7 +292,7 @@ namespace Judge1.Migrations
                         column: x => x.AssignmentId,
                         principalTable: "Assignments",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

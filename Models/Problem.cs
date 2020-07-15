@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
@@ -18,13 +19,10 @@ namespace Judge1.Models
     public class Problem : ModelWithTimestamps
     {
         public int Id { get; set; }
-
-        #region Problem Designer
-
-        [Required] public string UserId { get; set; }
-        public ApplicationUser User { get; set; }
-
-        #endregion
+        
+        // A problem must belong to an assignment.
+        public int AssignmentId { get; set; }
+        public Assignment Assignment { get; set; }
 
         #region Problem Description
 
@@ -103,9 +101,16 @@ namespace Judge1.Models
 
         #region Submission Statistics
 
-        public int AcceptedSubmissions;
-        public int TotalSubmissions;
+        public int AcceptedSubmissions { get; set; }
+        public int TotalSubmissions { get; set; }
 
+        #endregion
+        
+        #region Assignment Timestamps
+
+        public DateTime CanBeViewedAfter { get; set; }
+        public DateTime CanBeListedAfter { get; set; }
+        
         #endregion
     }
 
@@ -115,6 +120,7 @@ namespace Judge1.Models
     public class ProblemInfoDto
     {
         public int Id { get; }
+        public int AssignmentId { get; }
         public string Name { get; }
         public int AcceptedSubmissions { get; }
         public int TotalSubmissions { get; }
@@ -122,6 +128,7 @@ namespace Judge1.Models
         public ProblemInfoDto(Problem problem)
         {
             Id = problem.Id;
+            AssignmentId = problem.AssignmentId;
             Name = problem.Name;
             AcceptedSubmissions = problem.AcceptedSubmissions;
             TotalSubmissions = problem.TotalSubmissions;
@@ -132,9 +139,7 @@ namespace Judge1.Models
     public class ProblemViewDto : DtoWithTimestamps
     {
         public int Id { get; }
-        public string UserId { get; }
-        public string UserName { get; }
-
+        public int AssignmentId { get; }
         public string Name { get; }
         public string Description { get; }
         public string InputFormat { get; }
@@ -154,8 +159,7 @@ namespace Judge1.Models
         public ProblemViewDto(Problem problem) : base(problem)
         {
             Id = problem.Id;
-            UserId = problem.UserId;
-            UserName = problem.User?.UserName;
+            AssignmentId = problem.Id;
             Name = problem.Name;
             Description = problem.Description;
             InputFormat = problem.InputFormat;
@@ -175,9 +179,7 @@ namespace Judge1.Models
     public class ProblemEditDto : DtoWithTimestamps
     {
         public int Id { get; set; }
-        public string UserId { get; set; }
-        public string UserName { get; set; }
-
+        public int AssignmentId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public string InputFormat { get; set; }
@@ -200,8 +202,7 @@ namespace Judge1.Models
         public ProblemEditDto(Problem problem) : base(problem)
         {
             Id = problem.Id;
-            UserId = problem.UserId;
-            UserName = problem.User?.UserName;
+            AssignmentId = problem.AssignmentId;
             Name = problem.Name;
             Description = problem.Description;
             InputFormat = problem.InputFormat;

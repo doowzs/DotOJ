@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Judge1.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200715141517_InitialCreate")]
+    [Migration("20200715142726_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -323,8 +323,17 @@ namespace Judge1.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("AssignmentId")
+                    b.Property<int>("AcceptedSubmissions")
                         .HasColumnType("INTEGER");
+
+                    b.Property<int>("AssignmentId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CanBeListedAfter")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CanBeViewedAfter")
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -378,6 +387,9 @@ namespace Judge1.Migrations
 
                     b.Property<double>("TimeLimit")
                         .HasColumnType("REAL");
+
+                    b.Property<int>("TotalSubmissions")
+                        .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate()
@@ -692,9 +704,11 @@ namespace Judge1.Migrations
 
             modelBuilder.Entity("Judge1.Models.Problem", b =>
                 {
-                    b.HasOne("Judge1.Models.Assignment", null)
+                    b.HasOne("Judge1.Models.Assignment", "Assignment")
                         .WithMany("Problems")
-                        .HasForeignKey("AssignmentId");
+                        .HasForeignKey("AssignmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Judge1.Models.Submission", b =>
