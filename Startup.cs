@@ -32,6 +32,7 @@ namespace Judge1
                     Configuration.GetConnectionString("DefaultConnection")));
 
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddIdentityServer()
@@ -42,6 +43,7 @@ namespace Judge1
             services.AddControllersWithViews();
             services.AddRazorPages();
 
+            services.AddHttpContextAccessor();
             services.AddScoped<IProblemService, ProblemService>();
             
             // In production, the Angular files will be served from this directory

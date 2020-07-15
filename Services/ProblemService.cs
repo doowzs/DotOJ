@@ -1,15 +1,17 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Judge1.Data;
 using Judge1.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 
 namespace Judge1.Services
 {
     public interface IProblemService
     {
-        public Task<ProblemViewDto> GetProblemViewAsync(int id);
-        public Task<PaginatedList<ProblemInfoDto>> GetPaginatedProblemInfosAsync(int? pageIndex);
+        public Task<ProblemViewDto> GetProblemViewAsync(int id, bool privileged);
+        public Task<PaginatedList<ProblemInfoDto>> GetPaginatedProblemInfosAsync(int? pageIndex, bool privileged);
         public Task<Problem> CreateProblemAsync(ProblemEditDto dto);
         public Task UpdateProblemAsync(ProblemEditDto dto);
         public Task DeleteProblemAsync(int id);
@@ -28,14 +30,25 @@ namespace Judge1.Services
             _logger = _logger;
         }
 
-        public async Task<ProblemViewDto> GetProblemViewAsync(int id)
+        public async Task<ProblemViewDto> GetProblemViewAsync(int id, bool privileged)
         {
-            return new ProblemViewDto(await _context.Problems.FindAsync(id));
+            var problem = await _context.Problems.FindAsync(id);
+            if (!(privileged || DateTime.Now >= problem.CanBeViewedAfter))
+            {
+                throw new UnauthorizedAccessException("Not authorized to view this problem.");
+            }
+            return new ProblemViewDto(problem);
         }
 
-        public async Task<PaginatedList<ProblemInfoDto>> GetPaginatedProblemInfosAsync(int? pageIndex)
+        public async Task<PaginatedList<ProblemInfoDto>> GetPaginatedProblemInfosAsync(int? pageIndex, bool privileged)
         {
-            return await _context.Problems.PaginateAsync(p => new ProblemInfoDto(p), pageIndex ?? 1, PageSize);
+            IQueryable<Problem> data = _context.Problems;
+            if (!privileged)
+            {
+                var now = DateTime.Now;
+                data = data.Where(p => now >= p.CanBeListedAfter);
+            }
+            return await data.PaginateAsync(p => new ProblemInfoDto(p), pageIndex ?? 1, PageSize);
         }
 
         public async Task<Problem> CreateProblemAsync(ProblemEditDto dto)
