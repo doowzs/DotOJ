@@ -77,5 +77,41 @@ namespace Judge1.Controllers.Api.v1
                 return BadRequest(e);
             }
         }
+
+        [HttpPut("{id:int}")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> UpdateProblem(ProblemEditDto dto)
+        {
+            try
+            {
+                var problem = await _service.UpdateProblemAsync(dto);
+                return Ok(problem);
+            }
+            catch (ValidationException e)
+            {
+                return BadRequest(e);
+            }
+        }
+
+        [HttpDelete]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> DeleteProblem(int id)
+        {
+            try
+            {
+                await _service.DeleteProblemAsync(id);
+                return NoContent();
+            }
+            catch (ValidationException e)
+            {
+                return BadRequest(e);
+            }
+        }
     }
 }

@@ -13,8 +13,8 @@ namespace Judge1.Services
     {
         public Task<ProblemViewDto> GetProblemViewAsync(int id, bool privileged);
         public Task<PaginatedList<ProblemInfoDto>> GetPaginatedProblemInfosAsync(int? pageIndex, bool privileged);
-        public Task<Problem> CreateProblemAsync(ProblemEditDto dto);
-        public Task UpdateProblemAsync(ProblemEditDto dto);
+        public Task<ProblemEditDto> CreateProblemAsync(ProblemEditDto dto);
+        public Task<ProblemEditDto> UpdateProblemAsync(ProblemEditDto dto);
         public Task DeleteProblemAsync(int id);
     }
     
@@ -29,6 +29,14 @@ namespace Judge1.Services
         {
             _context = context;
             _logger = _logger;
+        }
+
+        public async Task ValidateProblemId(int id)
+        {
+            if (!await _context.Problems.AnyAsync(p => p.Id == id))
+            {
+                throw new ValidationException("Invalid problem ID.");
+            }
         }
         
         public async Task ValidateProblemEditDto(ProblemEditDto dto)
@@ -80,7 +88,7 @@ namespace Judge1.Services
             return await data.PaginateAsync(p => new ProblemInfoDto(p), pageIndex ?? 1, PageSize);
         }
 
-        public async Task<Problem> CreateProblemAsync(ProblemEditDto dto)
+        public async Task<ProblemEditDto> CreateProblemAsync(ProblemEditDto dto)
         {
             await ValidateProblemEditDto(dto);
             var assignment = await _context.Assignments.FindAsync(dto.AssignmentId);
@@ -109,16 +117,51 @@ namespace Judge1.Services
             };
             await _context.Problems.AddAsync(problem);
             await _context.SaveChangesAsync();
-            return problem;
+            return new ProblemEditDto(problem);
         }
 
-        public async Task UpdateProblemAsync(ProblemEditDto dto)
+        public async Task<ProblemEditDto> UpdateProblemAsync(ProblemEditDto dto)
         {
-            throw new NotImplementedException();
+            await ValidateProblemId(dto.Id);
+            await ValidateProblemEditDto(dto);
+            var oldProblem = await _context.Problems.FindAsync(dto.Id);
+            var problem = new Problem()
+            {
+                Id = dto.Id,
+                AssignmentId = dto.AssignmentId.GetValueOrDefault(),
+                Name = dto.Name,
+                Description = dto.Description,
+                InputFormat = dto.InputFormat,
+                OutputFormat = dto.OutputFormat,
+                FootNote = dto.FootNote,
+                TimeLimit = dto.TimeLimit.GetValueOrDefault(),
+                MemoryLimit = dto.MemoryLimit.GetValueOrDefault(),
+                HasSpecialJudge = dto.HasSpecialJudge,
+                SpecialJudgeProgramSerialized = dto.SpecialJudgeProgram,
+                HasHacking = dto.HasHacking,
+                StandardProgramSerialized = dto.StandardProgram,
+                ValidatorProgramSerialized = dto.ValidatorProgram,
+                SampleCasesSerialized = dto.SampleCases,
+                TestCasesSerialized = dto.TestCases,
+                AcceptedSubmissions = oldProblem.AcceptedSubmissions,
+                TotalSubmissions = oldProblem.AcceptedSubmissions,
+                CanBeViewedAfter = oldProblem.CanBeViewedAfter,
+                CanBeListedAfter = oldProblem.CanBeListedAfter,
+            };
+            if (problem.AssignmentId != oldProblem.AssignmentId)
+            {
+                var assignment = await _context.Assignments.FindAsync(problem.AssignmentId);
+                problem.CanBeViewedAfter = assignment.BeginTime;
+                problem.CanBeListedAfter = assignment.EndTime;
+            }
+            _context.Problems.Update(problem);
+            await _context.SaveChangesAsync();
+            return new ProblemEditDto(problem);
         }
 
         public async Task DeleteProblemAsync(int id)
         {
+            await ValidateProblemId(id);
             var problem = new Problem() {Id = id};
             _context.Problems.Attach(problem);
             _context.Problems.Remove(problem);
