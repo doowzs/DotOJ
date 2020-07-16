@@ -36,8 +36,8 @@ namespace Judge1.Models
 
         #region Judgement Protocol
 
-        public double TimeLimit { get; set; }
-        public double MemoryLimit { get; set; }
+        [Range(0.0, Double.PositiveInfinity)] public double TimeLimit { get; set; }
+        [Range(0.0, Double.PositiveInfinity)] public double MemoryLimit { get; set; }
 
         public bool HasSpecialJudge { get; set; }
         [NotMapped] public Program SpecialJudgeProgram { get; set; }
@@ -178,26 +178,26 @@ namespace Judge1.Models
     [NotMapped]
     public class ProblemEditDto : DtoWithTimestamps
     {
-        public int Id { get; set; }
-        public int AssignmentId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string InputFormat { get; set; }
-        public string OutputFormat { get; set; }
-        public string FootNote { get; set; }
+        public int Id { get; }
+        [Required] public int? AssignmentId { get; }
+        [Required] public string Name { get; }
+        [Required] public string Description { get; }
+        [Required] public string InputFormat { get; }
+        [Required] public string OutputFormat { get; }
+        [Required] public string FootNote { get; }
 
-        public double TimeLimit { get; set; }
-        public double MemoryLimit { get; set; }
+        [Required, Range(0.0, Double.PositiveInfinity)] public double? TimeLimit { get; }
+        [Required, Range(0.0, Double.PositiveInfinity)] public double? MemoryLimit { get; }
 
-        public bool HasSpecialJudge { get; set; }
-        public string SpecialJudgeProgram { get; set; }
+        [Required] public bool HasSpecialJudge { get; }
+        public string SpecialJudgeProgram { get; }
 
-        public bool HasHacking { get; set; }
-        public string StandardProgram { get; set; }
-        public string ValidatorProgram { get; set; }
+        [Required] public bool HasHacking { get; }
+        public string StandardProgram { get; }
+        public string ValidatorProgram { get; }
 
-        public string SampleCases { get; set; }
-        public string TestCases { get; set; }
+        [Required] public string SampleCases { get; }
+        [Required] public string TestCases { get; }
 
         public ProblemEditDto(Problem problem) : base(problem)
         {

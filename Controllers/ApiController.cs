@@ -17,8 +17,6 @@ namespace Judge1.Controllers
             _manager = manager;
         }
         
-        
-        
         protected async Task<ApplicationUser> GetCurrentUserAsync()
         {
             return await _manager.GetUserAsync(HttpContext.User);

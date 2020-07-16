@@ -1,9 +1,10 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Judge1.Data;
 using Judge1.Models;
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Judge1.Services
@@ -29,6 +30,34 @@ namespace Judge1.Services
             _context = context;
             _logger = _logger;
         }
+        
+        public async Task ValidateProblemEditDto(ProblemEditDto dto)
+        {
+            if (!await _context.Assignments.AnyAsync(a => a.Id == dto.AssignmentId))
+            {
+                throw new ValidationException("Invalid assignment ID.");
+            }
+            
+            if (dto.HasSpecialJudge)
+            {
+                if (dto.SpecialJudgeProgram is null)
+                {
+                    throw new ValidationException("Special judge problem cannot be null.");
+                }
+            }
+
+            if (dto.HasHacking)
+            {
+                if (dto.StandardProgram is null)
+                {
+                    throw new ValidationException("Standard program cannot be null.");
+                }
+                else if (dto.ValidatorProgram is null)
+                {
+                    throw new ValidationException("Validator program cannot be null.");
+                }
+            }
+        }
 
         public async Task<ProblemViewDto> GetProblemViewAsync(int id, bool privileged)
         {
@@ -53,7 +82,34 @@ namespace Judge1.Services
 
         public async Task<Problem> CreateProblemAsync(ProblemEditDto dto)
         {
-            throw new NotImplementedException();
+            await ValidateProblemEditDto(dto);
+            var assignment = await _context.Assignments.FindAsync(dto.AssignmentId);
+            var problem = new Problem()
+            {
+                Id = 0,
+                AssignmentId = dto.AssignmentId.GetValueOrDefault(),
+                Name = dto.Name,
+                Description = dto.Description,
+                InputFormat = dto.InputFormat,
+                OutputFormat = dto.OutputFormat,
+                FootNote = dto.FootNote,
+                TimeLimit = dto.TimeLimit.GetValueOrDefault(),
+                MemoryLimit = dto.MemoryLimit.GetValueOrDefault(),
+                HasSpecialJudge = dto.HasSpecialJudge,
+                SpecialJudgeProgramSerialized = dto.SpecialJudgeProgram,
+                HasHacking = dto.HasHacking,
+                StandardProgramSerialized = dto.StandardProgram,
+                ValidatorProgramSerialized = dto.ValidatorProgram,
+                SampleCasesSerialized = dto.SampleCases,
+                TestCasesSerialized = dto.TestCases,
+                AcceptedSubmissions = 0,
+                TotalSubmissions = 0,
+                CanBeViewedAfter = assignment.BeginTime,
+                CanBeListedAfter = assignment.EndTime,
+            };
+            await _context.Problems.AddAsync(problem);
+            await _context.SaveChangesAsync();
+            return problem;
         }
 
         public async Task UpdateProblemAsync(ProblemEditDto dto)

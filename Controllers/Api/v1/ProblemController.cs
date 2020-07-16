@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using Judge1.Models;
@@ -63,20 +64,17 @@ namespace Judge1.Controllers.Api.v1
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status422UnprocessableEntity)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult> CreateProblem(ProblemEditDto dto)
         {
-            throw new NotImplementedException();
-            
             try
             {
                 var problem = await _service.CreateProblemAsync(dto);
                 return Created(nameof(ViewProblem), problem);
             }
-            catch (Exception e)
+            catch (ValidationException e)
             {
-                _logger.LogInformation($"Unprocessable entity {dto}");
-                return UnprocessableEntity(e);
+                return BadRequest(e);
             }
         }
     }
