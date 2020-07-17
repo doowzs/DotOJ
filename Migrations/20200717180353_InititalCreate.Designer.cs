@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Judge1.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200715143008_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20200717180353_InititalCreate")]
+    partial class InititalCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -190,7 +190,7 @@ namespace Judge1.Migrations
                     b.Property<int>("Mode")
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -362,10 +362,6 @@ namespace Judge1.Migrations
                     b.Property<double>("MemoryLimit")
                         .HasColumnType("REAL");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("OutputFormat")
                         .IsRequired()
                         .HasColumnType("text");
@@ -390,6 +386,10 @@ namespace Judge1.Migrations
 
                     b.Property<double>("TimeLimit")
                         .HasColumnType("REAL");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<int>("TotalSubmissions")
                         .HasColumnType("INTEGER");

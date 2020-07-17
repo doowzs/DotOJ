@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Judge1.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class InititalCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -54,7 +54,7 @@ namespace Judge1.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false),
-                    Name = table.Column<string>(nullable: false),
+                    Title = table.Column<string>(nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     IsPublic = table.Column<bool>(nullable: false),
                     Mode = table.Column<int>(nullable: false),
@@ -266,7 +266,7 @@ namespace Judge1.Migrations
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false),
                     AssignmentId = table.Column<int>(nullable: false),
-                    Name = table.Column<string>(nullable: false),
+                    Title = table.Column<string>(nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     InputFormat = table.Column<string>(type: "text", nullable: false),
                     OutputFormat = table.Column<string>(type: "text", nullable: false),

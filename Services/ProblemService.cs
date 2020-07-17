@@ -96,7 +96,7 @@ namespace Judge1.Services
             {
                 Id = 0,
                 AssignmentId = dto.AssignmentId.GetValueOrDefault(),
-                Name = dto.Name,
+                Title = dto.Title,
                 Description = dto.Description,
                 InputFormat = dto.InputFormat,
                 OutputFormat = dto.OutputFormat,
@@ -129,7 +129,7 @@ namespace Judge1.Services
             {
                 Id = dto.Id,
                 AssignmentId = dto.AssignmentId.GetValueOrDefault(),
-                Name = dto.Name,
+                Title = dto.Title,
                 Description = dto.Description,
                 InputFormat = dto.InputFormat,
                 OutputFormat = dto.OutputFormat,

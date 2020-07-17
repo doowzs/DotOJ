@@ -44,7 +44,7 @@ namespace Judge1.Models
 
         #region Assignment Content
 
-        [Required] public string Name { get; set; }
+        [Required] public string Title { get; set; }
         [Required, Column(TypeName = "text")] public string Description { get; set; }
 
         [Required] public bool IsPublic { get; set; }

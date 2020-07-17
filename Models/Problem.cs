@@ -26,7 +26,7 @@ namespace Judge1.Models
 
         #region Problem Description
 
-        [Required] public string Name { get; set; }
+        [Required] public string Title { get; set; }
         [Required, Column(TypeName = "text")] public string Description { get; set; }
         [Required, Column(TypeName = "text")] public string InputFormat { get; set; }
         [Required, Column(TypeName = "text")] public string OutputFormat { get; set; }
@@ -121,7 +121,7 @@ namespace Judge1.Models
     {
         public int Id { get; }
         public int AssignmentId { get; }
-        public string Name { get; }
+        public string Title { get; }
         public int AcceptedSubmissions { get; }
         public int TotalSubmissions { get; }
 
@@ -129,7 +129,7 @@ namespace Judge1.Models
         {
             Id = problem.Id;
             AssignmentId = problem.AssignmentId;
-            Name = problem.Name;
+            Title = problem.Title;
             AcceptedSubmissions = problem.AcceptedSubmissions;
             TotalSubmissions = problem.TotalSubmissions;
         }
@@ -140,7 +140,7 @@ namespace Judge1.Models
     {
         public int Id { get; }
         public int AssignmentId { get; }
-        public string Name { get; }
+        public string Title { get; }
         public string Description { get; }
         public string InputFormat { get; }
         public string OutputFormat { get; }
@@ -160,7 +160,7 @@ namespace Judge1.Models
         {
             Id = problem.Id;
             AssignmentId = problem.Id;
-            Name = problem.Name;
+            Title = problem.Title;
             Description = problem.Description;
             InputFormat = problem.InputFormat;
             OutputFormat = problem.OutputFormat;
@@ -180,7 +180,7 @@ namespace Judge1.Models
     {
         public int Id { get; }
         [Required] public int? AssignmentId { get; }
-        [Required] public string Name { get; }
+        [Required] public string Title { get; }
         [Required] public string Description { get; }
         [Required] public string InputFormat { get; }
         [Required] public string OutputFormat { get; }
@@ -203,7 +203,7 @@ namespace Judge1.Models
         {
             Id = problem.Id;
             AssignmentId = problem.AssignmentId;
-            Name = problem.Name;
+            Title = problem.Title;
             Description = problem.Description;
             InputFormat = problem.InputFormat;
             OutputFormat = problem.OutputFormat;
