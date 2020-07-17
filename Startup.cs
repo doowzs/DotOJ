@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -20,6 +22,10 @@ namespace Judge1
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            
+            // See https://github.com/dotnet/aspnetcore/issues/14160
+            // JwtSecurityTokenHandler.DefaultInboundClaimTypeMap = new Dictionary<string, string>();
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove(JwtRegisteredClaimNames.Sub);
         }
 
         public IConfiguration Configuration { get; }
@@ -43,7 +49,6 @@ namespace Judge1
             services.AddControllersWithViews();
             services.AddRazorPages();
 
-            services.AddHttpContextAccessor();
             services.AddScoped<IProblemService, ProblemService>();
             
             // In production, the Angular files will be served from this directory

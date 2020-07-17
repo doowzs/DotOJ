@@ -15,13 +15,12 @@ namespace Judge1.Controllers.Api.v1
     [Authorize]
     [ApiController]
     [Route("api/v1/[controller]")]
-    public class ProblemController : ApiController
+    public class ProblemController : ControllerBase
     {
         private readonly IProblemService _service;
         private readonly ILogger<ProblemController> _logger;
 
-        public ProblemController(UserManager<ApplicationUser> manager, IProblemService service,
-            ILogger<ProblemController> logger) : base(manager)
+        public ProblemController(IProblemService service, ILogger<ProblemController> logger)
         {
             _service = service;
             _logger = logger;
@@ -33,7 +32,7 @@ namespace Judge1.Controllers.Api.v1
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PaginatedList<ProblemInfoDto>>> ListProblems(int? pageIndex)
         {
-            var privileged = await IsCurrentUserInRoleAsync(ApplicationRoles.ProblemEditor);
+            var privileged = User.IsInRole(ApplicationRoles.ProblemEditor);
             return Ok(await _service.GetPaginatedProblemInfosAsync(pageIndex, privileged));
         }
 
@@ -47,7 +46,7 @@ namespace Judge1.Controllers.Api.v1
         {
             try
             {
-                var privileged = await IsCurrentUserInRoleAsync(ApplicationRoles.ProblemEditor);
+                var privileged = User.IsInRole(ApplicationRoles.ProblemEditor);
                 return Ok(await _service.GetProblemViewAsync(id, privileged));
             }
             catch (UnauthorizedAccessException e)
