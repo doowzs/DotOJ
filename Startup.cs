@@ -24,6 +24,7 @@ namespace Judge1
             Configuration = configuration;
             
             // See https://github.com/dotnet/aspnetcore/issues/14160
+            // Also https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/issues/415
             // JwtSecurityTokenHandler.DefaultInboundClaimTypeMap = new Dictionary<string, string>();
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove(JwtRegisteredClaimNames.Sub);
         }
