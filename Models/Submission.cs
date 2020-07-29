@@ -16,9 +16,6 @@ namespace Judge1.Models
 
         public int ProblemId { get; set; }
         public Problem Problem { get; set; }
-        
-        public int? AssignmentId { get; set; }
-        public Assignment Assignment { get; set; }
 
         #endregion
 
@@ -43,14 +40,6 @@ namespace Judge1.Models
         public DateTime JudgedAt { get; set; }
 
         #endregion
-
-        #region Submission Hacking
-        
-        public DateTime HackedAt { get; set; }
-        public string HackerId { get; set; }
-        [ForeignKey("HackerId")] public ApplicationUser Hacker { get; set; }
-
-        #endregion
     }
 
     public class Hack : ModelWithTimestamps
@@ -61,12 +50,6 @@ namespace Judge1.Models
 
         [Required] public string UserId { get; set; }
         public ApplicationUser User { get; set; }
-        
-        public int ProblemId { get; set; }
-        public Problem Problem { get; set; }
-        
-        public int? AssignmentId { get; set; }
-        public Assignment Assignment { get; set; }
         
         public int SubmissionId { get; set; }
         public Submission Submission { get; set; }
@@ -93,14 +76,8 @@ namespace Judge1.Models
         [Required] public string UserId { get; set; }
         public ApplicationUser User { get; set; }
         
-        public int? ProblemId { get; set; }
+        public int ProblemId { get; set; }
         public Problem Problem { get; set; }
-        
-        public int? AssignmentId { get; set; }
-        public Assignment Assignment { get; set; }
-        
-        public int? SubmissionId { get; set; }
-        public Submission Submission { get; set; }
         
         [NotMapped] public Program Program { get; set; }
         [Required, Column("program", TypeName = "text")]

@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Judge1.Migrations
+namespace Judge1.Data.Migrations
 {
-    public partial class InititalCreate : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -51,7 +51,7 @@ namespace Judge1.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false),
                     Title = table.Column<string>(nullable: false),
@@ -105,7 +105,7 @@ namespace Judge1.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     RoleId = table.Column<string>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -126,7 +126,7 @@ namespace Judge1.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -211,7 +211,7 @@ namespace Judge1.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false),
                     AssignmentId = table.Column<int>(nullable: false),
@@ -262,7 +262,7 @@ namespace Judge1.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false),
                     AssignmentId = table.Column<int>(nullable: false),
@@ -301,34 +301,19 @@ namespace Judge1.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false),
                     UserId = table.Column<string>(nullable: false),
                     ProblemId = table.Column<int>(nullable: false),
-                    AssignmentId = table.Column<int>(nullable: true),
                     program = table.Column<string>(type: "text", nullable: false),
                     Verdict = table.Column<int>(nullable: false),
                     LastTestCase = table.Column<int>(nullable: false),
-                    JudgedAt = table.Column<DateTime>(nullable: false),
-                    HackedAt = table.Column<DateTime>(nullable: false),
-                    HackerId = table.Column<string>(nullable: true)
+                    JudgedAt = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Submissions", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Submissions_Assignments_AssignmentId",
-                        column: x => x.AssignmentId,
-                        principalTable: "Assignments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Submissions_AspNetUsers_HackerId",
-                        column: x => x.HackerId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Submissions_Problems_ProblemId",
                         column: x => x.ProblemId,
@@ -344,16 +329,46 @@ namespace Judge1.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Hacks",
+                name: "Tests",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false),
                     UserId = table.Column<string>(nullable: false),
                     ProblemId = table.Column<int>(nullable: false),
-                    AssignmentId = table.Column<int>(nullable: true),
+                    program = table.Column<string>(type: "text", nullable: false),
+                    Input = table.Column<string>(type: "text", nullable: false),
+                    Output = table.Column<string>(type: "text", nullable: true),
+                    Verdict = table.Column<int>(nullable: false),
+                    JudgedAt = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tests", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Tests_Problems_ProblemId",
+                        column: x => x.ProblemId,
+                        principalTable: "Problems",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Tests_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Hacks",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    UpdatedAt = table.Column<DateTime>(nullable: false),
+                    UserId = table.Column<string>(nullable: false),
                     SubmissionId = table.Column<int>(nullable: false),
                     Input = table.Column<string>(type: "text", nullable: false),
                     IsValid = table.Column<bool>(nullable: true),
@@ -365,18 +380,6 @@ namespace Judge1.Migrations
                 {
                     table.PrimaryKey("PK_Hacks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Hacks_Assignments_AssignmentId",
-                        column: x => x.AssignmentId,
-                        principalTable: "Assignments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Hacks_Problems_ProblemId",
-                        column: x => x.ProblemId,
-                        principalTable: "Problems",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
                         name: "FK_Hacks_Submissions_SubmissionId",
                         column: x => x.SubmissionId,
                         principalTable: "Submissions",
@@ -386,55 +389,7 @@ namespace Judge1.Migrations
                         name: "FK_Hacks_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Tests",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    UpdatedAt = table.Column<DateTime>(nullable: false),
-                    UserId = table.Column<string>(nullable: false),
-                    ProblemId = table.Column<int>(nullable: true),
-                    AssignmentId = table.Column<int>(nullable: true),
-                    SubmissionId = table.Column<int>(nullable: true),
-                    program = table.Column<string>(type: "text", nullable: false),
-                    Input = table.Column<string>(type: "text", nullable: false),
-                    Output = table.Column<string>(type: "text", nullable: true),
-                    Verdict = table.Column<int>(nullable: false),
-                    JudgedAt = table.Column<DateTime>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tests", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Tests_Assignments_AssignmentId",
-                        column: x => x.AssignmentId,
-                        principalTable: "Assignments",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Tests_Problems_ProblemId",
-                        column: x => x.ProblemId,
-                        principalTable: "Problems",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Tests_Submissions_SubmissionId",
-                        column: x => x.SubmissionId,
-                        principalTable: "Submissions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Tests_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -446,7 +401,8 @@ namespace Judge1.Migrations
                 name: "RoleNameIndex",
                 table: "AspNetRoles",
                 column: "NormalizedName",
-                unique: true);
+                unique: true,
+                filter: "[NormalizedName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserClaims_UserId",
@@ -472,7 +428,8 @@ namespace Judge1.Migrations
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
-                unique: true);
+                unique: true,
+                filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AssignmentNotices_AssignmentId",
@@ -494,16 +451,6 @@ namespace Judge1.Migrations
                 name: "IX_DeviceCodes_Expiration",
                 table: "DeviceCodes",
                 column: "Expiration");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Hacks_AssignmentId",
-                table: "Hacks",
-                column: "AssignmentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Hacks_ProblemId",
-                table: "Hacks",
-                column: "ProblemId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Hacks_SubmissionId",
@@ -531,16 +478,6 @@ namespace Judge1.Migrations
                 column: "AssignmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Submissions_AssignmentId",
-                table: "Submissions",
-                column: "AssignmentId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Submissions_HackerId",
-                table: "Submissions",
-                column: "HackerId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Submissions_ProblemId",
                 table: "Submissions",
                 column: "ProblemId");
@@ -551,19 +488,9 @@ namespace Judge1.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tests_AssignmentId",
-                table: "Tests",
-                column: "AssignmentId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Tests_ProblemId",
                 table: "Tests",
                 column: "ProblemId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tests_SubmissionId",
-                table: "Tests",
-                column: "SubmissionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tests_UserId",
@@ -613,10 +540,10 @@ namespace Judge1.Migrations
                 name: "Submissions");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Problems");
 
             migrationBuilder.DropTable(
-                name: "Problems");
+                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Assignments");

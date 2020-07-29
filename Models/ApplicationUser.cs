@@ -14,8 +14,8 @@ namespace Judge1.Models
     
     public class ApplicationUser : IdentityUser
     {
-        [InverseProperty("User")]
         public List<Submission> Submissions { get; set; }
         public List<Hack> Hacks { get; set; }
+        public List<Test> Tests { get; set; }
     }
 }

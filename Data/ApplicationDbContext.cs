@@ -24,8 +24,20 @@ namespace Judge1.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+            
+            // Setup composite key for AssignmentRegistration.
             builder.Entity<AssignmentRegistration>()
                 .HasKey(ar => new {ar.UserId, ar.AssignmentId});
+            
+            // Remove multiple cascade paths for Hack and Test.
+            builder.Entity<Hack>()
+                .HasOne(h => h.User)
+                .WithMany(u => u.Hacks)
+                .OnDelete(DeleteBehavior.NoAction);
+            builder.Entity<Test>()
+                .HasOne(h => h.User)
+                .WithMany(u => u.Tests)
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }
