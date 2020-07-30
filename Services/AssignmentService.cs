@@ -1,14 +1,20 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Threading.Tasks;
 using Judge1.Data;
 using Judge1.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Judge1.Services
 {
     public interface IAssignmentService
     {
-        public Task<AssignmentViewDto> GetAssignmentViewAsync(int id);
-        public Task<PaginatedList<AssignmentInfoDto>> GetPaginatedAssignmentInfosAsync(int? pageIndex);
+        public Task ValidateAssignmentId(int id);
+        public Task ValidateAssignmentEditDto(AssignmentEditDto dto);
+        public Task<AssignmentViewDto> GetAssignmentViewAsync(int id, bool privileged);
+        public Task<PaginatedList<AssignmentInfoDto>> GetPaginatedAssignmentInfosAsync(int? pageIndex, bool privileged);
         public Task<AssignmentEditDto> CreateAssignmentAsync(AssignmentEditDto dto);
         public Task<AssignmentEditDto> UpdateAssignmentAsync(AssignmentEditDto dto);
         public Task DeleteAssignmentAsync(int id);
@@ -29,14 +35,37 @@ namespace Judge1.Services
             logger = _logger;
         }
 
-        public async Task<AssignmentViewDto> GetAssignmentViewAsync(int id)
+        public async Task ValidateAssignmentId(int id)
+        {
+            if (!await _context.Assignments.AnyAsync(a => a.Id == id))
+            {
+                throw new ValidationException("Invalid assignment ID.");
+            }
+        }
+
+        public async Task ValidateAssignmentEditDto(AssignmentEditDto dto)
         {
             throw new System.NotImplementedException();
         }
 
-        public async Task<PaginatedList<AssignmentInfoDto>> GetPaginatedAssignmentInfosAsync(int? pageIndex)
+        public async Task<AssignmentViewDto> GetAssignmentViewAsync(int id, bool privileged)
         {
-            throw new System.NotImplementedException();
+            var assignment = await _context.Assignments.FindAsync(id);
+            if (!(privileged || DateTime.Now >= assignment.BeginTime))
+            {
+                throw new UnauthorizedAccessException("Not authorized to view this assignment.");
+            }
+            return new AssignmentViewDto(assignment);
+        }
+
+        public async Task<PaginatedList<AssignmentInfoDto>> GetPaginatedAssignmentInfosAsync(int? pageIndex, bool privileged)
+        {
+            IQueryable<Assignment> data = _context.Assignments;
+            if (!privileged)
+            {
+                data = data.Where(a => DateTime.Now >= a.BeginTime);
+            }
+            return await data.PaginateAsync(a => new AssignmentInfoDto(a), pageIndex ?? 1, PageSize);
         }
 
         public async Task<AssignmentEditDto> CreateAssignmentAsync(AssignmentEditDto dto)

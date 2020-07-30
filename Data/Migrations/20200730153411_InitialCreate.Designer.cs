@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Judge1.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200729172250_InitialCreate")]
+    [Migration("20200730153411_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -329,12 +329,6 @@ namespace Judge1.Data.Migrations
 
                     b.Property<int>("AssignmentId")
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("CanBeListedAfter")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("CanBeViewedAfter")
-                        .HasColumnType("datetime2");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()

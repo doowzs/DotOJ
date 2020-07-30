@@ -281,9 +281,7 @@ namespace Judge1.Data.Migrations
                     SampleCases = table.Column<string>(type: "text", nullable: false),
                     TestCases = table.Column<string>(type: "text", nullable: false),
                     AcceptedSubmissions = table.Column<int>(nullable: false),
-                    TotalSubmissions = table.Column<int>(nullable: false),
-                    CanBeViewedAfter = table.Column<DateTime>(nullable: false),
-                    CanBeListedAfter = table.Column<DateTime>(nullable: false)
+                    TotalSubmissions = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {

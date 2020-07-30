@@ -11,6 +11,8 @@ namespace Judge1.Services
 {
     public interface IProblemService
     {
+        public Task ValidateProblemId(int id);
+        public Task ValidateProblemEditDto(ProblemEditDto dto);
         public Task<ProblemViewDto> GetProblemViewAsync(int id, bool privileged);
         public Task<PaginatedList<ProblemInfoDto>> GetPaginatedProblemInfosAsync(int? pageIndex, bool privileged);
         public Task<ProblemEditDto> CreateProblemAsync(ProblemEditDto dto);
@@ -82,8 +84,7 @@ namespace Judge1.Services
             IQueryable<Problem> data = _context.Problems;
             if (!privileged)
             {
-                var now = DateTime.Now;
-                data = data.Where(p => now >= p.CanBeListedAfter);
+                data = data.Where(p => DateTime.Now >= p.CanBeListedAfter);
             }
             return await data.PaginateAsync(p => new ProblemInfoDto(p), pageIndex ?? 1, PageSize);
         }
@@ -112,8 +113,6 @@ namespace Judge1.Services
                 TestCasesSerialized = dto.TestCases,
                 AcceptedSubmissions = 0,
                 TotalSubmissions = 0,
-                CanBeViewedAfter = assignment.BeginTime,
-                CanBeListedAfter = assignment.EndTime,
             };
             await _context.Problems.AddAsync(problem);
             await _context.SaveChangesAsync();
@@ -145,15 +144,7 @@ namespace Judge1.Services
                 TestCasesSerialized = dto.TestCases,
                 AcceptedSubmissions = oldProblem.AcceptedSubmissions,
                 TotalSubmissions = oldProblem.AcceptedSubmissions,
-                CanBeViewedAfter = oldProblem.CanBeViewedAfter,
-                CanBeListedAfter = oldProblem.CanBeListedAfter,
             };
-            if (problem.AssignmentId != oldProblem.AssignmentId)
-            {
-                var assignment = await _context.Assignments.FindAsync(problem.AssignmentId);
-                problem.CanBeViewedAfter = assignment.BeginTime;
-                problem.CanBeListedAfter = assignment.EndTime;
-            }
             _context.Problems.Update(problem);
             await _context.SaveChangesAsync();
             return new ProblemEditDto(problem);

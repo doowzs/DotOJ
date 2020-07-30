@@ -328,12 +328,6 @@ namespace Judge1.Data.Migrations
                     b.Property<int>("AssignmentId")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("CanBeListedAfter")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("CanBeViewedAfter")
-                        .HasColumnType("datetime2");
-
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2");

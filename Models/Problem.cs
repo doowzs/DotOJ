@@ -108,9 +108,9 @@ namespace Judge1.Models
         
         #region Assignment Timestamps
 
-        public DateTime CanBeViewedAfter { get; set; }
-        public DateTime CanBeListedAfter { get; set; }
-        
+        public DateTime CanBeViewedAfter => Assignment.BeginTime;
+        public DateTime CanBeListedAfter => Assignment.EndTime;
+
         #endregion
     }
 
