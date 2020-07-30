@@ -55,6 +55,7 @@ namespace Judge1.Services
             {
                 throw new UnauthorizedAccessException("Not authorized to view this assignment.");
             }
+            await _context.Entry(assignment).Collection(a => a.Registrations).LoadAsync();
             return new AssignmentViewDto(assignment);
         }
 
@@ -65,7 +66,8 @@ namespace Judge1.Services
             {
                 data = data.Where(a => DateTime.Now >= a.BeginTime);
             }
-            return await data.PaginateAsync(a => new AssignmentInfoDto(a), pageIndex ?? 1, PageSize);
+            return await data.Include(a => a.Registrations)
+                .PaginateAsync(a => new AssignmentInfoDto(a), pageIndex ?? 1, PageSize);
         }
 
         public async Task<AssignmentEditDto> CreateAssignmentAsync(AssignmentEditDto dto)
