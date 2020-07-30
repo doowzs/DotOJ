@@ -134,7 +134,6 @@ namespace Judge1.Models
         public DateTime EndTime { get; }
         public List<ProblemViewDto> Problems { get; }
         public List<AssignmentNoticeDto> Notices { get; }
-        public List<AssignmentRegistrationDto> Registrations { get; }
 
         public AssignmentViewDto(Assignment assignment) : base(assignment)
         {
@@ -157,12 +156,6 @@ namespace Judge1.Models
             {
                 Notices.Add(new AssignmentNoticeDto(notice));
             }
-
-            Registrations = new List<AssignmentRegistrationDto>();
-            foreach (var registration in assignment.Registrations)
-            {
-                Registrations.Add(new AssignmentRegistrationDto(registration));
-            }
         }
     }
 
@@ -175,9 +168,6 @@ namespace Judge1.Models
         [Required] public AssignmentMode? Mode { get; }
         [Required] public DateTime BeginTime { get; }
         [Required] public DateTime EndTime { get; }
-        public List<ProblemInfoDto> Problems { get; }
-        public List<AssignmentNoticeDto> Notices { get; }
-        public List<AssignmentRegistrationDto> Registrations { get; }
         public AssignmentEditDto(Assignment assignment) : base(assignment)
         {
             Id = assignment.Id;
@@ -187,24 +177,6 @@ namespace Judge1.Models
             Mode = assignment.Mode;
             BeginTime = assignment.BeginTime;
             EndTime = assignment.EndTime;
-            
-            Problems = new List<ProblemInfoDto>();
-            foreach (var problem in assignment.Problems)
-            {
-                Problems.Add(new ProblemInfoDto(problem));
-            }
-            
-            Notices = new List<AssignmentNoticeDto>();
-            foreach (var notice in assignment.Notices)
-            {
-                Notices.Add(new AssignmentNoticeDto(notice));
-            }
-
-            Registrations = new List<AssignmentRegistrationDto>();
-            foreach (var registration in assignment.Registrations)
-            {
-                Registrations.Add(new AssignmentRegistrationDto(registration));
-            }
         }
     }
 

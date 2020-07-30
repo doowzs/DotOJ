@@ -76,6 +76,7 @@ namespace Judge1.Services
             {
                 throw new UnauthorizedAccessException("Not authorized to view this problem.");
             }
+            await _context.Entry(problem).Collection(p => p.Submissions).LoadAsync();
             return new ProblemViewDto(problem);
         }
 
@@ -86,7 +87,8 @@ namespace Judge1.Services
             {
                 data = data.Where(p => DateTime.Now >= p.Assignment.BeginTime);
             }
-            return await data.PaginateAsync(p => new ProblemInfoDto(p), pageIndex ?? 1, PageSize);
+            return await data.Include(p => p.Submissions)
+                .PaginateAsync(p => new ProblemInfoDto(p), pageIndex ?? 1, PageSize);
         }
 
         public async Task<ProblemEditDto> CreateProblemAsync(ProblemEditDto dto)
