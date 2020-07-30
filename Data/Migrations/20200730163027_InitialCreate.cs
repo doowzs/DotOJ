@@ -279,9 +279,7 @@ namespace Judge1.Data.Migrations
                     StandardProgram = table.Column<string>(type: "text", nullable: true),
                     ValidatorProgram = table.Column<string>(type: "text", nullable: true),
                     SampleCases = table.Column<string>(type: "text", nullable: false),
-                    TestCases = table.Column<string>(type: "text", nullable: false),
-                    AcceptedSubmissions = table.Column<int>(nullable: false),
-                    TotalSubmissions = table.Column<int>(nullable: false)
+                    TestCases = table.Column<string>(type: "text", nullable: false)
                 },
                 constraints: table =>
                 {

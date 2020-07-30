@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace Judge1.Models
@@ -23,6 +24,10 @@ namespace Judge1.Models
         // A problem must belong to an assignment.
         public int AssignmentId { get; set; }
         public Assignment Assignment { get; set; }
+        
+        public List<Submission> Submissions { get; set; }
+        public int AcceptedSubmissions => Submissions.Count(s => s.Verdict == Verdict.Accepted);
+        public int TotalSubmissions => Submissions.Count();
 
         #region Problem Description
 
@@ -96,20 +101,6 @@ namespace Judge1.Models
                     ? new List<TestCase>()
                     : JsonConvert.DeserializeObject<List<TestCase>>(value);
         }
-
-        #endregion
-
-        #region Submission Statistics
-
-        public int AcceptedSubmissions { get; set; }
-        public int TotalSubmissions { get; set; }
-
-        #endregion
-        
-        #region Assignment Timestamps
-
-        public DateTime CanBeViewedAfter => Assignment.BeginTime;
-        public DateTime CanBeListedAfter => Assignment.EndTime;
 
         #endregion
     }

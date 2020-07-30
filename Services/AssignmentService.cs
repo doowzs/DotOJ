@@ -31,8 +31,8 @@ namespace Judge1.Services
 
         public AssignmentService(ApplicationDbContext context, ILogger<AssignmentService> logger)
         {
-            context = _context;
-            logger = _logger;
+            _context = context;
+            _logger = logger;
         }
 
         public async Task ValidateAssignmentId(int id)

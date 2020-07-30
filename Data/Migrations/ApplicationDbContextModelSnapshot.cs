@@ -322,9 +322,6 @@ namespace Judge1.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AcceptedSubmissions")
-                        .HasColumnType("int");
-
                     b.Property<int>("AssignmentId")
                         .HasColumnType("int");
 
@@ -380,9 +377,6 @@ namespace Judge1.Data.Migrations
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TotalSubmissions")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedAt")
                         .ValueGeneratedOnAddOrUpdate()
@@ -679,7 +673,7 @@ namespace Judge1.Data.Migrations
             modelBuilder.Entity("Judge1.Models.Submission", b =>
                 {
                     b.HasOne("Judge1.Models.Problem", "Problem")
-                        .WithMany()
+                        .WithMany("Submissions")
                         .HasForeignKey("ProblemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

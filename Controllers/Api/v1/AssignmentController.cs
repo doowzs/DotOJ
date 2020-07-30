@@ -15,10 +15,10 @@ namespace Judge1.Controllers.Api.v1
     [Route("api/v1/[controller]")]
     public class AssignmentController : ControllerBase
     {
-        private AssignmentService _service;
+        private IAssignmentService _service;
         private ILogger<AssignmentController> _logger;
 
-        public AssignmentController(AssignmentService service, ILogger<AssignmentController> logger)
+        public AssignmentController(IAssignmentService service, ILogger<AssignmentController> logger)
         {
             _service = service;
             _logger = logger;

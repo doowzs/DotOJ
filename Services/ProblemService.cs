@@ -30,7 +30,7 @@ namespace Judge1.Services
         public ProblemService(ApplicationDbContext context, ILogger<ProblemService> logger)
         {
             _context = context;
-            _logger = _logger;
+            _logger = logger;
         }
 
         public async Task ValidateProblemId(int id)
@@ -72,7 +72,7 @@ namespace Judge1.Services
         public async Task<ProblemViewDto> GetProblemViewAsync(int id, bool privileged)
         {
             var problem = await _context.Problems.FindAsync(id);
-            if (!(privileged || DateTime.Now >= problem.CanBeViewedAfter))
+            if (!(privileged || DateTime.Now >= problem.Assignment.BeginTime))
             {
                 throw new UnauthorizedAccessException("Not authorized to view this problem.");
             }
@@ -84,7 +84,7 @@ namespace Judge1.Services
             IQueryable<Problem> data = _context.Problems;
             if (!privileged)
             {
-                data = data.Where(p => DateTime.Now >= p.CanBeListedAfter);
+                data = data.Where(p => DateTime.Now >= p.Assignment.BeginTime);
             }
             return await data.PaginateAsync(p => new ProblemInfoDto(p), pageIndex ?? 1, PageSize);
         }
@@ -111,8 +111,6 @@ namespace Judge1.Services
                 ValidatorProgramSerialized = dto.ValidatorProgram,
                 SampleCasesSerialized = dto.SampleCases,
                 TestCasesSerialized = dto.TestCases,
-                AcceptedSubmissions = 0,
-                TotalSubmissions = 0,
             };
             await _context.Problems.AddAsync(problem);
             await _context.SaveChangesAsync();
@@ -142,8 +140,6 @@ namespace Judge1.Services
                 ValidatorProgramSerialized = dto.ValidatorProgram,
                 SampleCasesSerialized = dto.SampleCases,
                 TestCasesSerialized = dto.TestCases,
-                AcceptedSubmissions = oldProblem.AcceptedSubmissions,
-                TotalSubmissions = oldProblem.AcceptedSubmissions,
             };
             _context.Problems.Update(problem);
             await _context.SaveChangesAsync();
