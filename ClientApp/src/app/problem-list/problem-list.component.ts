@@ -21,7 +21,7 @@ interface ProblemListPagination {
 
 interface ProblemListDto {
   id: number;
-  name: string;
+  title: string;
   acceptedSubmissions: number;
   totalSubmissions: number;
 }
