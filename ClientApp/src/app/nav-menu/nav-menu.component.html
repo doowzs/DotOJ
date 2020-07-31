@@ -1,8 +1,13 @@
 <header>
-  <nav
-    class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3"
-  >
-    <div class="container">
+  <mat-toolbar color="primary">
+    <button mat-button tabindex="0" routerLink="/" style="font-size:1.2rem;">Judge1</button>
+    <div class="flex-spacer"></div>
+    <div *ngIf="isAuthenticated | async">
+      <button mat-button tabindex="0" routerLink="/assignments">Assignments</button>
+      <button mat-button tabindex="0" routerLink="/problems">Problems</button>
+      <button mat-button tabindex="0">Status</button>
+    </div>
+    <!--<div class="container">
       <a class="navbar-brand" [routerLink]="['/']">Judge1</a>
       <button
         class="navbar-toggler"
@@ -36,6 +41,6 @@
           </li>
         </ul>
       </div>
-    </div>
-  </nav>
+    </div>-->
+  </mat-toolbar>
 </header>
