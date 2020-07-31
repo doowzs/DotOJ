@@ -14,6 +14,8 @@ import { ProblemListComponent } from './problem-list/problem-list.component';
 import { ApiAuthorizationModule } from 'src/api-authorization/api-authorization.module';
 import { AuthorizeGuard } from 'src/api-authorization/authorize.guard';
 import { AuthorizeInterceptor } from 'src/api-authorization/authorize.interceptor';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatToolbarModule} from '@angular/material/toolbar';
 
 @NgModule({
   declarations: [
@@ -24,16 +26,17 @@ import { AuthorizeInterceptor } from 'src/api-authorization/authorize.intercepto
     ProblemListComponent,
   ],
   imports: [
-    BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
     ApiAuthorizationModule,
     MonacoEditorModule.forRoot(),
     RouterModule.forRoot([
-      { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'assignments', component: AssignmentListComponent, canActivate: [AuthorizeGuard] },
-      { path: 'problems', component: ProblemListComponent, canActivate: [AuthorizeGuard] },
-    ])
+      {path: '', component: HomeComponent, pathMatch: 'full'},
+      {path: 'assignments', component: AssignmentListComponent, canActivate: [AuthorizeGuard]},
+      {path: 'problems', component: ProblemListComponent, canActivate: [AuthorizeGuard]},
+    ]),
+    BrowserAnimationsModule,
+    MatToolbarModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true }
