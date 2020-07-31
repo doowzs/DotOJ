@@ -100,7 +100,9 @@ namespace Judge1
 
                 if (env.IsDevelopment())
                 {
-                    spa.UseAngularCliServer(npmScript: "start");
+                    // Check https://github.com/dotnet/aspnetcore/issues/17277
+                    // spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
+                    spa.UseAngularCliServer(npmScript: "start:dotnet");
                 }
             });
         }
