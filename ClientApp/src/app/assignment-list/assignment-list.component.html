@@ -16,11 +16,11 @@
     </ng-container>
     <ng-container matColumnDef="start">
       <th mat-header-cell *matHeaderCellDef>Start Time</th>
-      <td mat-cell *matCellDef="let assignment">{{ assignment.beginTime }}</td>
+      <td mat-cell *matCellDef="let assignment">{{ assignment.beginTime | date:'yyyy-MM-dd hh:mm' }}</td>
     </ng-container>
     <ng-container matColumnDef="end">
       <th mat-header-cell *matHeaderCellDef>End Time</th>
-      <td mat-cell *matCellDef="let assignment">{{ assignment.endTime }}</td>
+      <td mat-cell *matCellDef="let assignment">{{ assignment.endTime | date:'yyyy-MM-dd hh:mm' }}</td>
     </ng-container>
     <ng-container matColumnDef="type">
       <th mat-header-cell *matHeaderCellDef>Type</th>
@@ -34,11 +34,11 @@
     <ng-container matColumnDef="status">
       <th mat-header-cell *matHeaderCellDef>Status</th>
       <td mat-cell *matCellDef="let assignment">
-        <span class="text-primary" *ngIf="currentTime < assignment.beginTime; else statusNotPending">Pending</span>
+        <span class="text-primary" *ngIf="isAssignmentPending(assignment); else statusNotPending">Pending</span>
         <ng-template #statusNotPending>
-          <span class="text-success" *ngIf="currentTime < assignment.endTime; else statusNotRunning">Running</span>
-          <ng-template #statusNotRunning>
-            <span>Ended</span>
+          <span *ngIf="isAssignmentEnded(assignment); else statusNotEnded">Ended</span>
+          <ng-template #statusNotEnded>
+            <span class="text-success">Running</span>
           </ng-template>
         </ng-template>
       </td>
