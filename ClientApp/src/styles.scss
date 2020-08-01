@@ -3,6 +3,12 @@
 @import "styles/colors";
 @import "styles/textcolors";
 @import "styles/backgrounds";
+@import "styles/typography";
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
 
 *:focus {
   outline: none !important;
@@ -14,4 +20,9 @@
 
 .container {
   padding: 20px 50px;
+}
+
+.centered {
+  margin-left: auto;
+  margin-right: auto;
 }

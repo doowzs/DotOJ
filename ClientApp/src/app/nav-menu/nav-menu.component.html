@@ -2,45 +2,11 @@
   <mat-toolbar color="primary" class="mat-elevation-z6">
     <button mat-button tabindex="0" routerLink="/" style="font-size:1.2rem;">Judge1</button>
     <div class="flex-spacer"></div>
-    <div *ngIf="isAuthenticated | async">
+    <div id="nav-menu" *ngIf="isAuthenticated | async">
       <button mat-button tabindex="0" routerLink="/assignments">Assignments</button>
       <button mat-button tabindex="0" routerLink="/problems">Problems</button>
       <button mat-button tabindex="0">Status</button>
     </div>
-    <!--<div class="container">
-      <a class="navbar-brand" [routerLink]="['/']">Judge1</a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target=".navbar-collapse"
-        aria-label="Toggle navigation"
-        [attr.aria-expanded]="isExpanded"
-        (click)="toggle()"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div
-        class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse"
-        [ngClass]="{ show: isExpanded }"
-      >
-        <app-login-menu *ngIf="!(isAuthenticated | async)"></app-login-menu>
-        <ul class="navbar-nav flex-grow" *ngIf="isAuthenticated | async">
-          <li
-            class="nav-item"
-            [routerLinkActive]="['link-active']"
-            [routerLinkActiveOptions]="{ exact: true }"
-          >
-            <a class="nav-link text-dark" [routerLink]="['/']">Home</a>
-          </li>
-          <li class="nav-item" [routerLinkActive]="['link-active']">
-            <a class="nav-link text-dark" [routerLink]="['/assignments']">Assignments</a>
-          </li>
-          <li class="nav-item" [routerLinkActive]="['link-active']">
-            <a class="nav-link text-dark" [routerLink]="['/problems']">Problems</a>
-          </li>
-        </ul>
-      </div>
-    </div>-->
+    <app-login-menu></app-login-menu>
   </mat-toolbar>
 </header>

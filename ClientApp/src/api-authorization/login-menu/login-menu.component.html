@@ -1,16 +1,15 @@
-<ul class="navbar-nav" *ngIf="isAuthenticated | async">
-    <li class="nav-item">
-        <a  class="nav-link text-dark" [routerLink]='["/authentication/profile"]' title="Manage">Hello {{ userName | async }}</a>
-    </li>
-    <li class="nav-item">
-        <a  class="nav-link text-dark" [routerLink]='["/authentication/logout"]' [state]='{ local: true }' title="Logout">Logout</a>
-    </li>
-</ul>
-<ul class="navbar-nav" *ngIf="!(isAuthenticated | async)">
+<div id="login-menu" *ngIf="!(isAuthenticated | async); else logoutMenu">
+  <button mat-button tabindex="0" routerLink="/authentication/register">Register</button>
+  <button mat-button tabindex="0" routerLink="/authentication/login">Login</button>
+</div>
+<ng-template #logoutMenu>
+  <button mat-button tabindex="0" routerLink="/authentication/profile" title="Manage">{{ userName }}</button>
+  <!-- to be replaced
   <li class="nav-item">
-        <a class="nav-link text-dark" [routerLink]='["/authentication/register"]'>Register</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" [routerLink]='["/authentication/login"]'>Login</a>
-    </li>
-</ul>
+    <a  class="nav-link text-dark" [routerLink]='["/authentication/profile"]' title="Manage">Hello {{ userName | async }}</a>
+  </li>
+  <li class="nav-item">
+    <a  class="nav-link text-dark" [routerLink]='["/authentication/logout"]' [state]='{ local: true }' title="Logout">Logout</a>
+  </li>
+  -->
+</ng-template>

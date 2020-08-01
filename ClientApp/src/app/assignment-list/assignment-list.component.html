@@ -51,6 +51,7 @@
         >Register</button>
         <button mat-button style="width: 100%;"
                 *ngIf="canEnterAssignment(assignment)"
+                (click)="enterAssignment(assignment.id)"
         >Enter</button>
       </td>
     </ng-container>

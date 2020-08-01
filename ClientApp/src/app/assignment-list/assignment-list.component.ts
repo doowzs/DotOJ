@@ -1,5 +1,6 @@
 ﻿import {Component, Inject} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
+import {Router} from '@angular/router';
 import {DateTime} from 'luxon';
 
 @Component({
@@ -13,7 +14,7 @@ export class AssignmentListComponent {
   public currentTime: Date;
   public assignmentColumns = ['id', 'title', 'start', 'end', 'type', 'status', 'registered', 'action'];
 
-  constructor(http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
+  constructor(private router: Router, http: HttpClient, @Inject('BASE_URL') baseUrl: string) {
     this.pageIndex = 1; // TODO: get page index from URL
     http.get<AssignmentListPagination>(baseUrl + 'api/v1/assignment', {
       params: new HttpParams().set('page', this.pageIndex.toString())
@@ -43,6 +44,10 @@ export class AssignmentListComponent {
     const begin = DateTime.fromISO(assignment.beginTime);
     const end = DateTime.fromISO(assignment.endTime);
     return (assignment.isPublic && now >= begin) || now > end;
+  }
+
+  public enterAssignment(assignmentId: number) {
+    this.router.navigate(['/assignment', assignmentId]);
   }
 }
 
