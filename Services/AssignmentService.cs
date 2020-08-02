@@ -1,13 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using IdentityServer4.Extensions;
 using Judge1.Data;
 using Judge1.Exceptions;
 using Judge1.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using Microsoft.VisualBasic;
 
 namespace Judge1.Services
 {
@@ -15,7 +16,7 @@ namespace Judge1.Services
     {
         public Task ValidateAssignmentId(int id);
         public Task ValidateAssignmentEditDto(AssignmentEditDto dto);
-        public Task<PaginatedList<AssignmentInfoDto>> GetPaginatedAssignmentInfosAsync(int? pageIndex, bool privileged);
+        public Task<PaginatedList<AssignmentInfoDto>> GetPaginatedAssignmentInfosAsync(int? pageIndex, string userId);
         public Task<AssignmentViewDto> GetAssignmentViewAsync(int id, bool privileged);
         public Task<AssignmentEditDto> CreateAssignmentAsync(AssignmentEditDto dto);
         public Task<AssignmentEditDto> UpdateAssignmentAsync(AssignmentEditDto dto);
@@ -50,15 +51,20 @@ namespace Judge1.Services
             throw new System.NotImplementedException();
         }
 
-        public async Task<PaginatedList<AssignmentInfoDto>> GetPaginatedAssignmentInfosAsync(int? pageIndex, bool privileged)
+        public async Task<PaginatedList<AssignmentInfoDto>> GetPaginatedAssignmentInfosAsync(int? pageIndex, string userId)
         {
-            IQueryable<Assignment> data = _context.Assignments;
-            if (!privileged)
+            // See https://github.com/dotnet/efcore/issues/17068 for GroupJoin issues.
+            var assignments = await _context.Assignments
+                .OrderByDescending(a => a.Id)
+                .PaginateAsync(pageIndex ?? 1, PageSize);
+            var infos = new List<AssignmentInfoDto>();
+            foreach (var assignment in assignments.Items)
             {
-                data = data.Where(a => DateTime.Now >= a.BeginTime);
+                var registered = await _context.AssignmentRegistrations
+                    .AnyAsync(r => r.AssignmentId == assignment.Id && r.UserId == userId);
+                infos.Add(new AssignmentInfoDto(assignment, registered));
             }
-            return await data.Include(a => a.Registrations)
-                .PaginateAsync(a => new AssignmentInfoDto(a), pageIndex ?? 1, PageSize);
+            return new PaginatedList<AssignmentInfoDto>(assignments.TotalItems, pageIndex ?? 1, PageSize, infos);
         }
 
         public async Task<AssignmentViewDto> GetAssignmentViewAsync(int id, bool privileged)
@@ -72,7 +78,6 @@ namespace Judge1.Services
             {
                 throw new UnauthorizedAccessException("Not authorized to view this assignment.");
             }
-
             await _context.Entry(assignment).Collection(a => a.Problems).LoadAsync();
             await _context.Entry(assignment).Collection(a => a.Notices).LoadAsync();
             return new AssignmentViewDto(assignment);

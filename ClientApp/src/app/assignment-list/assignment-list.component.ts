@@ -19,7 +19,7 @@ export class AssignmentListComponent {
   public totalItems: number;
   public assignments: AssignmentInfoDto[];
   public currentTime: Date;
-  public assignmentColumns = ['id', 'title', 'start', 'end', 'type', 'status', 'registered', 'action'];
+  public assignmentColumns = ['id', 'title', 'start', 'end', 'type', 'status', 'action'];
 
   constructor(
     private route: ActivatedRoute,
@@ -61,17 +61,11 @@ export class AssignmentListComponent {
     return DateTime.local() > DateTime.fromISO(assignment.endTime);
   }
 
-  public canRegisterAssignment(assignment: AssignmentInfoDto) {
-    const now = DateTime.local();
-    const begin = DateTime.fromISO(assignment.beginTime);
-    return assignment.isPublic && now <= begin;
-  }
-
   public canEnterAssignment(assignment: AssignmentInfoDto) {
     const now = DateTime.local();
     const begin = DateTime.fromISO(assignment.beginTime);
     const end = DateTime.fromISO(assignment.endTime);
-    return (assignment.isPublic && now >= begin) || now > end;
+    return (now >= begin && (assignment.isPublic || assignment.registered)) || now > end;
   }
 
   public enterAssignment(assignmentId: number) {

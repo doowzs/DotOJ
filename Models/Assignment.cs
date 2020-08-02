@@ -109,9 +109,9 @@ namespace Judge1.Models
         public AssignmentMode Mode { get; }
         public DateTime BeginTime { get; }
         public DateTime EndTime { get; }
-        public int Registered { get; }
+        public bool Registered { get; }
 
-        public AssignmentInfoDto(Assignment assignment)
+        public AssignmentInfoDto(Assignment assignment, bool registered)
         {
             Id = assignment.Id;
             Title = assignment.Title;
@@ -119,7 +119,7 @@ namespace Judge1.Models
             Mode = assignment.Mode;
             BeginTime = assignment.BeginTime;
             EndTime = assignment.EndTime;
-            Registered = assignment.Registrations.Count;
+            Registered = registered;
         }
     }
 

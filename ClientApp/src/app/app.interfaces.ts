@@ -27,7 +27,7 @@ export interface AssignmentInfoDto {
   mode: number;
   beginTime: Date;
   endTime: Date;
-  registered: number;
+  registered: boolean;
 }
 
 export interface AssignmentListPagination {

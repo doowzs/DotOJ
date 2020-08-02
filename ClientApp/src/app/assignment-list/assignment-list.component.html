@@ -10,10 +10,6 @@
       <th mat-header-cell *matHeaderCellDef>Title</th>
       <td mat-cell *matCellDef="let assignment">{{ assignment.title }}</td>
     </ng-container>
-    <ng-container matColumnDef="registered">
-      <th mat-header-cell *matHeaderCellDef>Registered</th>
-      <td mat-cell *matCellDef="let assignment">{{ assignment.registered }}</td>
-    </ng-container>
     <ng-container matColumnDef="start">
       <th mat-header-cell *matHeaderCellDef>Start Time</th>
       <td mat-cell *matCellDef="let assignment">{{ assignment.beginTime | date:'yyyy-MM-dd hh:mm' }}</td>
@@ -46,10 +42,7 @@
     <ng-container matColumnDef="action">
       <th mat-header-cell *matHeaderCellDef>Action</th>
       <td mat-cell *matCellDef="let assignment">
-        <button mat-button style="width: 100%;"
-                *ngIf="canRegisterAssignment(assignment)"
-        >Register</button>
-        <button mat-button style="width: 100%;"
+        <button mat-button
                 *ngIf="canEnterAssignment(assignment)"
                 (click)="enterAssignment(assignment.id)"
         >Enter</button>
