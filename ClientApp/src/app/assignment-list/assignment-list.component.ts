@@ -1,13 +1,13 @@
 ﻿import {Component, Inject} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Router} from '@angular/router';
+import {PageEvent} from '@angular/material/paginator';
 import {DateTime} from 'luxon';
 
 import {
   AssignmentInfoDto,
   AssignmentListPagination
 } from '../app.interfaces';
-import {PageEvent} from "@angular/material/paginator";
 
 @Component({
   selector: 'app-assignment-list',
