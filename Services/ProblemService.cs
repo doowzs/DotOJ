@@ -111,8 +111,8 @@ namespace Judge1.Services
                 HasHacking = dto.HasHacking,
                 StandardProgramSerialized = dto.StandardProgram,
                 ValidatorProgramSerialized = dto.ValidatorProgram,
-                SampleCasesSerialized = dto.SampleCases,
-                TestCasesSerialized = dto.TestCases,
+                SampleCases = dto.SampleCases,
+                TestCases = dto.TestCases,
             };
             await _context.Problems.AddAsync(problem);
             await _context.SaveChangesAsync();
@@ -140,8 +140,8 @@ namespace Judge1.Services
                 HasHacking = dto.HasHacking,
                 StandardProgramSerialized = dto.StandardProgram,
                 ValidatorProgramSerialized = dto.ValidatorProgram,
-                SampleCasesSerialized = dto.SampleCases,
-                TestCasesSerialized = dto.TestCases,
+                SampleCases = dto.SampleCases,
+                TestCases = dto.TestCases,
             };
             _context.Problems.Update(problem);
             await _context.SaveChangesAsync();

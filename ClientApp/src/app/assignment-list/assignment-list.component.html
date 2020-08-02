@@ -58,4 +58,8 @@
     <tr mat-header-row *matHeaderRowDef="assignmentColumns"></tr>
     <tr mat-row *matRowDef="let assignment; columns: assignmentColumns"></tr>
   </table>
+  <mat-paginator [length]="totalItems"
+                 [pageSize]="pageSize"
+                 (page)="onPageEvent"
+  ></mat-paginator>
 </div>

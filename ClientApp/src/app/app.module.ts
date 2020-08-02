@@ -18,6 +18,7 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatButtonModule} from '@angular/material/button';
 import {MatTableModule} from '@angular/material/table';
+import {MatPaginatorModule} from "@angular/material/paginator";
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import {MatTableModule} from '@angular/material/table';
     BrowserAnimationsModule,
     MatToolbarModule,
     MatButtonModule,
-    MatTableModule
+    MatTableModule,
+    MatPaginatorModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true }

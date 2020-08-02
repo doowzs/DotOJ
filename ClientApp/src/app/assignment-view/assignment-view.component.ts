@@ -1,4 +1,8 @@
-﻿import {Component} from "@angular/core";
+﻿import {Component} from '@angular/core';
+
+import {
+  AssignmentViewDto
+} from '../app.interfaces';
 
 @Component({
   selector: 'app-assignment-view',
@@ -10,8 +14,4 @@ export class AssignmentViewComponent {
   constructor() {
     //
   }
-}
-
-interface AssignmentViewDto {
-  id: number;
 }

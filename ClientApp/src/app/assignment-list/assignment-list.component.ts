@@ -3,13 +3,20 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {Router} from '@angular/router';
 import {DateTime} from 'luxon';
 
+import {
+  AssignmentInfoDto,
+  AssignmentListPagination
+} from '../app.interfaces';
+import {PageEvent} from "@angular/material/paginator";
+
 @Component({
   selector: 'app-assignment-list',
   templateUrl: './assignment-list.component.html'
 })
 export class AssignmentListComponent {
   public pageIndex: number;
-  public totalPages: number;
+  public pageSize: number;
+  public totalItems: number;
   public assignments: AssignmentInfoDto[];
   public currentTime: Date;
   public assignmentColumns = ['id', 'title', 'start', 'end', 'type', 'status', 'registered', 'action'];
@@ -19,10 +26,16 @@ export class AssignmentListComponent {
     http.get<AssignmentListPagination>(baseUrl + 'api/v1/assignment', {
       params: new HttpParams().set('page', this.pageIndex.toString())
     }).subscribe(data => {
-      this.totalPages = data.totalPages;
+      this.pageSize = data.pageSize;
+      this.totalItems = data.totalItems;
       this.assignments = data.items;
       this.currentTime = new Date();
     }, error => console.error(error));
+  }
+
+  public onPageEvent(event: PageEvent) {
+    this.pageIndex = event.pageIndex;
+    console.log(this.router.getCurrentNavigation());
   }
 
   public isAssignmentPending(assignment: AssignmentInfoDto) {
@@ -51,18 +64,4 @@ export class AssignmentListComponent {
   }
 }
 
-interface AssignmentListPagination {
-  pageIndex: number;
-  totalPages: number;
-  items: AssignmentInfoDto[];
-}
 
-interface AssignmentInfoDto {
-  id: number;
-  title: string;
-  isPublic: boolean;
-  mode: number;
-  beginTime: Date;
-  endTime: Date;
-  registered: number;
-}

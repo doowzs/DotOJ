@@ -142,7 +142,7 @@ namespace Judge1.Models
 
         public bool HasSpecialJudge { get; }
         public bool HasHacking { get; }
-        public string SampleCases { get; }
+        public List<TestCase> SampleCases { get; }
         
         public int AcceptedSubmissions { get; set; }
         public int TotalSubmissions { get; set; }
@@ -160,7 +160,7 @@ namespace Judge1.Models
             MemoryLimit = problem.MemoryLimit;
             HasSpecialJudge = problem.HasSpecialJudge;
             HasHacking = problem.HasHacking;
-            SampleCases = problem.SampleCasesSerialized;
+            SampleCases = problem.SampleCases;
             AcceptedSubmissions = problem.AcceptedSubmissions;
             TotalSubmissions = problem.TotalSubmissions;
         }
@@ -187,8 +187,8 @@ namespace Judge1.Models
         public string StandardProgram { get; }
         public string ValidatorProgram { get; }
 
-        [Required] public string SampleCases { get; }
-        [Required] public string TestCases { get; }
+        [Required] public List<TestCase> SampleCases { get; }
+        [Required] public List<TestCase> TestCases { get; }
 
         public ProblemEditDto(Problem problem) : base(problem)
         {
@@ -206,8 +206,8 @@ namespace Judge1.Models
             HasHacking = problem.HasHacking;
             StandardProgram = problem.StandardProgramSerialized;
             ValidatorProgram = problem.ValidatorProgramSerialized;
-            SampleCases = problem.SampleCasesSerialized;
-            TestCases = problem.TestCasesSerialized;
+            SampleCases = problem.SampleCases;
+            TestCases = problem.TestCases;
         }
     }
 

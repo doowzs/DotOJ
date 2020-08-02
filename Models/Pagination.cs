@@ -10,6 +10,8 @@ namespace Judge1.Models
     public class PaginatedList<T>
     {
         public int PageIndex { get; }
+        public int PageSize { get; }
+        public int TotalItems { get; }
         public int TotalPages { get; }
         public List<T> Items { get; }
 
@@ -19,6 +21,8 @@ namespace Judge1.Models
         public PaginatedList(int total, int pageIndex, int pageSize, IEnumerable<T> items)
         {
             PageIndex = pageIndex;
+            PageSize = pageSize;
+            TotalItems = total;
             TotalPages = (int) Math.Ceiling(total / (double) pageSize);
             
             Items = new List<T>();
