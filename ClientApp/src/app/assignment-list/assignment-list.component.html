@@ -60,6 +60,7 @@
   </table>
   <mat-paginator [length]="totalItems"
                  [pageSize]="pageSize"
-                 (page)="onPageEvent"
+                 [pageIndex]="pageIndex-1"
+                 (page)="onPageEvent($event)"
   ></mat-paginator>
 </div>

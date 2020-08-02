@@ -24,7 +24,7 @@ namespace Judge1.Services
 
     public class AssignmentService : IAssignmentService
     {
-        private const int PageSize = 20;
+        private const int PageSize = 1;
         
         private readonly ApplicationDbContext _context;
         private readonly ILogger<AssignmentService> _logger;
