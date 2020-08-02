@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using Judge1.Exceptions;
 using Judge1.Models;
 using Judge1.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -49,11 +50,11 @@ namespace Judge1.Controllers.Api.v1
             }
             catch (UnauthorizedAccessException e)
             {
-                return Unauthorized(e);
+                return Unauthorized(e.Message);
             }
-            catch (Exception e)
+            catch (NotFoundException e)
             {
-                return NotFound(e);
+                return NotFound(e.Message);
             }
         }
     }

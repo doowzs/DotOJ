@@ -180,12 +180,12 @@ namespace Judge1.Models
         }
     }
 
-    public class AssignmentNoticeDto : AssignmentNotice
+    public class AssignmentNoticeDto : DtoWithTimestamps
     {
         public int Id { get; }
         [Required] public int? AssignmentId { get; }
         [Required] public string Content { get; }
-        public AssignmentNoticeDto(AssignmentNotice notice)
+        public AssignmentNoticeDto(AssignmentNotice notice) : base(notice)
         {
             Id = notice.Id;
             AssignmentId = notice.AssignmentId;
@@ -193,7 +193,7 @@ namespace Judge1.Models
         }
     }
 
-    public class AssignmentRegistrationDto : AssignmentRegistration
+    public class AssignmentRegistrationDto : DtoWithTimestamps
     {
         public string UserId { get; }
         public string UserName { get; }
@@ -202,7 +202,7 @@ namespace Judge1.Models
         public bool IsAssignmentManager { get; }
         public AssignmentParticipantStatistics Statistics { get; }
         
-        public AssignmentRegistrationDto(AssignmentRegistration registration)
+        public AssignmentRegistrationDto(AssignmentRegistration registration) : base(registration)
         {
             UserId = registration.UserId;
             UserName = registration.User.UserName;

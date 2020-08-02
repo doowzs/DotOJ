@@ -21,14 +21,10 @@ namespace Judge1.Models
     {
         public int Id { get; set; }
         
-        // A problem must belong to an assignment.
         public int AssignmentId { get; set; }
         public Assignment Assignment { get; set; }
-        
         public List<Submission> Submissions { get; set; }
-        public int AcceptedSubmissions => Submissions.Count(s => s.Verdict == Verdict.Accepted);
-        public int TotalSubmissions => Submissions.Count();
-
+        
         #region Problem Description
 
         [Required] public string Title { get; set; }
@@ -113,16 +109,11 @@ namespace Judge1.Models
         public int Id { get; }
         public int AssignmentId { get; }
         public string Title { get; }
-        public int AcceptedSubmissions { get; }
-        public int TotalSubmissions { get; }
-
         public ProblemInfoDto(Problem problem)
         {
             Id = problem.Id;
             AssignmentId = problem.AssignmentId;
             Title = problem.Title;
-            AcceptedSubmissions = problem.AcceptedSubmissions;
-            TotalSubmissions = problem.TotalSubmissions;
         }
     }
     
@@ -144,9 +135,6 @@ namespace Judge1.Models
         public bool HasHacking { get; }
         public List<TestCase> SampleCases { get; }
         
-        public int AcceptedSubmissions { get; set; }
-        public int TotalSubmissions { get; set; }
-
         public ProblemViewDto(Problem problem) : base(problem)
         {
             Id = problem.Id;
@@ -161,8 +149,6 @@ namespace Judge1.Models
             HasSpecialJudge = problem.HasSpecialJudge;
             HasHacking = problem.HasHacking;
             SampleCases = problem.SampleCases;
-            AcceptedSubmissions = problem.AcceptedSubmissions;
-            TotalSubmissions = problem.TotalSubmissions;
         }
     }
 

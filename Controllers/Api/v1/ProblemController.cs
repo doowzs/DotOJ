@@ -50,11 +50,11 @@ namespace Judge1.Controllers.Api.v1
             }
             catch (UnauthorizedAccessException e)
             {
-                return Unauthorized(e);
+                return Unauthorized(e.Message);
             }
             catch (Exception e)
             {
-                return NotFound(e);
+                return NotFound(e.Message);
             }
         }
 
@@ -72,7 +72,7 @@ namespace Judge1.Controllers.Api.v1
             }
             catch (ValidationException e)
             {
-                return BadRequest(e);
+                return BadRequest(e.Message);
             }
         }
 
@@ -90,7 +90,7 @@ namespace Judge1.Controllers.Api.v1
             }
             catch (ValidationException e)
             {
-                return BadRequest(e);
+                return BadRequest(e.Message);
             }
         }
 
@@ -108,7 +108,7 @@ namespace Judge1.Controllers.Api.v1
             }
             catch (ValidationException e)
             {
-                return BadRequest(e);
+                return BadRequest(e.Message);
             }
         }
     }
