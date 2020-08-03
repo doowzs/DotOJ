@@ -109,11 +109,22 @@ namespace Judge1.Models
         public int Id { get; }
         public int AssignmentId { get; }
         public string Title { get; }
+        public bool Solved { get; }
+        
         public ProblemInfoDto(Problem problem)
         {
             Id = problem.Id;
             AssignmentId = problem.AssignmentId;
             Title = problem.Title;
+            Solved = false;
+        }
+
+        public ProblemInfoDto(Problem problem, bool solved)
+        {
+            Id = problem.Id;
+            AssignmentId = problem.AssignmentId;
+            Title = problem.Title;
+            Solved = solved;
         }
     }
     

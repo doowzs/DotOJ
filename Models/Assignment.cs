@@ -132,7 +132,7 @@ namespace Judge1.Models
         public AssignmentMode Mode { get; }
         public DateTime BeginTime { get; }
         public DateTime EndTime { get; }
-        public List<ProblemViewDto> Problems { get; }
+        public List<ProblemInfoDto> Problems { get; }
         public List<AssignmentNoticeDto> Notices { get; }
 
         public AssignmentViewDto(Assignment assignment) : base(assignment)
@@ -145,10 +145,10 @@ namespace Judge1.Models
             BeginTime = assignment.BeginTime;
             EndTime = assignment.EndTime;
             
-            Problems = new List<ProblemViewDto>();
+            Problems = new List<ProblemInfoDto>();
             foreach (var problem in assignment.Problems)
             {
-                Problems.Add(new ProblemViewDto(problem));
+                Problems.Add(new ProblemInfoDto(problem));
             }
             
             Notices = new List<AssignmentNoticeDto>();
@@ -195,11 +195,11 @@ namespace Judge1.Models
 
     public class AssignmentRegistrationDto : DtoWithTimestamps
     {
-        public string UserId { get; }
+        [Required] public string UserId { get; }
         public string UserName { get; }
-        public int AssignmentId { get; }
-        public bool IsParticipant { get; }
-        public bool IsAssignmentManager { get; }
+        [Required] public int? AssignmentId { get; }
+        [Required] public bool? IsParticipant { get; }
+        [Required] public bool? IsAssignmentManager { get; }
         public AssignmentParticipantStatistics Statistics { get; }
         
         public AssignmentRegistrationDto(AssignmentRegistration registration) : base(registration)

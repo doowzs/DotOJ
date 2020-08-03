@@ -3,6 +3,13 @@
   output: string;
 }
 
+export interface ProblemInfoDto {
+  id: number;
+  label: string; // added in client
+  title: string;
+  solved: boolean;
+}
+
 export interface ProblemViewDto {
   id: number;
   assignmentId: number;
@@ -52,6 +59,6 @@ export interface AssignmentViewDto {
   mode: number;
   beginTime: string;
   endTime: string;
-  problems: ProblemViewDto[];
+  problems: ProblemInfoDto[];
   notices: AssignmentNoticeDto[];
 }

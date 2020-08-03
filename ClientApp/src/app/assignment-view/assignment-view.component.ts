@@ -3,7 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
 
 import {
-  AssignmentViewDto
+  AssignmentViewDto, ProblemViewDto
 } from '../app.interfaces';
 
 @Component({
@@ -12,6 +12,7 @@ import {
 })
 export class AssignmentViewComponent {
   public assignment: AssignmentViewDto;
+  public problemColumns = ['label', 'title', 'action'];
 
   constructor(
     private route: ActivatedRoute,
@@ -24,6 +25,12 @@ export class AssignmentViewComponent {
 
   private loadAssignment(assignmentId: number) {
     this.http.get<AssignmentViewDto>(this.baseUrl + `api/v1/assignment/${assignmentId}`)
-      .subscribe(data => this.assignment = data, error => console.error(error));
+      .subscribe(data => {
+        this.assignment = data;
+        for (let i = 0; i < this.assignment.problems.length; ++i) {
+          this.assignment.problems[i].label = String.fromCharCode('A'.charCodeAt(0) + i);
+        }
+        console.log(this.assignment.problems);
+      }, error => console.error(error));
   }
 }

@@ -20,6 +20,10 @@ import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatButtonModule} from '@angular/material/button';
 import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material/paginator';
+import {MatTabsModule} from "@angular/material/tabs";
+import {MarkdownModule} from "ngx-markdown";
+import {MatCardModule} from "@angular/material/card";
+import {MatIconModule} from "@angular/material/icon";
 
 @NgModule({
   declarations: [
@@ -34,6 +38,7 @@ import {MatPaginatorModule} from '@angular/material/paginator';
     HttpClientModule,
     FormsModule,
     ApiAuthorizationModule,
+    MarkdownModule.forRoot(),
     MonacoEditorModule.forRoot(),
     RouterModule.forRoot([
       {path: '', component: HomeComponent, pathMatch: 'full'},
@@ -45,11 +50,15 @@ import {MatPaginatorModule} from '@angular/material/paginator';
     MatToolbarModule,
     MatButtonModule,
     MatTableModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatTabsModule,
+    MatCardModule,
+    MatIconModule
   ],
   providers: [
-    { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true }
+    {provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true}
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}
