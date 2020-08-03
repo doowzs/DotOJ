@@ -1,7 +1,7 @@
 ﻿import {Component, Inject, OnDestroy} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {ActivatedRoute, Router} from '@angular/router';
-import {interval, Subscriber, Subscription} from 'rxjs';
+import {timer, Subscription} from 'rxjs';
 import {DateTime} from 'luxon';
 
 import {
@@ -45,15 +45,15 @@ export class AssignmentViewComponent implements OnDestroy {
   }
 
   private startCountdown() {
-    const begin = DateTime.fromISO(this.assignment.beginTime).toMillis();
-    const end = DateTime.fromISO(this.assignment.endTime).toMillis();
-    const timer$ = interval(1000);
-    this.countdownSubscribe = timer$.subscribe(() => {
-      const now = DateTime.local().toMillis();
+    const begin = DateTime.fromISO(this.assignment.beginTime);
+    const end = DateTime.fromISO(this.assignment.endTime);
+    const updateCountdown = () => {
+      const now = DateTime.local();
       this.countdownValue = (now - begin) * 100 / (end - begin);
-      if (now >= end) {
+      if (DateTime.local() >= end && this.countdownSubscribe) {
         this.countdownSubscribe.unsubscribe();
       }
-    });
+    };
+    this.countdownSubscribe = timer(0, 1000).subscribe(() => updateCountdown());
   }
 }
