@@ -12,7 +12,7 @@ import {HomeComponent} from './home/home.component';
 import {AssignmentListComponent} from './assignment/list/list.component';
 import {AssignmentViewComponent} from './assignment/view/view.component';
 import {AssignmentContentComponent} from './assignment/content/content.component';
-import {ProblemListComponent} from './problem-list/problem-list.component';
+import {ProblemListComponent} from './problem/list/list.component';
 import {ProblemViewComponent} from './problem/view/view.component';
 
 import {ApiAuthorizationModule} from 'src/api-authorization/api-authorization.module';

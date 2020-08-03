@@ -23,4 +23,6 @@ export class ProblemViewComponent {
         this.problem = problem;
       }, error => console.error(error));
   }
+
+  // TODO: implement problem view component
 }

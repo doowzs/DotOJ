@@ -20,6 +20,7 @@ export class AssignmentViewComponent implements OnInit, OnDestroy {
   public activeRouteLink: string;
   public navigationLinks: any[] = [
     {link: '', label: 'Content'}
+    // TODO: add problem view to navs, when viewing a problem, info about assignments should be hidden (fullscreen)
   ];
 
   constructor(
