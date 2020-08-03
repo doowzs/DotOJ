@@ -4,27 +4,59 @@ import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
 import {RouterModule} from '@angular/router';
 
 import {MonacoEditorModule} from 'ngx-monaco-editor';
+import {MarkdownModule} from 'ngx-markdown';
 
 import {AppComponent} from './app.component';
 import {NavMenuComponent} from './nav-menu/nav-menu.component';
 import {HomeComponent} from './home/home.component';
-import {AssignmentListComponent} from './assignment-list/assignment-list.component';
-import {AssignmentViewComponent} from './assignment-view/assignment-view.component';
+import {AssignmentListComponent} from './assignment/list/list.component';
+import {AssignmentViewComponent} from './assignment/view/view.component';
+import {AssignmentContentComponent} from './assignment/content/content.component';
 import {ProblemListComponent} from './problem-list/problem-list.component';
 
 import {ApiAuthorizationModule} from 'src/api-authorization/api-authorization.module';
 import {AuthorizeGuard} from 'src/api-authorization/authorize.guard';
 import {AuthorizeInterceptor} from 'src/api-authorization/authorize.interceptor';
+
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatButtonModule} from '@angular/material/button';
 import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material/paginator';
-import {MatTabsModule} from "@angular/material/tabs";
-import {MarkdownModule} from "ngx-markdown";
-import {MatCardModule} from "@angular/material/card";
-import {MatIconModule} from "@angular/material/icon";
-import {MatProgressBarModule} from "@angular/material/progress-bar";
+import {MatTabsModule} from '@angular/material/tabs';
+import {MatCardModule} from '@angular/material/card';
+import {MatIconModule} from '@angular/material/icon';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+
+const routes = [
+  {
+    path: '',
+    component: HomeComponent,
+    pathMatch: 'full'
+  },
+  {
+    path: 'assignments',
+    component: AssignmentListComponent,
+    canActivate: [AuthorizeGuard]
+  },
+  {
+    path: 'assignment/:assignmentId',
+    component: AssignmentViewComponent,
+    canActivate: [AuthorizeGuard],
+    children: [
+      {
+        path: '',
+        component: AssignmentContentComponent,
+        pathMatch: 'full'
+      }
+    ]
+  },
+  {
+    path: 'problems',
+    component: ProblemListComponent,
+    canActivate: [AuthorizeGuard]
+  },
+];
 
 @NgModule({
   declarations: [
@@ -33,6 +65,7 @@ import {MatProgressBarModule} from "@angular/material/progress-bar";
     HomeComponent,
     AssignmentListComponent,
     AssignmentViewComponent,
+    AssignmentContentComponent,
     ProblemListComponent,
   ],
   imports: [
@@ -41,12 +74,7 @@ import {MatProgressBarModule} from "@angular/material/progress-bar";
     ApiAuthorizationModule,
     MarkdownModule.forRoot(),
     MonacoEditorModule.forRoot(),
-    RouterModule.forRoot([
-      {path: '', component: HomeComponent, pathMatch: 'full'},
-      {path: 'assignments', component: AssignmentListComponent, canActivate: [AuthorizeGuard]},
-      {path: 'assignment/:assignmentId', component: AssignmentViewComponent, canActivate: [AuthorizeGuard]},
-      {path: 'problems', component: ProblemListComponent, canActivate: [AuthorizeGuard]},
-    ]),
+    RouterModule.forRoot(routes),
     BrowserAnimationsModule,
     MatToolbarModule,
     MatButtonModule,

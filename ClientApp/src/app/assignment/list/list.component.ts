@@ -1,17 +1,14 @@
-﻿import {Component, Inject} from '@angular/core';
-import {HttpClient, HttpParams} from '@angular/common/http';
+﻿import {Component} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {PageEvent} from '@angular/material/paginator';
 import {DateTime} from 'luxon';
 
-import {
-  AssignmentInfoDto,
-  AssignmentListPagination
-} from '../app.interfaces';
+import {AssignmentService} from '../assignment.service';
+import {AssignmentInfoDto} from '../../app.interfaces';
 
 @Component({
   selector: 'app-assignment-list',
-  templateUrl: './assignment-list.component.html'
+  templateUrl: './list.component.html'
 })
 export class AssignmentListComponent {
   public pageIndex: number;
@@ -24,8 +21,7 @@ export class AssignmentListComponent {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private http: HttpClient,
-    @Inject('BASE_URL') private baseUrl: string
+    private service: AssignmentService
   ) {
     this.pageIndex = this.route.snapshot.queryParams.pageIndex ?? 1;
     this.loadAssignments(this.pageIndex);
@@ -43,14 +39,13 @@ export class AssignmentListComponent {
   }
 
   public loadAssignments(pageIndex: number) {
-    this.http.get<AssignmentListPagination>(this.baseUrl + 'api/v1/assignment', {
-      params: new HttpParams().set('pageIndex', pageIndex.toString())
-    }).subscribe(data => {
-      this.pageSize = data.pageSize;
-      this.totalItems = data.totalItems;
-      this.assignments = data.items;
-      this.currentTime = new Date();
-    }, error => console.error(error));
+    this.service.getPaginatedList(pageIndex)
+      .subscribe(data => {
+        this.pageSize = data.pageSize;
+        this.totalItems = data.totalItems;
+        this.assignments = data.items;
+        this.currentTime = new Date();
+      }, error => console.error(error));
   }
 
   public isAssignmentPending(assignment: AssignmentInfoDto) {

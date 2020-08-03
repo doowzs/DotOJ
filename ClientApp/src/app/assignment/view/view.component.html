@@ -1,0 +1,23 @@
+﻿<mat-progress-bar id="assignment-progress-bar"
+                  [mode]="progressBarMode"
+                  [value]="progressBarValue"
+                  color="warn"
+></mat-progress-bar>
+<div class="container">
+  <div id="assignment-view" *ngIf="assignment">
+    <h1 class="text-center">{{ assignment.title }}</h1>
+    <p class="text-center">
+      {{ assignment.beginTime | date:'yyyy-MM-dd hh:mm' }} - {{ assignment.endTime | date:'yyyy-MM-dd hh:mm' }}
+    </p>
+    <nav mat-tab-nav-bar mat-align-tabs="center">
+      <a mat-tab-link
+         *ngFor="let link of navigationLinks"
+         (click)="navigateToLink(link.link)"
+         [active]="activeRouteLink === link.link">
+        {{ link.label }}
+      </a>
+    </nav>
+    <router-outlet></router-outlet>
+  </div>
+</div>
+
