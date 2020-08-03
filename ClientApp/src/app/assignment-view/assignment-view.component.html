@@ -1,4 +1,5 @@
-﻿<div class="container">
+﻿<mat-progress-bar mode="determinate" [value]="countdownValue" color="warn"></mat-progress-bar>
+<div class="container">
   <div id="assignment-view" *ngIf="assignment">
     <h1 class="text-center">{{ assignment.title }}</h1>
     <p class="text-center">

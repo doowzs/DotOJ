@@ -24,6 +24,7 @@ import {MatTabsModule} from "@angular/material/tabs";
 import {MarkdownModule} from "ngx-markdown";
 import {MatCardModule} from "@angular/material/card";
 import {MatIconModule} from "@angular/material/icon";
+import {MatProgressBarModule} from "@angular/material/progress-bar";
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import {MatIconModule} from "@angular/material/icon";
     MatPaginatorModule,
     MatTabsModule,
     MatCardModule,
-    MatIconModule
+    MatIconModule,
+    MatProgressBarModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true}
