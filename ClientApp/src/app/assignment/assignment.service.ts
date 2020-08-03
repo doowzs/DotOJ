@@ -14,7 +14,8 @@ export class AssignmentService {
 
   constructor(
     private http: HttpClient,
-    @Inject('BASE_URL') private baseUrl: string) {
+    @Inject('BASE_URL') private baseUrl: string
+  ) {
   }
 
   public getPaginatedList(pageIndex: number): Observable<AssignmentListPagination> {
@@ -24,7 +25,7 @@ export class AssignmentService {
   }
 
   public getSingle(id: number): Observable<AssignmentViewDto | null> {
-    if (id === this.id && this.cached) {
+    if (this.id === id && this.cached) {
       return of(this.cached);
     } else {
       this.id = id;

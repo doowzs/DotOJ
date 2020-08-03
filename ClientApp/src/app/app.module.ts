@@ -13,6 +13,7 @@ import {AssignmentListComponent} from './assignment/list/list.component';
 import {AssignmentViewComponent} from './assignment/view/view.component';
 import {AssignmentContentComponent} from './assignment/content/content.component';
 import {ProblemListComponent} from './problem-list/problem-list.component';
+import {ProblemViewComponent} from './problem/view/view.component';
 
 import {ApiAuthorizationModule} from 'src/api-authorization/api-authorization.module';
 import {AuthorizeGuard} from 'src/api-authorization/authorize.guard';
@@ -67,6 +68,7 @@ const routes = [
     AssignmentViewComponent,
     AssignmentContentComponent,
     ProblemListComponent,
+    ProblemViewComponent
   ],
   imports: [
     HttpClientModule,
