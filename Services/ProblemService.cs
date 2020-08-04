@@ -77,7 +77,8 @@ namespace Judge1.Services
             {
                 throw new NotFoundException();
             }
-            
+
+            await _context.Entry(problem).Reference(p => p.Assignment).LoadAsync();
             if (!(privileged || DateTime.Now >= problem.Assignment.BeginTime))
             {
                 throw new UnauthorizedAccessException("Not authorized to view this problem.");
