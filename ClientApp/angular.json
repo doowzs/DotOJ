@@ -31,12 +31,7 @@
               "node_modules/katex/dist/katex.min.js"
             ],
             "assets": [
-              "src/assets",
-              {
-                "glob": "**/*",
-                "input": "node_modules/ngx-monaco-editor/assets/monaco",
-                "output": "/assets/monaco/"
-              }
+              "src/assets"
             ]
           },
           "configurations": {
@@ -99,12 +94,7 @@
               "node_modules/katex/dist/katex.min.js"
             ],
             "assets": [
-              "src/assets",
-              {
-                "glob": "**/*",
-                "input": "node_modules/ngx-monaco-editor/assets/monaco",
-                "output": "/assets/monaco/"
-              }
+              "src/assets"
             ]
           }
         },

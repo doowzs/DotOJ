@@ -1,7 +1,8 @@
 <mat-grid-list style="height: calc(100vh - 72px);"
-               [cols]="showCodeEditor ? 2 : 1" rowHeight="fit">
+               [cols]="showCodeEditor ? 2 : 1"
+               rowHeight="fit" gutterSize="0px">
   <mat-grid-tile colspan="1" rowspan="1">
-    <div style="width: 100%; height: 100%;">
+    <div style="width: 100%; height: 100%; overflow-y: scroll;">
       <app-problem-content></app-problem-content>
     </div>
   </mat-grid-tile>
