@@ -18,6 +18,7 @@ export class AssignmentViewComponent implements OnInit, OnDestroy {
   public progressBarValue: number;
   public progressBarSubscribe: Subscription;
   public activeRouteLink: string;
+  public activeRouteIsProblem: boolean;
   public navigationLinks: any[] = [
     {link: '', label: 'Content'}
     // TODO: add problem view to navs, when viewing a problem, info about assignments should be hidden (fullscreen)
@@ -28,18 +29,19 @@ export class AssignmentViewComponent implements OnInit, OnDestroy {
     private router: Router,
     private service: AssignmentService
   ) {
+  }
+
+  ngOnInit() {
     this.id = this.route.snapshot.params.assignmentId;
     this.service.getSingle(this.id)
       .subscribe(assignment => {
         this.assignment = assignment;
         this.startCountdown();
       }, error => console.error(error));
-  }
-
-  ngOnInit() {
     this.activeRouteLink = this.route.firstChild.routeConfig.path;
     this.router.events.subscribe(() => {
       this.activeRouteLink = this.route.firstChild.routeConfig.path;
+      this.activeRouteIsProblem = this.activeRouteLink.startsWith('/problem');
     });
   }
 
@@ -65,9 +67,9 @@ export class AssignmentViewComponent implements OnInit, OnDestroy {
 
   public navigateToLink(link: string) {
     if (link === '') {
-      this.router.navigate(['/assignment', this.id]);
+      this.router.navigate(['assignment', this.id]);
     } else {
-      this.router.navigate(['/assignment', this.id, link]);
+      this.router.navigate(['assignment', this.id, link]);
     }
   }
 }

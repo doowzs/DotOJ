@@ -1,4 +1,4 @@
-﻿import {Component} from '@angular/core';
+﻿import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {PageEvent} from '@angular/material/paginator';
 import {DateTime} from 'luxon';
@@ -10,7 +10,7 @@ import {AssignmentInfoDto} from '../../app.interfaces';
   selector: 'app-assignment-list',
   templateUrl: './list.component.html'
 })
-export class AssignmentListComponent {
+export class AssignmentListComponent implements OnInit {
   public pageIndex: number;
   public pageSize: number;
   public totalItems: number;
@@ -23,13 +23,16 @@ export class AssignmentListComponent {
     private router: Router,
     private service: AssignmentService
   ) {
+  }
+
+  ngOnInit() {
     this.pageIndex = this.route.snapshot.queryParams.pageIndex ?? 1;
     this.loadAssignments(this.pageIndex);
   }
 
   public onPageEvent(event: PageEvent) {
     this.pageIndex = event.pageIndex + 1;
-    this.router.navigate(['/assignments'], {
+    this.router.navigate(['assignments'], {
       queryParams: {
         pageIndex: this.pageIndex
       }
