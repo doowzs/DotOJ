@@ -1,4 +1,5 @@
 import {NgModule} from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
 import {FormsModule} from '@angular/forms';
 import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
 import {RouterModule} from '@angular/router';
@@ -14,6 +15,8 @@ import {AssignmentViewComponent} from './assignment/view/view.component';
 import {AssignmentContentComponent} from './assignment/content/content.component';
 import {ProblemListComponent} from './problem/list/list.component';
 import {ProblemViewComponent} from './problem/view/view.component';
+import {ProblemContentComponent} from './problem/content/content.component';
+import {ProblemCodeEditorComponent} from './problem/editor/editor.component';
 
 import {ApiAuthorizationModule} from 'src/api-authorization/api-authorization.module';
 import {AuthorizeGuard} from 'src/api-authorization/authorize.guard';
@@ -28,6 +31,7 @@ import {MatTabsModule} from '@angular/material/tabs';
 import {MatCardModule} from '@angular/material/card';
 import {MatIconModule} from '@angular/material/icon';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {MatGridListModule} from '@angular/material/grid-list';
 
 const routes = [
   {
@@ -72,9 +76,12 @@ const routes = [
     AssignmentViewComponent,
     AssignmentContentComponent,
     ProblemListComponent,
-    ProblemViewComponent
+    ProblemViewComponent,
+    ProblemContentComponent,
+    ProblemCodeEditorComponent
   ],
   imports: [
+    BrowserModule,
     HttpClientModule,
     FormsModule,
     ApiAuthorizationModule,
@@ -89,7 +96,8 @@ const routes = [
     MatTabsModule,
     MatCardModule,
     MatIconModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatGridListModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true}

@@ -1,0 +1,4 @@
+﻿<div id="problem-content" *ngIf="problem" class="container">
+  <h1>{{ problem.title }}</h1>
+  <markdown [data]="problem.description" katex></markdown>
+</div>

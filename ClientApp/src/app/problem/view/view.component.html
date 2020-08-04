@@ -1,0 +1,14 @@
+<mat-grid-list style="height: calc(100vh - 72px);"
+               [cols]="showCodeEditor ? 2 : 1" rowHeight="fit">
+  <mat-grid-tile colspan="1" rowspan="1">
+    <div style="width: 100%; height: 100%;">
+      <app-problem-content></app-problem-content>
+    </div>
+  </mat-grid-tile>
+  <mat-grid-tile *ngIf="showCodeEditor"
+                 colspan="1" rowspan="1">
+    <div style="width: 100%; height: 100%;">
+      <app-problem-code-editor></app-problem-code-editor>
+    </div>
+  </mat-grid-tile>
+</mat-grid-list>
