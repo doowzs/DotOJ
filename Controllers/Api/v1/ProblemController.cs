@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using Judge1.Exceptions;
 using Judge1.Models;
 using Judge1.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -52,7 +53,7 @@ namespace Judge1.Controllers.Api.v1
             {
                 return Unauthorized(e.Message);
             }
-            catch (Exception e)
+            catch (NotFoundException e)
             {
                 return NotFound(e.Message);
             }

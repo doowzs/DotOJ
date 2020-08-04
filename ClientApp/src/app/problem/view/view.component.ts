@@ -21,9 +21,11 @@ export class ProblemViewComponent implements OnInit {
 
   ngOnInit() {
     this.id = this.route.snapshot.params.problemId;
+    console.log(this.id);
     this.service.getSingle(this.id)
       .subscribe(problem => {
         this.problem = problem;
+        console.log(problem);
       }, error => console.error(error));
   }
 

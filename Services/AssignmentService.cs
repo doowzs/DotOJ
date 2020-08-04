@@ -70,14 +70,16 @@ namespace Judge1.Services
         public async Task<AssignmentViewDto> GetAssignmentViewAsync(int id, bool privileged)
         {
             var assignment = await _context.Assignments.FindAsync(id);
-            if (assignment == null)
+            if (assignment is null)
             {
                 throw new NotFoundException();
             }
+            
             if (!(privileged || DateTime.Now >= assignment.BeginTime))
             {
                 throw new UnauthorizedAccessException("Not authorized to view this assignment.");
             }
+            
             await _context.Entry(assignment).Collection(a => a.Problems).LoadAsync();
             await _context.Entry(assignment).Collection(a => a.Notices).LoadAsync();
             return new AssignmentViewDto(assignment);

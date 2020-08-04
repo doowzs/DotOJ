@@ -1,4 +1,4 @@
-﻿<div id="assignment-content" class="container">
+﻿<div id="assignment-content" class="container" *ngIf="assignment">
   <markdown [data]="assignment.description" katex></markdown>
   <mat-card>
     <table mat-table *ngIf="assignment.problems.length > 0; else assignmentNoProblem"

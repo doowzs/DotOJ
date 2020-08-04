@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Judge1.Data;
+using Judge1.Exceptions;
 using Judge1.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -13,20 +14,20 @@ namespace Judge1.Services
     {
         public Task ValidateProblemId(int id);
         public Task ValidateProblemEditDto(ProblemEditDto dto);
-        public Task<ProblemViewDto> GetProblemViewAsync(int id, bool privileged);
+        public Task<ProblemViewDto> GetProblemViewAsync(int id, bool privileged, string userId = null);
         public Task<PaginatedList<ProblemInfoDto>> GetPaginatedProblemInfosAsync(int? pageIndex, bool privileged);
         public Task<ProblemEditDto> CreateProblemAsync(ProblemEditDto dto);
         public Task<ProblemEditDto> UpdateProblemAsync(ProblemEditDto dto);
         public Task DeleteProblemAsync(int id);
     }
-    
+
     public class ProblemService : IProblemService
     {
         private const int PageSize = 50;
-        
+
         private readonly ApplicationDbContext _context;
         private readonly ILogger<ProblemService> _logger;
-        
+
         public ProblemService(ApplicationDbContext context, ILogger<ProblemService> logger)
         {
             _context = context;
@@ -40,14 +41,14 @@ namespace Judge1.Services
                 throw new ValidationException("Invalid problem ID.");
             }
         }
-        
+
         public async Task ValidateProblemEditDto(ProblemEditDto dto)
         {
             if (!await _context.Assignments.AnyAsync(a => a.Id == dto.AssignmentId))
             {
                 throw new ValidationException("Invalid assignment ID.");
             }
-            
+
             if (dto.HasSpecialJudge)
             {
                 if (dto.SpecialJudgeProgram is null)
@@ -69,15 +70,30 @@ namespace Judge1.Services
             }
         }
 
-        public async Task<ProblemViewDto> GetProblemViewAsync(int id, bool privileged)
+        public async Task<ProblemViewDto> GetProblemViewAsync(int id, bool privileged, string userId = null)
         {
             var problem = await _context.Problems.FindAsync(id);
+            if (problem is null)
+            {
+                throw new NotFoundException();
+            }
+            
             if (!(privileged || DateTime.Now >= problem.Assignment.BeginTime))
             {
                 throw new UnauthorizedAccessException("Not authorized to view this problem.");
             }
-            await _context.Entry(problem).Collection(p => p.Submissions).LoadAsync();
-            return new ProblemViewDto(problem);
+
+            if (userId is null)
+            {
+                return new ProblemViewDto(problem);
+            }
+            else
+            {
+                var submissions = await _context.Submissions
+                    .Where(s => s.ProblemId == id && s.UserId == userId)
+                    .ToListAsync();
+                return new ProblemViewDto(problem, submissions);
+            }
         }
 
         public async Task<PaginatedList<ProblemInfoDto>> GetPaginatedProblemInfosAsync(int? pageIndex, bool privileged)
@@ -87,6 +103,7 @@ namespace Judge1.Services
             {
                 data = data.Where(p => DateTime.Now >= p.Assignment.BeginTime);
             }
+
             return await data.Include(p => p.Submissions)
                 .PaginateAsync(p => new ProblemInfoDto(p), pageIndex ?? 1, PageSize);
         }

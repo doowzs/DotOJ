@@ -24,7 +24,7 @@ export class ProblemService {
     } else {
       this.id = id;
       this.cached = null;
-      return this.http.get<ProblemViewDto>(this.baseUrl + `/api/v1/problem/${id}`)
+      return this.http.get<ProblemViewDto>(this.baseUrl + `api/v1/problem/${id}`)
         .pipe(tap(data => this.cached = data));
     }
   }

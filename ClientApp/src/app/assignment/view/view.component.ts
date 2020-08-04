@@ -18,7 +18,7 @@ export class AssignmentViewComponent implements OnInit, OnDestroy {
   public progressBarValue: number;
   public progressBarSubscribe: Subscription;
   public activeRouteLink: string;
-  public activeRouteIsProblem: boolean;
+  public activeRouteIsProblem = true; // avoid loading before init
   public navigationLinks: any[] = [
     {link: '', label: 'Content'}
     // TODO: add problem view to navs, when viewing a problem, info about assignments should be hidden (fullscreen)
@@ -39,6 +39,7 @@ export class AssignmentViewComponent implements OnInit, OnDestroy {
         this.startCountdown();
       }, error => console.error(error));
     this.activeRouteLink = this.route.firstChild.routeConfig.path;
+    this.activeRouteIsProblem = this.activeRouteLink.startsWith('problem');
     this.router.events.subscribe(() => {
       this.activeRouteLink = this.route.firstChild.routeConfig.path;
       this.activeRouteIsProblem = this.activeRouteLink.startsWith('problem');

@@ -3,8 +3,8 @@
                   [value]="progressBarValue"
                   color="warn"
 ></mat-progress-bar>
-<div class="container" *ngIf="!activeRouteIsProblem">
-  <div id="assignment-view" *ngIf="assignment">
+<div id="assignment-view" [ngClass]="{'container': !activeRouteIsProblem}">
+  <div id="assignment-header" *ngIf="assignment && !activeRouteIsProblem">
     <h1 class="text-center">{{ assignment.title }}</h1>
     <p class="text-center">
       {{ assignment.beginTime | date:'yyyy-MM-dd hh:mm' }} - {{ assignment.endTime | date:'yyyy-MM-dd hh:mm' }}
@@ -17,7 +17,6 @@
         {{ link.label }}
       </a>
     </nav>
-    <router-outlet></router-outlet>
   </div>
+  <router-outlet></router-outlet>
 </div>
-
