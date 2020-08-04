@@ -14,7 +14,7 @@ export class ProblemService {
 
   constructor(
     private http: HttpClient,
-    @Inject('BASR_URL') private baseUrl: string
+    @Inject('BASE_URL') private baseUrl: string
   ) {
   }
 

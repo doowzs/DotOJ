@@ -49,6 +49,10 @@ const routes = [
         path: '',
         component: AssignmentContentComponent,
         pathMatch: 'full'
+      },
+      {
+        path: 'problem/:problemId',
+        component: ProblemViewComponent
       }
     ]
   },

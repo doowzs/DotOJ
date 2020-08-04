@@ -41,7 +41,7 @@ export class AssignmentViewComponent implements OnInit, OnDestroy {
     this.activeRouteLink = this.route.firstChild.routeConfig.path;
     this.router.events.subscribe(() => {
       this.activeRouteLink = this.route.firstChild.routeConfig.path;
-      this.activeRouteIsProblem = this.activeRouteLink.startsWith('/problem');
+      this.activeRouteIsProblem = this.activeRouteLink.startsWith('problem');
     });
   }
 
