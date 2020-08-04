@@ -31,7 +31,6 @@
     "jquery": "3.4.1",
     "luxon": "^1.24.1",
     "ngx-markdown": "^10.1.0",
-    "ngx-monaco-editor": "^9.0.0",
     "oidc-client": "^1.9.1",
     "popper.js": "^1.16.0",
     "rxjs": "^6.6.2",
