@@ -3,8 +3,6 @@ import {BrowserModule} from '@angular/platform-browser';
 import {FormsModule} from '@angular/forms';
 import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
 import {RouterModule} from '@angular/router';
-
-import {MonacoEditorModule} from 'ngx-monaco-editor';
 import {MarkdownModule} from 'ngx-markdown';
 
 import {AppComponent} from './app.component';
@@ -86,7 +84,6 @@ const routes = [
     FormsModule,
     ApiAuthorizationModule,
     MarkdownModule.forRoot(),
-    MonacoEditorModule.forRoot(),
     RouterModule.forRoot(routes),
     BrowserAnimationsModule,
     MatToolbarModule,
