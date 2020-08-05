@@ -30,6 +30,7 @@ import {MatCardModule} from '@angular/material/card';
 import {MatIconModule} from '@angular/material/icon';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatGridListModule} from '@angular/material/grid-list';
+import {MatSelectModule} from "@angular/material/select";
 
 const routes = [
   {
@@ -94,7 +95,8 @@ const routes = [
     MatCardModule,
     MatIconModule,
     MatProgressBarModule,
-    MatGridListModule
+    MatGridListModule,
+    MatSelectModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true}

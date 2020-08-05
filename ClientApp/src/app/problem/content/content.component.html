@@ -1,4 +1,45 @@
-﻿<div id="problem-content" *ngIf="problem" class="container">
-  <h1>{{ problem.title }}</h1>
-  <markdown [data]="problem.description" katex></markdown>
+﻿<div id="problem-content" *ngIf="assignment && problem" class="container">
+  <mat-form-field id="problem-selector" appearance="outline" style="width: 100%;">
+    <mat-label>Current Problem</mat-label>
+    <mat-select [value]="problem.id" (selectionChange)="changeProblem($event)">
+      <mat-option *ngFor="let problem of assignment.problems" [value]="problem.id">
+        {{ problem.label }} - {{ problem.title }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-card id="problem-submissions" class="mat-elevation-z0">
+    <mat-card-content>
+      <div id="no-submission" class="text-center">
+        <small>You haven't made an attempt on this problem.</small>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  <div id="problem-descriptions">
+    <h2>Description</h2>
+    <markdown [data]="problem.description" katex></markdown>
+    <h2>Input Format</h2>
+    <markdown [data]="problem.inputFormat" katex></markdown>
+    <h2>Output Format</h2>
+    <markdown [data]="problem.outputFormat" katex></markdown>
+    <h2>Sample Cases</h2>
+    <mat-card *ngFor="let testCase of problem.sampleCases; index as index">
+      <mat-card-title>Case #{{ index + 1 }}</mat-card-title>
+      <mat-card-content>
+        <table style="width: 100%; border: 1px solid; border-collapse: collapse;">
+          <tr class="bg-grey">
+            <th style="width: 50%;">Input</th>
+            <th style="width: 50%;">Output</th>
+          </tr>
+          <tr *ngFor="let testCase of problem.sampleCases">
+            <td>{{ testCase.input }}</td>
+            <td>{{ testCase.output }}</td>
+          </tr>
+        </table>
+      </mat-card-content>
+    </mat-card>
+    <div id="problem-footnote" *ngIf="problem.footNote">
+      <h2>Footnote</h2>
+      <markdown [data]="problem.footNote" katex></markdown>
+    </div>
+  </div>
 </div>
