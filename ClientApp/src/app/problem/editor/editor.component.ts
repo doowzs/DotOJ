@@ -1,6 +1,7 @@
 ﻿import {Component, OnInit, OnDestroy, Input} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MatSelectChange} from '@angular/material/select';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 import * as ace from 'ace-builds';
 import 'ace-builds/src-noconflict/mode-c_cpp';
@@ -50,23 +51,23 @@ export class ProblemCodeEditorComponent implements OnInit, OnDestroy {
 
   public languages = languages;
   public currentLanguage: { code, name, mode };
-  public code: string;
   private editor: ace.Ace.Editor;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private service: ProblemService
+    private service: ProblemService,
+    private snackBar: MatSnackBar
   ) {
   }
 
   ngOnInit() {
     this.currentLanguage = JSON.parse(localStorage.getItem('editor-language'));
-    this.code = localStorage.getItem('editor-code-' + this.problem.id) ?? '';
     this.editor = ace.edit('code-editor', {useWorker: false});
     if (this.currentLanguage) {
       this.editor.getSession().setMode('ace/mode/' + this.currentLanguage.mode);
     }
+    this.editor.setValue(localStorage.getItem('editor-code-' + this.problem.id) ?? '');
   }
 
   ngOnDestroy() {
@@ -75,10 +76,19 @@ export class ProblemCodeEditorComponent implements OnInit, OnDestroy {
   }
 
   public changeLanguage(event: MatSelectChange) {
-    if (this.currentLanguage === null || event.value !== this.currentLanguage.code) {
+    if (!this.currentLanguage || event.value !== this.currentLanguage.code) {
       this.currentLanguage = this.languages.find(l => l.code === event.value);
       this.editor.getSession().setMode('ace/mode/' + this.currentLanguage.mode);
       localStorage.setItem('editor-language', JSON.stringify(this.currentLanguage));
     }
+  }
+
+  public saveCode() {
+    localStorage.setItem('editor-language', JSON.stringify(this.currentLanguage));
+    localStorage.setItem('editor-code-' + this.problem.id, this.editor.getValue());
+    this.snackBar.open('Code saved.', 'Done', {
+      duration: 2000,
+      horizontalPosition: 'left'
+    });
   }
 }

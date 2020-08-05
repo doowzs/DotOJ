@@ -32,6 +32,7 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatSelectModule} from '@angular/material/select';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {CodeEditorDirective} from "./problem/editor/editor.directive";
 
 const routes = [
   {
@@ -78,7 +79,8 @@ const routes = [
     ProblemListComponent,
     ProblemViewComponent,
     ProblemContentComponent,
-    ProblemCodeEditorComponent
+    ProblemCodeEditorComponent,
+    CodeEditorDirective
   ],
   imports: [
     BrowserModule,

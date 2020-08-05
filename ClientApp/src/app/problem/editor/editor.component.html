@@ -1,8 +1,11 @@
-﻿<div id="code-editor" style="width: 100%; height: calc(100% - 64px); font-size: 18px"></div>
+﻿<div id="code-editor" appCodeEditor (ctrlS)="saveCode()"
+     style="width: 100%; height: calc(100% - 64px); font-size: 18px"
+></div>
 <mat-toolbar>
   <mat-form-field appearance="standard" style="font-size: 0.65rem; width: 6rem;">
     <mat-label>Language</mat-label>
-    <mat-select [value]="currentLanguage.code" (selectionChange)="changeLanguage($event)">
+    <mat-select [value]="currentLanguage ? currentLanguage.code : -1"
+                (selectionChange)="changeLanguage($event)">
       <mat-option>None</mat-option>
       <mat-option *ngFor="let language of languages" [value]="language.code">
         {{ language.name }}
