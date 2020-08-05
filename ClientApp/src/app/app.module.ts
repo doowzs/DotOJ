@@ -15,6 +15,7 @@ import {ProblemListComponent} from './problem/list/list.component';
 import {ProblemViewComponent} from './problem/view/view.component';
 import {ProblemContentComponent} from './problem/content/content.component';
 import {ProblemCodeEditorComponent} from './problem/editor/editor.component';
+import {CodeEditorDirective} from './problem/editor/editor.directive';
 
 import {ApiAuthorizationModule} from 'src/api-authorization/api-authorization.module';
 import {AuthorizeGuard} from 'src/api-authorization/authorize.guard';
@@ -32,7 +33,7 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatSelectModule} from '@angular/material/select';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
-import {CodeEditorDirective} from "./problem/editor/editor.directive";
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 
 const routes = [
   {
@@ -100,7 +101,8 @@ const routes = [
     MatProgressBarModule,
     MatGridListModule,
     MatSelectModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatSlideToggleModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true}
