@@ -1,4 +1,5 @@
-<mat-grid-list style="height: calc(100vh - 68px);"
+<mat-grid-list *ngIf="assignment && problem"
+               style="height: calc(100vh - 68px);"
                [cols]="showCodeEditor ? 2 : 1"
                rowHeight="fit" gutterSize="0px">
   <mat-grid-tile colspan="1" rowspan="1">

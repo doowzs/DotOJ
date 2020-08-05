@@ -1,7 +1,13 @@
 ﻿import {Component, Input} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
-import {AssignmentViewDto, ProblemViewDto} from '../../app.interfaces';
-import {MatSelectChange} from "@angular/material/select";
+import {MatSelectChange} from '@angular/material/select';
+import {MatSnackBar} from '@angular/material/snack-bar';
+
+import {
+  AssignmentViewDto,
+  ProblemViewDto,
+  TestCaseDto
+} from '../../app.interfaces';
 
 @Component({
   selector: 'app-problem-content',
@@ -13,7 +19,8 @@ export class ProblemContentComponent {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {
   }
 
@@ -21,5 +28,13 @@ export class ProblemContentComponent {
     if (event.value !== this.problem.id) {
       this.router.navigate(['assignment', this.assignment.id, 'problem', event.value]);
     }
+  }
+
+  public copyTestCase(testCase: TestCaseDto) {
+    navigator.clipboard.writeText(testCase.input)
+      .then(() => this.snackBar.open('Copied to clipboard.', 'Done', {
+        duration: 2000,
+        horizontalPosition: 'right'
+      }));
   }
 }

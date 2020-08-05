@@ -2,9 +2,9 @@
 <mat-toolbar>
   <mat-form-field appearance="standard" style="font-size: 0.65rem; width: 6rem;">
     <mat-label>Language</mat-label>
-    <mat-select [value]="currentLanguage" (selectionChange)="changeLanguage($event)">
+    <mat-select [value]="currentLanguage.code" (selectionChange)="changeLanguage($event)">
       <mat-option>None</mat-option>
-      <mat-option *ngFor="let language of languages" [value]="language">
+      <mat-option *ngFor="let language of languages" [value]="language.code">
         {{ language.name }}
       </mat-option>
     </mat-select>

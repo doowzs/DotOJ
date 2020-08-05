@@ -19,7 +19,7 @@ import 'ace-builds/src-noconflict/mode-typescript';
 import {ProblemViewDto} from '../../app.interfaces';
 import {ProblemService} from '../problem.service';
 
-const languages: {code, name, mode}[] = [
+const languages: { code, name, mode }[] = [
   {code: 50, name: 'C', mode: 'c_cpp'},
   {code: 150, name: 'C 11', mode: 'c_cpp'},
   {code: 250, name: 'C 14', mode: 'c_cpp'},
@@ -49,7 +49,7 @@ export class ProblemCodeEditorComponent implements OnInit, OnDestroy {
   @Input() public problem: ProblemViewDto;
 
   public languages = languages;
-  public currentLanguage: {code, name, mode};
+  public currentLanguage: { code, name, mode };
   public code: string;
   private editor: ace.Ace.Editor;
 
@@ -61,11 +61,12 @@ export class ProblemCodeEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // TODO: load from data store?
-    this.currentLanguage = languages[0];
-
+    this.currentLanguage = JSON.parse(localStorage.getItem('editor-language'));
+    this.code = localStorage.getItem('editor-code-' + this.problem.id) ?? '';
     this.editor = ace.edit('code-editor', {useWorker: false});
-    this.editor.getSession().setMode('ace/mode/' + this.currentLanguage.mode);
+    if (this.currentLanguage) {
+      this.editor.getSession().setMode('ace/mode/' + this.currentLanguage.mode);
+    }
   }
 
   ngOnDestroy() {
@@ -74,9 +75,10 @@ export class ProblemCodeEditorComponent implements OnInit, OnDestroy {
   }
 
   public changeLanguage(event: MatSelectChange) {
-    if (event.value.code !== this.currentLanguage.code) {
-      this.currentLanguage = event.value;
-      this.editor.getSession().setMode('ace/mode/' + event.value.mode);
+    if (this.currentLanguage === null || event.value !== this.currentLanguage.code) {
+      this.currentLanguage = this.languages.find(l => l.code === event.value);
+      this.editor.getSession().setMode('ace/mode/' + this.currentLanguage.mode);
+      localStorage.setItem('editor-language', JSON.stringify(this.currentLanguage));
     }
   }
 }

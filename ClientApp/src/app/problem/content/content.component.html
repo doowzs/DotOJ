@@ -22,21 +22,25 @@
     <h2>Output Format</h2>
     <markdown [data]="problem.outputFormat" katex></markdown>
     <h2>Sample Cases</h2>
-    <mat-card *ngFor="let testCase of problem.sampleCases; index as index">
-      <mat-card-title>Case #{{ index + 1 }}</mat-card-title>
-      <mat-card-content>
-        <table style="width: 100%; border: 1px solid; border-collapse: collapse;">
-          <tr class="bg-grey">
-            <th style="width: 50%;">Input</th>
-            <th style="width: 50%;">Output</th>
-          </tr>
-          <tr *ngFor="let testCase of problem.sampleCases">
-            <td>{{ testCase.input }}</td>
-            <td>{{ testCase.output }}</td>
-          </tr>
-        </table>
-      </mat-card-content>
-    </mat-card>
+    <div [id]="'test-case-' + (index + 1).toString()"
+         *ngFor="let testCase of problem.sampleCases; index as index">
+      <h3 style="line-height: 40px;">
+        Case #{{ index + 1 }}
+        <button mat-icon-button style="float: right;" (click)="copyTestCase(testCase)">
+          <mat-icon>content_copy</mat-icon>
+        </button>
+      </h3>
+      <table style="width: 100%; border: 1px solid; border-collapse: collapse;">
+        <tr class="bg-grey">
+          <th style="width: 50%;">Input</th>
+          <th style="width: 50%;">Output</th>
+        </tr>
+        <tr *ngFor="let testCase of problem.sampleCases">
+          <td>{{ testCase.input }}</td>
+          <td>{{ testCase.output }}</td>
+        </tr>
+      </table>
+    </div>
     <div id="problem-footnote" *ngIf="problem.footNote">
       <h2>Footnote</h2>
       <markdown [data]="problem.footNote" katex></markdown>
