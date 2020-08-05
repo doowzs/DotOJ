@@ -1,15 +1,19 @@
-﻿import {Component, OnInit, OnDestroy} from '@angular/core';
+﻿import {Component, OnInit, OnDestroy, Input} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {ProblemService} from '../problem.service';
 
 import * as ace from 'ace-builds';
 import 'ace-builds/src-noconflict/mode-c_cpp';
 
+import {ProblemViewDto} from '../../app.interfaces';
+
 @Component({
   selector: 'app-problem-code-editor',
   templateUrl: './editor.component.html'
 })
 export class ProblemCodeEditorComponent implements OnInit, OnDestroy {
+  @Input() public problem: ProblemViewDto;
+
   public options = {theme: 'vs-dark'};
   public code: string;
   private editor: ace.Ace.Editor;

@@ -3,13 +3,14 @@
                rowHeight="fit" gutterSize="0px">
   <mat-grid-tile colspan="1" rowspan="1">
     <div style="width: 100%; height: 100%; overflow-y: scroll;">
-      <app-problem-content></app-problem-content>
+      <app-problem-content [assignment]="assignment"
+                           [problem]="problem"
+      ></app-problem-content>
     </div>
   </mat-grid-tile>
-  <mat-grid-tile *ngIf="showCodeEditor"
-                 colspan="1" rowspan="1">
+  <mat-grid-tile colspan="1" rowspan="1" *ngIf="showCodeEditor">
     <div style="width: 100%; height: 100%;">
-      <app-problem-code-editor></app-problem-code-editor>
+      <app-problem-code-editor [problem]="problem"></app-problem-code-editor>
     </div>
   </mat-grid-tile>
 </mat-grid-list>
