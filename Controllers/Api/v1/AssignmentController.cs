@@ -47,13 +47,13 @@ namespace Judge1.Controllers.Api.v1
             {
                 return Ok(await _service.GetAssignmentViewAsync(id));
             }
-            catch (UnauthorizedAccessException e)
-            {
-                return Unauthorized(e.Message);
-            }
             catch (NotFoundException e)
             {
                 return NotFound(e.Message);
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized(e.Message);
             }
         }
     }

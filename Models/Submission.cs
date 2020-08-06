@@ -115,4 +115,26 @@ namespace Judge1.Models
             JudgedAt = submission.JudgedAt;
         }
     }
+
+    public class SubmissionViewDto : DtoWithTimestamps
+    {
+        public int Id { get; }
+        [Required] public string UserId { get; }
+        [Required] public int? ProblemId { get; }
+        [Required] public Program Program { get; }
+        public Verdict Verdict { get; }
+        public int LastTestCase { get; }
+        public DateTime JudgedAt { get; }
+
+        public SubmissionViewDto(Submission submission) : base(submission)
+        {
+            Id = submission.Id;
+            UserId = submission.UserId;
+            ProblemId = submission.ProblemId;
+            Program = submission.Program;
+            Verdict = submission.Verdict;
+            LastTestCase = submission.LastTestCase;
+            JudgedAt = submission.JudgedAt;
+        }
+    }
 }

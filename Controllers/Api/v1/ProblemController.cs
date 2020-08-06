@@ -48,13 +48,13 @@ namespace Judge1.Controllers.Api.v1
             {
                 return Ok(await _service.GetProblemViewAsync(id, User.GetSubjectId()));
             }
-            catch (UnauthorizedAccessException e)
-            {
-                return Unauthorized(e.Message);
-            }
             catch (NotFoundException e)
             {
                 return NotFound(e.Message);
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized(e.Message);
             }
         }
 
