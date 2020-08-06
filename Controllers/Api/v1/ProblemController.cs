@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using IdentityServer4.Extensions;
 using Judge1.Exceptions;
 using Judge1.Models;
 using Judge1.Services;
@@ -32,8 +33,7 @@ namespace Judge1.Controllers.Api.v1
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PaginatedList<ProblemInfoDto>>> ListProblems(int? pageIndex)
         {
-            var privileged = User.IsInRole(ApplicationRoles.ProblemEditor);
-            return Ok(await _service.GetPaginatedProblemInfosAsync(pageIndex, privileged));
+            return Ok(await _service.GetPaginatedProblemInfosAsync(pageIndex));
         }
 
         [HttpGet("{id:int}")]
@@ -46,8 +46,7 @@ namespace Judge1.Controllers.Api.v1
         {
             try
             {
-                var privileged = User.IsInRole(ApplicationRoles.ProblemEditor);
-                return Ok(await _service.GetProblemViewAsync(id, privileged));
+                return Ok(await _service.GetProblemViewAsync(id, User.GetSubjectId()));
             }
             catch (UnauthorizedAccessException e)
             {

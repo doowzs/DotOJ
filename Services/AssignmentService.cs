@@ -17,7 +17,7 @@ namespace Judge1.Services
         public Task ValidateAssignmentId(int id);
         public Task ValidateAssignmentEditDto(AssignmentEditDto dto);
         public Task<PaginatedList<AssignmentInfoDto>> GetPaginatedAssignmentInfosAsync(int? pageIndex, string userId);
-        public Task<AssignmentViewDto> GetAssignmentViewAsync(int id, bool privileged);
+        public Task<AssignmentViewDto> GetAssignmentViewAsync(int id);
         public Task<AssignmentEditDto> CreateAssignmentAsync(AssignmentEditDto dto);
         public Task<AssignmentEditDto> UpdateAssignmentAsync(AssignmentEditDto dto);
         public Task DeleteAssignmentAsync(int id);
@@ -67,7 +67,7 @@ namespace Judge1.Services
             return new PaginatedList<AssignmentInfoDto>(assignments.TotalItems, pageIndex ?? 1, PageSize, infos);
         }
 
-        public async Task<AssignmentViewDto> GetAssignmentViewAsync(int id, bool privileged)
+        public async Task<AssignmentViewDto> GetAssignmentViewAsync(int id)
         {
             var assignment = await _context.Assignments.FindAsync(id);
             if (assignment is null)
@@ -75,7 +75,7 @@ namespace Judge1.Services
                 throw new NotFoundException();
             }
             
-            if (!(privileged || DateTime.Now >= assignment.BeginTime))
+            if (DateTime.Now >= assignment.BeginTime)
             {
                 throw new UnauthorizedAccessException("Not authorized to view this assignment.");
             }

@@ -45,8 +45,7 @@ namespace Judge1.Controllers.Api.v1
         {
             try
             {
-                var privileged = User.IsInRole(ApplicationRoles.AssignmentManager);
-                return Ok(await _service.GetAssignmentViewAsync(id, privileged));
+                return Ok(await _service.GetAssignmentViewAsync(id));
             }
             catch (UnauthorizedAccessException e)
             {

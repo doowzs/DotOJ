@@ -14,8 +14,8 @@ namespace Judge1.Services
     {
         public Task ValidateProblemId(int id);
         public Task ValidateProblemEditDto(ProblemEditDto dto);
-        public Task<ProblemViewDto> GetProblemViewAsync(int id, bool privileged, string userId = null);
-        public Task<PaginatedList<ProblemInfoDto>> GetPaginatedProblemInfosAsync(int? pageIndex, bool privileged);
+        public Task<PaginatedList<ProblemInfoDto>> GetPaginatedProblemInfosAsync(int? pageIndex);
+        public Task<ProblemViewDto> GetProblemViewAsync(int id, string userId);
         public Task<ProblemEditDto> CreateProblemAsync(ProblemEditDto dto);
         public Task<ProblemEditDto> UpdateProblemAsync(ProblemEditDto dto);
         public Task DeleteProblemAsync(int id);
@@ -70,7 +70,14 @@ namespace Judge1.Services
             }
         }
 
-        public async Task<ProblemViewDto> GetProblemViewAsync(int id, bool privileged, string userId = null)
+        public async Task<PaginatedList<ProblemInfoDto>> GetPaginatedProblemInfosAsync(int? pageIndex)
+        {
+            return await _context.Problems
+                .Include(p => p.Submissions)
+                .PaginateAsync(p => new ProblemInfoDto(p), pageIndex ?? 1, PageSize);
+        }
+
+        public async Task<ProblemViewDto> GetProblemViewAsync(int id, string userId)
         {
             var problem = await _context.Problems.FindAsync(id);
             if (problem is null)
@@ -79,7 +86,7 @@ namespace Judge1.Services
             }
 
             await _context.Entry(problem).Reference(p => p.Assignment).LoadAsync();
-            if (!(privileged || DateTime.Now >= problem.Assignment.BeginTime))
+            if (DateTime.Now < problem.Assignment.BeginTime)
             {
                 throw new UnauthorizedAccessException("Not authorized to view this problem.");
             }
@@ -95,18 +102,6 @@ namespace Judge1.Services
                     .ToListAsync();
                 return new ProblemViewDto(problem, submissions);
             }
-        }
-
-        public async Task<PaginatedList<ProblemInfoDto>> GetPaginatedProblemInfosAsync(int? pageIndex, bool privileged)
-        {
-            IQueryable<Problem> data = _context.Problems;
-            if (!privileged)
-            {
-                data = data.Where(p => DateTime.Now >= p.Assignment.BeginTime);
-            }
-
-            return await data.Include(p => p.Submissions)
-                .PaginateAsync(p => new ProblemInfoDto(p), pageIndex ?? 1, PageSize);
         }
 
         public async Task<ProblemEditDto> CreateProblemAsync(ProblemEditDto dto)
