@@ -15,9 +15,10 @@
   <button mat-button style="margin-left: 1rem;">
     <mat-icon>publish</mat-icon><span>Upload</span>
   </button>
+  <button mat-button (click)="saveCode()">
+    <mat-icon>save</mat-icon><span>Save</span>
+  </button>
   <div class="flex-spacer"></div>
-  <mat-slide-toggle style="margin-right: 1rem;">
-    <small>Self-test</small>
-  </mat-slide-toggle>
-  <button mat-flat-button color="primary" >Submit</button>
+  <button mat-button color="primary" style="margin-right: 1rem;">Test</button>
+  <button mat-flat-button color="primary">Submit</button>
 </mat-toolbar>

@@ -47,7 +47,7 @@ export class ProblemViewComponent implements OnInit, OnDestroy {
     });
 
     this.breakpointObserver
-      .observe(['(max-width: 599px)'])
+      .observe(['(max-width: 999px)'])
       .pipe(takeUntil(this.ngUnsubscribe$))
       .subscribe(result => {
         this.showCodeEditor = !result.matches;

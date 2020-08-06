@@ -1,4 +1,4 @@
-﻿import {Component, OnInit, OnDestroy, Input} from '@angular/core';
+﻿import {Component, OnInit, OnChanges, OnDestroy, Input, SimpleChanges} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MatSelectChange} from '@angular/material/select';
 import {MatSnackBar} from '@angular/material/snack-bar';
@@ -46,7 +46,7 @@ const languages: { code, name, mode }[] = [
   selector: 'app-problem-code-editor',
   templateUrl: './editor.component.html'
 })
-export class ProblemCodeEditorComponent implements OnInit, OnDestroy {
+export class ProblemCodeEditorComponent implements OnInit, OnChanges, OnDestroy {
   @Input() public problem: ProblemViewDto;
 
   public languages = languages;
@@ -62,15 +62,23 @@ export class ProblemCodeEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.currentLanguage = JSON.parse(localStorage.getItem('editor-language'));
     this.editor = ace.edit('code-editor', {useWorker: false});
+    this.currentLanguage = JSON.parse(localStorage.getItem('editor-language'));
     if (this.currentLanguage) {
       this.editor.getSession().setMode('ace/mode/' + this.currentLanguage.mode);
     }
-    this.editor.setValue(localStorage.getItem('editor-code-' + this.problem.id) ?? '');
+    this.loadCode(this.problem.id);
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (!changes.problem.isFirstChange()) {
+      this.saveCode(changes.problem.previousValue.id);
+      this.loadCode(changes.problem.currentValue.id);
+    }
   }
 
   ngOnDestroy() {
+    this.saveCode(this.problem.id);
     this.editor.destroy();
     this.editor.container.remove();
   }
@@ -83,12 +91,15 @@ export class ProblemCodeEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  public saveCode() {
-    localStorage.setItem('editor-language', JSON.stringify(this.currentLanguage));
-    localStorage.setItem('editor-code-' + this.problem.id, this.editor.getValue());
+  public saveCode(problemId: number) {
+    localStorage.setItem('editor-code-' + problemId, this.editor.getValue());
     this.snackBar.open('Code saved.', 'Done', {
       duration: 2000,
       horizontalPosition: 'left'
     });
+  }
+
+  public loadCode(problemId: number) {
+    this.editor.setValue(localStorage.getItem('editor-code-' + problemId) ?? '');
   }
 }

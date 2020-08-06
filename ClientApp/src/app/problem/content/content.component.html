@@ -1,4 +1,4 @@
-﻿<div id="problem-content" *ngIf="assignment && problem" class="container">
+﻿<div id="problem-content" *ngIf="assignment && problem" style="padding: 2rem 2rem;">
   <mat-form-field id="problem-selector" appearance="outline" style="width: 100%;">
     <mat-label>Current Problem</mat-label>
     <mat-select [value]="problem.id" (selectionChange)="changeProblem($event)">
