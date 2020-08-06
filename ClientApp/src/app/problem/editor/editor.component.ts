@@ -62,7 +62,7 @@ export class ProblemCodeEditorComponent implements OnInit, OnChanges, OnDestroy 
   }
 
   ngOnInit() {
-    this.editor = ace.edit('code-editor', {useWorker: false});
+    this.editor = ace.edit('code-editor', {useWorker: false, wrap: true});
     this.currentLanguage = JSON.parse(localStorage.getItem('editor-language'));
     if (this.currentLanguage) {
       this.editor.getSession().setMode('ace/mode/' + this.currentLanguage.mode);
@@ -89,6 +89,14 @@ export class ProblemCodeEditorComponent implements OnInit, OnChanges, OnDestroy 
       this.editor.getSession().setMode('ace/mode/' + this.currentLanguage.mode);
       localStorage.setItem('editor-language', JSON.stringify(this.currentLanguage));
     }
+  }
+
+  public uploadCode(event: any) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.editor.setValue(reader.result.toString());
+    };
+    reader.readAsText(event.target.files[0]);
   }
 
   public saveCode(problemId: number) {

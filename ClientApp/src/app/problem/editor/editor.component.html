@@ -1,4 +1,4 @@
-﻿<div id="code-editor" appCodeEditor (ctrlS)="saveCode()"
+﻿<div id="code-editor" appCodeEditor (ctrlS)="saveCode(problem.id)"
      style="width: 100%; height: calc(100% - 64px); font-size: 18px"
 ></div>
 <mat-toolbar>
@@ -12,10 +12,12 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
-  <button mat-button style="margin-left: 1rem;">
+  <input #uploadCodeInput id="upload-code-file" type="file" style="display: none;"
+         onClick="this.value = null" (change)="uploadCode($event)"/>
+  <button mat-button style="margin-left: 1rem;" (click)="uploadCodeInput.click()">
     <mat-icon>publish</mat-icon><span>Upload</span>
   </button>
-  <button mat-button (click)="saveCode()">
+  <button mat-button (click)="saveCode(problem.id)">
     <mat-icon>save</mat-icon><span>Save</span>
   </button>
   <div class="flex-spacer"></div>
