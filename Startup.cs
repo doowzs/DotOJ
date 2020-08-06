@@ -48,6 +48,7 @@ namespace Judge1
 
             services.AddScoped<IProblemService, ProblemService>();
             services.AddScoped<IAssignmentService, AssignmentService>();
+            services.AddScoped<ISubmissionService, SubmissionService>();
             
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
