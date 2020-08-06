@@ -75,7 +75,7 @@ namespace Judge1.Services
                 throw new NotFoundException();
             }
             
-            if (DateTime.Now >= assignment.BeginTime)
+            if (DateTime.Now < assignment.BeginTime)
             {
                 throw new UnauthorizedAccessException("Not authorized to view this assignment.");
             }
