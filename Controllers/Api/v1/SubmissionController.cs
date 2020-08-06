@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using IdentityServer4.Extensions;
-using Judge1.Data;
 using Judge1.Exceptions;
 using Judge1.Models;
 using Judge1.Services;
@@ -35,6 +35,16 @@ namespace Judge1.Controllers.Api.v1
         public async Task<ActionResult<PaginatedList<SubmissionInfoDto>>> ListSubmissions(int? pageIndex)
         {
             return Ok(await _service.GetPaginatedSubmissionsAsync(pageIndex));
+        }
+
+        [HttpGet("problem-user")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<SubmissionInfoDto>>>
+            GetSubmissionsByProblemAndUser(int problemId, string userId)
+        {
+            return Ok(await _service.GetSubmissionsByProblemAndUserAsync(problemId, userId));
         }
 
         [HttpPost("{id:int}")]

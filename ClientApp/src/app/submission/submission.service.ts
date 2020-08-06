@@ -27,7 +27,7 @@ export class SubmissionService {
 
   public getListByProblem(problemId: number): Observable<SubmissionInfoDto[] | null> {
     return this.userId.pipe(mergeMap(userId => {
-      return this.http.get<SubmissionInfoDto[]>(this.baseUrl + 'api/v1/submission', {
+      return this.http.get<SubmissionInfoDto[]>(this.baseUrl + 'api/v1/submission/problem-user', {
         params: new HttpParams().set('problemId', problemId.toString()).set('userId', userId)
       });
     }));

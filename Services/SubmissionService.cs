@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using Judge1.Data;
 using Judge1.Exceptions;
@@ -14,14 +16,15 @@ namespace Judge1.Services
         public Task<bool> CanViewSubmission(Submission submission, string userId);
         public Task ValidateSubmissionViewDto(SubmissionViewDto dto, string userId);
         public Task<PaginatedList<SubmissionInfoDto>> GetPaginatedSubmissionsAsync(int? pageIndex);
+        public Task<List<SubmissionInfoDto>> GetSubmissionsByProblemAndUserAsync(int problemId, string userId);
         public Task<SubmissionViewDto> GetSubmissionViewAsync(int id, string userId);
         public Task<SubmissionViewDto> CreateSubmissionAsync(SubmissionViewDto dto, string userId);
     }
-    
+
     public class SubmissionService : ISubmissionService
     {
         private const int PageSize = 50;
-        
+
         private readonly ApplicationDbContext _context;
         private readonly ILogger<SubmissionService> _logger;
 
@@ -34,8 +37,8 @@ namespace Judge1.Services
         public async Task<bool> CanViewSubmission(Submission submission, string userId)
         {
             return submission.UserId == userId
-                   || await _context.Submissions.AnyAsync(s => s.Id == submission.Id 
-                                                               && s.UserId == userId 
+                   || await _context.Submissions.AnyAsync(s => s.Id == submission.Id
+                                                               && s.UserId == userId
                                                                && s.Verdict == Verdict.Accepted);
         }
 
@@ -80,6 +83,12 @@ namespace Judge1.Services
             return await _context.Submissions.PaginateAsync(s => new SubmissionInfoDto(s), pageIndex ?? 1, PageSize);
         }
 
+        public async Task<List<SubmissionInfoDto>> GetSubmissionsByProblemAndUserAsync(int problemId, string userId)
+        {
+            return await _context.Submissions.Where(s => s.ProblemId == problemId && s.UserId == userId)
+                .Select(s => new SubmissionInfoDto(s)).ToListAsync();
+        }
+
         public async Task<SubmissionViewDto> GetSubmissionViewAsync(int id, string userId)
         {
             var submission = await _context.Submissions.FindAsync(id);
@@ -92,7 +101,7 @@ namespace Judge1.Services
             {
                 throw new UnauthorizedAccessException("Not allowed to view this submission.");
             }
-            
+
             return new SubmissionViewDto(submission);
         }
 

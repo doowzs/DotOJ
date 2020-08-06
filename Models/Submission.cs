@@ -25,9 +25,9 @@ namespace Judge1.Models
         [Required, Column("program", TypeName = "text")]
         public string ProgramSerialized
         {
-            get => JsonConvert.ToString(Program);
+            get => JsonConvert.SerializeObject(Program);
             set => Program = string.IsNullOrEmpty(value)
-                ? null
+                ? new Program()
                 : JsonConvert.DeserializeObject<Program>(value);
         }
 
