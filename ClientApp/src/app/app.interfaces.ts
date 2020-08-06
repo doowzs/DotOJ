@@ -1,4 +1,9 @@
-﻿export interface TestCaseDto {
+﻿export interface Program {
+  language: number;
+  code: string;
+}
+
+export interface TestCaseDto {
   input: string;
   output: string;
 }
@@ -61,4 +66,23 @@ export interface AssignmentViewDto {
   endTime: string;
   problems: ProblemInfoDto[];
   notices: AssignmentNoticeDto[];
+}
+
+export interface SubmissionInfoDto {
+  id: number;
+  userId: string;
+  problemId: number;
+  verdict: number;
+  lastTestCase: number;
+  judgedAt: string;
+}
+
+export interface SubmissionViewDto {
+  id: number;
+  userId: string;
+  problemId: number;
+  program: Program;
+  verdict: number;
+  lastTestCase: number;
+  judgedAt: string;
 }

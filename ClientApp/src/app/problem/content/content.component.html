@@ -7,13 +7,7 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
-  <mat-card id="problem-submissions" class="mat-elevation-z0">
-    <mat-card-content>
-      <div id="no-submission" class="text-center">
-        <small>You haven't made an attempt on this problem.</small>
-      </div>
-    </mat-card-content>
-  </mat-card>
+  <app-problem-submissions [problem]="problem"></app-problem-submissions>
   <div id="problem-descriptions">
     <h2>Description</h2>
     <markdown [data]="problem.description" katex></markdown>

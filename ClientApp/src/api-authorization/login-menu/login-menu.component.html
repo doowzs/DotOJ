@@ -3,7 +3,7 @@
   <button mat-button tabindex="0" routerLink="/authentication/login">Login</button>
 </div>
 <ng-template #logoutMenu>
-  <button mat-button tabindex="0" routerLink="/authentication/profile" title="Manage">{{ userName }}</button>
+  <button mat-button tabindex="0" routerLink="/authentication/profile" title="Manage">{{ userName | async }}</button>
   <!-- to be replaced
   <li class="nav-item">
     <a  class="nav-link text-dark" [routerLink]='["/authentication/profile"]' title="Manage">Hello {{ userName | async }}</a>
