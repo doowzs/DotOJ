@@ -1,4 +1,8 @@
-﻿using Judge1.Models;
+﻿using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using Judge1.Models;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
@@ -38,6 +42,35 @@ namespace Judge1.Data
                 .HasOne(h => h.User)
                 .WithMany(u => u.Tests)
                 .OnDelete(DeleteBehavior.NoAction);
+        }
+
+        public override int SaveChanges(bool acceptAllChangesOnSuccess)
+        {
+            InjectCreatedAndUpdatedTimestamps();
+            return base.SaveChanges(acceptAllChangesOnSuccess);
+        }
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,
+            CancellationToken cancellationToken = new CancellationToken())
+        {
+            InjectCreatedAndUpdatedTimestamps();
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+
+        private void InjectCreatedAndUpdatedTimestamps()
+        {
+            var now = DateTime.Now;
+            var entries = ChangeTracker.Entries()
+                .Where(e => e.Entity is ModelWithTimestamps 
+                            && (e.State == EntityState.Added || e.State == EntityState.Modified));
+            foreach (var entry in entries)
+            {
+                if (entry.State == EntityState.Added)
+                {
+                    ((ModelWithTimestamps) entry.Entity).CreatedAt = now;
+                }
+                ((ModelWithTimestamps) entry.Entity).UpdatedAt = now;
+            }
         }
     }
 }

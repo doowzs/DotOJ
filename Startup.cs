@@ -19,7 +19,7 @@ namespace Judge1
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            
+
             // See https://github.com/dotnet/aspnetcore/issues/14160
             // Also https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/issues/415
             // JwtSecurityTokenHandler.DefaultInboundClaimTypeMap = new Dictionary<string, string>();
@@ -49,12 +49,9 @@ namespace Judge1
             services.AddScoped<IProblemService, ProblemService>();
             services.AddScoped<IAssignmentService, AssignmentService>();
             services.AddScoped<ISubmissionService, SubmissionService>();
-            
+
             // In production, the Angular files will be served from this directory
-            services.AddSpaStaticFiles(configuration =>
-            {
-                configuration.RootPath = "ClientApp/dist";
-            });
+            services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/dist"; });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

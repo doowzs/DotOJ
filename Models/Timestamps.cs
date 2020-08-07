@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Judge1.Models
@@ -6,12 +7,8 @@ namespace Judge1.Models
     public abstract class ModelWithTimestamps
     {
         #region Timestamps
-
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public DateTime CreatedAt { get; set; }
-        
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public DateTime UpdatedAt { get; set; }
+        [Required] public DateTime CreatedAt { get; set; }
+        [Required] public DateTime UpdatedAt { get; set; }
         
         #endregion
     }
