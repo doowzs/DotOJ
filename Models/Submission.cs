@@ -126,6 +126,10 @@ namespace Judge1.Models
         public int LastTestCase { get; }
         public DateTime JudgedAt { get; }
 
+        public SubmissionViewDto()
+        {
+        }
+
         public SubmissionViewDto(Submission submission) : base(submission)
         {
             Id = submission.Id;

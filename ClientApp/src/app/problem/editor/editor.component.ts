@@ -1,4 +1,4 @@
-﻿import {Component, OnInit, OnChanges, OnDestroy, Input, SimpleChanges} from '@angular/core';
+﻿import {Component, OnInit, AfterViewChecked, OnChanges, OnDestroy, Input, SimpleChanges} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {MatSelectChange} from '@angular/material/select';
 import {MatSnackBar} from '@angular/material/snack-bar';
@@ -19,6 +19,7 @@ import 'ace-builds/src-noconflict/mode-typescript';
 
 import {ProblemViewDto} from '../../app.interfaces';
 import {ProblemService} from '../problem.service';
+import {SubmissionService} from '../../submission/submission.service';
 
 const languages: { code, name, mode }[] = [
   {code: 50, name: 'C', mode: 'c_cpp'},
@@ -46,7 +47,7 @@ const languages: { code, name, mode }[] = [
   selector: 'app-problem-code-editor',
   templateUrl: './editor.component.html'
 })
-export class ProblemCodeEditorComponent implements OnInit, OnChanges, OnDestroy {
+export class ProblemCodeEditorComponent implements OnInit, AfterViewChecked, OnChanges, OnDestroy {
   @Input() public problem: ProblemViewDto;
 
   public languages = languages;
@@ -57,6 +58,7 @@ export class ProblemCodeEditorComponent implements OnInit, OnChanges, OnDestroy 
     private route: ActivatedRoute,
     private router: Router,
     private service: ProblemService,
+    private submitter: SubmissionService,
     private snackBar: MatSnackBar
   ) {
   }
@@ -68,6 +70,12 @@ export class ProblemCodeEditorComponent implements OnInit, OnChanges, OnDestroy 
       this.editor.getSession().setMode('ace/mode/' + this.currentLanguage.mode);
     }
     this.loadCode(this.problem.id);
+  }
+
+  ngAfterViewChecked() {
+    // Container of editor will not be ready in ngOnInit.
+    // We need a force resize to avoid layout issues of the editor.
+    this.editor.resize(true);
   }
 
   ngOnChanges(changes: SimpleChanges) {
@@ -109,5 +117,14 @@ export class ProblemCodeEditorComponent implements OnInit, OnChanges, OnDestroy 
 
   public loadCode(problemId: number) {
     this.editor.setValue(localStorage.getItem('editor-code-' + problemId) ?? '');
+  }
+
+  public submitCode(problem: ProblemViewDto) {
+    this.submitter.createSingle(problem, this.currentLanguage.code, this.editor.getValue())
+      .subscribe(submission => {
+        this.snackBar.open('Code submitted as #' + submission.id.toString() + '.', 'Done', {
+          duration: 3000
+        });
+      });
   }
 }

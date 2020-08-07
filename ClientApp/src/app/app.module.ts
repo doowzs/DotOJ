@@ -36,6 +36,7 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatListModule} from "@angular/material/list";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 const routes = [
   {
@@ -86,28 +87,29 @@ const routes = [
     CodeEditorDirective,
     ProblemSubmissionsComponent
   ],
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    FormsModule,
-    ApiAuthorizationModule,
-    MarkdownModule.forRoot(),
-    RouterModule.forRoot(routes),
-    BrowserAnimationsModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatTabsModule,
-    MatCardModule,
-    MatIconModule,
-    MatProgressBarModule,
-    MatGridListModule,
-    MatSelectModule,
-    MatSnackBarModule,
-    MatSlideToggleModule,
-    MatListModule
-  ],
+    imports: [
+        BrowserModule,
+        HttpClientModule,
+        FormsModule,
+        ApiAuthorizationModule,
+        MarkdownModule.forRoot(),
+        RouterModule.forRoot(routes),
+        BrowserAnimationsModule,
+        MatToolbarModule,
+        MatButtonModule,
+        MatTableModule,
+        MatPaginatorModule,
+        MatTabsModule,
+        MatCardModule,
+        MatIconModule,
+        MatProgressBarModule,
+        MatGridListModule,
+        MatSelectModule,
+        MatSnackBarModule,
+        MatSlideToggleModule,
+        MatListModule,
+        MatProgressSpinnerModule
+    ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true}
   ],

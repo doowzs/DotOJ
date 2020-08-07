@@ -75,7 +75,7 @@ namespace Judge1.Controllers.Api.v1
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<SubmissionInfoDto>> CreateSubmission(SubmissionViewDto dto)
+        public async Task<ActionResult<SubmissionInfoDto>> CreateSubmission([FromBody] SubmissionViewDto dto)
         {
             try
             {

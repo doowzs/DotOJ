@@ -1,16 +1,18 @@
 ﻿<mat-card id="problem-submissions" class="mat-elevation-z0">
   <mat-card-content>
-    <mat-list *ngIf="submissions && submissions.length; else noSubmission">
-      <mat-list-item *ngFor="let submission of submissions">
-        <mat-icon mat-list-icon class="text-success">check</mat-icon>
-        <span>Accepted</span>
-        <div class="flex-spacer"></div>
-        <span>1:20</span>
-        <button mat-icon-button>
-          <mat-icon>visibility</mat-icon>
-        </button>
-      </mat-list-item>
-    </mat-list>
+    <div *ngIf="newSubmissions.length || practiceSubmissions.length || assignmentSubmissions.length; else noSubmission">
+      <mat-list *ngIf="newSubmissions.length">
+        <mat-list-item *ngFor="let submission of newSubmissions">
+          <mat-spinner></mat-spinner>
+          <span>Status {{ submission.verdict }} on test case {{ submission.lastTestCase }}</span>
+          <div class="flex-spacer"></div>
+          <span>{{ submission.createdAt }}</span>
+          <button mat-icon-button>
+            <mat-icon>visibility</mat-icon>
+          </button>
+        </mat-list-item>
+      </mat-list>
+    </div>
     <ng-template #noSubmission>
       <div class="text-center">
         <small>You haven't made an attempt on this problem.</small>

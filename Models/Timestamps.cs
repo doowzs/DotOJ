@@ -24,6 +24,10 @@ namespace Judge1.Models
         public DateTime CreatedAt { get; }
         public DateTime UpdatedAt { get; }
 
+        public DtoWithTimestamps()
+        {
+        }
+
         public DtoWithTimestamps(ModelWithTimestamps model)
         {
             CreatedAt = model.CreatedAt;

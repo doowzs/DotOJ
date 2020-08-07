@@ -75,6 +75,7 @@ export interface SubmissionInfoDto {
   verdict: number;
   lastTestCase: number;
   judgedAt: string;
+  createdAt: string;
 }
 
 export interface SubmissionViewDto {
@@ -85,4 +86,5 @@ export interface SubmissionViewDto {
   verdict: number;
   lastTestCase: number;
   judgedAt: string;
+  createdAt: string;
 }

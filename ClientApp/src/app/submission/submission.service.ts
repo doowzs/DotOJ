@@ -1,9 +1,10 @@
 ﻿import {Inject, Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {Observable} from 'rxjs';
-import {map, mergeMap} from 'rxjs/operators';
+import {Observable, Subject} from 'rxjs';
+import {map, mergeMap, tap} from 'rxjs/operators';
 
 import {
+  ProblemViewDto,
   SubmissionInfoDto,
   SubmissionViewDto
 } from '../app.interfaces';
@@ -16,6 +17,7 @@ export class SubmissionService {
   private id: number;
   private cached: SubmissionViewDto;
   private userId: Observable<string>;
+  public newSubmission = new Subject<SubmissionInfoDto>();
 
   constructor(
     private http: HttpClient,
@@ -25,11 +27,28 @@ export class SubmissionService {
     this.userId = this.auth.getUser().pipe(map(u => u && u.sub));
   }
 
-  public getListByProblem(problemId: number): Observable<SubmissionInfoDto[] | null> {
+  public getListByProblem(problem: ProblemViewDto): Observable<SubmissionInfoDto[]> {
     return this.userId.pipe(mergeMap(userId => {
       return this.http.get<SubmissionInfoDto[]>(this.baseUrl + 'api/v1/submission/problem-user', {
-        params: new HttpParams().set('problemId', problemId.toString()).set('userId', userId)
+        params: new HttpParams().set('problemId', problem.id.toString()).set('userId', userId)
       });
+    }));
+  }
+
+  public getSingle(id: number, simple: boolean): Observable<SubmissionViewDto> {
+    return this.http.get<SubmissionViewDto>(this.baseUrl + 'api/v1/submission/' + id.toString(), {
+      params: new HttpParams().set('simple', simple.toString())
+    });
+  }
+
+  public createSingle(problem: ProblemViewDto, language: number, code: string): Observable<SubmissionInfoDto> {
+    return this.userId.pipe(mergeMap(userId => {
+      return this.http.post<SubmissionInfoDto>(this.baseUrl + 'api/v1/submission', {
+        problemId: problem.id,
+        userId: userId,
+        language: language,
+        code: code
+      }).pipe(tap(data => this.newSubmission.next(data)));
     }));
   }
 }
