@@ -13,8 +13,6 @@ namespace Judge1.Services
 {
     public interface ISubmissionService
     {
-        public Task<bool> CanViewSubmission(Submission submission, string userId);
-        public Task ValidateSubmissionViewDto(SubmissionViewDto dto, string userId);
         public Task<PaginatedList<SubmissionInfoDto>> GetPaginatedSubmissionsAsync(int? pageIndex);
         public Task<List<SubmissionInfoDto>> GetSubmissionsByProblemAndUserAsync(int problemId, string userId);
         public Task<SubmissionViewDto> GetSubmissionViewAsync(int id, string userId);

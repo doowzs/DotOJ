@@ -119,9 +119,9 @@ namespace Judge1.Models
     public class SubmissionViewDto : DtoWithTimestamps
     {
         public int Id { get; }
-        [Required] public string UserId { get; }
-        [Required] public int? ProblemId { get; }
-        [Required] public Program Program { get; }
+        [Required] public string UserId { get; set; }
+        [Required] public int? ProblemId { get; set; }
+        [Required] public Program Program { get; set; }
         public Verdict Verdict { get; }
         public int LastTestCase { get; }
         public DateTime JudgedAt { get; }
