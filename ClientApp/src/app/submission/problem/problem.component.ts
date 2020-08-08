@@ -91,8 +91,10 @@ export class ProblemSubmissionsComponent implements OnInit, OnChanges, OnDestroy
     }
     forkJoin(updateObservables).subscribe(updatedSubmissions => {
       for (let i = 0; i < updatedSubmissions.length; ++i) {
-        this.newSubmissions[i].verdict = updatedSubmissions[i].verdict;
-        this.newSubmissions[i].lastTestCase = updatedSubmissions[i].lastTestCase;
+        if (this.newSubmissions[i].id === updatedSubmissions[i].id) {
+          this.newSubmissions[i].verdict = updatedSubmissions[i].verdict;
+          this.newSubmissions[i].lastTestCase = updatedSubmissions[i].lastTestCase;
+        }
       }
       if (this.newSubmissions.filter(s => this.service.isJudging(s)).length) {
         this.updatingNewSubmissions = true;
