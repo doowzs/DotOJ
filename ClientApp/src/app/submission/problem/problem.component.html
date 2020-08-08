@@ -2,14 +2,58 @@
   <mat-card-content>
     <div *ngIf="newSubmissions.length || practiceSubmissions.length || assignmentSubmissions.length; else noSubmission">
       <mat-list *ngIf="newSubmissions.length">
-        <mat-list-item *ngFor="let submission of newSubmissions">
-          <mat-spinner></mat-spinner>
-          <span>Status {{ submission.verdict }} on test case {{ submission.lastTestCase }}</span>
-          <div class="flex-spacer"></div>
-          <span>{{ submission.createdAt }}</span>
-          <button mat-icon-button>
-            <mat-icon>visibility</mat-icon>
-          </button>
+        <mat-list-item *ngFor="let submission of newSubmissions" [ngSwitch]="submission.verdict">
+          <ng-container *ngSwitchCase="-1">
+            <mat-icon class="text-warning">warning</mat-icon>
+            <span>#{{ submission.id }}</span>
+            <span>Internal Error</span>
+            <div class="flex-spacer"></div>
+            <span>{{ submission.createdAt }}</span>
+            <button mat-icon-button>
+              <mat-icon>visibility</mat-icon>
+            </button>
+          </ng-container>
+          <ng-container *ngSwitchCase="0">
+            <mat-icon class="text-primary">access_time</mat-icon>
+            <span>#{{ submission.id }}</span>
+            <span>Pending</span>
+            <div class="flex-spacer"></div>
+            <button mat-icon-button>
+              <mat-icon>visibility</mat-icon>
+            </button>
+          </ng-container>
+          <ng-container *ngSwitchCase="1">
+            <mat-icon class="text-primary">access_time</mat-icon>
+            <span>In Queue</span>
+            <div class="flex-spacer"></div>
+            <button mat-icon-button>
+              <mat-icon>visibility</mat-icon>
+            </button>
+          </ng-container>
+          <ng-container *ngSwitchCase="2">
+            <mat-icon class="text-primary">access_time</mat-icon>
+            <span>Running on test case {{ submission.lastTestCase }}</span>
+            <div class="flex-spacer"></div>
+            <button mat-icon-button>
+              <mat-icon>visibility</mat-icon>
+            </button>
+          </ng-container>
+          <ng-container *ngSwitchCase="3">
+            <mat-icon class="text-success">check</mat-icon>
+            <span>Accepted</span>
+            <div class="flex-spacer"></div>
+            <button mat-icon-button>
+              <mat-icon>visibility</mat-icon>
+            </button>
+          </ng-container>
+          <ng-container *ngSwitchCase="4">
+            <mat-icon class="text-danger">clear</mat-icon>
+            <span>Wrong Answer on test case {{ submission.lastTestCase }}</span>
+            <div class="flex-spacer"></div>
+            <button mat-icon-button>
+              <mat-icon>visibility</mat-icon>
+            </button>
+          </ng-container>
         </mat-list-item>
       </mat-list>
     </div>

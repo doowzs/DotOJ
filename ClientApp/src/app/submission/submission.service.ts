@@ -1,7 +1,7 @@
 ﻿import {Inject, Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable, Subject} from 'rxjs';
-import {map, mergeMap, tap} from 'rxjs/operators';
+import {map, mergeMap, take, tap} from 'rxjs/operators';
 
 import {
   ProblemViewDto,
@@ -28,7 +28,7 @@ export class SubmissionService {
   }
 
   public getListByProblem(problem: ProblemViewDto): Observable<SubmissionInfoDto[]> {
-    return this.userId.pipe(mergeMap(userId => {
+    return this.userId.pipe(take(1), mergeMap(userId => {
       return this.http.get<SubmissionInfoDto[]>(this.baseUrl + 'api/v1/submission/problem-user', {
         params: new HttpParams().set('problemId', problem.id.toString()).set('userId', userId)
       });
@@ -42,12 +42,14 @@ export class SubmissionService {
   }
 
   public createSingle(problem: ProblemViewDto, language: number, code: string): Observable<SubmissionInfoDto> {
-    return this.userId.pipe(mergeMap(userId => {
+    return this.userId.pipe(take(1), mergeMap(userId => {
       return this.http.post<SubmissionInfoDto>(this.baseUrl + 'api/v1/submission', {
         problemId: problem.id,
         userId: userId,
-        language: language,
-        code: code
+        program: {
+          language: language,
+          code: code
+        }
       }).pipe(tap(data => this.newSubmission.next(data)));
     }));
   }

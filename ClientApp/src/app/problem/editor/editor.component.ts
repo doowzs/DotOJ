@@ -123,7 +123,8 @@ export class ProblemCodeEditorComponent implements OnInit, AfterViewChecked, OnC
     this.submitter.createSingle(problem, this.currentLanguage.code, this.editor.getValue())
       .subscribe(submission => {
         this.snackBar.open('Code submitted as #' + submission.id.toString() + '.', 'Done', {
-          duration: 3000
+          duration: 3000,
+          horizontalPosition: 'left'
         });
       });
   }

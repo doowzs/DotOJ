@@ -39,7 +39,7 @@ export class ProblemSubmissionsComponent implements OnInit, OnChanges, OnDestroy
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    this.service.getListByProblem(changes.problem.currentValue.id)
+    this.service.getListByProblem(changes.problem.currentValue)
       .subscribe(submissions => {
         const deadline = this.assignment ? DateTime.fromISO(this.assignment.endTime) : null;
         for (let i = 0; i < submissions.length; ++i) {
