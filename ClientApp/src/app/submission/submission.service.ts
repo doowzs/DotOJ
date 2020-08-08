@@ -27,6 +27,10 @@ export class SubmissionService {
     this.userId = this.auth.getUser().pipe(map(u => u && u.sub));
   }
 
+  public isJudging(submission: SubmissionInfoDto) {
+    return submission.verdict >= 0 && submission.verdict <= 2;
+  }
+
   public getListByProblem(problem: ProblemViewDto): Observable<SubmissionInfoDto[]> {
     return this.userId.pipe(take(1), mergeMap(userId => {
       return this.http.get<SubmissionInfoDto[]>(this.baseUrl + 'api/v1/submission/problem-user', {

@@ -78,12 +78,14 @@ namespace Judge1.Services
 
         public async Task<PaginatedList<SubmissionInfoDto>> GetPaginatedSubmissionsAsync(int? pageIndex)
         {
-            return await _context.Submissions.PaginateAsync(s => new SubmissionInfoDto(s), pageIndex ?? 1, PageSize);
+            return await _context.Submissions.OrderByDescending(s => s.Id)
+                .PaginateAsync(s => new SubmissionInfoDto(s), pageIndex ?? 1, PageSize);
         }
 
         public async Task<List<SubmissionInfoDto>> GetSubmissionsByProblemAndUserAsync(int problemId, string userId)
         {
-            return await _context.Submissions.Where(s => s.ProblemId == problemId && s.UserId == userId)
+            return await _context.Submissions.OrderByDescending(s => s.Id)
+                .Where(s => s.ProblemId == problemId && s.UserId == userId)
                 .Select(s => new SubmissionInfoDto(s)).ToListAsync();
         }
 

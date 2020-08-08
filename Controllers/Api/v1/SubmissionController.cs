@@ -47,17 +47,22 @@ namespace Judge1.Controllers.Api.v1
             return Ok(await _service.GetSubmissionsByProblemAndUserAsync(problemId, userId));
         }
 
-        [HttpPost("{id:int}")]
+        [HttpGet("{id:int}")]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<SubmissionInfoDto>> GetSubmission(int id)
+        public async Task<ActionResult<SubmissionInfoDto>> GetSubmission(int id, bool? simple)
         {
             try
             {
-                return Ok(await _service.GetSubmissionViewAsync(id, User.GetSubjectId()));
+                var submission = await _service.GetSubmissionViewAsync(id, User.GetSubjectId());
+                if (simple.GetValueOrDefault(false))
+                {
+                    submission.Program = null;
+                }
+                return Ok(submission);
             }
             catch (NotFoundException e)
             {

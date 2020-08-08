@@ -1,66 +1,123 @@
-﻿<mat-card id="problem-submissions" class="mat-elevation-z0">
-  <mat-card-content>
-    <div *ngIf="newSubmissions.length || practiceSubmissions.length || assignmentSubmissions.length; else noSubmission">
-      <mat-list *ngIf="newSubmissions.length">
-        <mat-list-item *ngFor="let submission of newSubmissions" [ngSwitch]="submission.verdict">
-          <ng-container *ngSwitchCase="-1">
-            <mat-icon class="text-warning">warning</mat-icon>
-            <span>#{{ submission.id }}</span>
-            <span>Internal Error</span>
-            <div class="flex-spacer"></div>
-            <span>{{ submission.createdAt }}</span>
-            <button mat-icon-button>
-              <mat-icon>visibility</mat-icon>
-            </button>
-          </ng-container>
-          <ng-container *ngSwitchCase="0">
-            <mat-icon class="text-primary">access_time</mat-icon>
-            <span>#{{ submission.id }}</span>
-            <span>Pending</span>
-            <div class="flex-spacer"></div>
-            <button mat-icon-button>
-              <mat-icon>visibility</mat-icon>
-            </button>
-          </ng-container>
-          <ng-container *ngSwitchCase="1">
-            <mat-icon class="text-primary">access_time</mat-icon>
-            <span>In Queue</span>
-            <div class="flex-spacer"></div>
-            <button mat-icon-button>
-              <mat-icon>visibility</mat-icon>
-            </button>
-          </ng-container>
-          <ng-container *ngSwitchCase="2">
-            <mat-icon class="text-primary">access_time</mat-icon>
-            <span>Running on test case {{ submission.lastTestCase }}</span>
-            <div class="flex-spacer"></div>
-            <button mat-icon-button>
-              <mat-icon>visibility</mat-icon>
-            </button>
-          </ng-container>
-          <ng-container *ngSwitchCase="3">
-            <mat-icon class="text-success">check</mat-icon>
-            <span>Accepted</span>
-            <div class="flex-spacer"></div>
-            <button mat-icon-button>
-              <mat-icon>visibility</mat-icon>
-            </button>
-          </ng-container>
-          <ng-container *ngSwitchCase="4">
-            <mat-icon class="text-danger">clear</mat-icon>
-            <span>Wrong Answer on test case {{ submission.lastTestCase }}</span>
-            <div class="flex-spacer"></div>
-            <button mat-icon-button>
-              <mat-icon>visibility</mat-icon>
-            </button>
-          </ng-container>
-        </mat-list-item>
-      </mat-list>
+﻿<h2>
+  Submissions
+  <button mat-icon-button style="float: right;" (click)="loadSubmissions(problem)">
+    <mat-icon>refresh</mat-icon>
+  </button>
+</h2>
+<mat-progress-bar mode="indeterminate" *ngIf="updatingNewSubmissions"></mat-progress-bar>
+<div *ngIf="newSubmissions.length || practiceSubmissions.length || assignmentSubmissions.length; else noSubmission">
+  <div *ngFor="let category of [{name: '', submissions: newSubmissions},
+    {name: 'Practice Submissions', submissions: practiceSubmissions},
+    {name: 'Assignment Submissions', submissions: assignmentSubmissions}]">
+    <h3 *ngIf="category.name && category.submissions.length">{{ category.name }}</h3>
+    <div *ngIf="category.submissions.length" style="max-height: 40vh; overflow-y: auto;">
+      <button mat-button style="width: 100%;" *ngFor="let submission of category.submissions">
+          <span style="float: left;" [ngSwitch]="submission.verdict">
+            <ng-container *ngSwitchCase="-1">
+              <mat-icon inline="true" class="text-warning">warning</mat-icon>
+              <span style="margin-left: 0.5rem;">
+                #{{ submission.id }}: Service Error
+              </span>
+            </ng-container>
+            <ng-container *ngSwitchCase="0">
+              <mat-icon inline="true" color="primary">access_time</mat-icon>
+              <span style="margin-left: 0.5rem;">
+                #{{ submission.id }}: Pending
+              </span>
+            </ng-container>
+            <ng-container *ngSwitchCase="1">
+              <mat-icon inline="true" color="primary">access_time</mat-icon>
+              <span style="margin-left: 0.5rem;">
+                #{{ submission.id }}: In Queue
+              </span>
+            </ng-container>
+            <ng-container *ngSwitchCase="2">
+              <mat-icon inline="true" color="primary">access_time</mat-icon>
+              <span style="margin-left: 0.5rem;">
+                #{{ submission.id }}: Running on case {{ submission.lastTestCase }}
+              </span>
+            </ng-container>
+            <ng-container *ngSwitchCase="3">
+              <mat-icon inline="true" class="text-success">check</mat-icon>
+              <span style="margin-left: 0.5rem;">
+                #{{ submission.id }}: Accepted
+              </span>
+            </ng-container>
+            <ng-container *ngSwitchCase="4">
+              <mat-icon inline="true" class="text-danger">clear</mat-icon>
+              <span style="margin-left: 0.5rem;">
+                #{{ submission.id }}: WA on case {{ submission.lastTestCase }}
+              </span>
+            </ng-container>
+            <ng-container *ngSwitchCase="5">
+              <mat-icon inline="true" class="text-danger">clear</mat-icon>
+              <span style="margin-left: 0.5rem;">
+                #{{ submission.id }}: TLE on case {{ submission.lastTestCase }}
+              </span>
+            </ng-container>
+            <ng-container *ngSwitchCase="6">
+              <mat-icon inline="true" class="text-danger">clear</mat-icon>
+              <span style="margin-left: 0.5rem;">
+                #{{ submission.id }}: Compile Error
+              </span>
+            </ng-container>
+            <ng-container *ngSwitchCase="7">
+              <mat-icon inline="true" class="text-danger">clear</mat-icon>
+              <span style="margin-left: 0.5rem;">
+                #{{ submission.id }}: RE (SIGSEGV) on case {{ submission.lastTestCase }}
+              </span>
+            </ng-container>
+            <ng-container *ngSwitchCase="8">
+              <mat-icon inline="true" class="text-danger">clear</mat-icon>
+              <span style="margin-left: 0.5rem;">
+                #{{ submission.id }}: RE (SIGXFSZ) on case {{ submission.lastTestCase }}
+              </span>
+            </ng-container>
+            <ng-container *ngSwitchCase="9">
+              <mat-icon inline="true" class="text-danger">clear</mat-icon>
+              <span style="margin-left: 0.5rem;">
+                #{{ submission.id }}: RE (SIGFPE) on case {{ submission.lastTestCase }}
+              </span>
+            </ng-container>
+            <ng-container *ngSwitchCase="10">
+              <mat-icon inline="true" class="text-danger">clear</mat-icon>
+              <span style="margin-left: 0.5rem;">
+                #{{ submission.id }}: RE (SIGABRT) on case {{ submission.lastTestCase }}
+              </span>
+            </ng-container>
+            <ng-container *ngSwitchCase="11">
+              <mat-icon inline="true" class="text-danger">clear</mat-icon>
+              <span style="margin-left: 0.5rem;">
+                #{{ submission.id }}: RE (SIGNZEC) on case {{ submission.lastTestCase }}
+              </span>
+            </ng-container>
+            <ng-container *ngSwitchCase="12">
+              <mat-icon inline="true" class="text-danger">clear</mat-icon>
+              <span style="margin-left: 0.5rem;">
+                #{{ submission.id }}: RE on case {{ submission.lastTestCase }}
+              </span>
+            </ng-container>
+            <ng-container *ngSwitchCase="13">
+              <mat-icon inline="true" class="text-warning">warning</mat-icon>
+              <span style="margin-left: 0.5rem;">
+                #{{ submission.id }}: Internal Error
+              </span>
+            </ng-container>
+            <ng-container *ngSwitchCase="14">
+              <mat-icon inline="true" class="text-danger">clear</mat-icon>
+              <span style="margin-left: 0.5rem;">
+                #{{ submission.id }}: Exec Format Error
+              </span>
+            </ng-container>
+          </span>
+        <span style="float: right;">{{ submission.createdAt | date: 'yyyy-MM-dd HH:mm' }}</span>
+      </button>
     </div>
-    <ng-template #noSubmission>
-      <div class="text-center">
-        <small>You haven't made an attempt on this problem.</small>
-      </div>
-    </ng-template>
-  </mat-card-content>
-</mat-card>
+  </div>
+</div>
+<ng-template #noSubmission>
+  <div class="text-center">
+    <small>You haven't made an attempt on this problem.</small>
+  </div>
+</ng-template>
+<mat-divider></mat-divider>

@@ -1,6 +1,6 @@
 ﻿import {Component, Input, OnInit, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
 import {forkJoin, interval, Observable, of, Subject, timer} from 'rxjs';
-import {delay, takeUntil} from 'rxjs/operators';
+import {take, takeUntil} from 'rxjs/operators';
 import {DateTime} from 'luxon';
 
 import {
@@ -20,17 +20,29 @@ export class ProblemSubmissionsComponent implements OnInit, OnChanges, OnDestroy
   public newSubmissions: SubmissionInfoDto[] = [];
   public practiceSubmissions: SubmissionInfoDto[] = [];
   public assignmentSubmissions: SubmissionInfoDto[] = [];
-  private updatingNewSubmissions = false;
+  public updatingNewSubmissions = false;
   private ngUnsubscribe$ = new Subject();
 
   constructor(
-    private service: SubmissionService
+    private service: SubmissionService,
   ) {
   }
 
   ngOnInit() {
-    this.service.newSubmission.subscribe(submission => {
-      this.newSubmissions.unshift(submission);
+    this.service.newSubmission.subscribe(newSubmission => {
+      const deadline = DateTime.fromISO(this.assignment.endTime);
+      for (let i = this.newSubmissions.length - 1; i >= 0; --i) {
+        const submission = this.newSubmissions[i];
+        if (!this.service.isJudging(submission)) {
+          if (DateTime.fromISO(submission.createdAt) <= deadline) {
+            this.assignmentSubmissions.unshift(submission);
+          } else {
+            this.practiceSubmissions.unshift(submission);
+          }
+        }
+      }
+      this.newSubmissions = this.newSubmissions.filter(s => this.service.isJudging(s));
+      this.newSubmissions.unshift(newSubmission);
       if (!this.updatingNewSubmissions) {
         this.updatingNewSubmissions = true;
         this.updateNewSubmissions();
@@ -39,18 +51,7 @@ export class ProblemSubmissionsComponent implements OnInit, OnChanges, OnDestroy
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    this.service.getListByProblem(changes.problem.currentValue)
-      .subscribe(submissions => {
-        const deadline = this.assignment ? DateTime.fromISO(this.assignment.endTime) : null;
-        for (let i = 0; i < submissions.length; ++i) {
-          const submission = submissions[i];
-          if (deadline && DateTime.fromISO(submission.createdAt) <= deadline) {
-            this.assignmentSubmissions.unshift(submission);
-          } else {
-            this.practiceSubmissions.unshift(submission);
-          }
-        }
-      }, error => console.error(error));
+    this.loadSubmissions(changes.problem.currentValue);
   }
 
   ngOnDestroy() {
@@ -58,19 +59,51 @@ export class ProblemSubmissionsComponent implements OnInit, OnChanges, OnDestroy
     this.ngUnsubscribe$.complete();
   }
 
+  public loadSubmissions(problem: ProblemViewDto) {
+    this.service.getListByProblem(problem)
+      .subscribe(submissions => {
+        this.newSubmissions = [];
+        this.practiceSubmissions = [];
+        this.assignmentSubmissions = [];
+        const deadline = DateTime.fromISO(this.assignment.endTime);
+        for (let i = 0; i < submissions.length; ++i) {
+          const submission = submissions[i];
+          if (this.service.isJudging(submission)) {
+            this.newSubmissions.push(submission);
+            if (!this.updatingNewSubmissions) {
+              this.updatingNewSubmissions = true;
+              this.updateNewSubmissions();
+            }
+          } else if (DateTime.fromISO(submission.createdAt) <= deadline) {
+            this.assignmentSubmissions.push(submission);
+          } else {
+            this.practiceSubmissions.push(submission);
+          }
+        }
+      }, error => console.error(error));
+  }
+
   public updateNewSubmissions() {
+    this.updatingNewSubmissions = this.newSubmissions.length > 0;
     const updateObservables: Observable<SubmissionViewDto>[] = [];
     for (let i = 0; i < this.newSubmissions.length; ++i) {
       updateObservables.push(this.service.getSingle(this.newSubmissions[i].id, true));
     }
-    const allUpdated$ = updateObservables.length ? forkJoin(updateObservables) : of([]);
-    allUpdated$.subscribe(updatedSubmissions => {
+    forkJoin(updateObservables).subscribe(updatedSubmissions => {
       for (let i = 0; i < updatedSubmissions.length; ++i) {
         this.newSubmissions[i].verdict = updatedSubmissions[i].verdict;
         this.newSubmissions[i].lastTestCase = updatedSubmissions[i].lastTestCase;
       }
-      of().pipe(delay(2000), takeUntil(this.ngUnsubscribe$))
-        .subscribe(() => this.updateNewSubmissions());
+      if (this.newSubmissions.filter(s => this.service.isJudging(s)).length) {
+        this.updatingNewSubmissions = true;
+        interval(2000).pipe(take(1), takeUntil(this.ngUnsubscribe$))
+          .subscribe(() => this.updateNewSubmissions());
+      } else {
+        this.updatingNewSubmissions = false;
+      }
+    }, error => {
+      console.error(error);
+      this.updatingNewSubmissions = false;
     });
   }
 }
