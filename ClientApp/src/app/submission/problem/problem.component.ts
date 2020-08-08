@@ -51,6 +51,7 @@ export class ProblemSubmissionsComponent implements OnInit, OnChanges, OnDestroy
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    this.updatingNewSubmissions = false;
     this.loadSubmissions(changes.problem.currentValue);
   }
 
@@ -65,6 +66,7 @@ export class ProblemSubmissionsComponent implements OnInit, OnChanges, OnDestroy
         this.newSubmissions = [];
         this.practiceSubmissions = [];
         this.assignmentSubmissions = [];
+        this.updatingNewSubmissions = false;
         const deadline = DateTime.fromISO(this.assignment.endTime);
         for (let i = 0; i < submissions.length; ++i) {
           const submission = submissions[i];
