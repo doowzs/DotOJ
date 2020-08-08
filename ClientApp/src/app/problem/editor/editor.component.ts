@@ -80,7 +80,7 @@ export class ProblemCodeEditorComponent implements OnInit, AfterViewChecked, OnC
 
   ngOnChanges(changes: SimpleChanges) {
     if (!changes.problem.isFirstChange()) {
-      this.saveCode(changes.problem.previousValue.id, false);
+      this.saveCode(changes.problem.previousValue.id);
       this.loadCode(changes.problem.currentValue.id);
     }
   }
@@ -107,7 +107,7 @@ export class ProblemCodeEditorComponent implements OnInit, AfterViewChecked, OnC
     reader.readAsText(event.target.files[0]);
   }
 
-  public saveCode(problemId: number, prompt: boolean = true) {
+  public saveCode(problemId: number, prompt: boolean = false) {
     localStorage.setItem('editor-code-' + problemId, this.editor.getValue());
     if (prompt) {
       this.snackBar.open('Code saved.', 'Done', {
