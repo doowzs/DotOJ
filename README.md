@@ -68,9 +68,12 @@ Clone this repository and open the folder in a shell.
 We are using SQL Server Express as the data source. There are two flavors of database installation.
 
 - If you are using Windows or GNU/Linux, you can install SQL server on your host. Visit [the download page](https://www.microsoft.com/en-us/sql-server/sql-server-downloads) and download SQL Server Express installer or find other guides. During the configuration step, choose Developer or Express as the edition of SQL server.
+  
+  For windows users, an extra step of configuration is required. You need to open SQL Server Configuration Manager after installation, then start SQL Server related Windows service and turn on TCP/IP protocol in Internet configuration. Test the setup using an SQL client listed below and connect to `localhost:1443`.
+
 - If you prefer dockerize, refer to [this guide](https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker) to run SQL server with Docker. The docker container by default provides a Developer edition of SQL server, setting `MSSQL_PID=Express` environment variable will tell the container to start Express edition. See [DockerHub page](https://hub.docker.com/_/microsoft-mssql-server) for more details.
 
-After install DB, you need to configure the users and create users and schemas. You can use the following common utilities:
+After installing DB, you need to configure the users and create schemas. You can use the following common utilities:
 
 - [SSMS (Windows only)](https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-manage-ssms)
 - [Azure Data Studio (Cross Platform)](https://docs.microsoft.com/en-us/sql/azure-data-studio/what-is)
@@ -79,7 +82,7 @@ After install DB, you need to configure the users and create users and schemas. 
 
 In this step, you need to:
 
-- Create a schema called `judge1`, create a user called `judge1` identified by `judge1`, and grant all privileges on that schema.
+- Create a schema called `judge1`, create a user called `judge1` identified by `judge1`, and grant all privileges on that schema. The user must use SQL server authentication (i.e. password) instead of Windows authentication.
   ```sql
   CREATE SCHEMA judge1;
   CREATE LOGIN judge1 WITH PASSWORD = 'judge1';
