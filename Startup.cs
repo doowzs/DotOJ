@@ -1,3 +1,4 @@
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
@@ -11,6 +12,8 @@ using Judge1.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Hangfire;
+using Hangfire.SqlServer;
 
 namespace Judge1
 {
@@ -40,6 +43,21 @@ namespace Judge1
 
             services.AddIdentityServer()
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+
+            services.AddHangfire(configuration => configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage(Configuration.GetConnectionString("HangfireConnection"),
+                    new SqlServerStorageOptions()
+                    {
+                        CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                        SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                        QueuePollInterval = TimeSpan.Zero,
+                        UseRecommendedIsolationLevel = true,
+                        DisableGlobalLocks = true
+                    }));
+            services.AddHangfireServer();
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
@@ -87,6 +105,9 @@ namespace Judge1
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
+                // TODO: add authorization and allow remote access, see link below for instructions
+                // https://docs.hangfire.io/en/latest/configuration/using-dashboard.html#configuring-authorization
+                endpoints.MapHangfireDashboard();
             });
 
             app.UseSpa(spa =>
