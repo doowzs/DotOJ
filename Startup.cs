@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Hangfire;
 using Hangfire.SqlServer;
+using Judge1.Runners;
 
 namespace Judge1
 {
@@ -67,6 +68,8 @@ namespace Judge1
             services.AddScoped<IProblemService, ProblemService>();
             services.AddScoped<IAssignmentService, AssignmentService>();
             services.AddScoped<ISubmissionService, SubmissionService>();
+
+            services.AddScoped<ISubmissionRunner, SubmissionRunner>();
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/dist"; });

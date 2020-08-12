@@ -5,8 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Judge1.Data;
 using Judge1.Exceptions;
-using Judge1.Jobs;
 using Judge1.Models;
+using Judge1.Runners;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -19,7 +19,6 @@ namespace Judge1.Services
         public Task<List<SubmissionInfoDto>> GetSubmissionsByProblemAndUserAsync(int problemId, string userId);
         public Task<SubmissionViewDto> GetSubmissionViewAsync(int id, string userId);
         public Task<SubmissionViewDto> CreateSubmissionAsync(SubmissionViewDto dto, string userId);
-        public Task UpdateSubmissionVerdictAsync(Submission submission, Verdict verdict, int lastTestCase);
     }
 
     public class SubmissionService : ISubmissionService
@@ -28,14 +27,14 @@ namespace Judge1.Services
 
         private readonly ApplicationDbContext _context;
         private readonly ILogger<SubmissionService> _logger;
-        private readonly IServiceProvider _serviceProvider;
+        private readonly ISubmissionRunner _runner;
 
-        public SubmissionService(ApplicationDbContext context, ILogger<SubmissionService> logger,
-            IServiceProvider serviceProvider)
+        public SubmissionService(ApplicationDbContext context,
+            ILogger<SubmissionService> logger, ISubmissionRunner runner)
         {
             _context = context;
             _logger = logger;
-            _serviceProvider = serviceProvider;
+            _runner = runner;
         }
 
         public async Task<bool> CanViewSubmission(Submission submission, string userId)
@@ -123,17 +122,9 @@ namespace Judge1.Services
             await _context.Submissions.AddAsync(submission);
             await _context.SaveChangesAsync();
 
-            ActivatorUtilities.CreateInstance<JudgeSubmissionJob>(_serviceProvider, submission);
+            _runner.RunInBackground(submission.Id);
+            
             return new SubmissionViewDto(submission);
-        }
-
-        public async Task UpdateSubmissionVerdictAsync(Submission submission, Verdict verdict, int lastTestCase)
-        {
-            var entry = _context.Attach(submission);
-            entry.Entity.Verdict = verdict;
-            entry.Entity.LastTestCase = lastTestCase;
-            entry.Entity.JudgedAt = DateTime.Now;
-            await _context.SaveChangesAsync();
         }
     }
 }
