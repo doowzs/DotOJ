@@ -36,12 +36,9 @@ namespace Judge1.Runners
 
         public static Dictionary<Language, LanguageOptions> LanguageDict = new Dictionary<Language, LanguageOptions>()
         {
-            {Language.C, new LanguageOptions(50, "-DONLINE_JUDGE --static -O2")},
-            {Language.C11, new LanguageOptions(50, "-DONLINE_JUDGE --static -O2 --std=c11")},
+            {Language.C, new LanguageOptions(50, "-DONLINE_JUDGE --static -O2 --std=c11")},
             {Language.CSharp, new LanguageOptions(51)},
-            {Language.Cpp, new LanguageOptions(54, "-DONLINE_JUDGE --static -O2")},
-            {Language.Cpp11, new LanguageOptions(54, "-DONLINE_JUDGE --static -O2 --std=c++11")},
-            {Language.Cpp17, new LanguageOptions(54, "-DONLINE_JUDGE --static -O2 --std=c++17")},
+            {Language.Cpp, new LanguageOptions(54, "-DONLINE_JUDGE --static -O2 --std=c++17")},
             {Language.Go, new LanguageOptions(60)},
             {Language.Haskell, new LanguageOptions(61)},
             {Language.Java13, new LanguageOptions(62, "-J-Xms32m -J-Xmx256m")},

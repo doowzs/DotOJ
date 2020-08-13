@@ -23,11 +23,8 @@ import {SubmissionService} from '../../submission/submission.service';
 
 const languages: { code, name, mode }[] = [
   {code: 50, name: 'C', mode: 'c_cpp'},
-  {code: 150, name: 'C 11', mode: 'c_cpp'},
   {code: 51, name: 'C#', mode: 'csharp'},
   {code: 54, name: 'C++', mode: 'c_cpp'},
-  {code: 154, name: 'C++ 11', mode: 'c_cpp'},
-  {code: 254, name: 'C++ 17', mode: 'c_cpp'},
   {code: 60, name: 'Golang', mode: 'golang'},
   {code: 61, name: 'Haskell', mode: 'haskell'},
   {code: 62, name: 'Java 11', mode: 'java'},

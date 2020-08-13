@@ -5,11 +5,8 @@ namespace Judge1.Models
     public enum Language
     {
         C = 50,
-        C11 = 150,
         CSharp = 51,
         Cpp = 54,
-        Cpp11 = 154,
-        Cpp17 = 254,
         Go = 60,
         Haskell = 61,
         Java13 = 62,

@@ -1,4 +1,4 @@
-﻿<div id="code-editor" appCodeEditor (ctrlS)="saveCode(problem.id)"
+﻿<div id="code-editor" appCodeEditor (ctrlS)="saveCode(problem.id, true)"
      style="width: 100%; height: calc(100% - 64px); font-size: 18px;"
 ></div>
 <mat-toolbar>
@@ -18,7 +18,7 @@
     <mat-icon>publish</mat-icon>
     <span>Upload</span>
   </button>
-  <button mat-button (click)="saveCode(problem.id, false)">
+  <button mat-button (click)="saveCode(problem.id, true)">
     <mat-icon>save</mat-icon>
     <span>Save</span>
   </button>
