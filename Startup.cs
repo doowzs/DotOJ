@@ -65,6 +65,8 @@ namespace Judge1
             services.AddControllersWithViews();
             services.AddRazorPages();
 
+            services.AddHttpClient(); // IHttpClientFactory
+
             services.AddScoped<IProblemService, ProblemService>();
             services.AddScoped<IAssignmentService, AssignmentService>();
             services.AddScoped<ISubmissionService, SubmissionService>();
