@@ -34,7 +34,7 @@
             <ng-container *ngSwitchCase="2">
               <mat-icon inline="true" color="primary">access_time</mat-icon>
               <span style="margin-left: 0.5rem;">
-                #{{ submission.id }}: Running on case {{ submission.lastTestCase }}
+                #{{ submission.id }}: Running on test {{ submission.lastTestCase }}
               </span>
             </ng-container>
             <ng-container *ngSwitchCase="3">
@@ -46,13 +46,19 @@
             <ng-container *ngSwitchCase="4">
               <mat-icon inline="true" class="text-danger">clear</mat-icon>
               <span style="margin-left: 0.5rem;">
-                #{{ submission.id }}: WA on case {{ submission.lastTestCase }}
+                #{{ submission.id }}: Wrong Answer
+                <span *ngIf="submission.lastTestCase > 0">
+                  on test {{ submission.lastTestCase }}
+                </span>
               </span>
             </ng-container>
             <ng-container *ngSwitchCase="5">
               <mat-icon inline="true" class="text-danger">clear</mat-icon>
               <span style="margin-left: 0.5rem;">
-                #{{ submission.id }}: TLE on case {{ submission.lastTestCase }}
+                #{{ submission.id }}: Time Limit Exceeded
+                <span *ngIf="submission.lastTestCase > 0">
+                  on test {{ submission.lastTestCase }}
+                </span>
               </span>
             </ng-container>
             <ng-container *ngSwitchCase="6">
@@ -64,37 +70,55 @@
             <ng-container *ngSwitchCase="7">
               <mat-icon inline="true" class="text-danger">clear</mat-icon>
               <span style="margin-left: 0.5rem;">
-                #{{ submission.id }}: RE (SIGSEGV) on case {{ submission.lastTestCase }}
+                #{{ submission.id }}: Runtime Error
+                <span *ngIf="submission.lastTestCase > 0">
+                  on test {{ submission.lastTestCase }}
+                </span>
               </span>
             </ng-container>
             <ng-container *ngSwitchCase="8">
               <mat-icon inline="true" class="text-danger">clear</mat-icon>
               <span style="margin-left: 0.5rem;">
-                #{{ submission.id }}: RE (SIGXFSZ) on case {{ submission.lastTestCase }}
+                #{{ submission.id }}: Runtime Error
+                <span *ngIf="submission.lastTestCase > 0">
+                  on test {{ submission.lastTestCase }}
+                </span>
               </span>
             </ng-container>
             <ng-container *ngSwitchCase="9">
               <mat-icon inline="true" class="text-danger">clear</mat-icon>
               <span style="margin-left: 0.5rem;">
-                #{{ submission.id }}: RE (SIGFPE) on case {{ submission.lastTestCase }}
+                #{{ submission.id }}: Runtime Error
+                <span *ngIf="submission.lastTestCase > 0">
+                  on test {{ submission.lastTestCase }}
+                </span>
               </span>
             </ng-container>
             <ng-container *ngSwitchCase="10">
               <mat-icon inline="true" class="text-danger">clear</mat-icon>
               <span style="margin-left: 0.5rem;">
-                #{{ submission.id }}: RE (SIGABRT) on case {{ submission.lastTestCase }}
+                #{{ submission.id }}: Runtime Error
+                <span *ngIf="submission.lastTestCase > 0">
+                  on test {{ submission.lastTestCase }}
+                </span>
               </span>
             </ng-container>
             <ng-container *ngSwitchCase="11">
               <mat-icon inline="true" class="text-danger">clear</mat-icon>
               <span style="margin-left: 0.5rem;">
-                #{{ submission.id }}: RE (SIGNZEC) on case {{ submission.lastTestCase }}
+                #{{ submission.id }}: Runtime Error
+                <span *ngIf="submission.lastTestCase > 0">
+                  on test {{ submission.lastTestCase }}
+                </span>
               </span>
             </ng-container>
             <ng-container *ngSwitchCase="12">
               <mat-icon inline="true" class="text-danger">clear</mat-icon>
               <span style="margin-left: 0.5rem;">
-                #{{ submission.id }}: RE on case {{ submission.lastTestCase }}
+                #{{ submission.id }}: Runtime Error
+                <span *ngIf="submission.lastTestCase > 0">
+                  on test {{ submission.lastTestCase }}
+                </span>
               </span>
             </ng-container>
             <ng-container *ngSwitchCase="13">
