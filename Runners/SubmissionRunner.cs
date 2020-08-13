@@ -176,6 +176,7 @@ namespace Judge1.Runners
             var response = JsonSerializer.Deserialize<RunnerResponse>(await data.Content.ReadAsStringAsync());
             submission.Verdict = response.Status.Id == Verdict.Accepted ? Verdict.Running : response.Status.Id;
             submission.LastTestCase = index;
+            submission.JudgedAt = DateTime.Now;
             _context.Submissions.Update(submission);
             await _context.SaveChangesAsync();
             
