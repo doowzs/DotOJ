@@ -17,25 +17,9 @@ import 'ace-builds/src-noconflict/mode-ruby';
 import 'ace-builds/src-noconflict/mode-rust';
 import 'ace-builds/src-noconflict/mode-typescript';
 
-import {ProblemViewDto} from '../../app.interfaces';
+import {ProblemViewDto, Languages} from '../../app.interfaces';
 import {ProblemService} from '../problem.service';
 import {SubmissionService} from '../../submission/submission.service';
-
-const languages: { code, name, mode }[] = [
-  {code: 50, name: 'C', mode: 'c_cpp'},
-  {code: 51, name: 'C#', mode: 'csharp'},
-  {code: 54, name: 'C++', mode: 'c_cpp'},
-  {code: 60, name: 'Golang', mode: 'golang'},
-  {code: 61, name: 'Haskell', mode: 'haskell'},
-  {code: 62, name: 'Java 11', mode: 'java'},
-  {code: 63, name: 'JavaScript', mode: 'javascript'},
-  {code: 64, name: 'Lua', mode: 'lua'},
-  {code: 68, name: 'PHP', mode: 'php'},
-  {code: 71, name: 'Python 3', mode: 'python'},
-  {code: 72, name: 'Ruby', mode: 'ruby'},
-  {code: 73, name: 'Rust', mode: 'rust'},
-  {code: 74, name: 'TypeScript', mode: 'typescript'}
-];
 
 @Component({
   selector: 'app-problem-code-editor',
@@ -44,7 +28,7 @@ const languages: { code, name, mode }[] = [
 export class ProblemCodeEditorComponent implements OnInit, AfterViewChecked, OnChanges, OnDestroy {
   @Input() public problem: ProblemViewDto;
 
-  public languages = languages;
+  public languages = Languages;
   public currentLanguage: { code, name, mode };
   private editor: ace.Ace.Editor;
 

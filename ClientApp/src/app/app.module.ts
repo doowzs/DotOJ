@@ -17,6 +17,8 @@ import {ProblemContentComponent} from './problem/content/content.component';
 import {ProblemCodeEditorComponent} from './problem/editor/editor.component';
 import {CodeEditorDirective} from './problem/editor/editor.directive';
 import {ProblemSubmissionsComponent} from './submission/problem/problem.component';
+import {AboutComponent} from './about/main/main.component';
+import {JudgeInfoComponent} from './about/judge/judge.component';
 
 import {ApiAuthorizationModule} from 'src/api-authorization/api-authorization.module';
 import {AuthorizeGuard} from 'src/api-authorization/authorize.guard';
@@ -35,8 +37,8 @@ import {MatGridListModule} from '@angular/material/grid-list';
 import {MatSelectModule} from '@angular/material/select';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
-import {MatListModule} from "@angular/material/list";
-import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import {MatListModule} from '@angular/material/list';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 const routes = [
   {
@@ -70,6 +72,11 @@ const routes = [
     component: ProblemListComponent,
     canActivate: [AuthorizeGuard]
   },
+  {
+    path: 'about',
+    component: AboutComponent,
+    canActivate: [AuthorizeGuard]
+  }
 ];
 
 @NgModule({
@@ -85,7 +92,9 @@ const routes = [
     ProblemContentComponent,
     ProblemCodeEditorComponent,
     CodeEditorDirective,
-    ProblemSubmissionsComponent
+    ProblemSubmissionsComponent,
+    AboutComponent,
+    JudgeInfoComponent
   ],
     imports: [
         BrowserModule,

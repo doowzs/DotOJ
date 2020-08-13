@@ -1,0 +1,25 @@
+﻿<p>
+  Your code will be compiled and/or run in <strong>Linux</strong> containers,
+  with a different running environment for each language as listed below:
+</p>
+
+<table mat-table [dataSource]="languages"
+       class="mat-elevation-z1" style="width: 100%;">
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef>Language</th>
+    <td mat-cell *matCellDef="let language">{{ language.name }}</td>
+  </ng-container>
+  <ng-container matColumnDef="env">
+    <th mat-header-cell *matHeaderCellDef>Environment</th>
+    <td mat-cell *matCellDef="let language">{{ language.env }}</td>
+  </ng-container>
+  <ng-container matColumnDef="option">
+    <th mat-header-cell *matHeaderCellDef>Compile Option</th>
+    <td mat-cell *matCellDef="let language">
+      <code>{{ language.option }}</code>
+    </td>
+  </ng-container>
+  <tr mat-header-row *matHeaderRowDef="columns"></tr>
+  <tr mat-row *matRowDef="let language; columns: columns"></tr>
+</table>
+
