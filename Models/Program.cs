@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Judge1.Models
 {
@@ -42,7 +43,7 @@ namespace Judge1.Models
     [NotMapped]
     public class Program
     {
-        public Language Language { get; set; }
-        public string Code { get; set; }
+        [Required] public Language? Language { get; set; }
+        [Required] public string Code { get; set; }
     }
 }

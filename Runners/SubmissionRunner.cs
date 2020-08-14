@@ -5,14 +5,12 @@ using System.Net.Http;
 using System.Net.Mime;
 using System.Text;
 using System.Text.Json.Serialization;
-using System.Text.Unicode;
 using System.Threading.Tasks;
 using Hangfire;
 using Judge1.Data;
 using Judge1.Models;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Judge1.Runners
 {
@@ -160,27 +158,30 @@ namespace Judge1.Runners
             var options = new RunnerOptions()
             {
                 SourceCode = Convert.ToBase64String(Encoding.UTF8.GetBytes(submission.Program.Code)),
-                LanguageId = Languages.LanguageDict[submission.Program.Language].languageId,
-                CompilerOptions = Languages.LanguageDict[submission.Program.Language].compilerOptions,
+                LanguageId = Languages.LanguageDict[submission.Program.Language.GetValueOrDefault()].languageId,
+                CompilerOptions = Languages.LanguageDict[submission.Program.Language.GetValueOrDefault()]
+                    .compilerOptions,
                 Stdin = Convert.ToBase64String(Encoding.UTF8.GetBytes(input)),
                 ExpectedOutput = Convert.ToBase64String(Encoding.UTF8.GetBytes(output)),
                 CpuTimeLimit = (float) submission.Problem.TimeLimit / 1000,
                 MemoryLimit = (float) submission.Problem.MemoryLimit
             };
 
-            var json = new StringContent(JsonSerializer.Serialize(options), Encoding.UTF8,
+            var json = new StringContent(JsonConvert.ToString(options), Encoding.UTF8,
                 MediaTypeNames.Application.Json);
             var data =
                 await client.PostAsync("http://localhost:3000/submissions?base64_encoded=true&wait=true", json);
-            
-            var response = JsonSerializer.Deserialize<RunnerResponse>(await data.Content.ReadAsStringAsync());
-            submission.Verdict = response.Status.Id == Verdict.Accepted ? Verdict.Running : response.Status.Id;
+
+            var response = JsonConvert.DeserializeObject<RunnerResponse>(await data.Content.ReadAsStringAsync());
+            submission.Verdict = response.Status == null
+                ? Verdict.Failed
+                : (response.Status.Id == Verdict.Accepted ? Verdict.Running : response.Status.Id);
             submission.LastTestCase = index;
             submission.JudgedAt = DateTime.Now;
             _context.Submissions.Update(submission);
             await _context.SaveChangesAsync();
-            
-            return response.Status.Id == Verdict.Accepted;
+
+            return submission.Verdict == Verdict.Accepted;
         }
     }
 }
