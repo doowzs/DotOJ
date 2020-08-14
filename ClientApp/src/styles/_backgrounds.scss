@@ -1,6 +1,10 @@
 ﻿// Background color styles.
 @import "colors";
 
+.bg-primary {
+  background-color: $color-primary;
+}
+
 .bg-success {
   background-color: $color-success;
 }

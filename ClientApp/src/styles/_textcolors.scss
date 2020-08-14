@@ -1,6 +1,10 @@
 ﻿// Text color styles.
 @import "colors";
 
+.text-primary {
+  color: $color-primary;
+}
+
 .text-success {
   color: $color-success;
 }
