@@ -6,8 +6,7 @@ import {DateTime} from 'luxon';
 import {
   AssignmentViewDto,
   ProblemViewDto,
-  SubmissionInfoDto,
-  SubmissionViewDto
+  SubmissionInfoDto
 } from '../../app.interfaces';
 import {SubmissionService} from '../submission.service';
 
@@ -88,17 +87,13 @@ export class ProblemSubmissionsComponent implements OnInit, OnChanges, OnDestroy
 
   public updateNewSubmissions() {
     this.updatingNewSubmissions = this.newSubmissions.length > 0;
-    const updateObservables: Observable<SubmissionViewDto>[] = [];
+    const updateObservables: Observable<SubmissionInfoDto>[] = [];
     for (let i = 0; i < this.newSubmissions.length; ++i) {
-      updateObservables.push(this.service.getSingle(this.newSubmissions[i].id, true));
+      const submission = this.newSubmissions[i];
+      updateObservables.push(this.service.isJudging(submission) ? this.service.getSingleAsInfo(submission.id) : of(submission));
     }
     forkJoin(updateObservables).subscribe(updatedSubmissions => {
-      for (let i = 0; i < updatedSubmissions.length; ++i) {
-        if (this.newSubmissions[i].id === updatedSubmissions[i].id) {
-          this.newSubmissions[i].verdict = updatedSubmissions[i].verdict;
-          this.newSubmissions[i].lastTestCase = updatedSubmissions[i].lastTestCase;
-        }
-      }
+      this.newSubmissions = updatedSubmissions;
       if (this.newSubmissions.filter(s => this.service.isJudging(s)).length) {
         this.updatingNewSubmissions = true;
         interval(2000).pipe(take(1), takeUntil(this.ngUnsubscribe$))

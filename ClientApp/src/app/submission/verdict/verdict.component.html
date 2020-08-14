@@ -24,7 +24,8 @@
     <ng-template #notFailedOnSample>
       {{ verdict.name }}
       <span *ngIf="verdict.showCase">
-        on Test {{ submission.lastTestCase }}
+        <ng-container *ngIf="submission.lastTestCase < 0; else onTestCase">on Samples</ng-container>
+        <ng-template #onTestCase>on Test {{ submission.lastTestCase }}</ng-template>
       </span>
     </ng-template>
   </span>

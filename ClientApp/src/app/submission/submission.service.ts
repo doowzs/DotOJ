@@ -4,6 +4,7 @@ import {Observable, Subject} from 'rxjs';
 import {map, mergeMap, take, tap} from 'rxjs/operators';
 
 import {
+  Verdicts,
   ProblemViewDto,
   SubmissionInfoDto,
   SubmissionViewDto
@@ -28,7 +29,7 @@ export class SubmissionService {
   }
 
   public isJudging(submission: SubmissionInfoDto) {
-    return submission.verdict >= 0 && submission.verdict <= 2;
+    return Verdicts.find(v => v.code === submission.verdict)?.stage === 0;
   }
 
   public getListByProblem(problem: ProblemViewDto): Observable<SubmissionInfoDto[]> {
@@ -39,10 +40,14 @@ export class SubmissionService {
     }));
   }
 
-  public getSingle(id: number, simple: boolean): Observable<SubmissionViewDto> {
+  public getSingle(id: number, simple: boolean = false): Observable<SubmissionViewDto> {
     return this.http.get<SubmissionViewDto>(this.baseUrl + 'api/v1/submission/' + id.toString(), {
       params: new HttpParams().set('simple', simple.toString())
     });
+  }
+
+  public getSingleAsInfo(id: number): Observable<SubmissionInfoDto> {
+    return this.getSingle(id, true).pipe(map(data => data as SubmissionInfoDto));
   }
 
   public createSingle(problem: ProblemViewDto, language: number, code: string): Observable<SubmissionInfoDto> {
