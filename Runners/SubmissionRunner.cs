@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Mime;
 using System.Text;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Hangfire;
 using Judge1.Data;
@@ -52,31 +51,31 @@ namespace Judge1.Runners
 
     internal class RunnerOptions
     {
-        [JsonPropertyName("source_code")] public string SourceCode { get; set; }
-        [JsonPropertyName("language_id")] public int LanguageId { get; set; }
-        [JsonPropertyName("compiler_options")] public string CompilerOptions { get; set; }
-        [JsonPropertyName("stdin")] public string Stdin { get; set; }
-        [JsonPropertyName("expected_output")] public string ExpectedOutput { get; set; }
-        [JsonPropertyName("cpu_time_limit")] public float CpuTimeLimit { get; set; }
-        [JsonPropertyName("memory_limit")] public float MemoryLimit { get; set; }
+        [JsonProperty("source_code")] public string SourceCode { get; set; }
+        [JsonProperty("language_id")] public int LanguageId { get; set; }
+        [JsonProperty("compiler_options")] public string CompilerOptions { get; set; }
+        [JsonProperty("stdin")] public string Stdin { get; set; }
+        [JsonProperty("expected_output")] public string ExpectedOutput { get; set; }
+        [JsonProperty("cpu_time_limit")] public float CpuTimeLimit { get; set; }
+        [JsonProperty("memory_limit")] public float MemoryLimit { get; set; }
     }
 
     internal class RunnerResponse
     {
         public class RunnerStatus
         {
-            [JsonPropertyName("id")] public Verdict Id { get; set; }
-            [JsonPropertyName("description")] public string Description { get; set; }
+            [JsonProperty("id")] public Verdict Id { get; set; }
+            [JsonProperty("description")] public string Description { get; set; }
         }
 
-        [JsonPropertyName("token")] public string Token { get; set; }
-        [JsonPropertyName("compile_output")] public string CompileOutput { get; set; }
-        [JsonPropertyName("stdout")] public string Stdout { get; set; }
-        [JsonPropertyName("stderr")] public string Stderr { get; set; }
-        [JsonPropertyName("time")] public string Time { get; set; }
-        [JsonPropertyName("memory")] public float? Memory { get; set; }
-        [JsonPropertyName("message")] public string Message { get; set; }
-        [JsonPropertyName("status")] public RunnerStatus Status { get; set; }
+        [JsonProperty("token")] public string Token { get; set; }
+        [JsonProperty("compile_output")] public string CompileOutput { get; set; }
+        [JsonProperty("stdout")] public string Stdout { get; set; }
+        [JsonProperty("stderr")] public string Stderr { get; set; }
+        [JsonProperty("time")] public string Time { get; set; }
+        [JsonProperty("memory")] public float? Memory { get; set; }
+        [JsonProperty("message")] public string Message { get; set; }
+        [JsonProperty("status")] public RunnerStatus Status { get; set; }
     }
 
     public interface ISubmissionRunner
@@ -167,7 +166,7 @@ namespace Judge1.Runners
                 MemoryLimit = (float) submission.Problem.MemoryLimit
             };
 
-            var json = new StringContent(JsonConvert.ToString(options), Encoding.UTF8,
+            var json = new StringContent(JsonConvert.SerializeObject(options), Encoding.UTF8,
                 MediaTypeNames.Application.Json);
             var data =
                 await client.PostAsync("http://localhost:3000/submissions?base64_encoded=true&wait=true", json);
@@ -181,7 +180,7 @@ namespace Judge1.Runners
             _context.Submissions.Update(submission);
             await _context.SaveChangesAsync();
 
-            return submission.Verdict == Verdict.Accepted;
+            return submission.Verdict == Verdict.Running;
         }
     }
 }
