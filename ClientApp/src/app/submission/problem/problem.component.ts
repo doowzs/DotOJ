@@ -6,7 +6,8 @@ import {DateTime} from 'luxon';
 import {
   AssignmentViewDto,
   ProblemViewDto,
-  SubmissionInfoDto, SubmissionViewDto
+  SubmissionInfoDto,
+  SubmissionViewDto
 } from '../../app.interfaces';
 import {SubmissionService} from '../submission.service';
 

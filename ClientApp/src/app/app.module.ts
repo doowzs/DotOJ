@@ -17,8 +17,11 @@ import {ProblemContentComponent} from './problem/content/content.component';
 import {ProblemCodeEditorComponent} from './problem/editor/editor.component';
 import {CodeEditorDirective} from './problem/editor/editor.directive';
 import {ProblemSubmissionsComponent} from './submission/problem/problem.component';
+import {SubmissionDetailComponent} from './submission/detail/detail.component';
+import {SubmissionVerdictComponent} from './submission/verdict/verdict.component';
 import {AboutComponent} from './about/main/main.component';
 import {JudgeInfoComponent} from './about/judge/judge.component';
+import {AbbreviatePipe} from './app.pipes';
 
 import {ApiAuthorizationModule} from 'src/api-authorization/api-authorization.module';
 import {AuthorizeGuard} from 'src/api-authorization/authorize.guard';
@@ -39,6 +42,7 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatListModule} from '@angular/material/list';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 const routes = [
   {
@@ -80,7 +84,32 @@ const routes = [
 ];
 
 @NgModule({
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    FormsModule,
+    ApiAuthorizationModule,
+    MarkdownModule.forRoot(),
+    RouterModule.forRoot(routes),
+    BrowserAnimationsModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatTabsModule,
+    MatCardModule,
+    MatIconModule,
+    MatProgressBarModule,
+    MatGridListModule,
+    MatSelectModule,
+    MatSnackBarModule,
+    MatSlideToggleModule,
+    MatListModule,
+    MatProgressSpinnerModule,
+    MatTooltipModule
+  ],
   declarations: [
+    AbbreviatePipe,
     AppComponent,
     NavMenuComponent,
     HomeComponent,
@@ -93,33 +122,16 @@ const routes = [
     ProblemCodeEditorComponent,
     CodeEditorDirective,
     ProblemSubmissionsComponent,
+    SubmissionDetailComponent,
+    SubmissionVerdictComponent,
     AboutComponent,
     JudgeInfoComponent
   ],
-    imports: [
-        BrowserModule,
-        HttpClientModule,
-        FormsModule,
-        ApiAuthorizationModule,
-        MarkdownModule.forRoot(),
-        RouterModule.forRoot(routes),
-        BrowserAnimationsModule,
-        MatToolbarModule,
-        MatButtonModule,
-        MatTableModule,
-        MatPaginatorModule,
-        MatTabsModule,
-        MatCardModule,
-        MatIconModule,
-        MatProgressBarModule,
-        MatGridListModule,
-        MatSelectModule,
-        MatSnackBarModule,
-        MatSlideToggleModule,
-        MatListModule,
-        MatProgressSpinnerModule
-    ],
+  entryComponents: [
+    SubmissionDetailComponent
+  ],
   providers: [
+    AbbreviatePipe,
     {provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true}
   ],
   bootstrap: [AppComponent]

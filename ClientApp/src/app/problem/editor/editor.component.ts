@@ -17,7 +17,10 @@ import 'ace-builds/src-noconflict/mode-ruby';
 import 'ace-builds/src-noconflict/mode-rust';
 import 'ace-builds/src-noconflict/mode-typescript';
 
-import {ProblemViewDto, Languages} from '../../app.interfaces';
+import {
+  Languages,
+  ProblemViewDto
+} from '../../app.interfaces';
 import {ProblemService} from '../problem.service';
 import {SubmissionService} from '../../submission/submission.service';
 
@@ -29,7 +32,7 @@ export class ProblemCodeEditorComponent implements OnInit, AfterViewChecked, OnC
   @Input() public problem: ProblemViewDto;
 
   public languages = Languages;
-  public currentLanguage: { code, name, mode };
+  public currentLanguage: { code: number, name: string, mode: string };
   private editor: ace.Ace.Editor;
 
   constructor(
