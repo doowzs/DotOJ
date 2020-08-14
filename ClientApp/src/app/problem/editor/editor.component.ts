@@ -2,6 +2,7 @@
 import {ActivatedRoute, Router} from '@angular/router';
 import {MatSelectChange} from '@angular/material/select';
 import {MatSnackBar} from '@angular/material/snack-bar';
+import {timer} from 'rxjs';
 
 import * as ace from 'ace-builds';
 import 'ace-builds/src-noconflict/mode-c_cpp';
@@ -33,7 +34,8 @@ export class ProblemCodeEditorComponent implements OnInit, AfterViewChecked, OnC
 
   public languages = Languages;
   public currentLanguage: { code: number, name: string, mode: string };
-  private editor: ace.Ace.Editor;
+  public canSubmit = true;
+  public editor: ace.Ace.Editor;
 
   constructor(
     private route: ActivatedRoute,
@@ -108,6 +110,10 @@ export class ProblemCodeEditorComponent implements OnInit, AfterViewChecked, OnC
         this.snackBar.open('Code submitted as #' + submission.id.toString() + '.', 'Done', {
           duration: 3000,
           horizontalPosition: 'left'
+        });
+        this.canSubmit = false;
+        timer(3000).subscribe(() => {
+          this.canSubmit = true;
         });
       });
   }

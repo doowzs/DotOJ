@@ -23,6 +23,9 @@
     <span>Save</span>
   </button>
   <div class="flex-spacer"></div>
-  <button mat-button color="primary" style="margin-right: 1rem;">Test</button>
-  <button mat-flat-button color="primary" (click)="submitCode(problem)">Submit</button>
+  <button mat-button color="primary" style="margin-right: 1rem;" disabled>Test</button>
+  <button mat-flat-button color="primary"
+          [disabled]="!(canSubmit && editor.getValue())"
+          (click)="submitCode(problem)"
+  >Submit</button>
 </mat-toolbar>
