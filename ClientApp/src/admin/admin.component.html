@@ -1,0 +1,19 @@
+﻿<div id="admin-panel">
+  <mat-toolbar>
+    <span>Judge1 Administration</span>
+    <div class="flex-spacer"></div>
+    <button mat-button>
+      <mat-icon inline="true">face</mat-icon>
+      <span style="margin-left: 0.5rem;">{{ username | async }}</span>
+    </button>
+    <button mat-button color="accent" routerLink="/">
+      <mat-icon inline="true">close</mat-icon>
+      <span style="margin-left: 0.5rem;">Exit</span>
+    </button>
+  </mat-toolbar>
+  <mat-drawer-container>
+    <mat-drawer mode="side" opened>
+    </mat-drawer>
+    <mat-drawer-content>Content</mat-drawer-content>
+  </mat-drawer-container>
+</div>
