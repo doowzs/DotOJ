@@ -21,7 +21,7 @@ import {SubmissionDetailComponent} from './submission/detail/detail.component';
 import {SubmissionVerdictComponent} from './submission/verdict/verdict.component';
 import {AboutComponent} from './about/main/main.component';
 import {JudgeInfoComponent} from './about/judge/judge.component';
-import {AbbreviatePipe} from './app.pipes';
+import {AbbreviatePipe, CountBytesPipe} from './app.pipes';
 
 import {ApiAuthorizationModule} from 'src/api-authorization/api-authorization.module';
 import {AuthorizeGuard} from 'src/api-authorization/authorize.guard';
@@ -43,6 +43,7 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatListModule} from '@angular/material/list';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatDialogModule} from "@angular/material/dialog";
 
 const routes = [
   {
@@ -106,10 +107,12 @@ const routes = [
     MatSlideToggleModule,
     MatListModule,
     MatProgressSpinnerModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatDialogModule
   ],
   declarations: [
     AbbreviatePipe,
+    CountBytesPipe,
     AppComponent,
     NavMenuComponent,
     HomeComponent,
@@ -132,6 +135,7 @@ const routes = [
   ],
   providers: [
     AbbreviatePipe,
+    CountBytesPipe,
     {provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true}
   ],
   bootstrap: [AppComponent]

@@ -1,4 +1,4 @@
-﻿<span style="float: left;">
+﻿<span style="float: left;" *ngIf="verdict; else unknownVerdict">
   <span style="margin-right: 0.5rem;" [ngSwitch]="verdict.stage">
     <ng-container *ngSwitchCase="-1">
       <mat-icon inline="true" class="text-warning">warning</mat-icon>
@@ -30,3 +30,11 @@
     </ng-template>
   </span>
 </span>
+<ng-template #unknownVerdict>
+  <span style="float: left;">
+    <span style="margin-right: 0.5rem;">
+      <mat-icon inline="true" class="text-warning">warning</mat-icon>
+    </span>
+    <span>Unknown Verdict</span>
+  </span>
+</ng-template>

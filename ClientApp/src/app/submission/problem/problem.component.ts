@@ -1,4 +1,5 @@
 ﻿import {Component, Input, OnInit, OnChanges, OnDestroy, SimpleChanges} from '@angular/core';
+import {MatDialog} from '@angular/material/dialog';
 import {forkJoin, interval, Observable, of, Subject, timer} from 'rxjs';
 import {take, takeUntil} from 'rxjs/operators';
 import {DateTime} from 'luxon';
@@ -9,6 +10,7 @@ import {
   SubmissionInfoDto
 } from '../../app.interfaces';
 import {SubmissionService} from '../submission.service';
+import {SubmissionDetailComponent} from '../detail/detail.component';
 
 @Component({
   selector: 'app-problem-submissions',
@@ -25,6 +27,7 @@ export class ProblemSubmissionsComponent implements OnInit, OnChanges, OnDestroy
 
   constructor(
     private service: SubmissionService,
+    private dialog: MatDialog
   ) {
   }
 
@@ -104,6 +107,13 @@ export class ProblemSubmissionsComponent implements OnInit, OnChanges, OnDestroy
     }, error => {
       console.error(error);
       this.updatingNewSubmissions = false;
+    });
+  }
+
+  public viewSubmission(submission: SubmissionInfoDto) {
+    this.dialog.open(SubmissionDetailComponent, {
+      width: '80vw',
+      data: {submissionId: submission.id}
     });
   }
 }

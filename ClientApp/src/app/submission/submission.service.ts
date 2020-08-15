@@ -1,14 +1,14 @@
 ﻿import {Inject, Injectable} from '@angular/core';
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {Observable, Subject} from 'rxjs';
+import {Observable, of, Subject} from 'rxjs';
 import {map, mergeMap, take, tap} from 'rxjs/operators';
 
 import {
-  Verdicts,
   ProblemViewDto,
   SubmissionInfoDto,
   SubmissionViewDto
 } from '../app.interfaces';
+import {Verdicts} from '../app.consts';
 import {AuthorizeService} from '../../api-authorization/authorize.service';
 
 @Injectable({
@@ -41,9 +41,19 @@ export class SubmissionService {
   }
 
   public getSingle(id: number, simple: boolean = false): Observable<SubmissionViewDto> {
-    return this.http.get<SubmissionViewDto>(this.baseUrl + 'api/v1/submission/' + id.toString(), {
-      params: new HttpParams().set('simple', simple.toString())
-    });
+    if (this.id === id && this.cached) {
+      return of(this.cached);
+    } else {
+      this.id = id;
+      this.cached = null;
+      return this.http.get<SubmissionViewDto>(this.baseUrl + 'api/v1/submission/' + id.toString(), {
+        params: new HttpParams().set('simple', simple.toString())
+      }).pipe(tap(data => {
+        if (!simple) {
+          this.cached = data;
+        }
+      }));
+    }
   }
 
   public getSingleAsInfo(id: number): Observable<SubmissionInfoDto> {

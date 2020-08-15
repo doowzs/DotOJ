@@ -1,10 +1,11 @@
 ﻿import {Component, Input, OnInit} from '@angular/core';
 
 import {
-  Verdicts,
+  VerdictInfo,
   SubmissionInfoDto,
   SubmissionViewDto
 } from '../../app.interfaces';
+import {Verdicts} from '../../app.consts';
 
 @Component({
   selector: 'app-submission-verdict',
@@ -12,14 +13,12 @@ import {
 })
 export class SubmissionVerdictComponent implements OnInit {
   @Input() public submission: SubmissionInfoDto | SubmissionViewDto;
-  public verdict: { code: number, name: string, showCase: boolean, stage: number, explain: string };
+  public verdict: VerdictInfo;
 
   constructor() {
   }
 
   ngOnInit() {
-    this.verdict = Verdicts.find(v => v.code === this.submission.verdict) ?? {
-      code: 0, name: 'Unknown Verdict', showCase: false, stage: -10000, explain: ''
-    };
+    this.verdict = Verdicts.find(v => v.code === this.submission.verdict);
   }
 }

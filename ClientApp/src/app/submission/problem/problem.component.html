@@ -10,8 +10,10 @@
     {name: 'Practice Submissions', submissions: practiceSubmissions},
     {name: 'Assignment Submissions', submissions: assignmentSubmissions}]">
     <h3 *ngIf="category.name && category.submissions.length">{{ category.name }}</h3>
-    <div *ngIf="category.submissions.length" style="max-height: 40vh; overflow-y: auto;">
-      <button mat-button style="width: 100%;" *ngFor="let submission of category.submissions">
+    <div *ngIf="category.submissions.length"style="max-height: 40vh; overflow-y: auto;">
+      <button mat-button style="width: 100%;"
+              *ngFor="let submission of category.submissions"
+              (click)="viewSubmission(submission)">
         <app-submission-verdict [submission]="submission"></app-submission-verdict>
         <span style="float: right;">{{ submission.createdAt | date: 'yyyy-MM-dd HH:mm' }}</span>
       </button>
