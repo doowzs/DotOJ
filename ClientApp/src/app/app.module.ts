@@ -58,17 +58,20 @@ import {MatDialogModule} from '@angular/material/dialog';
       {
         path: '',
         component: HomeComponent,
-        pathMatch: 'full'
+        pathMatch: 'full',
+        data: {navbar: true}
       },
       {
         path: 'assignments',
         component: AssignmentListComponent,
-        canActivate: [AuthorizeGuard]
+        canActivate: [AuthorizeGuard],
+        data: {navbar: true}
       },
       {
         path: 'assignment/:assignmentId',
         component: AssignmentViewComponent,
         canActivate: [AuthorizeGuard],
+        data: {navbar: true},
         children: [
           {
             path: '',
@@ -84,12 +87,14 @@ import {MatDialogModule} from '@angular/material/dialog';
       {
         path: 'problems',
         component: ProblemListComponent,
-        canActivate: [AuthorizeGuard]
+        canActivate: [AuthorizeGuard],
+        data: {navbar: true}
       },
       {
         path: 'about',
         component: AboutComponent,
-        canActivate: [AuthorizeGuard]
+        canActivate: [AuthorizeGuard],
+        data: {navbar: true}
       }
     ]),
     MarkdownModule.forRoot(),
