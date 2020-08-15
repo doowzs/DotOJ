@@ -26,6 +26,7 @@ import {AbbreviatePipe, CountBytesPipe} from './app.pipes';
 import {ApiAuthorizationModule} from 'src/api-authorization/api-authorization.module';
 import {AuthorizeGuard} from 'src/api-authorization/authorize.guard';
 import {AuthorizeInterceptor} from 'src/api-authorization/authorize.interceptor';
+import {AdminModule} from 'src/admin/admin.module';
 
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatToolbarModule} from '@angular/material/toolbar';
@@ -43,56 +44,55 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatListModule} from '@angular/material/list';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import {MatDialogModule} from "@angular/material/dialog";
-
-const routes = [
-  {
-    path: '',
-    component: HomeComponent,
-    pathMatch: 'full'
-  },
-  {
-    path: 'assignments',
-    component: AssignmentListComponent,
-    canActivate: [AuthorizeGuard]
-  },
-  {
-    path: 'assignment/:assignmentId',
-    component: AssignmentViewComponent,
-    canActivate: [AuthorizeGuard],
-    children: [
-      {
-        path: '',
-        component: AssignmentContentComponent,
-        pathMatch: 'full'
-      },
-      {
-        path: 'problem/:problemId',
-        component: ProblemViewComponent
-      }
-    ]
-  },
-  {
-    path: 'problems',
-    component: ProblemListComponent,
-    canActivate: [AuthorizeGuard]
-  },
-  {
-    path: 'about',
-    component: AboutComponent,
-    canActivate: [AuthorizeGuard]
-  }
-];
+import {MatDialogModule} from '@angular/material/dialog';
 
 @NgModule({
   imports: [
     BrowserModule,
     HttpClientModule,
     FormsModule,
-    ApiAuthorizationModule,
-    MarkdownModule.forRoot(),
-    RouterModule.forRoot(routes),
     BrowserAnimationsModule,
+    ApiAuthorizationModule,
+    AdminModule,
+    RouterModule.forRoot([
+      {
+        path: '',
+        component: HomeComponent,
+        pathMatch: 'full'
+      },
+      {
+        path: 'assignments',
+        component: AssignmentListComponent,
+        canActivate: [AuthorizeGuard]
+      },
+      {
+        path: 'assignment/:assignmentId',
+        component: AssignmentViewComponent,
+        canActivate: [AuthorizeGuard],
+        children: [
+          {
+            path: '',
+            component: AssignmentContentComponent,
+            pathMatch: 'full'
+          },
+          {
+            path: 'problem/:problemId',
+            component: ProblemViewComponent
+          }
+        ]
+      },
+      {
+        path: 'problems',
+        component: ProblemListComponent,
+        canActivate: [AuthorizeGuard]
+      },
+      {
+        path: 'about',
+        component: AboutComponent,
+        canActivate: [AuthorizeGuard]
+      }
+    ]),
+    MarkdownModule.forRoot(),
     MatToolbarModule,
     MatButtonModule,
     MatTableModule,
