@@ -1,5 +1,6 @@
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -38,7 +39,14 @@ namespace Judge1
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("SqlExpressConnection")));
 
-            services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            services.AddDefaultIdentity<ApplicationUser>(options =>
+                {
+                    options.SignIn.RequireConfirmedEmail = false;
+                    options.Password.RequireDigit = false;
+                    options.Password.RequireLowercase = false;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequireNonAlphanumeric = false;
+                })
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
@@ -79,7 +87,7 @@ namespace Judge1
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider provider)
         {
             if (env.IsDevelopment())
             {
@@ -105,6 +113,8 @@ namespace Judge1
             app.UseAuthentication();
             app.UseIdentityServer();
             app.UseAuthorization();
+            CreateRolesAndAdminUser(provider).Wait();
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
@@ -130,6 +140,37 @@ namespace Judge1
                     spa.UseAngularCliServer(npmScript: "start:dotnet");
                 }
             });
+        }
+
+        private async Task CreateRolesAndAdminUser(IServiceProvider provider)
+        {
+            var roleManager = provider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = provider.GetRequiredService<UserManager<ApplicationUser>>();
+
+            foreach (var role in ApplicationRoles.RoleList)
+            {
+                var exists = await roleManager.RoleExistsAsync(role);
+                if (!exists)
+                {
+                    await roleManager.CreateAsync(new IdentityRole(role));
+                }
+            }
+
+            if ((await userManager.FindByEmailAsync(Configuration["AdminUser:Email"].ToUpper())) == null)
+            {
+                var adminUser = new ApplicationUser()
+                {
+                    Email = Configuration["AdminUser:Email"],
+                    UserName = Configuration["AdminUser:Email"]
+                };
+                var password = Configuration["AdminUser:Password"];
+                Console.WriteLine(password);
+                var result = await userManager.CreateAsync(adminUser, password);
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(adminUser, ApplicationRoles.Administrator);
+                }
+            }
         }
     }
 }
