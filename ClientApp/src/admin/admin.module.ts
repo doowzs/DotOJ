@@ -19,6 +19,7 @@ import {MatSidenavModule} from '@angular/material/sidenav';
       {
         path: 'admin',
         component: AdminComponent,
+        canActivate: [AuthorizeGuard],
         children: [
           {
             path: '',
