@@ -4,12 +4,21 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Judge1.Models
 {
-    public static class ApplicationRoles
+    [NotMapped]
+    public class ApplicationRoles
     {
-        public const string ProblemEditor = "ProblemEditor";
-        public const string AssignmentManager = "AssignmentManager";
-        public const string JudgeManager = "JudgeManager";
+        public const string Administrator = "Administrator";
         public const string UserManager = "UserManager";
+        public const string AssignmentManager = "AssignmentManager";
+        public const string JudgeResultManager = "JudgeResultManager";
+        
+        public static IEnumerable<string> RoleList = new List<string>()
+        {
+            Administrator,
+            UserManager,
+            AssignmentManager,
+            JudgeResultManager
+        };
     }
     
     public class ApplicationUser : IdentityUser
