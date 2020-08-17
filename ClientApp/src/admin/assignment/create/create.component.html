@@ -1,0 +1,51 @@
+﻿<div id="admin-assignment-creator" class="container">
+  <h2>Create Assignment</h2>
+  <form>
+    <mat-form-field appearance="fill" style="width: 100%;">
+      <mat-label>Title</mat-label>
+      <label>
+        <input matInput required/>
+      </label>
+    </mat-form-field>
+    <mat-form-field appearance="fill" style="width: 100%;">
+      <mat-label>Description</mat-label>
+      <label>
+        <textarea matInput rows="5"></textarea>
+      </label>
+    </mat-form-field>
+    <div>
+      <mat-form-field appearance="fill" style="margin-right: 1%; width: 49%;">
+        <mat-label>Assignment Accessibility</mat-label>
+        <mat-select required>
+          <mat-option value="0">(0) Private Access - Registration required</mat-option>
+          <mat-option value="1">(1) Public Access</mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="fill" style="margin-left: 1%; width: 49%;">
+        <mat-label>Assignment Mode</mat-label>
+        <mat-select required>
+          <mat-option value="1">(1) OI Rule - No judgement</mat-option>
+          <mat-option value="2">(2) CPC Rule - Judge immediately</mat-option>
+          <mat-option value="3">(3) CF Rule - Judge samples only</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div>
+      <mat-form-field appearance="fill" style="margin-right: 1%; width: 49%;">
+        <mat-label>Start Date</mat-label>
+        <label>
+          <input matInput type="datetime-local" required/>
+        </label>
+      </mat-form-field>
+      <mat-form-field appearance="fill" style="margin-left: 1%; width: 49%;">
+        <mat-label>End Date</mat-label>
+        <label>
+          <input matInput type="datetime-local" required/>
+        </label>
+      </mat-form-field>
+    </div>
+    <div class="text-right">
+      <button mat-button color="primary">Create New Assignment</button>
+    </div>
+  </form>
+</div>

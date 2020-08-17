@@ -14,20 +14,11 @@
   <mat-drawer-container style="height: calc(100vh - 64px);">
     <mat-drawer mode="side" opened style="max-width: 25vh;">
       <mat-action-list>
-        <div mat-subheader>Users</div>
-        <button mat-list-item>Add User</button>
-        <button mat-list-item>List Users</button>
-        <mat-divider></mat-divider>
+        <button mat-list-item routerLink="/admin">Dashboard</button>
         <div mat-subheader>Assignments</div>
-        <button mat-list-item>Add Assignment</button>
-        <button mat-list-item>List Assignments</button>
-        <mat-divider></mat-divider>
-        <div mat-subheader>Problems</div>
-        <button mat-list-item>Add Problem</button>
-        <button mat-list-item>List Problems</button>
-        <mat-divider></mat-divider>
+        <button mat-list-item routerLink="/admin/assignment/create">Create Assignment</button>
         <div mat-subheader>Services</div>
-        <a class="mat-button" mat-list-item href="/hangfire" style="font-weight: unset !important;">
+        <a class="mat-button" mat-list-item href="/hangfire" target="_blank" style="font-weight: unset !important;">
           <mat-icon>open_in_new</mat-icon>
           <span style="margin-left: 0.5rem;">Hangfire</span>
         </a>
