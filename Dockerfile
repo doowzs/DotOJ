@@ -4,9 +4,8 @@ WORKDIR /app
 # Change source of APT for a smoother installation
 ARG CHANGE_SOURCE=true
 RUN if [ ${CHANGE_SOURCE} = true ]; then \
-    # Change application source from deb.debian.org to aliyun source
-    sed -i 's/deb.debian.org/mirrors.aliyun.com/' /etc/apt/sources.list; \
-    sed -i 's/security.debian.org/mirrors.aliyun.com/' /etc/apt/sources.list \
+  sed -i 's/deb.debian.org/mirrors.aliyun.com/' /etc/apt/sources.list; \
+  sed -i 's/security.debian.org/mirrors.aliyun.com/' /etc/apt/sources.list \
 ;fi
 
 # Install node for building SPA
@@ -15,6 +14,9 @@ RUN apt-get update -yqq
 RUN apt-get install curl gnupg -yqq
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
 RUN apt-get install -y nodejs
+RUN if [ ${CHANGE_SOURCE} = true ]; then \
+  npm config set registry https://registry.npm.taobao.org \
+;fi
 
 # Copy csproj and restore as distinct layers
 COPY *.csproj ./

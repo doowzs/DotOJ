@@ -132,3 +132,14 @@ $ dotnet dev-certs https --trust
 ```
 
 Now everything is done and we are ready to go. Issue `dotnet run` and after the compilation you should see the web application running at port 5001.
+
+## Deployment
+
+### X.509 Cerfificate
+
+```shell
+$ openssl req -x509 -newkey rsa:4096 -sha256 -nodes \
+  -subj "/CN=Judge1" -keyout identity.key -out identity.crt
+$ openssl pkcs12 -export -out out/identity.pfx -password pass:identity \
+  -inkey identity.key -in identity.crt -certfile identity.crt
+```

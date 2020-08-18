@@ -13,6 +13,11 @@
     }
   },
   "IdentityServer": {
+    "Key": {
+      "Type": "File",
+      "FileName": "identity.pfx",
+      "Password": "identity"
+    },
     "Clients": {
       "Judge1": {
         "Profile": "IdentityServerSPA"
