@@ -16,6 +16,7 @@ using Microsoft.Extensions.Hosting;
 using Hangfire;
 using Hangfire.SqlServer;
 using Judge1.Runners;
+using Microsoft.Extensions.Logging;
 
 namespace Judge1
 {
@@ -144,29 +145,28 @@ namespace Judge1
 
         private async Task ConfigureDatabase(IServiceProvider provider)
         {
+            var logger = provider.GetService<ILogger<Startup>>();
+            logger.LogInformation("Configuring database");
+            
             var context = provider.GetService<ApplicationDbContext>();
-            if (!context.Database.EnsureCreated())
-            {
-                Console.WriteLine("Migrating database...");
-                context.Database.Migrate();
-            }
+            await context.Database.MigrateAsync();
 
             var roleManager = provider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = provider.GetRequiredService<UserManager<ApplicationUser>>();
 
             foreach (var role in ApplicationRoles.RoleList)
             {
-                Console.WriteLine("Creating roles...");
                 var exists = await roleManager.RoleExistsAsync(role);
                 if (!exists)
                 {
+                    logger.LogInformation($"Creating role {role}");
                     await roleManager.CreateAsync(new IdentityRole(role));
                 }
             }
 
             if ((await userManager.FindByEmailAsync(Configuration["AdminUser:Email"].ToUpper())) == null)
             {
-                Console.WriteLine("Creating admin user...");
+                logger.LogInformation("Creating admin user");
                 var adminUser = new ApplicationUser()
                 {
                     Email = Configuration["AdminUser:Email"],
@@ -180,6 +180,7 @@ namespace Judge1
                     await userManager.AddToRoleAsync(adminUser, ApplicationRoles.Administrator);
                 }
             }
+            logger.LogInformation("Database configured successfully");
         }
     }
 }
