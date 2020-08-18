@@ -15,7 +15,7 @@
   "IdentityServer": {
     "Key": {
       "Type": "File",
-      "FileName": "identity.pfx",
+      "FilePath": "identity.pfx",
       "Password": "identity"
     },
     "Clients": {
