@@ -89,6 +89,8 @@ namespace Judge1
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider provider)
         {
+            ConfigureDatabase(provider).Wait();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -97,8 +99,7 @@ namespace Judge1
             else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                // app.UseHsts();
             }
 
             app.UseHttpsRedirection();
@@ -113,7 +114,6 @@ namespace Judge1
             app.UseAuthentication();
             app.UseIdentityServer();
             app.UseAuthorization();
-            CreateRolesAndAdminUser(provider).Wait();
             
             app.UseEndpoints(endpoints =>
             {
@@ -142,13 +142,21 @@ namespace Judge1
             });
         }
 
-        private async Task CreateRolesAndAdminUser(IServiceProvider provider)
+        private async Task ConfigureDatabase(IServiceProvider provider)
         {
+            var context = provider.GetService<ApplicationDbContext>();
+            if (!context.Database.EnsureCreated())
+            {
+                Console.WriteLine("Migrating database...");
+                context.Database.Migrate();
+            }
+
             var roleManager = provider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = provider.GetRequiredService<UserManager<ApplicationUser>>();
 
             foreach (var role in ApplicationRoles.RoleList)
             {
+                Console.WriteLine("Creating roles...");
                 var exists = await roleManager.RoleExistsAsync(role);
                 if (!exists)
                 {
@@ -158,6 +166,7 @@ namespace Judge1
 
             if ((await userManager.FindByEmailAsync(Configuration["AdminUser:Email"].ToUpper())) == null)
             {
+                Console.WriteLine("Creating admin user...");
                 var adminUser = new ApplicationUser()
                 {
                     Email = Configuration["AdminUser:Email"],

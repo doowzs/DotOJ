@@ -80,42 +80,7 @@ After installing DB, you need to configure the users and create databases. You c
 - [Visual Studio Code](https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-develop-use-vscode)
 - [mssql-cli](https://github.com/dbcli/mssql-cli/blob/master/doc/usage_guide.md)
 
-Rename `appsettings.json.example` to `appsettings.json` and change its contents according to your installation. Execute the following transcation-SQL commands to prepare a database environment:
-
-```SQL
-CREATE LOGIN judge1 WITH PASSWORD = 'judge1', CHECK_POLICY = OFF;
-CREATE USER judge1 FOR LOGIN judge1;
-GO
-
-CREATE DATABASE judge1;
-GO
-
-USE judge1;
-EXEC sp_changedbowner judge1;
-GO
-
-CREATE LOGIN hangfire WITH PASSWORD = 'hangfire', CHECK_POLICY = OFF;
-CREATE USER hangfire FOR LOGIN hangfire;
-GO
-
-CREATE DATABASE hangfire;
-GO
-
-USE hangfire;
-EXEC sp_changedbowner hangfire;
-GO
-```
-
-Then execute the following command to migrate the database for application:
-
-```shell
-$ dotnet ef database update
-```
-
-Note for this section:
-
-1. Hangfire DB will be installed on the first run. No manual configuration is required.
-2. Roles and an admin user specified in `appsettings.json` will be created if they do not exist.
+Rename `appsettings.json.example` to `appsettings.json` and change its contents according to your installation. Execute the T-SQL commands in `initdb.sql` to prepare a database environment. Schemas and pre-defined data will be created during the startup of application automatically.
 
 ### 5. Start Judge0 API
 
