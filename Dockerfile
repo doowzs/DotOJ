@@ -12,6 +12,7 @@ RUN if [ ${CHANGE_SOURCE} = true ]; then \
 ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 RUN apt-get update -yqq
 RUN apt-get install curl gnupg -yqq
+RUN apt-get install build-essential -yqq
 RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
 RUN apt-get install -y nodejs
 RUN if [ ${CHANGE_SOURCE} = true ]; then \
