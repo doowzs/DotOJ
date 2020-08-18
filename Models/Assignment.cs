@@ -8,9 +8,10 @@ namespace Judge1.Models
 {
     public enum AssignmentMode
     {
-        OiMode = 1,  // No judge
-        CpcMode = 2, // Judge immediately
-        CfMode = 3,  // Judge samples only
+        Practice = 0,  // Practice or exam
+        OneShot = 1,   // OI (judge only once)
+        UntilFail = 2, // ICPC (until first fail)
+        SampleOnly = 3 // CF (judge samples only)
     }
 
     [NotMapped]
