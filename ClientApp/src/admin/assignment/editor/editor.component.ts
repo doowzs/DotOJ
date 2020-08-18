@@ -1,11 +1,11 @@
 ﻿import {Component, Input} from '@angular/core';
 
 @Component({
-  selector: 'app-admin-assignment-creator',
-  templateUrl: './create.component.html'
+  selector: 'app-admin-assignment-editor',
+  templateUrl: './editor.component.html'
 })
 // TODO: change name to assignment editor
-export class AssignmentCreatorComponent {
+export class AssignmentEditorComponent {
   @Input() public assignmentId: number | null;
 
   constructor() {
