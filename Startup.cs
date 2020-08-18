@@ -72,6 +72,29 @@ namespace Judge1
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("ManageUsers",
+                    policy =>
+                    {
+                        policy.RequireRole($"{ApplicationRoles.Administrator}, {ApplicationRoles.UserManager}");
+                    });
+                options.AddPolicy("ManageAssignments",
+                    policy =>
+                    {
+                        policy.RequireRole($"{ApplicationRoles.Administrator}, {ApplicationRoles.AssignmentManager}");
+                    });
+                options.AddPolicy("ManageProblems",
+                    policy =>
+                    {
+                        policy.RequireRole($"{ApplicationRoles.Administrator}, {ApplicationRoles.AssignmentManager}");
+                    });
+                options.AddPolicy("ManageJudgeResults",
+                    policy =>
+                    {
+                        policy.RequireRole($"{ApplicationRoles.Administrator}, {ApplicationRoles.JudgeResultManager}");
+                    });
+            });
             services.AddControllersWithViews();
             services.AddRazorPages();
 
@@ -115,7 +138,7 @@ namespace Judge1
             app.UseAuthentication();
             app.UseIdentityServer();
             app.UseAuthorization();
-            
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
@@ -147,7 +170,7 @@ namespace Judge1
         {
             var logger = provider.GetService<ILogger<Startup>>();
             logger.LogInformation("Configuring database");
-            
+
             var context = provider.GetService<ApplicationDbContext>();
             await context.Database.MigrateAsync();
 
@@ -180,6 +203,7 @@ namespace Judge1
                     await userManager.AddToRoleAsync(adminUser, ApplicationRoles.Administrator);
                 }
             }
+
             logger.LogInformation("Database configured successfully");
         }
     }

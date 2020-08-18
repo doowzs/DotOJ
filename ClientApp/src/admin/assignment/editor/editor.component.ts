@@ -7,7 +7,6 @@ import {AssignmentService} from '../assignment.service';
   selector: 'app-admin-assignment-editor',
   templateUrl: './editor.component.html'
 })
-// TODO: change name to assignment editor
 export class AssignmentEditorComponent {
   @Input() public assignmentId: number | null;
   @Input() public assignment: AssignmentEditDto;
@@ -19,11 +18,11 @@ export class AssignmentEditorComponent {
   }
 
   public submitForm() {
-    // TODO: implement this action
+    this.createAssignment();
   }
 
   public createAssignment() {
-    this.service.CreateSingle(this.assignment);
+    this.service.CreateSingle(this.assignment).subscribe(data => console.log(data), error => console.error(error));
   }
 
   public updateAssignment() {

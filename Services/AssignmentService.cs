@@ -18,6 +18,7 @@ namespace Judge1.Services
         public Task ValidateAssignmentEditDto(AssignmentEditDto dto);
         public Task<PaginatedList<AssignmentInfoDto>> GetPaginatedAssignmentInfosAsync(int? pageIndex, string userId);
         public Task<AssignmentViewDto> GetAssignmentViewAsync(int id);
+        public Task<AssignmentEditDto> GetAssignmentEditAsync(int id);
         public Task<AssignmentEditDto> CreateAssignmentAsync(AssignmentEditDto dto);
         public Task<AssignmentEditDto> UpdateAssignmentAsync(AssignmentEditDto dto);
         public Task DeleteAssignmentAsync(int id);
@@ -28,7 +29,7 @@ namespace Judge1.Services
     public class AssignmentService : IAssignmentService
     {
         private const int PageSize = 20;
-        
+
         private readonly ApplicationDbContext _context;
         private readonly ILogger<AssignmentService> _logger;
 
@@ -48,10 +49,24 @@ namespace Judge1.Services
 
         public async Task ValidateAssignmentEditDto(AssignmentEditDto dto)
         {
-            throw new System.NotImplementedException();
+            if (string.IsNullOrEmpty(dto.Title))
+            {
+                throw new ValidationException("Title cannot be empty.");
+            }
+
+            if (!Enum.IsDefined(typeof(AssignmentMode), dto.Mode.GetValueOrDefault()))
+            {
+                throw new ValidationException("Invalid assignment mode.");
+            }
+
+            if (dto.BeginTime >= dto.EndTime)
+            {
+                throw new ValidationException("Invalid begin and end time.");
+            }
         }
 
-        public async Task<PaginatedList<AssignmentInfoDto>> GetPaginatedAssignmentInfosAsync(int? pageIndex, string userId)
+        public async Task<PaginatedList<AssignmentInfoDto>> GetPaginatedAssignmentInfosAsync(int? pageIndex,
+            string userId)
         {
             // See https://github.com/dotnet/efcore/issues/17068 for GroupJoin issues.
             var assignments = await _context.Assignments
@@ -64,6 +79,7 @@ namespace Judge1.Services
                     .AnyAsync(r => r.AssignmentId == assignment.Id && r.UserId == userId);
                 infos.Add(new AssignmentInfoDto(assignment, registered));
             }
+
             return new PaginatedList<AssignmentInfoDto>(assignments.TotalItems, pageIndex ?? 1, PageSize, infos);
         }
 
@@ -74,20 +90,43 @@ namespace Judge1.Services
             {
                 throw new NotFoundException();
             }
-            
+
             if (DateTime.Now < assignment.BeginTime)
             {
                 throw new UnauthorizedAccessException("Not authorized to view this assignment.");
             }
-            
+
             await _context.Entry(assignment).Collection(a => a.Problems).LoadAsync();
             await _context.Entry(assignment).Collection(a => a.Notices).LoadAsync();
             return new AssignmentViewDto(assignment);
         }
 
+        public async Task<AssignmentEditDto> GetAssignmentEditAsync(int id)
+        {
+            var assignment = await _context.Assignments.FindAsync(id);
+            if (assignment is null)
+            {
+                throw new NotFoundException();
+            }
+
+            return new AssignmentEditDto(assignment);
+        }
+
         public async Task<AssignmentEditDto> CreateAssignmentAsync(AssignmentEditDto dto)
         {
-            throw new System.NotImplementedException();
+            ValidateAssignmentEditDto(dto);
+            var assignment = new Assignment()
+            {
+                Title = dto.Title,
+                Description = dto.Description,
+                IsPublic = dto.IsPublic.GetValueOrDefault(),
+                Mode = dto.Mode.GetValueOrDefault(),
+                BeginTime = dto.BeginTime,
+                EndTime = dto.EndTime
+            };
+            await _context.Assignments.AddAsync(assignment);
+            await _context.SaveChangesAsync();
+            return new AssignmentEditDto(assignment);
         }
 
         public async Task<AssignmentEditDto> UpdateAssignmentAsync(AssignmentEditDto dto)
