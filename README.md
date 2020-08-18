@@ -73,39 +73,57 @@ We are using SQL Server Express as the data source. There are two flavors of dat
 
 - If you prefer dockerize, refer to [this guide](https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker) to run SQL server with Docker. The docker container by default provides a Developer edition of SQL server, setting `MSSQL_PID=Express` environment variable will tell the container to start Express edition. See [DockerHub page](https://hub.docker.com/_/microsoft-mssql-server) for more details.
 
-After installing DB, you need to configure the users and create schemas. You can use the following common utilities:
+After installing DB, you need to configure the users and create databases. You can use the following common utilities:
 
 - [SSMS (Windows only)](https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-manage-ssms)
 - [Azure Data Studio (Cross Platform)](https://docs.microsoft.com/en-us/sql/azure-data-studio/what-is)
 - [Visual Studio Code](https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-develop-use-vscode)
 - [mssql-cli](https://github.com/dbcli/mssql-cli/blob/master/doc/usage_guide.md)
 
-In this step, you need to:
+Rename `appsettings.json.example` to `appsettings.json` and change its contents according to your installation. Execute the following transcation-SQL commands to prepare a database environment:
 
-- Create a schema called `judge1`, create a user called `judge1` identified by `judge1`, and grant all privileges on that schema. The user must use SQL server authentication (i.e. password) instead of Windows authentication.
-  ```sql
-  CREATE SCHEMA judge1;
-  CREATE LOGIN judge1 WITH PASSWORD = 'judge1';
-  CREATE USER judge1 FOR LOGIN judge1;
-  GRANT ALL PRIVILEGES ON SCHEMA::judge1 TO judge1;
-  ```
-- Create a schema called `hangfire`, create a user called `hangfire` identified by `hangfire`, and grant all privileges on that schema.
-  ```sql
-  CREATE SCHEMA hangfire;
-  CREATE LOGIN hangfire WITH PASSWORD = 'hangfire';
-  CREATE USER hangfire FOR LOGIN hangfire;
-  GRANT ALL PRIVILEGES ON SCHEMA::hangfire TO hangfire;
-  ```
+```SQL
+CREATE LOGIN judge1 WITH PASSWORD = 'judge1', CHECK_POLICY = OFF;
+CREATE USER judge1 FOR LOGIN judge1;
+GO
 
-Ensure that the setup is correct by running this command at root of the repository:
+CREATE DATABASE judge1;
+GO
+
+USE judge1;
+EXEC sp_changedbowner judge1;
+GO
+
+CREATE LOGIN hangfire WITH PASSWORD = 'hangfire', CHECK_POLICY = OFF;
+CREATE USER hangfire FOR LOGIN hangfire;
+GO
+
+CREATE DATABASE hangfire;
+GO
+
+USE hangfire;
+EXEC sp_changedbowner hangfire;
+GO
+```
+
+Then execute the following command to migrate the database for application:
 
 ```shell
 $ dotnet ef database update
 ```
 
-TODO: initialize Hangfire DB.
+Note for this section:
 
-### 5. Run the application
+1. Hangfire DB will be installed on the first run. No manual configuration is required.
+2. Roles and an admin user specified in `appsettings.json` will be created if they do not exist.
+
+### 5. Start Judge0 API
+
+Start Judge0 API locally and make it listen on port 3000.
+
+TODO: Add more detail about this step.
+
+### 6. Run the application
 
 Before we run the application for the first time, it is CRITICAL to install and trust an HTTPS development certificate on Windows and macOS. Simply run the following command and trust the certificate, or refer to [this manual](https://docs.microsoft.com/en-us/aspnet/core/security/enforcing-ssl):
 
