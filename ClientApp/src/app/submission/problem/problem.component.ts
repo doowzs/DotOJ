@@ -8,7 +8,7 @@ import {
   AssignmentViewDto,
   ProblemViewDto,
   SubmissionInfoDto
-} from '../../app.interfaces';
+} from 'src/interfaces';
 import {SubmissionService} from '../submission.service';
 import {SubmissionDetailComponent} from '../detail/detail.component';
 

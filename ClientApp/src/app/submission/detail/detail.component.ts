@@ -5,8 +5,8 @@ import {
   LanguageInfo,
   VerdictInfo,
   SubmissionViewDto
-} from '../../app.interfaces';
-import {Languages, Verdicts} from '../../app.consts';
+} from 'src/interfaces';
+import {Languages, Verdicts} from 'src/consts';
 import {SubmissionService} from '../submission.service';
 import * as ace from 'ace-builds';
 

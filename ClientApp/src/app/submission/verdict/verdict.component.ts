@@ -4,8 +4,8 @@ import {
   VerdictInfo,
   SubmissionInfoDto,
   SubmissionViewDto
-} from '../../app.interfaces';
-import {Verdicts} from '../../app.consts';
+} from 'src/interfaces';
+import {Verdicts} from 'src/consts';
 
 @Component({
   selector: 'app-submission-verdict',

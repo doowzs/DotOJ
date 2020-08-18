@@ -3,7 +3,10 @@ import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable, of} from 'rxjs';
 import {map} from 'rxjs/operators';
 
-import {AssignmentListPagination, AssignmentViewDto} from '../app.interfaces';
+import {
+  AssignmentListPagination,
+  AssignmentViewDto
+} from 'src/interfaces';
 
 @Injectable({
   providedIn: 'root'

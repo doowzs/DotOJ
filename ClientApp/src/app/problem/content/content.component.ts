@@ -7,7 +7,7 @@ import {
   AssignmentViewDto,
   ProblemViewDto,
   TestCaseDto
-} from '../../app.interfaces';
+} from 'src/interfaces';
 
 @Component({
   selector: 'app-problem-content',

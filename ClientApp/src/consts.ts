@@ -1,7 +1,7 @@
 ﻿import {
   LanguageInfo,
   VerdictInfo
-} from './app.interfaces';
+} from 'src/interfaces';
 
 
 export const Languages: LanguageInfo[] = [

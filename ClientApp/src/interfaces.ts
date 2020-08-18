@@ -84,6 +84,16 @@ export interface AssignmentViewDto {
   notices: AssignmentNoticeDto[];
 }
 
+export interface AssignmentEditDto {
+  id: number;
+  title: string;
+  description: string;
+  isPublic: boolean;
+  mode: number;
+  beginTime: Date;
+  endTime: Date;
+}
+
 export interface SubmissionInfoDto {
   id: number;
   userId: string;

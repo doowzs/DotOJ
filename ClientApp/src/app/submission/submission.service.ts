@@ -7,8 +7,8 @@ import {
   ProblemViewDto,
   SubmissionInfoDto,
   SubmissionViewDto
-} from '../app.interfaces';
-import {Verdicts} from '../app.consts';
+} from 'src/interfaces';
+import {Verdicts} from 'src/consts';
 import {AuthorizeService} from '../../api-authorization/authorize.service';
 
 @Injectable({

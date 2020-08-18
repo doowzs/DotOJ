@@ -5,7 +5,7 @@ import {timer, Subscription} from 'rxjs';
 import {DateTime} from 'luxon';
 
 import {AssignmentService} from '../assignment.service';
-import {AssignmentViewDto} from '../../app.interfaces';
+import {AssignmentViewDto} from 'src/interfaces';
 
 @Component({
   selector: 'app-assignment-view',

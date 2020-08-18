@@ -4,7 +4,7 @@ import {PageEvent} from '@angular/material/paginator';
 import {DateTime} from 'luxon';
 
 import {AssignmentService} from '../assignment.service';
-import {AssignmentInfoDto} from '../../app.interfaces';
+import {AssignmentInfoDto} from 'src/interfaces';
 
 @Component({
   selector: 'app-assignment-list',

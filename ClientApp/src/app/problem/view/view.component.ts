@@ -4,7 +4,7 @@ import {BreakpointObserver} from '@angular/cdk/layout';
 import {Subject} from 'rxjs';
 import {takeUntil} from 'rxjs/operators';
 
-import {AssignmentViewDto, ProblemViewDto} from '../../app.interfaces';
+import {AssignmentViewDto, ProblemViewDto} from 'src/interfaces';
 import {AssignmentService} from '../../assignment/assignment.service';
 import {ProblemService} from '../problem.service';
 

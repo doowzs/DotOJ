@@ -21,8 +21,8 @@ import 'ace-builds/src-noconflict/mode-typescript';
 import {
   LanguageInfo,
   ProblemViewDto
-} from '../../app.interfaces';
-import {Languages} from '../../app.consts';
+} from 'src/interfaces';
+import {Languages} from 'src/consts';
 import {ProblemService} from '../problem.service';
 import {SubmissionService} from '../../submission/submission.service';
 

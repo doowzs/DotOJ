@@ -3,7 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {Observable, of} from 'rxjs';
 import {tap} from 'rxjs/operators';
 
-import {ProblemViewDto} from '../app.interfaces';
+import {ProblemViewDto} from 'src/interfaces';
 
 @Injectable({
   providedIn: 'root'

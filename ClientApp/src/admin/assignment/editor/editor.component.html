@@ -1,7 +1,7 @@
 ﻿<div id="admin-assignment-creator" class="container">
   <h2>Create Assignment</h2>
-  <form>
-    <mat-form-field *ngIf="assignmentId !== null" appearance="fill" style="width: 100%;">
+  <form (submit)="submitForm()">
+    <mat-form-field *ngIf="assignmentId != null" appearance="fill" style="width: 100%;">
       <mat-label>ID</mat-label>
       <label>
         <input matInput required disabled [value]="assignmentId"/>
@@ -10,26 +10,26 @@
     <mat-form-field appearance="fill" style="width: 100%;">
       <mat-label>Title</mat-label>
       <label>
-        <input matInput required/>
+        <input matInput [(ngModel)]="assignment.title" required/>
       </label>
     </mat-form-field>
     <mat-form-field appearance="fill" style="width: 100%;">
       <mat-label>Description</mat-label>
       <label>
-        <textarea matInput rows="5"></textarea>
+        <textarea matInput rows="5" [(ngModel)]="assignment.description"></textarea>
       </label>
     </mat-form-field>
     <div>
       <mat-form-field appearance="fill" style="margin-right: 1%; width: 49%;">
         <mat-label>Assignment Accessibility</mat-label>
-        <mat-select required>
+        <mat-select [(ngModel)]="assignment.isPublic" required>
           <mat-option value="0">(0) Private Access - Registration required</mat-option>
           <mat-option value="1">(1) Public Access</mat-option>
         </mat-select>
       </mat-form-field>
       <mat-form-field appearance="fill" style="margin-left: 1%; width: 49%;">
         <mat-label>Assignment Mode</mat-label>
-        <mat-select required>
+        <mat-select [(ngModel)]="assignment.mode" required>
           <mat-option value="0">(0) Practice</mat-option>
           <mat-option value="1">(1) One Shot - OI Mode</mat-option>
           <mat-option value="2">(2) Until Fail - ICPC Mode</mat-option>
@@ -39,15 +39,15 @@
     </div>
     <div>
       <mat-form-field appearance="fill" style="margin-right: 1%; width: 49%;">
-        <mat-label>Start Date</mat-label>
+        <mat-label>Begin Datetime</mat-label>
         <label>
-          <input matInput type="datetime-local" required/>
+          <input matInput type="datetime-local" [(ngModel)]="assignment.beginTime" required/>
         </label>
       </mat-form-field>
       <mat-form-field appearance="fill" style="margin-left: 1%; width: 49%;">
-        <mat-label>End Date</mat-label>
+        <mat-label>End Datetime</mat-label>
         <label>
-          <input matInput type="datetime-local" required/>
+          <input matInput type="datetime-local" [(ngModel)]="assignment.endTime" required/>
         </label>
       </mat-form-field>
     </div>

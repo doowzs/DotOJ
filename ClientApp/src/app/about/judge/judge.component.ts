@@ -1,6 +1,6 @@
 ﻿import {Component} from '@angular/core';
 
-import {Languages} from '../../app.consts';
+import {Languages} from 'src/consts';
 
 @Component({
   selector: 'app-about-judge-info',

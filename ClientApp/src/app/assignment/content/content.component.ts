@@ -2,7 +2,7 @@
 import {ActivatedRoute, Router} from '@angular/router';
 
 import {AssignmentService} from '../assignment.service';
-import {AssignmentViewDto} from '../../app.interfaces';
+import {AssignmentViewDto} from 'src/interfaces';
 
 @Component({
   selector: 'app-assignment-content',
