@@ -2,9 +2,7 @@
 set -e
 
 cp ./initdb.sql ./Dockerize/mssql/initdb.sql
-
-cp ./appsettings.json ./Dockerize/web/appsettings.json
-set -i 's/localhost\\Express/mssql/g' ./Dockerize/web/appsettings.json
+cp ./appsettings.json.example ./Dockerize/web/appsettings.json
 
 cd Dockerize
-zip release.zip -r ./*
+zip Judge1.zip -r ./*
