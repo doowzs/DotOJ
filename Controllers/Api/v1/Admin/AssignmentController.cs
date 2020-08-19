@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace Judge1.Controllers.Api.v1.admin
+namespace Judge1.Controllers.Api.v1.Admin
 {
     [Authorize(Policy = "ManageAssignments")]
     [ApiController]

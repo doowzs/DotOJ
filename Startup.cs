@@ -70,29 +70,36 @@ namespace Judge1
                     }));
             services.AddHangfireServer();
 
-            services.AddAuthentication()
+            // See https://stackoverflow.com/questions/52526186/net-core-identity
+            // and https://stackoverflow.com/questions/60184703/net-core-3-1-403.
+            services.AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
+                    options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
+                    options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+                })
                 .AddIdentityServerJwt();
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("ManageUsers",
                     policy =>
                     {
-                        policy.RequireRole($"{ApplicationRoles.Administrator}, {ApplicationRoles.UserManager}");
+                        policy.RequireRole(ApplicationRoles.Administrator, ApplicationRoles.UserManager);
                     });
                 options.AddPolicy("ManageAssignments",
                     policy =>
                     {
-                        policy.RequireRole($"{ApplicationRoles.Administrator}, {ApplicationRoles.AssignmentManager}");
+                        policy.RequireRole(ApplicationRoles.Administrator, ApplicationRoles.AssignmentManager);
                     });
                 options.AddPolicy("ManageProblems",
                     policy =>
                     {
-                        policy.RequireRole($"{ApplicationRoles.Administrator}, {ApplicationRoles.AssignmentManager}");
+                        policy.RequireRole(ApplicationRoles.Administrator, ApplicationRoles.AssignmentManager);
                     });
                 options.AddPolicy("ManageJudgeResults",
                     policy =>
                     {
-                        policy.RequireRole($"{ApplicationRoles.Administrator}, {ApplicationRoles.JudgeResultManager}");
+                        policy.RequireRole(ApplicationRoles.Administrator, ApplicationRoles.JudgeResultManager);
                     });
             });
             services.AddControllersWithViews();
