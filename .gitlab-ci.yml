@@ -1,0 +1,20 @@
+default:
+  image: alpine:latest
+
+stages:
+  - package
+
+before_script:
+  - sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+  - apk add bash zip
+
+package:
+  stage: package
+  only:
+    refs:
+      - master
+  artifacts:
+    paths:
+      - Dockerize/release.zip
+  script:
+    - bash ./release.sh

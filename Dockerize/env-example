@@ -1,0 +1,39 @@
+### Paths ##################################################
+
+# You may add flags to the path `:cached`, `:delegated`. When using Docker Sync add `:nocopy`
+APP_CODE_CONTAINER_FLAG=:cached
+
+# Choose storage path on your machine. For all storage systems
+DATA_PATH_HOST=~/.judged/data
+
+### Drivers ################################################
+
+# All volumes driver
+VOLUMES_DRIVER=local
+
+# All Networks driver
+NETWORKS_DRIVER=bridge
+
+### Docker compose files ###################################
+
+# Select which docker-compose files to include. If using docker-sync append `:docker-compose.sync.yml` at the end
+COMPOSE_FILE=docker-compose.yml
+
+# Change the separator from : to ; on Windows
+COMPOSE_PATH_SEPARATOR=:
+
+# Define the prefix of container names. This is useful if you have multiple projects that use laradock to have separate containers per project.
+COMPOSE_PROJECT_NAME=judged
+
+### Caddy ##################################################
+
+CADDY_HTTP_PORT=80
+CADDY_HTTPS_PORT=443
+CADDY_ADMIN_PORT=2019
+
+### SQL Server #############################################
+
+MSSQL_PORT=1433
+MSSQL_EDITION=Express
+MSSQL_PASSWORD="yourStrong(!)Password"
+MSSQL_DATABASE=master

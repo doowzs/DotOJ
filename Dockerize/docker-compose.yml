@@ -1,0 +1,57 @@
+version: '3.8'
+
+networks:
+  frontend:
+    driver: ${NETWORKS_DRIVER}
+  backend:
+    driver: ${NETWORKS_DRIVER}
+
+volumes:
+  caddy:
+    driver: ${VOLUMES_DRIVER}
+  mssql:
+    driver: ${VOLUMES_DRIVER}
+  judge1:
+    driver: ${VOLUMES_DRIVER}
+
+services:
+  caddy:
+    build:
+      context: ./caddy
+    volumes:
+      - ./caddy:/etc/caddy
+      - ${DATA_PATH_HOST}/caddy:/data
+    ports:
+      - "${CADDY_HTTP_PORT}:80"
+      - "${CADDY_HTTPS_PORT}:443"
+      - "${CADDY_ADMIN_PORT}:2019"
+    networks:
+      - frontend
+      - backend
+
+  mssql:
+    build:
+      context: ./mssql
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_PID=${MSSQL_EDITION}
+      - SA_PASSWORD=${MSSQL_PASSWORD}
+      - MSSQL_DATABASE=${MSSQL_DATABASE}
+    # Disable volume mounting for macOS due to O_DIRECT
+    # https://github.com/microsoft/mssql-docker/issues/12
+    volumes:
+      - ${DATA_PATH_HOST}/mssql:/var/opt/mssql
+    ports:
+      - "${MSSQL_PORT}:1433"
+    networks:
+      - backend
+  
+  web:
+    build:
+      context: ./web
+    volumes:
+      - ./web/identity.pfx:/app/identity.pfx
+      - ./web/appsettings.json:/app/appsettings.json
+    networks:
+      - backend
+    
