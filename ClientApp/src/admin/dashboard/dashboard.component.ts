@@ -4,4 +4,4 @@
   selector: 'app-admin-dashboard',
   templateUrl: './dashboard.component.html'
 })
-export class DashboardComponent {}
+export class AdminDashboardComponent {}

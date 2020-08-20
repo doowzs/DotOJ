@@ -1,8 +1,8 @@
 ﻿import {Inject, Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpParams} from '@angular/common/http';
 import {Observable} from 'rxjs';
 
-import {AssignmentEditDto, SubmissionViewDto} from 'src/interfaces';
+import {AssignmentEditDto, AssignmentListPagination, SubmissionViewDto} from 'src/interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +15,12 @@ export class AssignmentService {
     private http: HttpClient,
     @Inject('BASE_URL') private baseUrl: string
   ) {
+  }
+
+  public getPaginatedList(pageIndex: number): Observable<AssignmentListPagination> {
+    return this.http.get<AssignmentListPagination>(this.baseUrl + 'api/v1/admin/assignment', {
+      params: new HttpParams().set('pageIndex', pageIndex.toString())
+    });
   }
 
   public CreateSingle(assignment: AssignmentEditDto): Observable<AssignmentEditDto> {

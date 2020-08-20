@@ -9,7 +9,7 @@ import {AssignmentService} from '../assignment.service';
   selector: 'app-admin-assignment-form',
   templateUrl: './form.component.html'
 })
-export class AssignmentFormComponent {
+export class AdminAssignmentFormComponent {
   @Input() public assignment: AssignmentEditDto | null;
 
   public form: FormGroup;
