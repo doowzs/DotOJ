@@ -17,40 +17,41 @@ import {MatListModule} from '@angular/material/list';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
-import {FormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 
 @NgModule({
-  imports: [
-    CommonModule,
-    RouterModule.forChild([
-      {
-        path: 'admin',
-        component: AdminComponent,
-        canActivate: [AuthorizeGuard],
-        children: [
-          {
-            path: '',
-            component: DashboardComponent,
-            pathMatch: 'full'
-          },
-          {
-            path: 'assignment/create',
-            component: AssignmentEditorComponent
-          }
-        ]
-      }
-    ]),
-    ApiAuthorizationModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatIconModule,
-    MatSidenavModule,
-    MatListModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    FormsModule,
-  ],
+    imports: [
+        CommonModule,
+        RouterModule.forChild([
+            {
+                path: 'admin',
+                component: AdminComponent,
+                canActivate: [AuthorizeGuard],
+                children: [
+                    {
+                        path: '',
+                        component: DashboardComponent,
+                        pathMatch: 'full'
+                    },
+                    {
+                        path: 'assignment/create',
+                        component: AssignmentEditorComponent
+                    }
+                ]
+            }
+        ]),
+        ApiAuthorizationModule,
+        MatToolbarModule,
+        MatButtonModule,
+        MatIconModule,
+        MatSidenavModule,
+        MatListModule,
+        MatFormFieldModule,
+        MatInputModule,
+        MatSelectModule,
+        FormsModule,
+        ReactiveFormsModule,
+    ],
   declarations: [
     AdminComponent,
     DashboardComponent,
