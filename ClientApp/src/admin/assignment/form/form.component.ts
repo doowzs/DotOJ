@@ -1,15 +1,15 @@
 ﻿import {Component, Input} from '@angular/core';
-import {FormGroup, FormBuilder, Validators, FormControl} from '@angular/forms';
+import {FormGroup, Validators, FormControl} from '@angular/forms';
 import {DateTime} from 'luxon';
 
 import {AssignmentEditDto} from 'src/interfaces';
 import {AssignmentService} from '../assignment.service';
 
 @Component({
-  selector: 'app-admin-assignment-editor',
-  templateUrl: './editor.component.html'
+  selector: 'app-admin-assignment-form',
+  templateUrl: './form.component.html'
 })
-export class AssignmentEditorComponent {
+export class AssignmentFormComponent {
   @Input() public assignment: AssignmentEditDto | null;
 
   public form: FormGroup;
