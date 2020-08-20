@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using IdentityServer4.Extensions;
 using Judge1.Exceptions;
 using Judge1.Models;
 using Judge1.Services;
@@ -23,6 +24,15 @@ namespace Judge1.Controllers.Api.v1.Admin
         {
             _service = service;
             _logger = logger;
+        }
+        
+        [HttpGet]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<PaginatedList<AssignmentInfoDto>>> ListAssignments(int? pageIndex)
+        {
+            return Ok(await _service.GetPaginatedAssignmentInfosAsync(pageIndex, User.GetSubjectId()));
         }
 
         [HttpPost]
