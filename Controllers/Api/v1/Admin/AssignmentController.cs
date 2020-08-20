@@ -32,7 +32,7 @@ namespace Judge1.Controllers.Api.v1.Admin
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PaginatedList<AssignmentInfoDto>>> ListAssignments(int? pageIndex)
         {
-            return Ok(await _service.GetPaginatedAssignmentInfosAsync(pageIndex, User.GetSubjectId()));
+            return Ok(await _service.GetPaginatedAssignmentInfosAsync(pageIndex, null));
         }
 
         [HttpPost]

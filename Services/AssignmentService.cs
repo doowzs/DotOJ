@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using IdentityServer4.Extensions;
 using Judge1.Data;
 using Judge1.Exceptions;
 using Judge1.Models;
@@ -65,19 +64,27 @@ namespace Judge1.Services
             }
         }
 
-        public async Task<PaginatedList<AssignmentInfoDto>> GetPaginatedAssignmentInfosAsync(int? pageIndex,
-            string userId)
+        public async Task<PaginatedList<AssignmentInfoDto>>
+            GetPaginatedAssignmentInfosAsync(int? pageIndex, string userId)
         {
             // See https://github.com/dotnet/efcore/issues/17068 for GroupJoin issues.
             var assignments = await _context.Assignments
                 .OrderByDescending(a => a.Id)
                 .PaginateAsync(pageIndex ?? 1, PageSize);
-            var infos = new List<AssignmentInfoDto>();
-            foreach (var assignment in assignments.Items)
+            IList<AssignmentInfoDto> infos;
+            if (userId != null)
             {
-                var registered = await _context.AssignmentRegistrations
-                    .AnyAsync(r => r.AssignmentId == assignment.Id && r.UserId == userId);
-                infos.Add(new AssignmentInfoDto(assignment, registered));
+                infos = new List<AssignmentInfoDto>();
+                foreach (var assignment in assignments.Items)
+                {
+                    var registered = await _context.AssignmentRegistrations
+                        .AnyAsync(r => r.AssignmentId == assignment.Id && r.UserId == userId);
+                    infos.Add(new AssignmentInfoDto(assignment, registered));
+                }
+            }
+            else
+            {
+                infos = assignments.Items.Select(a => new AssignmentInfoDto(a, false)).ToList();
             }
 
             return new PaginatedList<AssignmentInfoDto>(assignments.TotalItems, pageIndex ?? 1, PageSize, infos);
