@@ -15,17 +15,14 @@ export class AssignmentEditorComponent {
   public form: FormGroup;
 
   constructor(private service: AssignmentService) {
-    if (this.assignment == null) {
-      this.assignment = {} as AssignmentEditDto;
-    }
     this.form = new FormGroup({
-      id: new FormControl(null),
-      title: new FormControl('', Validators.required),
-      description: new FormControl('', Validators.maxLength(1000)),
-      isPublic: new FormControl(null, Validators.required),
-      mode: new FormControl(null, Validators.required),
-      beginTime: new FormControl(null, Validators.required),
-      endTime: new FormControl(null, Validators.required)
+      id: new FormControl(this.assignment?.id),
+      title: new FormControl(this.assignment?.title, Validators.required),
+      description: new FormControl(this.assignment?.description, [Validators.required, Validators.maxLength(1000)]),
+      isPublic: new FormControl(this.assignment?.isPublic, Validators.required),
+      mode: new FormControl(this.assignment?.mode, Validators.required),
+      beginTime: new FormControl(this.assignment?.beginTime, Validators.required),
+      endTime: new FormControl(this.assignment?.endTime, Validators.required)
     }, (g: FormGroup) => {
       const begin = DateTime.fromISO(g.get('beginTime').value);
       const end = DateTime.fromISO(g.get('endTime').value);
@@ -34,11 +31,23 @@ export class AssignmentEditorComponent {
   }
 
   public submitForm() {
-    this.createAssignment();
+    if (this.assignment == null) {
+      this.createAssignment();
+    }
   }
 
   public createAssignment() {
-    this.service.CreateSingle(this.assignment).subscribe(data => console.log(data), error => console.error(error));
+    this.service.CreateSingle({
+      id: null,
+      title: this.form.get('title').value,
+      description: this.form.get('description').value,
+      isPublic: Boolean(JSON.parse(this.form.get('isPublic').value)),
+      mode: Number(JSON.parse(this.form.get('mode').value)),
+      beginTime: this.form.get('beginTime').value,
+      endTime: this.form.get('endTime').value
+    }).subscribe(data => {
+      console.log(data); // TODO: redirect to list page
+    }, error => console.error(error));
   }
 
   public updateAssignment() {

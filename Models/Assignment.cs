@@ -162,13 +162,18 @@ namespace Judge1.Models
 
     public class AssignmentEditDto : DtoWithTimestamps
     {
-        public int Id { get; }
-        [Required] public string Title { get; }
-        [Required] public string Description { get; }
-        [Required] public bool? IsPublic { get; }
-        [Required] public AssignmentMode? Mode { get; }
-        [Required] public DateTime BeginTime { get; }
-        [Required] public DateTime EndTime { get; }
+        public int? Id { get; set; }
+        [Required] public string Title { get; set; }
+        [Required] public string Description { get; set; }
+        [Required] public bool? IsPublic { get; set; }
+        [Required] public AssignmentMode? Mode { get; set; }
+        [Required] public DateTime BeginTime { get; set; }
+        [Required] public DateTime EndTime { get; set; }
+
+        public AssignmentEditDto()
+        {
+        }
+        
         public AssignmentEditDto(Assignment assignment) : base(assignment)
         {
             Id = assignment.Id;
