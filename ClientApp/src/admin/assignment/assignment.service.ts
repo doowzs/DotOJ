@@ -30,4 +30,12 @@ export class AdminAssignmentService {
   public CreateSingle(assignment: AssignmentEditDto): Observable<AssignmentEditDto> {
     return this.http.post<AssignmentEditDto>(this.baseUrl + 'api/v1/admin/assignment', assignment);
   }
+
+  public UpdateSingle(assignment: AssignmentEditDto): Observable<AssignmentEditDto> {
+    return this.http.put<AssignmentEditDto>(this.baseUrl + 'api/v1/admin/assignment/' + assignment.id.toString(), assignment);
+  }
+
+  public DeleteSingle(id: number): Observable<null> {
+    return this.http.delete<null>(this.baseUrl + 'api/v1/admin/assignment/' + id.toString());
+  }
 }

@@ -1,5 +1,6 @@
 ﻿import {Component, Input, OnInit} from '@angular/core';
 import {FormGroup, Validators, FormControl} from '@angular/forms';
+import {Router} from '@angular/router';
 import {DateTime} from 'luxon';
 
 import {AssignmentEditDto} from 'src/interfaces';
@@ -14,7 +15,10 @@ export class AdminAssignmentFormComponent implements OnInit {
 
   public form: FormGroup;
 
-  constructor(private service: AdminAssignmentService) {
+  constructor(
+    private router: Router,
+    private service: AdminAssignmentService
+  ) {
   }
 
   ngOnInit() {
@@ -33,11 +37,20 @@ export class AdminAssignmentFormComponent implements OnInit {
       const end = DateTime.fromISO(g.get('endTime').value);
       return begin < end ? null : {'invalidPeriod': true};
     });
+    if (this.assignment != null) {
+      this.form.disable();
+    }
+  }
+
+  public enableForm() {
+    this.form.enable();
   }
 
   public submitForm() {
     if (this.assignment == null) {
       this.createAssignment();
+    } else {
+      this.updateAssignment();
     }
   }
 
@@ -56,5 +69,24 @@ export class AdminAssignmentFormComponent implements OnInit {
   }
 
   public updateAssignment() {
+    this.service.UpdateSingle({
+      id: this.assignment.id,
+      title: this.form.get('title').value,
+      description: this.form.get('description').value,
+      isPublic: Boolean(JSON.parse(this.form.get('isPublic').value)),
+      mode: Number(JSON.parse(this.form.get('mode').value)),
+      beginTime: this.form.get('beginTime').value,
+      endTime: this.form.get('endTime').value
+    }).subscribe(data => {
+      console.log(data); // TODO: refresh page
+    }, error => console.error(error));
+  }
+
+  public deleteAssignment() {
+    if (window.confirm('Delete assignment "' + this.assignment.title + '"?')) {
+      this.service.DeleteSingle(this.assignment.id).subscribe(() => {
+        this.router.navigate(['/admin/assignment']);
+      }, error => console.error(error));
+    }
   }
 }

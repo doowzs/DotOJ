@@ -43,8 +43,19 @@
       </label>
     </mat-form-field>
   </div>
-  <div class="text-right">
-    <button mat-button color="primary" [disabled]="!form.valid">
+  <div style="display: flex;">
+    <button mat-button color="warn" type="button"
+            *ngIf="assignment" [disabled]="form.disabled" (click)="deleteAssignment()">
+      <mat-icon style="margin-right: 0.5rem;">delete</mat-icon><span>Delete Assignment</span>
+    </button>
+    <div class="flex-spacer"></div>
+    <button mat-button color="primary" type="button"
+            *ngIf="form.disabled" (click)="enableForm()">
+      <mat-icon style="margin-right: 0.5rem;">lock_open</mat-icon><span>Enable Editing</span>
+    </button>
+    <button mat-button color="primary" type="submit"
+            *ngIf="form.enabled" [disabled]="!form.valid">
+      <mat-icon style="margin-right: 0.5rem;">check</mat-icon>
       <span *ngIf="assignment; else createAssignment">Update Assignment</span>
       <ng-template #createAssignment>
         <span>Create New Assignment</span>
