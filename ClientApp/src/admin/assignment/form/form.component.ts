@@ -1,6 +1,5 @@
-﻿import {Component, Input, OnInit} from '@angular/core';
+﻿import {Component, Input, Output, OnInit, EventEmitter} from '@angular/core';
 import {FormGroup, Validators, FormControl} from '@angular/forms';
-import {Router} from '@angular/router';
 import {DateTime} from 'luxon';
 
 import {AssignmentEditDto} from 'src/interfaces';
@@ -12,13 +11,13 @@ import {AdminAssignmentService} from '../assignment.service';
 })
 export class AdminAssignmentFormComponent implements OnInit {
   @Input() public assignment: AssignmentEditDto | null;
+  @Output() public created = new EventEmitter<number>();
+  @Output() public updated = new EventEmitter<number>();
+  @Output() public deleted = new EventEmitter();
 
   public form: FormGroup;
 
-  constructor(
-    private router: Router,
-    private service: AdminAssignmentService
-  ) {
+  constructor(private service: AdminAssignmentService) {
   }
 
   ngOnInit() {
@@ -64,7 +63,7 @@ export class AdminAssignmentFormComponent implements OnInit {
       beginTime: this.form.get('beginTime').value,
       endTime: this.form.get('endTime').value
     }).subscribe(data => {
-      console.log(data); // TODO: redirect to list page
+      this.created.emit(data.id);
     }, error => console.error(error));
   }
 
@@ -78,15 +77,16 @@ export class AdminAssignmentFormComponent implements OnInit {
       beginTime: this.form.get('beginTime').value,
       endTime: this.form.get('endTime').value
     }).subscribe(data => {
-      console.log(data); // TODO: refresh page
+      this.updated.emit(data.id);
     }, error => console.error(error));
   }
 
   public deleteAssignment() {
     if (window.confirm('Delete assignment "' + this.assignment.title + '"?')) {
-      this.service.DeleteSingle(this.assignment.id).subscribe(() => {
-        this.router.navigate(['/admin/assignment']);
-      }, error => console.error(error));
+      this.service.DeleteSingle(this.assignment.id)
+        .subscribe(() => {
+          this.deleted.emit();
+        }, error => console.error(error));
     }
   }
 }

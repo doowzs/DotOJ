@@ -23,6 +23,7 @@ import {MatSelectModule} from '@angular/material/select';
 import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import {AdminAssignmentEditComponent} from './assignment/edit/edit.component';
+import {MAT_SNACK_BAR_DEFAULT_OPTIONS} from '@angular/material/snack-bar';
 
 @NgModule({
   imports: [
@@ -75,6 +76,9 @@ import {AdminAssignmentEditComponent} from './assignment/edit/edit.component';
     AdminAssignmentListComponent,
     AdminAssignmentCreateComponent,
     AdminAssignmentEditComponent
+  ],
+  providers: [
+    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 5000}}
   ],
   exports: [
     RouterModule

@@ -1,7 +1,8 @@
 ﻿import {Component, OnInit} from '@angular/core';
 import {AssignmentEditDto} from '../../../interfaces';
 import {AdminAssignmentService} from '../assignment.service';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-admin-assignment-edit',
@@ -13,7 +14,9 @@ export class AdminAssignmentEditComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private service: AdminAssignmentService
+    private router: Router,
+    private service: AdminAssignmentService,
+    private snackBar: MatSnackBar
   ) {
   }
 
@@ -22,5 +25,14 @@ export class AdminAssignmentEditComponent implements OnInit {
     this.service.getSingle(this.id).subscribe(assignment => {
       this.assignment = assignment;
     }, error => console.error(error));
+  }
+
+  public updated(id: number) {
+    this.snackBar.open(`Assignment ${id} updated.`, 'OK');
+  }
+
+  public deleted() {
+    this.snackBar.open('Assignment deleted.', 'OK');
+    this.router.navigate(['/admin/assignment']);
   }
 }

@@ -1,7 +1,10 @@
 ﻿<div id="admin-assignment-edit" class="container">
-  <h2>Edit Assignment</h2>
+  <h2>Edit Assignment <span *ngIf="assignment">#{{ assignment.id }}</span></h2>
   <p *ngIf="!assignment; else assignmentEdit">Loading assignment...</p>
   <ng-template #assignmentEdit>
-    <app-admin-assignment-form [assignment]="assignment"></app-admin-assignment-form>
+    <app-admin-assignment-form [assignment]="assignment"
+                               (updated)="updated($event)"
+                               (deleted)="deleted()"
+    ></app-admin-assignment-form>
   </ng-template>
 </div>
