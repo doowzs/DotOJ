@@ -1,10 +1,4 @@
 ﻿<form [formGroup]="form" (ngSubmit)="submitForm()">
-  <mat-form-field *ngIf="assignment && assignment.id != null" appearance="fill" style="width: 100%;">
-    <mat-label>ID</mat-label>
-    <label>
-      <input matInput required disabled formControlName="id" [(ngModel)]="assignment.id"/>
-    </label>
-  </mat-form-field>
   <mat-form-field appearance="fill" style="width: 100%;">
     <mat-label>Title</mat-label>
     <label>
@@ -50,6 +44,11 @@
     </mat-form-field>
   </div>
   <div class="text-right">
-    <button mat-button color="primary" [disabled]="!form.valid">Create New Assignment</button>
+    <button mat-button color="primary" [disabled]="!form.valid">
+      <span *ngIf="assignment; else createAssignment">Update Assignment</span>
+      <ng-template #createAssignment>
+        <span>Create New Assignment</span>
+      </ng-template>
+    </button>
   </div>
 </form>

@@ -34,6 +34,23 @@ namespace Judge1.Controllers.Api.v1.Admin
         {
             return Ok(await _service.GetPaginatedAssignmentInfosAsync(pageIndex, null));
         }
+        
+        [HttpGet("{id:int}")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<AssignmentEditDto>> ViewAssignment(int id)
+        {
+            try
+            {
+                return Ok(await _service.GetAssignmentEditAsync(id));
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+        }
 
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]
@@ -50,23 +67,6 @@ namespace Judge1.Controllers.Api.v1.Admin
             catch (ValidationException e)
             {
                 return BadRequest(e.Message);
-            }
-        }
-        
-        [HttpGet("{id:int}")]
-        [Consumes(MediaTypeNames.Application.Json)]
-        [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<AssignmentEditDto>> ViewAssignment(int id)
-        {
-            try
-            {
-                return Ok(await _service.GetAssignmentEditAsync(id));
-            }
-            catch (NotFoundException e)
-            {
-                return NotFound(e.Message);
             }
         }
     }

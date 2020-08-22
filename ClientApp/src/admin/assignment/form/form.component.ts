@@ -1,26 +1,31 @@
-﻿import {Component, Input} from '@angular/core';
+﻿import {Component, Input, OnInit} from '@angular/core';
 import {FormGroup, Validators, FormControl} from '@angular/forms';
 import {DateTime} from 'luxon';
 
 import {AssignmentEditDto} from 'src/interfaces';
-import {AssignmentService} from '../assignment.service';
+import {AdminAssignmentService} from '../assignment.service';
 
 @Component({
   selector: 'app-admin-assignment-form',
   templateUrl: './form.component.html'
 })
-export class AdminAssignmentFormComponent {
+export class AdminAssignmentFormComponent implements OnInit {
   @Input() public assignment: AssignmentEditDto | null;
 
   public form: FormGroup;
 
-  constructor(private service: AssignmentService) {
+  constructor(private service: AdminAssignmentService) {
+  }
+
+  ngOnInit() {
+    const isPublic = this.assignment ? (this.assignment.isPublic ? '1' : '0') : null;
+    const mode = this.assignment ? this.assignment.mode.toString() : null;
     this.form = new FormGroup({
       id: new FormControl(this.assignment?.id),
       title: new FormControl(this.assignment?.title, Validators.required),
       description: new FormControl(this.assignment?.description, [Validators.required, Validators.maxLength(1000)]),
-      isPublic: new FormControl(this.assignment?.isPublic, Validators.required),
-      mode: new FormControl(this.assignment?.mode, Validators.required),
+      isPublic: new FormControl(isPublic, Validators.required),
+      mode: new FormControl(mode, Validators.required),
       beginTime: new FormControl(this.assignment?.beginTime, Validators.required),
       endTime: new FormControl(this.assignment?.endTime, Validators.required)
     }, (g: FormGroup) => {

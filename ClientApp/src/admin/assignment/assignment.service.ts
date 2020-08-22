@@ -7,7 +7,7 @@ import {AssignmentEditDto, AssignmentListPagination, SubmissionViewDto} from 'sr
 @Injectable({
   providedIn: 'root'
 })
-export class AssignmentService {
+export class AdminAssignmentService {
   private id: number;
   private cached: SubmissionViewDto;
 
@@ -21,6 +21,10 @@ export class AssignmentService {
     return this.http.get<AssignmentListPagination>(this.baseUrl + 'api/v1/admin/assignment', {
       params: new HttpParams().set('pageIndex', pageIndex.toString())
     });
+  }
+
+  public getSingle(id: number): Observable<AssignmentEditDto> {
+    return this.http.get<AssignmentEditDto>(this.baseUrl + 'api/v1/admin/assignment/' + id.toString());
   }
 
   public CreateSingle(assignment: AssignmentEditDto): Observable<AssignmentEditDto> {

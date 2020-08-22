@@ -3,8 +3,8 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {PageEvent} from '@angular/material/paginator';
 import {DateTime} from 'luxon';
 
-import {AssignmentService} from '../assignment.service';
 import {AssignmentInfoDto} from 'src/interfaces';
+import {AssignmentService} from '../assignment.service';
 
 @Component({
   selector: 'app-assignment-list',

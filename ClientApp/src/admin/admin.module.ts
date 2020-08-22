@@ -22,6 +22,7 @@ import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material/paginator';
+import {AdminAssignmentEditComponent} from './assignment/edit/edit.component';
 
 @NgModule({
   imports: [
@@ -45,6 +46,10 @@ import {MatPaginatorModule} from '@angular/material/paginator';
           {
             path: 'assignment/create',
             component: AdminAssignmentCreateComponent
+          },
+          {
+            path: 'assignment/:assignmentId',
+            component: AdminAssignmentEditComponent
           }
         ]
       }
@@ -69,6 +74,7 @@ import {MatPaginatorModule} from '@angular/material/paginator';
     AdminAssignmentFormComponent,
     AdminAssignmentListComponent,
     AdminAssignmentCreateComponent,
+    AdminAssignmentEditComponent
   ],
   exports: [
     RouterModule

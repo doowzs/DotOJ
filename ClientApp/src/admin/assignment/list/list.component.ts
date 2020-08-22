@@ -5,7 +5,7 @@ import {DateTime} from 'luxon';
 
 
 import {AssignmentInfoDto} from 'src/interfaces';
-import {AssignmentService} from '../assignment.service';
+import {AdminAssignmentService} from '../assignment.service';
 
 @Component({
   selector: 'app-admin-assignment-list',
@@ -22,7 +22,7 @@ export class AdminAssignmentListComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private service: AssignmentService
+    private service: AdminAssignmentService
   ) {
   }
 
