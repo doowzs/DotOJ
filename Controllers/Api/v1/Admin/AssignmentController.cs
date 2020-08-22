@@ -25,7 +25,7 @@ namespace Judge1.Controllers.Api.v1.Admin
             _service = service;
             _logger = logger;
         }
-        
+
         [HttpGet]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
@@ -34,7 +34,7 @@ namespace Judge1.Controllers.Api.v1.Admin
         {
             return Ok(await _service.GetPaginatedAssignmentInfosAsync(pageIndex, null));
         }
-        
+
         [HttpGet("{id:int}")]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
@@ -67,6 +67,46 @@ namespace Judge1.Controllers.Api.v1.Admin
             catch (ValidationException e)
             {
                 return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPut("{id:int}")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<AssignmentEditDto>> UpdateAssignment(int id, AssignmentEditDto dto)
+        {
+            try
+            {
+                var assignment = await _service.UpdateAssignmentAsync(id, dto);
+                return Ok(assignment);
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (ValidationException e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpDelete("{id:int}")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> DeleteAssignment(int id)
+        {
+            try
+            {
+                await _service.DeleteAssignmentAsync(id);
+                return NoContent();
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
             }
         }
     }

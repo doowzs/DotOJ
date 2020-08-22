@@ -19,8 +19,9 @@ namespace Judge1.Services
         public Task<AssignmentViewDto> GetAssignmentViewAsync(int id);
         public Task<AssignmentEditDto> GetAssignmentEditAsync(int id);
         public Task<AssignmentEditDto> CreateAssignmentAsync(AssignmentEditDto dto);
-        public Task<AssignmentEditDto> UpdateAssignmentAsync(AssignmentEditDto dto);
+        public Task<AssignmentEditDto> UpdateAssignmentAsync(int id, AssignmentEditDto dto);
         public Task DeleteAssignmentAsync(int id);
+        public Task<PaginatedList<AssignmentRegistrationDto>> GetPaginatedRegistrationsAsync(int id, int? pageIndex);
         public Task RegisterUserForAssignmentAsync(int id, ApplicationUser user);
         public Task UnregisterUserFromAssignmentAsync(int id, ApplicationUser user);
     }
@@ -28,6 +29,7 @@ namespace Judge1.Services
     public class AssignmentService : IAssignmentService
     {
         private const int PageSize = 20;
+        private const int RegistrationPageSize = 50;
 
         private readonly ApplicationDbContext _context;
         private readonly ILogger<AssignmentService> _logger;
@@ -46,7 +48,7 @@ namespace Judge1.Services
             }
         }
 
-        public async Task ValidateAssignmentEditDto(AssignmentEditDto dto)
+        public Task ValidateAssignmentEditDto(AssignmentEditDto dto)
         {
             if (string.IsNullOrEmpty(dto.Title))
             {
@@ -62,6 +64,8 @@ namespace Judge1.Services
             {
                 throw new ValidationException("Invalid begin and end time.");
             }
+
+            return Task.CompletedTask;
         }
 
         public async Task<PaginatedList<AssignmentInfoDto>>
@@ -136,24 +140,73 @@ namespace Judge1.Services
             return new AssignmentEditDto(assignment);
         }
 
-        public async Task<AssignmentEditDto> UpdateAssignmentAsync(AssignmentEditDto dto)
+        public async Task<AssignmentEditDto> UpdateAssignmentAsync(int id, AssignmentEditDto dto)
         {
-            throw new System.NotImplementedException();
+            await ValidateAssignmentId(id);
+            await ValidateAssignmentEditDto(dto);
+            var assignment = await _context.Assignments.FindAsync(id);
+            assignment.Title = dto.Title;
+            assignment.Description = dto.Description;
+            assignment.IsPublic = dto.IsPublic.GetValueOrDefault();
+            assignment.Mode = dto.Mode.GetValueOrDefault();
+            assignment.BeginTime = dto.BeginTime;
+            assignment.EndTime = dto.EndTime;
+            _context.Assignments.Update(assignment);
+            await _context.SaveChangesAsync();
+            return new AssignmentEditDto(assignment);
         }
 
         public async Task DeleteAssignmentAsync(int id)
         {
-            throw new System.NotImplementedException();
+            await ValidateAssignmentId(id);
+            var assignment = new Assignment {Id = id};
+            _context.Assignments.Attach(assignment);
+            _context.Assignments.Remove(assignment);
+            await _context.SaveChangesAsync();
         }
 
-        public Task RegisterUserForAssignmentAsync(int id, ApplicationUser user)
+        public async Task<PaginatedList<AssignmentRegistrationDto>>
+            GetPaginatedRegistrationsAsync(int id, int? pageIndex)
         {
-            throw new System.NotImplementedException();
+            return await _context.AssignmentRegistrations
+                .Where(ar => ar.AssignmentId == id)
+                .PaginateAsync(ar => new AssignmentRegistrationDto(ar), pageIndex ?? 1, RegistrationPageSize);
         }
 
-        public Task UnregisterUserFromAssignmentAsync(int id, ApplicationUser user)
+        public async Task RegisterUserForAssignmentAsync(int id, ApplicationUser user)
         {
-            throw new System.NotImplementedException();
+            var registered =
+                await _context.AssignmentRegistrations.AnyAsync(r => r.AssignmentId == id && r.UserId == user.Id);
+            if (!registered)
+            {
+                var registration = new AssignmentRegistration
+                {
+                    AssignmentId = id,
+                    UserId = user.Id,
+                    IsAssignmentManager = false,
+                    IsParticipant = false,
+                    Statistics = new AssignmentParticipantStatistics()
+                };
+                await _context.AssignmentRegistrations.AddAsync(registration);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task UnregisterUserFromAssignmentAsync(int id, ApplicationUser user)
+        {
+            var registered =
+                await _context.AssignmentRegistrations.AnyAsync(r => r.AssignmentId == id && r.UserId == user.Id);
+            if (registered)
+            {
+                var registration = new AssignmentRegistration
+                {
+                    AssignmentId = id,
+                    UserId = user.Id,
+                };
+                _context.AssignmentRegistrations.Attach(registration);
+                _context.AssignmentRegistrations.Remove(registration);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }
