@@ -17,6 +17,7 @@ using Hangfire;
 using Hangfire.SqlServer;
 using Judge1.Runners;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace Judge1
 {
@@ -104,6 +105,9 @@ namespace Judge1
             });
             services.AddControllersWithViews();
             services.AddRazorPages();
+            
+            services.AddOptions();
+            services.Configure<ApplicationConfig>(Configuration.GetSection("ApplicationConfig"));
 
             services.AddHttpClient(); // IHttpClientFactory
 
@@ -194,15 +198,15 @@ namespace Judge1
                 }
             }
 
-            if ((await userManager.FindByEmailAsync(Configuration["AdminUser:Email"].ToUpper())) == null)
+            if ((await userManager.FindByEmailAsync(Configuration["ApplicationConfig:AdminUser:Email"].ToUpper())) == null)
             {
                 logger.LogInformation("Creating admin user");
                 var adminUser = new ApplicationUser()
                 {
-                    Email = Configuration["AdminUser:Email"],
-                    UserName = Configuration["AdminUser:Email"]
+                    Email = Configuration["ApplicationConfig:AdminUser:Email"],
+                    UserName = Configuration["ApplicationConfig:AdminUser:Email"]
                 };
-                var password = Configuration["AdminUser:Password"];
+                var password = Configuration["ApplicationConfig:AdminUser:Password"];
                 Console.WriteLine(password);
                 var result = await userManager.CreateAsync(adminUser, password);
                 if (result.Succeeded)
