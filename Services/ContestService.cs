@@ -15,7 +15,7 @@ namespace Judge1.Services
     {
         public Task ValidateContestId(int id);
         public Task ValidateContestEditDto(ContestEditDto dto);
-        public Task<List<ContestInfoDto>> GetUpcomingContestInfosAsync(string userId);
+        public Task<List<ContestInfoDto>> GetCurrentContestInfosAsync(string userId);
         public Task<PaginatedList<ContestInfoDto>> GetPaginatedContestInfosAsync(int? pageIndex, string userId);
         public Task<ContestViewDto> GetContestViewAsync(int id);
         public Task<ContestEditDto> GetContestEditAsync(int id);
@@ -69,7 +69,7 @@ namespace Judge1.Services
             return Task.CompletedTask;
         }
 
-        public async Task<List<ContestInfoDto>> GetUpcomingContestInfosAsync(string userId)
+        public async Task<List<ContestInfoDto>> GetCurrentContestInfosAsync(string userId)
         {
             var contests = await _context.Contests
                 .Where(a => a.EndTime > DateTime.Now)

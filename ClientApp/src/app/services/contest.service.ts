@@ -14,8 +14,8 @@ export class ContestService {
   constructor(private http: HttpClient) {
   }
 
-  public getUpcomingList(): Observable<ContestInfoDto[]> {
-    return this.http.get<ContestInfoDto[]>('/contest/upcoming')
+  public getCurrentList(): Observable<ContestInfoDto[]> {
+    return this.http.get<ContestInfoDto[]>('/contest/current')
       .pipe(map((list: ContestInfoDto[]) => {
         for (let i = 0; i < list.length; ++i) {
           list[i].beginTime = moment(list[i].beginTime);

@@ -7,7 +7,7 @@
         {{ messageOfTheDay }}
       </div>
       <div nz-col nzSpan="8">
-        <h2>Upcoming Contests</h2>
+        <h2>Current Contests</h2>
         <nz-card *ngFor="let contest of contests"
                  [nzTitle]="contestCardTitle"
                  [nzExtra]="contestCardExtra">
@@ -26,6 +26,7 @@
             #{{ contest.id }}: {{ contest.title }}
           </ng-template>
           <ng-template #contestCardExtra>
+            <nz-tag [nzColor]="'volcano'" *ngIf="now > contest.beginTime">Running</nz-tag>
             <nz-tag [nzColor]="'green'" *ngIf="contest.isPublic">Public</nz-tag>
             <nz-tag [nzColor]="'red'" *ngIf="!contest.isPublic && !contest.registered">Private</nz-tag>
             <nz-tag [nzColor]="'blue'" *ngIf="!contest.isPublic && contest.registered">Registered</nz-tag>

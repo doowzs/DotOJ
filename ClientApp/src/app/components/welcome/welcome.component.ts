@@ -23,7 +23,7 @@ export class WelcomeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.service.getUpcomingList()
+    this.service.getCurrentList()
       .subscribe(contests => {
         this.now = moment();
         this.contests = contests;
