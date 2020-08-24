@@ -73,7 +73,7 @@ namespace Judge1.Services
         {
             var contests = await _context.Contests
                 .Where(a => a.EndTime > DateTime.Now)
-                .OrderByDescending(a => a.Id)
+                .OrderBy(a => a.BeginTime)
                 .ToListAsync();
             if (userId != null)
             {
