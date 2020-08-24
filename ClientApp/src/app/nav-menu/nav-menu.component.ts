@@ -4,7 +4,8 @@ import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-nav-menu',
-  templateUrl: './nav-menu.component.html'
+  templateUrl: './nav-menu.component.html',
+  styleUrls: ['./nav-menu.component.css']
 })
 export class NavMenuComponent implements OnInit {
   isExpanded = false;

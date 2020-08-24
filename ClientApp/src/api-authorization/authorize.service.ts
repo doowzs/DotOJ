@@ -1,8 +1,8 @@
-import {Injectable} from '@angular/core';
-import {Profile, User, UserManager, WebStorageStateStore} from 'oidc-client';
-import {BehaviorSubject, concat, from, Observable} from 'rxjs';
-import {filter, map, mergeMap, take, tap} from 'rxjs/operators';
-import {ApplicationPaths, ApplicationName} from './api-authorization.constants';
+import { Injectable } from '@angular/core';
+import { User, UserManager, WebStorageStateStore } from 'oidc-client';
+import { BehaviorSubject, concat, from, Observable } from 'rxjs';
+import { filter, map, mergeMap, take, tap } from 'rxjs/operators';
+import { ApplicationPaths, ApplicationName } from './api-authorization.constants';
 
 export type IAuthenticationResult =
   SuccessAuthenticationResult |
@@ -30,18 +30,8 @@ export enum AuthenticationResultStatus {
 }
 
 export interface IUser {
-  sub: string;
   name?: string;
-  role: string[];
 }
-
-const mapProfileToUser = (profile: Profile): IUser => {
-  return {
-    sub: profile.sub,
-    name: profile.name,
-    role: profile['role'] ?? []
-  };
-};
 
 @Injectable({
   providedIn: 'root'
@@ -84,7 +74,7 @@ export class AuthorizeService {
     let user: User = null;
     try {
       user = await this.userManager.signinSilent(this.createArguments());
-      this.userSubject.next(mapProfileToUser(user.profile));
+      this.userSubject.next(user.profile);
       return this.success(state);
     } catch (silentError) {
       // User might not be authenticated, fallback to popup authentication
@@ -95,7 +85,7 @@ export class AuthorizeService {
           throw new Error('Popup disabled. Change \'authorize.service.ts:AuthorizeService.popupDisabled\' to false to enable it.');
         }
         user = await this.userManager.signinPopup(this.createArguments());
-        this.userSubject.next(mapProfileToUser(user.profile));
+        this.userSubject.next(user.profile);
         return this.success(state);
       } catch (popupError) {
         if (popupError.message === 'Popup window closed') {
@@ -121,7 +111,7 @@ export class AuthorizeService {
     try {
       await this.ensureUserManagerInitialized();
       const user = await this.userManager.signinCallback(url);
-      this.userSubject.next(user && mapProfileToUser(user.profile));
+      this.userSubject.next(user && user.profile);
       return this.success(user && user.state);
     } catch (error) {
       console.log('There was an error signing in: ', error);
@@ -164,19 +154,19 @@ export class AuthorizeService {
   }
 
   private createArguments(state?: any): any {
-    return {useReplaceToNavigate: true, data: state};
+    return { useReplaceToNavigate: true, data: state };
   }
 
   private error(message: string): IAuthenticationResult {
-    return {status: AuthenticationResultStatus.Fail, message};
+    return { status: AuthenticationResultStatus.Fail, message };
   }
 
   private success(state: any): IAuthenticationResult {
-    return {status: AuthenticationResultStatus.Success, state};
+    return { status: AuthenticationResultStatus.Success, state };
   }
 
   private redirect(): IAuthenticationResult {
-    return {status: AuthenticationResultStatus.Redirect};
+    return { status: AuthenticationResultStatus.Redirect };
   }
 
   private async ensureUserManagerInitialized(): Promise<void> {
@@ -204,6 +194,6 @@ export class AuthorizeService {
     return from(this.ensureUserManagerInitialized())
       .pipe(
         mergeMap(() => this.userManager.getUser()),
-        map(u => u && mapProfileToUser(u.profile)));
+        map(u => u && u.profile));
   }
 }

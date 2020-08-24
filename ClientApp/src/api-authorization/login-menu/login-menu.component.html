@@ -1,25 +1,16 @@
-<div id="login-menu" *ngIf="!(isAuthenticated | async); else userMenu">
-  <button mat-button tabindex="0" routerLink="/authentication/register">Register</button>
-  <button mat-button tabindex="0" routerLink="/authentication/login">Login</button>
-</div>
-<ng-template #userMenu>
-  <button mat-button [matMenuTriggerFor]="userMenuInner">{{ userName | async }}</button>
-  <mat-menu #userMenuInner="matMenu" xPosition="before">
-    <button mat-menu-item routerLink="/about">
-      <mat-icon>help_outline</mat-icon>
-      <span>Help & About</span>
-    </button>
-    <button mat-menu-item routerLink="/admin" *ngIf="isAdministrator | async">
-      <mat-icon>construction</mat-icon>
-      <span>Administration</span>
-    </button>
-    <button mat-menu-item routerLink="/authentication/profile">
-      <mat-icon>account_box</mat-icon>
-      <span>Manage Account</span>
-    </button>
-    <button mat-menu-item routerLink="/authentication/logout" [state]="{ local: true }">
-      <mat-icon>exit_to_app</mat-icon>
-      <span>Logout</span>
-    </button>
-  </mat-menu>
-</ng-template>
+<ul class="navbar-nav" *ngIf="isAuthenticated | async">
+    <li class="nav-item">
+        <a  class="nav-link text-dark" [routerLink]='["/authentication/profile"]' title="Manage">Hello {{ userName | async }}</a>
+    </li>
+    <li class="nav-item">
+        <a  class="nav-link text-dark" [routerLink]='["/authentication/logout"]' [state]='{ local: true }' title="Logout">Logout</a>
+    </li>
+</ul>
+<ul class="navbar-nav" *ngIf="!(isAuthenticated | async)">
+  <li class="nav-item">
+        <a class="nav-link text-dark" [routerLink]='["/authentication/register"]'>Register</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" [routerLink]='["/authentication/login"]'>Login</a>
+    </li>
+</ul>
