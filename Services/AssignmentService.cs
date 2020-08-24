@@ -15,6 +15,7 @@ namespace Judge1.Services
     {
         public Task ValidateAssignmentId(int id);
         public Task ValidateAssignmentEditDto(AssignmentEditDto dto);
+        public Task<List<AssignmentInfoDto>> GetOngoingAssignmentInfosAsync(string userId);
         public Task<PaginatedList<AssignmentInfoDto>> GetPaginatedAssignmentInfosAsync(int? pageIndex, string userId);
         public Task<AssignmentViewDto> GetAssignmentViewAsync(int id);
         public Task<AssignmentEditDto> GetAssignmentEditAsync(int id);
@@ -66,6 +67,30 @@ namespace Judge1.Services
             }
 
             return Task.CompletedTask;
+        }
+
+        public async Task<List<AssignmentInfoDto>> GetOngoingAssignmentInfosAsync(string userId)
+        {
+            var assignments = await _context.Assignments
+                .Where(a => a.EndTime > DateTime.Now)
+                .OrderByDescending(a => a.Id)
+                .ToListAsync();
+            if (userId != null)
+            {
+                var infos = new List<AssignmentInfoDto>();
+                foreach (var assignment in assignments)
+                {
+                    var registered = await _context.AssignmentRegistrations
+                        .AnyAsync(r => r.AssignmentId == assignment.Id && r.UserId == userId);
+                    infos.Add(new AssignmentInfoDto(assignment, registered));
+                }
+
+                return infos;
+            }
+            else
+            {
+                return assignments.Select(a => new AssignmentInfoDto(a, false)).ToList();
+            }
         }
 
         public async Task<PaginatedList<AssignmentInfoDto>>

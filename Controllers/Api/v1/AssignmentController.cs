@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using IdentityServer4.Extensions;
@@ -25,14 +26,25 @@ namespace Judge1.Controllers.Api.v1
             _service = service;
             _logger = logger;
         }
-        
+
+        [AllowAnonymous]
+        [HttpGet("ongoing")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<AssignmentInfoDto>>> ListPendingAssignments()
+        {
+            return Ok(await _service.GetOngoingAssignmentInfosAsync(User.GetSubjectId()));
+        }
+
         [HttpGet]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PaginatedList<AssignmentInfoDto>>> ListAssignments(int? pageIndex)
         {
-            return Ok(await _service.GetPaginatedAssignmentInfosAsync(pageIndex, User.GetSubjectId()));
+            return Ok(await _service.GetPaginatedAssignmentInfosAsync(pageIndex,
+                User.Identity.IsAuthenticated ? User.GetSubjectId() : null));
         }
 
         [HttpGet("{id:int}")]
