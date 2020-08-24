@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "Judge1": {
+    "judge1": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -21,18 +21,8 @@
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.app.json",
-            "assets": [
-              "src/assets",
-              {
-                "glob": "**/*",
-                "input": "node_modules/ngx-monaco-editor/assets/monaco",
-                "output": "/assets/monaco/"
-              }
-            ],
-            "styles": [
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "src/styles.css"
-            ],
+            "assets": ["src/assets"],
+            "styles": [],
             "scripts": []
           },
           "configurations": {
@@ -64,18 +54,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "Judge1:build"
+            "browserTarget": "judge1:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "Judge1:build:production"
+              "browserTarget": "judge1:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "Judge1:build"
+            "browserTarget": "judge1:build"
           }
         },
         "test": {
@@ -85,18 +75,9 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "src/tsconfig.spec.json",
             "karmaConfig": "src/karma.conf.js",
-            "styles": [
-              "src/styles.css"
-            ],
+            "styles": [],
             "scripts": [],
-            "assets": [
-              "src/assets",
-              {
-                "glob": "**/*",
-                "input": "node_modules/ngx-monaco-editor/assets/monaco",
-                "output": "/assets/monaco/"
-              }
-            ]
+            "assets": ["src/assets"]
           }
         },
         "lint": {
@@ -137,7 +118,7 @@
         }
       }
     },
-    "Judge1-e2e": {
+    "judge1-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "architect": {
@@ -145,7 +126,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "Judge1:serve"
+            "devServerTarget": "judge1:serve"
           }
         },
         "lint": {
@@ -160,7 +141,7 @@
       }
     }
   },
-  "defaultProject": "Judge1",
+  "defaultProject": "judge1",
   "cli": {
     "analytics": "0f320950-53dc-4595-acbe-c9aaa3057fb3"
   }
