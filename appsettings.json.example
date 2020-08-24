@@ -4,6 +4,15 @@
     "SqlExpressConnection": "Server=mssql;Database=judge1;User Id=judge1;Password=judge1;",
     "HangfireConnection": "Server=mssql;Database=hangfire;User Id=hangfire;Password=hangfire;"
   },
+  "ApplicationConfig": {
+    "Title": "Judge1",
+    "Author": "Judge1 Developers",
+    "MessageOfTheDay": "Hello, world!",
+    "AdminUser": {
+      "Email": "admin@judge1.local",
+      "Password": "password"
+    }
+  },
   "Logging": {
     "LogLevel": {
       "Default": "Information",
