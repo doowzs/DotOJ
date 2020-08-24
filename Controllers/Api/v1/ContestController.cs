@@ -28,13 +28,14 @@ namespace Judge1.Controllers.Api.v1
         }
 
         [AllowAnonymous]
-        [HttpGet("ongoing")]
+        [HttpGet("upcoming")]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<ContestInfoDto>>> ListPendingContests()
+        public async Task<ActionResult<List<ContestInfoDto>>> ListUpcomingContests()
         {
-            return Ok(await _service.GetOngoingContestInfosAsync(User.GetSubjectId()));
+            var subject = User.Identity.IsAuthenticated ? User.GetSubjectId() : null;
+            return Ok(await _service.GetUpcomingContestInfosAsync(subject));
         }
 
         [HttpGet]
