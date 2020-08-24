@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import { ApplicationConfigService } from 'src/app/app.config.service';
 import { Title } from '@angular/platform-browser';
+
+import { ApplicationConfigService } from './services/config.service';
 
 @Component({
   selector: 'app-root',

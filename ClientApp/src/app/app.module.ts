@@ -9,8 +9,11 @@ import { AuthorizeInterceptor } from 'src/api-authorization/authorize.intercepto
 import { ApiAuthorizationModule } from 'src/api-authorization/api-authorization.module';
 
 import { AppComponent } from 'src/app/app.component';
-import { ApplicationConfigService } from 'src/app/app.config.service';
-import { ApplicationApiInterceptor } from 'src/app/app.api.interceptor';
+import { ApplicationConfigService } from 'src/app/services/config.service';
+import { ApplicationApiInterceptor } from 'src/app/services/api.interceptor';
+import { WelcomeComponent } from './components/welcome/welcome.component';
+
+import { NzLayoutModule } from 'ng-zorro-antd/layout';
 
 const loadApplicationConfig = (service: ApplicationConfigService) => {
   return () => service.loadApplicationConfig();
@@ -19,13 +22,17 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
 @NgModule({
   declarations: [
     AppComponent,
+    WelcomeComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
     ApiAuthorizationModule,
-    RouterModule.forRoot([])
+    RouterModule.forRoot([
+      {path: '', pathMatch: 'full', component: WelcomeComponent}
+    ]),
+    NzLayoutModule
   ],
   providers: [
     ApplicationConfigService,
