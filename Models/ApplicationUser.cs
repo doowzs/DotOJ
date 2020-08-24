@@ -9,14 +9,14 @@ namespace Judge1.Models
     {
         public const string Administrator = "Administrator";
         public const string UserManager = "UserManager";
-        public const string AssignmentManager = "AssignmentManager";
+        public const string ContestManager = "ContestManager";
         public const string JudgeResultManager = "JudgeResultManager";
         
         public static IEnumerable<string> RoleList = new List<string>()
         {
             Administrator,
             UserManager,
-            AssignmentManager,
+            ContestManager,
             JudgeResultManager
         };
     }

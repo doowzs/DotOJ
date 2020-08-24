@@ -58,25 +58,25 @@ namespace Judge1.Services
                 throw new ValidationException("Invalid problem ID.");
             }
 
-            var assignment = await _context.Assignments.FindAsync(problem.AssignmentId);
-            if (assignment.IsPublic)
+            var contest = await _context.Contests.FindAsync(problem.ContestId);
+            if (contest.IsPublic)
             {
-                if (DateTime.Now < assignment.BeginTime)
+                if (DateTime.Now < contest.BeginTime)
                 {
-                    throw new UnauthorizedAccessException("Cannot submit until assignment has begun.");
+                    throw new UnauthorizedAccessException("Cannot submit until contest has begun.");
                 }
             }
             else
             {
-                var registered = await _context.AssignmentRegistrations
-                    .AnyAsync(r => r.AssignmentId == assignment.Id && r.UserId == userId);
-                if (registered && DateTime.Now < assignment.BeginTime)
+                var registered = await _context.ContestRegistrations
+                    .AnyAsync(r => r.ContestId == contest.Id && r.UserId == userId);
+                if (registered && DateTime.Now < contest.BeginTime)
                 {
-                    throw new UnauthorizedAccessException("Cannot submit until assignment has begun.");
+                    throw new UnauthorizedAccessException("Cannot submit until contest has begun.");
                 }
-                else if (DateTime.Now < assignment.EndTime)
+                else if (DateTime.Now < contest.EndTime)
                 {
-                    throw new UnauthorizedAccessException("Cannot submit until assignment has ended.");
+                    throw new UnauthorizedAccessException("Cannot submit until contest has ended.");
                 }
             }
         }

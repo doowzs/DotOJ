@@ -1,18 +1,18 @@
 ﻿import { Component, OnInit } from '@angular/core';
 
-import { AssignmentService } from '../../services/assignment.service';
+import { ContestService } from '../../services/contest.service';
 import { ApplicationConfigService } from '../../services/config.service';
-import { AssignmentInfoDto } from '../../interfaces/assignment.interfaces';
+import { ContestInfoDto } from '../../interfaces/assignment.interfaces';
 
 @Component({
   selector: 'app-welcome',
   templateUrl: './welcome.component.html'
 })
 export class WelcomeComponent implements OnInit {
-  public assignments: AssignmentInfoDto[];
+  public assignments: ContestInfoDto[];
 
   constructor(
-    private service: AssignmentService,
+    private service: ContestService,
     private config: ApplicationConfigService
   ) {
   }

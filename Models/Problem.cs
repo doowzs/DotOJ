@@ -20,8 +20,8 @@ namespace Judge1.Models
     {
         public int Id { get; set; }
         
-        public int AssignmentId { get; set; }
-        public Assignment Assignment { get; set; }
+        public int ContestId { get; set; }
+        public Contest Contest { get; set; }
         public List<Submission> Submissions { get; set; }
         
         #region Problem Description
@@ -106,14 +106,14 @@ namespace Judge1.Models
     public class ProblemInfoDto
     {
         public int Id { get; }
-        public int AssignmentId { get; }
+        public int ContestId { get; }
         public string Title { get; }
         public bool Solved { get; }
         
         public ProblemInfoDto(Problem problem)
         {
             Id = problem.Id;
-            AssignmentId = problem.AssignmentId;
+            ContestId = problem.ContestId;
             Title = problem.Title;
             Solved = false;
         }
@@ -128,7 +128,7 @@ namespace Judge1.Models
     public class ProblemViewDto : DtoWithTimestamps
     {
         public int Id { get; }
-        public int AssignmentId { get; }
+        public int ContestId { get; }
         public string Title { get; }
         public string Description { get; }
         public string InputFormat { get; }
@@ -146,7 +146,7 @@ namespace Judge1.Models
         public ProblemViewDto(Problem problem) : base(problem)
         {
             Id = problem.Id;
-            AssignmentId = problem.Id;
+            ContestId = problem.Id;
             Title = problem.Title;
             Description = problem.Description;
             InputFormat = problem.InputFormat;
@@ -173,7 +173,7 @@ namespace Judge1.Models
     public class ProblemEditDto : DtoWithTimestamps
     {
         public int Id { get; }
-        [Required] public int? AssignmentId { get; }
+        [Required] public int? ContestId { get; }
         [Required] public string Title { get; }
         [Required] public string Description { get; }
         [Required] public string InputFormat { get; }
@@ -196,7 +196,7 @@ namespace Judge1.Models
         public ProblemEditDto(Problem problem) : base(problem)
         {
             Id = problem.Id;
-            AssignmentId = problem.AssignmentId;
+            ContestId = problem.ContestId;
             Title = problem.Title;
             Description = problem.Description;
             InputFormat = problem.InputFormat;

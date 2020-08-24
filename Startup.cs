@@ -87,15 +87,15 @@ namespace Judge1
                     {
                         policy.RequireRole(ApplicationRoles.Administrator, ApplicationRoles.UserManager);
                     });
-                options.AddPolicy("ManageAssignments",
+                options.AddPolicy("ManageContests",
                     policy =>
                     {
-                        policy.RequireRole(ApplicationRoles.Administrator, ApplicationRoles.AssignmentManager);
+                        policy.RequireRole(ApplicationRoles.Administrator, ApplicationRoles.ContestManager);
                     });
                 options.AddPolicy("ManageProblems",
                     policy =>
                     {
-                        policy.RequireRole(ApplicationRoles.Administrator, ApplicationRoles.AssignmentManager);
+                        policy.RequireRole(ApplicationRoles.Administrator, ApplicationRoles.ContestManager);
                     });
                 options.AddPolicy("ManageJudgeResults",
                     policy =>
@@ -112,7 +112,7 @@ namespace Judge1
             services.AddHttpClient(); // IHttpClientFactory
 
             services.AddScoped<IProblemService, ProblemService>();
-            services.AddScoped<IAssignmentService, AssignmentService>();
+            services.AddScoped<IContestService, ContestService>();
             services.AddScoped<ISubmissionService, SubmissionService>();
 
             services.AddScoped<ISubmissionRunner, SubmissionRunner>();

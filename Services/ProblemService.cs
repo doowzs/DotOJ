@@ -44,9 +44,9 @@ namespace Judge1.Services
 
         public async Task ValidateProblemEditDto(ProblemEditDto dto)
         {
-            if (!await _context.Assignments.AnyAsync(a => a.Id == dto.AssignmentId))
+            if (!await _context.Contests.AnyAsync(a => a.Id == dto.ContestId))
             {
-                throw new ValidationException("Invalid assignment ID.");
+                throw new ValidationException("Invalid contest ID.");
             }
 
             if (dto.HasSpecialJudge)
@@ -85,8 +85,8 @@ namespace Judge1.Services
                 throw new NotFoundException();
             }
 
-            await _context.Entry(problem).Reference(p => p.Assignment).LoadAsync();
-            if (DateTime.Now < problem.Assignment.BeginTime)
+            await _context.Entry(problem).Reference(p => p.Contest).LoadAsync();
+            if (DateTime.Now < problem.Contest.BeginTime)
             {
                 throw new UnauthorizedAccessException("Not authorized to view this problem.");
             }
@@ -107,11 +107,11 @@ namespace Judge1.Services
         public async Task<ProblemEditDto> CreateProblemAsync(ProblemEditDto dto)
         {
             await ValidateProblemEditDto(dto);
-            var assignment = await _context.Assignments.FindAsync(dto.AssignmentId);
+            var contest = await _context.Contests.FindAsync(dto.ContestId);
             var problem = new Problem()
             {
                 Id = 0,
-                AssignmentId = dto.AssignmentId.GetValueOrDefault(),
+                ContestId = dto.ContestId.GetValueOrDefault(),
                 Title = dto.Title,
                 Description = dto.Description,
                 InputFormat = dto.InputFormat,
@@ -140,7 +140,7 @@ namespace Judge1.Services
             var problem = new Problem()
             {
                 Id = dto.Id,
-                AssignmentId = dto.AssignmentId.GetValueOrDefault(),
+                ContestId = dto.ContestId.GetValueOrDefault(),
                 Title = dto.Title,
                 Description = dto.Description,
                 InputFormat = dto.InputFormat,

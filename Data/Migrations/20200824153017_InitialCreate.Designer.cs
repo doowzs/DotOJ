@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Judge1.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200802182741_InitialCreate")]
+    [Migration("20200824153017_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -168,7 +168,7 @@ namespace Judge1.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("Judge1.Models.Assignment", b =>
+            modelBuilder.Entity("Judge1.Models.Contest", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -179,7 +179,6 @@ namespace Judge1.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
@@ -200,56 +199,52 @@ namespace Judge1.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Assignments");
+                    b.ToTable("Contests");
                 });
 
-            modelBuilder.Entity("Judge1.Models.AssignmentNotice", b =>
+            modelBuilder.Entity("Judge1.Models.ContestNotice", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AssignmentId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("ContestId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AssignmentId");
+                    b.HasIndex("ContestId");
 
-                    b.ToTable("AssignmentNotices");
+                    b.ToTable("ContestNotices");
                 });
 
-            modelBuilder.Entity("Judge1.Models.AssignmentRegistration", b =>
+            modelBuilder.Entity("Judge1.Models.ContestRegistration", b =>
                 {
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("AssignmentId")
+                    b.Property<int>("ContestId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsAssignmentManager")
+                    b.Property<bool>("IsContestManager")
                         .HasColumnType("bit");
 
                     b.Property<bool>("IsParticipant")
@@ -260,14 +255,13 @@ namespace Judge1.Data.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2");
 
-                    b.HasKey("UserId", "AssignmentId");
+                    b.HasKey("UserId", "ContestId");
 
-                    b.HasIndex("AssignmentId");
+                    b.HasIndex("ContestId");
 
-                    b.ToTable("AssignmentRegistrations");
+                    b.ToTable("ContestRegistrations");
                 });
 
             modelBuilder.Entity("Judge1.Models.Hack", b =>
@@ -278,7 +272,6 @@ namespace Judge1.Data.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Input")
@@ -298,7 +291,6 @@ namespace Judge1.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
@@ -324,11 +316,10 @@ namespace Judge1.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AssignmentId")
+                    b.Property<int>("ContestId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
@@ -381,7 +372,6 @@ namespace Judge1.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("ValidatorProgramSerialized")
@@ -390,7 +380,7 @@ namespace Judge1.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AssignmentId");
+                    b.HasIndex("ContestId");
 
                     b.ToTable("Problems");
                 });
@@ -403,7 +393,6 @@ namespace Judge1.Data.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("JudgedAt")
@@ -421,7 +410,6 @@ namespace Judge1.Data.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
@@ -448,7 +436,6 @@ namespace Judge1.Data.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime>("CreatedAt")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Input")
@@ -470,7 +457,6 @@ namespace Judge1.Data.Migrations
                         .HasColumnType("text");
 
                     b.Property<DateTime>("UpdatedAt")
-                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
@@ -624,20 +610,20 @@ namespace Judge1.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Judge1.Models.AssignmentNotice", b =>
+            modelBuilder.Entity("Judge1.Models.ContestNotice", b =>
                 {
-                    b.HasOne("Judge1.Models.Assignment", "Assignment")
+                    b.HasOne("Judge1.Models.Contest", "Contest")
                         .WithMany("Notices")
-                        .HasForeignKey("AssignmentId")
+                        .HasForeignKey("ContestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Judge1.Models.AssignmentRegistration", b =>
+            modelBuilder.Entity("Judge1.Models.ContestRegistration", b =>
                 {
-                    b.HasOne("Judge1.Models.Assignment", "Assignment")
+                    b.HasOne("Judge1.Models.Contest", "Contest")
                         .WithMany("Registrations")
-                        .HasForeignKey("AssignmentId")
+                        .HasForeignKey("ContestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -665,9 +651,9 @@ namespace Judge1.Data.Migrations
 
             modelBuilder.Entity("Judge1.Models.Problem", b =>
                 {
-                    b.HasOne("Judge1.Models.Assignment", "Assignment")
+                    b.HasOne("Judge1.Models.Contest", "Contest")
                         .WithMany("Problems")
-                        .HasForeignKey("AssignmentId")
+                        .HasForeignKey("ContestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
