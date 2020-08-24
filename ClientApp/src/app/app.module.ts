@@ -1,4 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -11,9 +12,16 @@ import { ApiAuthorizationModule } from 'src/api-authorization/api-authorization.
 import { AppComponent } from 'src/app/app.component';
 import { ApplicationConfigService } from 'src/app/services/config.service';
 import { ApplicationApiInterceptor } from 'src/app/services/api.interceptor';
+import { MainHeaderComponent } from './components/headers/main/main.component';
+import { MainFooterComponent } from './components/footers/main/main.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
+import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
+import { NzGridModule } from 'ng-zorro-antd/grid';
+import { NzCardModule } from 'ng-zorro-antd/card';
+import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzStatisticModule } from 'ng-zorro-antd/statistic';
 
 const loadApplicationConfig = (service: ApplicationConfigService) => {
   return () => service.loadApplicationConfig();
@@ -22,17 +30,25 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
 @NgModule({
   declarations: [
     AppComponent,
+    MainHeaderComponent,
+    MainFooterComponent,
     WelcomeComponent
   ],
   imports: [
+    BrowserAnimationsModule,
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
-    HttpClientModule,
     FormsModule,
-    ApiAuthorizationModule,
+    HttpClientModule,
     RouterModule.forRoot([
-      {path: '', pathMatch: 'full', component: WelcomeComponent}
+      { path: '', pathMatch: 'full', component: WelcomeComponent }
     ]),
-    NzLayoutModule
+    ApiAuthorizationModule,
+    NzLayoutModule,
+    NzPageHeaderModule,
+    NzGridModule,
+    NzCardModule,
+    NzTagModule,
+    NzStatisticModule
   ],
   providers: [
     ApplicationConfigService,

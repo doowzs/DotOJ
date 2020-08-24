@@ -1,9 +1,38 @@
 ﻿<nz-layout>
-  <nz-header>
-    Header
-  </nz-header>
-  <nz-layout>
-    <nz-sider>Sider</nz-sider>
-    <nz-content>Content</nz-content>
-  </nz-layout>
+  <app-header-main></app-header-main>
+  <nz-content>
+    <div nz-row>
+      <div nz-col nzSpan="16">
+        <h2>Message of the Day</h2>
+        {{ messageOfTheDay }}
+      </div>
+      <div nz-col nzSpan="8">
+        <h2>Upcoming Contests</h2>
+        <nz-card *ngFor="let contest of contests"
+                 [nzTitle]="contestCardTitle"
+                 [nzExtra]="contestCardExtra">
+          <div style="text-align: center;">
+            <nz-countdown *ngIf="now < contest.beginTime"
+                          [nzTitle]="'Before Start'"
+                          [nzValue]="contest.beginTime.unix() * 1000"
+            ></nz-countdown>
+            <nz-countdown *ngIf="now >= contest.beginTime && now < contest.endTime"
+                          [nzTitle]="'Until End'"
+                          [nzValue]="contest.endTime.unix() * 1000"
+            ></nz-countdown>
+            {{ contest.beginTime.format('MM-DD hh:mm') }} - {{ contest.endTime.format('MM-DD hh:mm') }}
+          </div>
+          <ng-template #contestCardTitle>
+            #{{ contest.id }}: {{ contest.title }}
+          </ng-template>
+          <ng-template #contestCardExtra>
+            <nz-tag [nzColor]="'green'" *ngIf="contest.isPublic">Public</nz-tag>
+            <nz-tag [nzColor]="'red'" *ngIf="!contest.isPublic && !contest.registered">Private</nz-tag>
+            <nz-tag [nzColor]="'blue'" *ngIf="!contest.isPublic && contest.registered">Registered</nz-tag>
+          </ng-template>
+        </nz-card>
+      </div>
+    </div>
+  </nz-content>
+  <app-footer-main></app-footer-main>
 </nz-layout>

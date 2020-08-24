@@ -12,6 +12,6 @@ export class AppComponent {
     private title: Title,
     private config: ApplicationConfigService
   ) {
-    this.title.setTitle(config.title);
+    this.title.setTitle(this.config.title);
   }
 }

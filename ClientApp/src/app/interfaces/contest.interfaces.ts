@@ -1,4 +1,6 @@
-﻿export enum ContestMode {
+﻿import * as moment from 'moment';
+
+export enum ContestMode {
   Practice = 0,  // Practice or exam
   OneShot = 1,   // OI (judge only once)
   UntilFail = 2, // ICPC (until first fail)
@@ -7,10 +9,10 @@
 
 export interface ContestInfoDto {
   id: number;
-  title: number;
+  title: string;
   isPublic: boolean;
   mode: ContestMode;
-  beginTime: Date;
-  endTime: Date;
+  beginTime: string|moment.Moment;
+  endTime: string|moment.Moment;
   registered: boolean;
 }
