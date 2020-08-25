@@ -5,6 +5,8 @@ import { LogoutComponent } from './logout/logout.component';
 import { RouterModule } from '@angular/router';
 import { ApplicationPaths } from './api-authorization.constants';
 import { HttpClientModule } from '@angular/common/http';
+import { NzSpinModule } from 'ng-zorro-antd/spin';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 
 @NgModule({
   imports: [
@@ -21,7 +23,9 @@ import { HttpClientModule } from '@angular/common/http';
         { path: ApplicationPaths.LoggedOut, component: LogoutComponent },
         { path: ApplicationPaths.LogOutCallback, component: LogoutComponent }
       ]
-    )
+    ),
+    NzSpinModule,
+    NzIconModule
   ],
   declarations: [LoginComponent, LogoutComponent],
   exports: [LoginComponent, LogoutComponent]

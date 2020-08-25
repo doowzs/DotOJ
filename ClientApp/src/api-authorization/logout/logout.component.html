@@ -1,1 +1,7 @@
-<p>{{ message | async }}</p>
+<div class="container">
+  <nz-spin nzSimple [nzIndicator]="indicator"></nz-spin>
+  <p>{{ message | async }}</p>
+  <ng-template #indicator>
+    <i nz-icon nzType="loading"></i>
+  </ng-template>
+</div>
