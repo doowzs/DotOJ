@@ -3,10 +3,17 @@
   <nz-content class="outer-content">
     <nz-layout>
       <nz-sider class="sidebar" nzWidth="20vw" nzTheme="light">
-        <ul nz-menu nzMode="inline">
+        <ul nz-menu nzMode="inline" class="menu">
           <li nz-menu-item [routerLink]="['/contest', contestId]"
               routerLinkActive #active="routerLinkActive" [nzSelected]="active">
             Description
+          </li>
+          <li nz-submenu nzTitle="Problems" *ngIf="contest">
+            <ul>
+              <li nz-menu-item *ngFor="let problem of contest.problems">
+                {{ problem.label }}: {{ problem.title }}
+              </li>
+            </ul>
           </li>
         </ul>
       </nz-sider>
