@@ -20,16 +20,16 @@
                           [nzTitle]="'Until End'"
                           [nzValue]="contest.endTime.unix() * 1000"
             ></nz-countdown>
-            {{ contest.beginTime.format('MM-DD hh:mm') }} - {{ contest.endTime.format('MM-DD hh:mm') }}
+            {{ contest.beginTime.format('MM-DD HH:mm') }} - {{ contest.endTime.format('MM-DD HH:mm') }}
           </div>
           <ng-template #contestCardTitle>
             #{{ contest.id }}: {{ contest.title }}
           </ng-template>
           <ng-template #contestCardExtra>
-            <nz-tag [nzColor]="'volcano'" *ngIf="now > contest.beginTime">Running</nz-tag>
-            <nz-tag [nzColor]="'green'" *ngIf="contest.isPublic">Public</nz-tag>
-            <nz-tag [nzColor]="'red'" *ngIf="!contest.isPublic && !contest.registered">Private</nz-tag>
-            <nz-tag [nzColor]="'blue'" *ngIf="!contest.isPublic && contest.registered">Registered</nz-tag>
+            <nz-tag nzColor="volcano" *ngIf="now > contest.beginTime">Running</nz-tag>
+            <nz-tag nzColor="green" *ngIf="contest.isPublic">Public</nz-tag>
+            <nz-tag nzColor="red" *ngIf="!contest.isPublic && !contest.registered">Private</nz-tag>
+            <nz-tag nzColor="blue" *ngIf="!contest.isPublic && contest.registered">Registered</nz-tag>
           </ng-template>
         </nz-card>
       </div>

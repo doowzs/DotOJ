@@ -1,5 +1,9 @@
 ﻿import { Component } from '@angular/core';
-import { ApplicationConfigService } from '../../../services/config.service';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+
+import { ApplicationConfigService } from 'src/app/services/config.service';
+import { AuthorizeService } from 'src/api-authorization/authorize.service';
 
 @Component({
   selector: 'app-header-main',
@@ -8,8 +12,15 @@ import { ApplicationConfigService } from '../../../services/config.service';
 })
 export class MainHeaderComponent {
   public title: string;
+  public username: Observable<string>;
+  public isAuthenticated: Observable<boolean>;
 
-  constructor(private config: ApplicationConfigService) {
+  constructor(
+    private auth: AuthorizeService,
+    private config: ApplicationConfigService
+  ) {
     this.title = config.title;
+    this.username = this.auth.getUser().pipe(map(u => u && u.name));
+    this.isAuthenticated = this.auth.isAuthenticated();
   }
 }

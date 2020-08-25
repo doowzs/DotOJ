@@ -1,1 +1,21 @@
-﻿<nz-page-header class="site-page-header" [nzTitle]="title" [nzGhost]="false"></nz-page-header>
+﻿<nz-page-header class="site-page-header">
+  <nz-page-header-title>
+    {{ title }}
+  </nz-page-header-title>
+  <nz-page-header-extra>
+    <ng-container *ngIf="(isAuthenticated | async) then authenticated else anonymous"></ng-container>
+    <ng-template #anonymous>
+      <button nz-button nzType="text" routerLink="/authentication/register">Register</button>
+      <button nz-button nzType="text" routerLink="/authentication/login">Login</button>
+    </ng-template>
+    <ng-template #authenticated>
+      <button nz-button nzType="text">Contests</button>
+      <button nz-button nzType="text" nz-dropdown [nzDropdownMenu]="userMenu">{{ username | async }}</button>
+      <nz-dropdown-menu #userMenu>
+        <ul nz-menu>
+          <li nz-menu-item routerLink="/authentication/logout" [state]="{ local: true }">Logout</li>
+        </ul>
+      </nz-dropdown-menu>
+    </ng-template>
+  </nz-page-header-extra>
+</nz-page-header>

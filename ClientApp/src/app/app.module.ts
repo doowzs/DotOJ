@@ -22,6 +22,8 @@ import { NzGridModule } from 'ng-zorro-antd/grid';
 import { NzCardModule } from 'ng-zorro-antd/card';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzStatisticModule } from 'ng-zorro-antd/statistic';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 
 const loadApplicationConfig = (service: ApplicationConfigService) => {
   return () => service.loadApplicationConfig();
@@ -48,7 +50,9 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     NzGridModule,
     NzCardModule,
     NzTagModule,
-    NzStatisticModule
+    NzStatisticModule,
+    NzButtonModule,
+    NzDropDownModule,
   ],
   providers: [
     ApplicationConfigService,
