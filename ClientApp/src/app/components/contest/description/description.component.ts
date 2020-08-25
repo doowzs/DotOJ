@@ -9,7 +9,6 @@ import { ContestService } from '../../../services/contest.service';
   styleUrls: ['./description.component.css']
 })
 export class ContestDescriptionComponent implements OnInit {
-  ContestMode = ContestMode;
   public contestId: number;
   public contest: ContestViewDto;
 

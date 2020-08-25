@@ -3,44 +3,7 @@
   <nz-divider nzText="Description" nzOrientation="left"></nz-divider>
   <p>{{ contest.description }}</p>
   <nz-divider nzText="Rules" nzOrientation="left"></nz-divider>
-  <ng-container [ngSwitch]="contest.mode">
-    <div *ngSwitchCase="ContestMode.Practice">
-      <p>This contest uses practice / exam rules.</p>
-      <ul>
-        <li>You can submit as many times as you want until the contest ends.</li>
-        <li>Each time you submit a code, your score will depend on how many test cases your program passes.</li>
-        <li>Your total score is the sum of maximum scores you achieved for each problem.</li>
-      </ul>
-    </div>
-    <div *ngSwitchCase="ContestMode.OneShot">
-      <p>This contest uses OI rules.</p>
-      <ul>
-        <li>You can submit as many times as you want but they will not be judged until the contest ends.</li>
-        <li>Only your last submissions to each problem will be judged. Other submissions will be marked as voided.</li>
-        <li>Your total score is the sum of scores you achieved for each problem.</li>
-      </ul>
-    </div>
-    <div *ngSwitchCase="ContestMode.UntilFail">
-      <p>This contest uses ICPC rules.</p>
-      <ul>
-        <li>You can submit as many times as you want until the contest ends.</li>
-        <li>You solve a problem if your program passed all test cases.</li>
-        <li>The penalty for each problem depends on how many tries you have made before a successful submission.</li>
-        <li>A higher ranking means solving more problems with less penalty.</li>
-      </ul>
-    </div>
-    <div *ngSwitchCase="ContestMode.SampleOnly">
-      <p>This contest uses CodeForces rules.</p>
-      <ul>
-        <li>You can submit as many times as you want until the contest ends.</li>
-        <li>Your program is considered valid if it passes all samples.</li>
-        <li>You solve a problem if your program passed all test cases.</li>
-        <li>However, only your last valid submissions will be judged against real test cases.</li>
-        <li>The penalty for each problem depends on how many valid tries you have made.</li>
-        <li>A higher ranking means solving more problems with less penalty.</li>
-      </ul>
-    </div>
-  </ng-container>
+  <app-contest-rule [mode]="contest.mode"></app-contest-rule>
   <nz-divider [nzText]="'Problems (' + contest.problems.length.toString() + ')'" nzOrientation="left"></nz-divider>
   <nz-list>
     <nz-list-item *ngFor="let problem of contest.problems">

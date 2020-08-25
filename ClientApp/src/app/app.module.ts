@@ -17,6 +17,7 @@ import { MainFooterComponent } from './components/footers/main/main.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { ContestListComponent } from './components/contest/list/list.component';
 import { ContestViewComponent } from './components/contest/view/view.component';
+import { ContestRuleComponent } from './components/contest/rule/rule.component';
 import { ContestDescriptionComponent } from './components/contest/description/description.component';
 
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
@@ -43,6 +44,7 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     WelcomeComponent,
     ContestListComponent,
     ContestViewComponent,
+    ContestRuleComponent,
     ContestDescriptionComponent
   ],
   imports: [
