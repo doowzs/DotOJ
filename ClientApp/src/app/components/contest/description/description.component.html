@@ -15,7 +15,10 @@
       </nz-list-item-meta>
       <nz-tag *ngIf="problem.solved" nzColor="green">Solved</nz-tag>
       <nz-list-item-extra>
-        <button nz-button nzType="default">View</button>
+        <button nz-button nzType="default"
+                [routerLink]="['/contest', contestId, 'problem', problem.id]">
+          View
+        </button>
       </nz-list-item-extra>
     </nz-list-item>
   </nz-list>

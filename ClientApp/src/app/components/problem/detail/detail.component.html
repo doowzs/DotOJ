@@ -1,0 +1,37 @@
+﻿<ng-container *ngIf="problem">
+  <h2>{{ problem.title }}</h2>
+  <nz-divider nzText="Description" nzOrientation="left"></nz-divider>
+  <markdown [data]="problem.description" katex></markdown>
+  <nz-divider nzText="Input Format" nzOrientation="left"></nz-divider>
+  <markdown [data]="problem.inputFormat" katex></markdown>
+  <nz-divider nzText="Output Format" nzOrientation="left"></nz-divider>
+  <markdown [data]="problem.outputFormat" katex></markdown>
+  <nz-divider nzText="Sample Cases" nzOrientation="left"></nz-divider>
+  <nz-descriptions *ngFor="let testCase of problem.sampleCases"
+                   nzBordered nzLayout="vertical" nzColumn="2">
+    <nz-descriptions-item [nzTitle]="inputTitle" nzSpan="1">
+      <pre>{{ testCase.input }}</pre>
+    </nz-descriptions-item>
+    <nz-descriptions-item [nzTitle]="outputTitle" nzSpan="1">
+      <pre>{{ testCase.output }}</pre>
+    </nz-descriptions-item>
+    <ng-template #inputTitle>
+      <span>Input</span>
+      <button nz-button nzSize="small" nzType="link" style="float: right;"
+              (click)="copyToClipboard(testCase.input)">
+        <i nz-icon nzType="copy"></i>
+      </button>
+    </ng-template>
+    <ng-template #outputTitle>
+      <span>Output</span>
+      <button nz-button nzSize="small" nzType="link" style="float: right;"
+              (click)="copyToClipboard(testCase.output)">
+        <i nz-icon nzType="copy"></i>
+      </button>
+    </ng-template>
+  </nz-descriptions>
+  <ng-container *ngIf="problem.footNote">
+    <nz-divider nzText="Foot Note" nzOrientation="left"></nz-divider>
+    <markdown [data]="problem.footNote" katex></markdown>
+  </ng-container>
+</ng-container>

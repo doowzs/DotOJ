@@ -32,6 +32,9 @@ import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzListModule } from 'ng-zorro-antd/list';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { ProblemDetailComponent } from './components/problem/detail/detail.component';
+import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
+import { NzIconModule } from 'ng-zorro-antd/icon';
 
 const loadApplicationConfig = (service: ApplicationConfigService) => {
   return () => service.loadApplicationConfig();
@@ -46,7 +49,8 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     ContestListComponent,
     ContestViewComponent,
     ContestRuleComponent,
-    ContestDescriptionComponent
+    ContestDescriptionComponent,
+    ProblemDetailComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -58,7 +62,8 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
       { path: 'contests', component: ContestListComponent },
       {
         path: 'contest/:contestId', component: ContestViewComponent, children: [
-          { path: '', pathMatch: 'full', component: ContestDescriptionComponent }
+          { path: '', pathMatch: 'full', component: ContestDescriptionComponent },
+          { path: 'problem/:problemId', component: ProblemDetailComponent }
         ]
       }
     ]),
@@ -75,6 +80,8 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     NzListModule,
     NzPaginationModule,
     NzDividerModule,
+    NzDescriptionsModule,
+    NzIconModule,
   ],
   providers: [
     ApplicationConfigService,
