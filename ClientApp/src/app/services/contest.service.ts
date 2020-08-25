@@ -18,8 +18,8 @@ export class ContestService {
     return this.http.get<ContestInfoDto[]>('/contest/current')
       .pipe(map((list: ContestInfoDto[]) => {
         for (let i = 0; i < list.length; ++i) {
-          list[i].beginTime = moment(list[i].beginTime);
-          list[i].endTime = moment(list[i].endTime);
+          list[i].beginTime = moment.utc(list[i].beginTime).local();
+          list[i].endTime = moment.utc(list[i].endTime).local();
         }
         return list;
       }));
