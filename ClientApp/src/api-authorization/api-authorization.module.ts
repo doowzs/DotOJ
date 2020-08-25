@@ -7,6 +7,8 @@ import { ApplicationPaths } from './api-authorization.constants';
 import { HttpClientModule } from '@angular/common/http';
 import { NzSpinModule } from 'ng-zorro-antd/spin';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzResultModule } from 'ng-zorro-antd/result';
+import { NzButtonModule } from 'ng-zorro-antd/button';
 
 @NgModule({
   imports: [
@@ -25,7 +27,9 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
       ]
     ),
     NzSpinModule,
-    NzIconModule
+    NzIconModule,
+    NzResultModule,
+    NzButtonModule
   ],
   declarations: [LoginComponent, LogoutComponent],
   exports: [LoginComponent, LogoutComponent]

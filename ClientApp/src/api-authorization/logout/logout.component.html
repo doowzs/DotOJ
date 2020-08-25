@@ -1,7 +1,7 @@
-<div class="container">
-  <nz-spin nzSimple [nzIndicator]="indicator"></nz-spin>
-  <p>{{ message | async }}</p>
-  <ng-template #indicator>
-    <i nz-icon nzType="loading"></i>
-  </ng-template>
+<div *ngIf="message | async">
+  <nz-result nzTitle="An Error Occurred" nzStatus="error" [nzSubTitle]="message | async">
+    <div nz-result-extra>
+      <button nz-button nzType="primary" routerLink="/">Back Home</button>
+    </div>
+  </nz-result>
 </div>

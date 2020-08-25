@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthenticationResultStatus, AuthorizeService } from '../authorize.service';
-import { BehaviorSubject, timer } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
 import { take } from 'rxjs/operators';
 import { LogoutActions, ApplicationPaths, ReturnUrlType } from '../api-authorization.constants';
@@ -37,8 +37,8 @@ export class LogoutComponent implements OnInit {
         await this.processLogoutCallback();
         break;
       case LogoutActions.LoggedOut:
-        this.message.next('You successfully logged out!');
-        timer(1000).subscribe(() => this.router.navigate(['/']));
+        this.message.next(undefined);
+        this.router.navigate(['/']);
         break;
       default:
         throw new Error(`Invalid action '${action}'`);
