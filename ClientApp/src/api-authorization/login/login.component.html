@@ -1,1 +1,7 @@
-<p>{{ message | async }}</p>
+<div *ngIf="message | async">
+  <nz-result nzTitle="An Error Occurred" nzStatus="error" [nzSubTitle]="message | async">
+    <div nz-result-extra>
+      <button nz-button nzType="primary" routerLink="/">Back Home</button>
+    </div>
+  </nz-result>
+</div>
