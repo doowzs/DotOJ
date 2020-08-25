@@ -15,6 +15,7 @@ import { ApplicationApiInterceptor } from 'src/app/services/api.interceptor';
 import { MainHeaderComponent } from './components/headers/main/main.component';
 import { MainFooterComponent } from './components/footers/main/main.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
+import { ContestListComponent } from './components/contest/list/list.component';
 
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
@@ -24,6 +25,8 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzStatisticModule } from 'ng-zorro-antd/statistic';
 import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { NzListModule } from 'ng-zorro-antd/list';
+import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 
 const loadApplicationConfig = (service: ApplicationConfigService) => {
   return () => service.loadApplicationConfig();
@@ -34,7 +37,8 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     AppComponent,
     MainHeaderComponent,
     MainFooterComponent,
-    WelcomeComponent
+    WelcomeComponent,
+    ContestListComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -42,7 +46,8 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     FormsModule,
     HttpClientModule,
     RouterModule.forRoot([
-      { path: '', pathMatch: 'full', component: WelcomeComponent }
+      { path: '', pathMatch: 'full', component: WelcomeComponent },
+      { path: 'contests', component: ContestListComponent }
     ]),
     ApiAuthorizationModule,
     NzLayoutModule,
@@ -53,6 +58,8 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     NzStatisticModule,
     NzButtonModule,
     NzDropDownModule,
+    NzListModule,
+    NzPaginationModule,
   ],
   providers: [
     ApplicationConfigService,
