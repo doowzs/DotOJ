@@ -20,6 +20,7 @@ import { ContestViewComponent } from './components/contest/view/view.component';
 import { ContestRuleComponent } from './components/contest/rule/rule.component';
 import { ContestDescriptionComponent } from './components/contest/description/description.component';
 
+import { MarkdownModule } from 'ngx-markdown';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzGridModule } from 'ng-zorro-antd/grid';
@@ -62,6 +63,7 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
       }
     ]),
     ApiAuthorizationModule,
+    MarkdownModule.forRoot(),
     NzLayoutModule,
     NzPageHeaderModule,
     NzGridModule,
@@ -82,4 +84,5 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

@@ -4,7 +4,7 @@
     <div nz-row>
       <div nz-col nzSpan="16">
         <h2>Message of the Day</h2>
-        {{ messageOfTheDay }}
+        <markdown [data]="messageOfTheDay" katex></markdown>
       </div>
       <div nz-col nzSpan="8">
         <h2>Current Contests</h2>
