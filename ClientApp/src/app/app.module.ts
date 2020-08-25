@@ -29,6 +29,7 @@ import { NzButtonModule } from 'ng-zorro-antd/button';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzListModule } from 'ng-zorro-antd/list';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
 
 const loadApplicationConfig = (service: ApplicationConfigService) => {
   return () => service.loadApplicationConfig();
@@ -52,9 +53,11 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     RouterModule.forRoot([
       { path: '', pathMatch: 'full', component: WelcomeComponent },
       { path: 'contests', component: ContestListComponent },
-      { path: 'contest/:contestId', component: ContestViewComponent, children: [
+      {
+        path: 'contest/:contestId', component: ContestViewComponent, children: [
           { path: '', pathMatch: 'full', component: ContestDescriptionComponent }
-        ] }
+        ]
+      }
     ]),
     ApiAuthorizationModule,
     NzLayoutModule,
@@ -67,6 +70,7 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     NzDropDownModule,
     NzListModule,
     NzPaginationModule,
+    NzDividerModule,
   ],
   providers: [
     ApplicationConfigService,

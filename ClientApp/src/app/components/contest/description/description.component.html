@@ -1,4 +1,20 @@
 <div id="contest-description" *ngIf="contest">
-  <h2>{{ contest.title }}</h2>
+  <h2>Contest #{{ contest.id }}: {{ contest.title }}</h2>
+  <nz-divider nzText="Description" nzOrientation="left"></nz-divider>
   <p>{{ contest.description }}</p>
+  <nz-divider [nzText]="'Problems (' + contest.problems.length.toString() + ')'" nzOrientation="left"></nz-divider>
+  <nz-list>
+    <nz-list-item *ngFor="let problem of contest.problems">
+      <nz-list-item-meta>
+        <nz-list-item-meta-title>
+          <nz-tag [nzColor]="problem.solved ? 'green' : null">{{ problem.label }}</nz-tag>
+          {{ problem.title }}
+        </nz-list-item-meta-title>
+      </nz-list-item-meta>
+      <nz-tag *ngIf="problem.solved" nzColor="green">Solved</nz-tag>
+      <nz-list-item-extra>
+        <button nz-button nzType="default">View</button>
+      </nz-list-item-extra>
+    </nz-list-item>
+  </nz-list>
 </div>

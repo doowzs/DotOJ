@@ -1,5 +1,7 @@
 ﻿import * as moment from 'moment';
 
+import { ProblemInfoDto } from './problem.interfaces';
+
 export enum ContestMode {
   Practice = 0,  // Practice or exam
   OneShot = 1,   // OI (judge only once)
@@ -25,6 +27,6 @@ export interface ContestViewDto {
   mode: ContestMode;
   beginTime: string|moment.Moment;
   endTime: string|moment.Moment;
-  problems: any[];
+  problems: ProblemInfoDto[];
   notices: any[];
 }

@@ -50,7 +50,12 @@ export class ContestService {
       this.cachedId = contestId;
       this.cachedData = null;
       return this.http.get<ContestViewDto>('/contest/' + contestId.toString())
-        .pipe(tap(data => this.cachedData = data));
+        .pipe(map(data => {
+          for (let i = 0; i < data.problems.length; ++i) {
+            data.problems[i].label = String.fromCharCode('A'.charCodeAt(0) + i);
+          }
+          return data;
+        }), tap(data => this.cachedData = data));
     }
   }
 }
