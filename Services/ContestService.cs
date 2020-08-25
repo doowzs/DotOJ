@@ -71,8 +71,9 @@ namespace Judge1.Services
 
         public async Task<List<ContestInfoDto>> GetCurrentContestInfosAsync(string userId)
         {
+            var now = DateTime.Now.ToUniversalTime();
             var contests = await _context.Contests
-                .Where(a => a.EndTime > DateTime.Now.ToUniversalTime())
+                .Where(a => a.EndTime > now)
                 .OrderBy(a => a.BeginTime)
                 .ToListAsync();
             if (userId != null)
