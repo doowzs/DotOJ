@@ -59,7 +59,7 @@ namespace Judge1.Data
 
         private void InjectCreatedAndUpdatedTimestamps()
         {
-            var now = DateTime.Now;
+            var now = DateTime.Now.ToUniversalTime();
             var entries = ChangeTracker.Entries()
                 .Where(e => e.Entity is ModelWithTimestamps 
                             && (e.State == EntityState.Added || e.State == EntityState.Modified));

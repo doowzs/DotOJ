@@ -72,7 +72,7 @@ namespace Judge1.Services
         public async Task<List<ContestInfoDto>> GetCurrentContestInfosAsync(string userId)
         {
             var contests = await _context.Contests
-                .Where(a => a.EndTime > DateTime.Now)
+                .Where(a => a.EndTime > DateTime.Now.ToUniversalTime())
                 .OrderBy(a => a.BeginTime)
                 .ToListAsync();
             if (userId != null)
@@ -127,7 +127,7 @@ namespace Judge1.Services
                 throw new NotFoundException();
             }
 
-            if (DateTime.Now < contest.BeginTime)
+            if (DateTime.Now.ToUniversalTime() < contest.BeginTime)
             {
                 throw new UnauthorizedAccessException("Not authorized to view this contest.");
             }

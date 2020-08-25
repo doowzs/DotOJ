@@ -86,7 +86,7 @@ namespace Judge1.Services
             }
 
             await _context.Entry(problem).Reference(p => p.Contest).LoadAsync();
-            if (DateTime.Now < problem.Contest.BeginTime)
+            if (DateTime.Now.ToUniversalTime() < problem.Contest.BeginTime)
             {
                 throw new UnauthorizedAccessException("Not authorized to view this problem.");
             }

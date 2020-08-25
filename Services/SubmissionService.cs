@@ -61,7 +61,7 @@ namespace Judge1.Services
             var contest = await _context.Contests.FindAsync(problem.ContestId);
             if (contest.IsPublic)
             {
-                if (DateTime.Now < contest.BeginTime)
+                if (DateTime.Now.ToUniversalTime() < contest.BeginTime)
                 {
                     throw new UnauthorizedAccessException("Cannot submit until contest has begun.");
                 }
@@ -70,11 +70,11 @@ namespace Judge1.Services
             {
                 var registered = await _context.ContestRegistrations
                     .AnyAsync(r => r.ContestId == contest.Id && r.UserId == userId);
-                if (registered && DateTime.Now < contest.BeginTime)
+                if (registered && DateTime.Now.ToUniversalTime() < contest.BeginTime)
                 {
                     throw new UnauthorizedAccessException("Cannot submit until contest has begun.");
                 }
-                else if (DateTime.Now < contest.EndTime)
+                else if (DateTime.Now.ToUniversalTime() < contest.EndTime)
                 {
                     throw new UnauthorizedAccessException("Cannot submit until contest has ended.");
                 }
