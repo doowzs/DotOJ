@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="Judge1" uuid="2d911896-1a08-4ba9-a3e2-739872912ac7">
+    <data-source source="LOCAL" name="Express" uuid="2d911896-1a08-4ba9-a3e2-739872912ac7">
       <driver-ref>sqlserver.ms</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</jdbc-driver>
       <jdbc-url>jdbc:sqlserver://localhost\SQLEXPRESS;database=judge1</jdbc-url>
+    </data-source>
+    <data-source source="LOCAL" name="Docker" uuid="053c61f0-1f21-4897-9971-ee91bf5e5a54">
+      <driver-ref>sqlserver.ms</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</jdbc-driver>
+      <jdbc-url>jdbc:sqlserver://localhost;database=judge1</jdbc-url>
     </data-source>
   </component>
 </project>
