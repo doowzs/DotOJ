@@ -1,16 +1,19 @@
 ﻿import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, of } from 'rxjs';
+import { map, tap } from 'rxjs/operators';
 import * as moment from 'moment';
 
 import { PaginatedList } from '../interfaces/pagination.interfaces';
-import { ContestInfoDto } from '../interfaces/contest.interfaces';
+import { ContestInfoDto, ContestViewDto } from '../interfaces/contest.interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ContestService {
+  private cachedId: number;
+  private cachedData: ContestViewDto;
+
   constructor(private http: HttpClient) {
   }
 
@@ -38,5 +41,16 @@ export class ContestService {
       }
       return list;
     }));
-}
+  }
+
+  public getSingle(contestId: number): Observable<ContestViewDto> {
+    if (this.cachedId === contestId && this.cachedData) {
+      return of(this.cachedData);
+    } else {
+      this.cachedId = contestId;
+      this.cachedData = null;
+      return this.http.get<ContestViewDto>('/contest/' + contestId.toString())
+        .pipe(tap(data => this.cachedData = data));
+    }
+  }
 }

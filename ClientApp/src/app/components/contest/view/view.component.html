@@ -1,0 +1,21 @@
+<nz-layout>
+  <app-header-main></app-header-main>
+  <nz-content class="outer-content">
+    <nz-layout>
+      <nz-sider class="sidebar" nzWidth="20vw" nzTheme="light">
+        <ul nz-menu nzMode="inline">
+          <li nz-menu-item [routerLink]="['/contest', contestId]"
+              routerLinkActive #active="routerLinkActive" [nzSelected]="active">
+            Description
+          </li>
+        </ul>
+      </nz-sider>
+      <nz-content class="inner-content">
+        <nz-card>
+          <router-outlet></router-outlet>
+        </nz-card>
+      </nz-content>
+    </nz-layout>
+  </nz-content>
+  <app-footer-main></app-footer-main>
+</nz-layout>

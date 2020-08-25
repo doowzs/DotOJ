@@ -23,7 +23,8 @@
             <ul nz-list-item-actions>
               <nz-list-item-action>
                 <button nz-button [disabled]="!canEnterContest(contest)"
-                        [nzType]="isContestRunning(contest) ? 'primary' : 'default'">
+                        [nzType]="isContestRunning(contest) ? 'primary' : 'default'"
+                        [routerLink]="['/contest', contest.id]">
                   Enter
                 </button>
               </nz-list-item-action>

@@ -16,3 +16,15 @@ export interface ContestInfoDto {
   endTime: string|moment.Moment;
   registered: boolean;
 }
+
+export interface ContestViewDto {
+  id: number;
+  title: string;
+  description: string;
+  isPublic: boolean;
+  mode: ContestMode;
+  beginTime: string|moment.Moment;
+  endTime: string|moment.Moment;
+  problems: any[];
+  notices: any[];
+}

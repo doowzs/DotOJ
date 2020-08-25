@@ -1,0 +1,14 @@
+.outer-content {
+}
+
+.inner-content {
+  padding: 2rem 3rem;
+}
+
+.sidebar {
+  background: #ffffff;
+}
+
+.sidebar ul {
+  margin: 1rem auto;
+}

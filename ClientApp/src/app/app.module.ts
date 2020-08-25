@@ -16,6 +16,8 @@ import { MainHeaderComponent } from './components/headers/main/main.component';
 import { MainFooterComponent } from './components/footers/main/main.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { ContestListComponent } from './components/contest/list/list.component';
+import { ContestViewComponent } from './components/contest/view/view.component';
+import { ContestDescriptionComponent } from './components/contest/description/description.component';
 
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
@@ -38,7 +40,9 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     MainHeaderComponent,
     MainFooterComponent,
     WelcomeComponent,
-    ContestListComponent
+    ContestListComponent,
+    ContestViewComponent,
+    ContestDescriptionComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -47,7 +51,10 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     HttpClientModule,
     RouterModule.forRoot([
       { path: '', pathMatch: 'full', component: WelcomeComponent },
-      { path: 'contests', component: ContestListComponent }
+      { path: 'contests', component: ContestListComponent },
+      { path: 'contest/:contestId', component: ContestViewComponent, children: [
+          { path: '', pathMatch: 'full', component: ContestDescriptionComponent }
+        ] }
     ]),
     ApiAuthorizationModule,
     NzLayoutModule,
