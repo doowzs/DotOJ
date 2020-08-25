@@ -13,6 +13,7 @@ import { AppComponent } from 'src/app/app.component';
 import { ApplicationConfigService } from 'src/app/services/config.service';
 import { ApplicationApiInterceptor } from 'src/app/services/api.interceptor';
 import { MainHeaderComponent } from './components/headers/main/main.component';
+import { ContestHeaderComponent } from './components/headers/contest/contest.component';
 import { MainFooterComponent } from './components/footers/main/main.component';
 import { WelcomeComponent } from './components/welcome/welcome.component';
 import { ContestListComponent } from './components/contest/list/list.component';
@@ -44,6 +45,7 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
   declarations: [
     AppComponent,
     MainHeaderComponent,
+    ContestHeaderComponent,
     MainFooterComponent,
     WelcomeComponent,
     ContestListComponent,

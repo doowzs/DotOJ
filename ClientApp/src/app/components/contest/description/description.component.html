@@ -1,5 +1,5 @@
 <div id="contest-description" *ngIf="contest">
-  <h2>Contest #{{ contest.id }}: {{ contest.title }}</h2>
+  <h2>{{ contest.title }}</h2>
   <nz-divider nzText="Description" nzOrientation="left"></nz-divider>
   <markdown [data]="contest.description" katex></markdown>
   <nz-divider nzText="Rules" nzOrientation="left"></nz-divider>

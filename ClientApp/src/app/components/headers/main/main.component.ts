@@ -2,8 +2,8 @@
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { ApplicationConfigService } from 'src/app/services/config.service';
-import { AuthorizeService } from 'src/api-authorization/authorize.service';
+import { ApplicationConfigService } from '../../../services/config.service';
+import { AuthorizeService } from '../../../../api-authorization/authorize.service';
 
 @Component({
   selector: 'app-header-main',
