@@ -30,14 +30,16 @@ export enum AuthenticationResultStatus {
 }
 
 export interface IUser {
-  id: string;
-  name: string;
+  sub: string;
+  cid: string;   // Contestant ID
+  name: string;  // Contestant Name
   roles: string[];
 }
 
 const mapUserData = (user: User): IUser => {
   return user && {
-    id: user.profile['id'],
+    sub: user.profile.sub,
+    cid: user.profile['id'],
     name: user.profile.name,
     roles: user.profile['role'] ? user.profile['role'].split(' ') : []
   } as IUser;
