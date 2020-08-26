@@ -1,6 +1,12 @@
 ﻿<ng-container *ngIf="problem">
   <h2>{{ problem.title }}</h2>
-  <nz-divider nzText="Description" nzOrientation="left"></nz-divider>
+  <p>Time Limit: {{ problem.timeLimit }} ms</p>
+  <p>Memory Limit: {{ problem.memoryLimit / 1024 }} MiB</p>
+
+  <nz-divider nzText="Submissions" nzOrientation="left"></nz-divider>
+  <app-submission-creator [contestId]="problem.contestId" [problemId]="problem.id"></app-submission-creator>
+
+  <nz-divider nzText="Description" nzOrientation="left" style="margin-top: 5rem !important;"></nz-divider>
   <markdown [data]="problem.description" katex></markdown>
   <nz-divider nzText="Input Format" nzOrientation="left"></nz-divider>
   <markdown [data]="problem.inputFormat" katex></markdown>

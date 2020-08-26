@@ -1,0 +1,26 @@
+<div nz-row nzGutter="20">
+  <div nz-col nzSpan="6">
+    <nz-select nzPlaceHolder="Language"
+               [ngModel]="language" (ngModelChange)="selectLanguage($event)">
+      <nz-option *ngFor="let language of Languages" nzCustomContent
+                 [nzLabel]="language.name + ' (' + language.env + ')'" [nzValue]="language.code">
+        <span>{{ language.name }} ({{ language.env }})</span>
+        <span *ngIf="language.option" style="float: right;" nz-tooltip
+              nzTooltipPlacement="right" [nzTooltipTitle]="language.option">
+            <i nz-icon nzType="info-circle"></i>
+          </span>
+      </nz-option>
+    </nz-select>
+  </div>
+  <div nz-col nzSpan="12">
+    <input #sourceFileInput type="file"
+           (click)="this.code = this.filename = null;"
+           (change)="selectSourceFile($event)"/>
+    <button nz-button [nzType]="filename ? 'default' : 'dashed'" (click)="sourceFileInput.click()">
+      {{ filename ? filename : 'Select Source File' }}
+    </button>
+  </div>
+  <div nz-col nzSpan="6">
+    <button nz-button nzType="primary" [disabled]="!(language && code)">Submit</button>
+  </div>
+</div>

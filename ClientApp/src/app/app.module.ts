@@ -20,6 +20,8 @@ import { ContestListComponent } from './components/contest/list/list.component';
 import { ContestViewComponent } from './components/contest/view/view.component';
 import { ContestRuleComponent } from './components/contest/rule/rule.component';
 import { ContestDescriptionComponent } from './components/contest/description/description.component';
+import { ProblemDetailComponent } from './components/problem/detail/detail.component';
+import { SubmissionCreatorComponent } from './components/submission/creator/creator.component';
 
 import { MarkdownModule } from 'ngx-markdown';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
@@ -33,9 +35,10 @@ import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 import { NzListModule } from 'ng-zorro-antd/list';
 import { NzPaginationModule } from 'ng-zorro-antd/pagination';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
-import { ProblemDetailComponent } from './components/problem/detail/detail.component';
 import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzIconModule } from 'ng-zorro-antd/icon';
+import { NzSelectModule } from 'ng-zorro-antd/select';
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 
 const loadApplicationConfig = (service: ApplicationConfigService) => {
   return () => service.loadApplicationConfig();
@@ -52,7 +55,8 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     ContestViewComponent,
     ContestRuleComponent,
     ContestDescriptionComponent,
-    ProblemDetailComponent
+    ProblemDetailComponent,
+    SubmissionCreatorComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -84,6 +88,8 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     NzDividerModule,
     NzDescriptionsModule,
     NzIconModule,
+    NzSelectModule,
+    NzToolTipModule,
   ],
   providers: [
     ApplicationConfigService,
