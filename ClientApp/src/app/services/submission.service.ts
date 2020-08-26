@@ -20,6 +20,7 @@ export class SubmissionService {
   }
 
   public createSingle(problemId: number, language: number, code: string): Observable<SubmissionInfoDto> {
+    console.log('inside submission createSingle');
     return this.http.post<SubmissionInfoDto>('/submission', {
       problemId: problemId,
       program: {

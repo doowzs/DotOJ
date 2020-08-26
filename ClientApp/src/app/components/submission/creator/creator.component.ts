@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Languages } from '../../../consts/languages.consts';
 import { SubmissionService } from '../../../services/submission.service';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 
 @Component({
   selector: 'app-submission-creator',
@@ -18,7 +19,8 @@ export class SubmissionCreatorComponent implements OnInit {
   public code: string;
 
   constructor(
-    private service: SubmissionService
+    private service: SubmissionService,
+    private notification: NzNotificationService
   ) {
   }
 
@@ -45,7 +47,13 @@ export class SubmissionCreatorComponent implements OnInit {
 
   public makeSubmission(): void {
     if (this.language && this.code) {
-      this.service.createSingle(this.problemId, this.language, this.code);
+      this.service.createSingle(this.problemId, this.language, this.code)
+        .subscribe(submission => {
+          this.notification.create('success', 'Submitted', 'Code submitted as #' + submission.id.toString() + '.');
+          this.code = this.filename = null;
+        }, error => {
+          this.notification.create('error', 'Error', 'Submitting failed.');
+        });
     }
   }
 }

@@ -39,6 +39,7 @@ import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
+import { NzNotificationModule } from 'ng-zorro-antd/notification';
 
 const loadApplicationConfig = (service: ApplicationConfigService) => {
   return () => service.loadApplicationConfig();
@@ -90,6 +91,7 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     NzIconModule,
     NzSelectModule,
     NzToolTipModule,
+    NzNotificationModule
   ],
   providers: [
     ApplicationConfigService,

@@ -22,7 +22,7 @@
   </div>
   <div nz-col nzSpan="6">
     <button nz-button nzType="primary"
-            [disabled]="!(language && code)"
+            [disabled]="!language || !code"
             (click)="makeSubmission()">
       Submit
     </button>
