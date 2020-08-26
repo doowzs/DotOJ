@@ -1,3 +1,6 @@
+import * as moment from 'moment';
+import { VerdictInfo } from '../consts/verdicts.consts';
+
 export interface Program {
   language: number;
   code: string;
@@ -7,10 +10,10 @@ export interface SubmissionInfoDto {
   id: number;
   userId: string;
   problemId: number;
-  verdict: number;
+  verdict: VerdictInfo | number;
   lastTestCase: number;
-  judgedAt: string;
-  createdAt: string;
+  judgedAt: moment.Moment | string;
+  createdAt: moment.Moment | string;
 }
 
 export interface SubmissionViewDto {
@@ -18,8 +21,8 @@ export interface SubmissionViewDto {
   userId: string;
   problemId: number;
   program: Program;
-  verdict: number;
+  verdict: VerdictInfo | number;
   lastTestCase: number;
-  judgedAt: string;
-  createdAt: string;
+  judgedAt: moment.Moment | string;
+  createdAt: moment.Moment | string;
 }

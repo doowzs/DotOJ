@@ -14,8 +14,8 @@ export interface ContestInfoDto {
   title: string;
   isPublic: boolean;
   mode: ContestMode;
-  beginTime: string|moment.Moment;
-  endTime: string|moment.Moment;
+  beginTime: string | moment.Moment;
+  endTime: string | moment.Moment;
   registered: boolean;
 }
 
@@ -25,8 +25,8 @@ export interface ContestViewDto {
   description: string;
   isPublic: boolean;
   mode: ContestMode;
-  beginTime: string|moment.Moment;
-  endTime: string|moment.Moment;
+  beginTime: string | moment.Moment;
+  endTime: string | moment.Moment;
   problems: ProblemInfoDto[];
   notices: any[];
 }
