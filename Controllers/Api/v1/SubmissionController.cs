@@ -32,19 +32,10 @@ namespace Judge1.Controllers.Api.v1
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<PaginatedList<SubmissionInfoDto>>> ListSubmissions(int? pageIndex)
+        public async Task<ActionResult<PaginatedList<SubmissionInfoDto>>>
+            ListSubmissions(int? contestId, int? problemId, string userId, Verdict? verdict, int? pageIndex)
         {
-            return Ok(await _service.GetPaginatedSubmissionsAsync(pageIndex));
-        }
-
-        [HttpGet("problem-user")]
-        [Consumes(MediaTypeNames.Application.Json)]
-        [Produces(MediaTypeNames.Application.Json)]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<SubmissionInfoDto>>>
-            GetSubmissionsByProblemAndUser(int problemId, string userId)
-        {
-            return Ok(await _service.GetSubmissionsByProblemAndUserAsync(problemId, userId));
+            return Ok(await _service.GetPaginatedSubmissionsAsync(contestId, problemId, userId, verdict, pageIndex));
         }
 
         [HttpGet("{id:int}")]

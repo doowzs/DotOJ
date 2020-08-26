@@ -15,8 +15,9 @@ namespace Judge1.Services
 {
     public interface ISubmissionService
     {
-        public Task<PaginatedList<SubmissionInfoDto>> GetPaginatedSubmissionsAsync(int? pageIndex);
-        public Task<List<SubmissionInfoDto>> GetSubmissionsByProblemAndUserAsync(int problemId, string userId);
+        public Task<PaginatedList<SubmissionInfoDto>> GetPaginatedSubmissionsAsync
+            (int? contestId, int? problemId, string userId, Verdict? verdict, int? pageIndex);
+
         public Task<SubmissionInfoDto> GetSubmissionInfoAsync(int id, string userId);
         public Task<SubmissionViewDto> GetSubmissionViewAsync(int id, string userId);
         public Task<SubmissionViewDto> CreateSubmissionAsync(SubmissionCreateDto dto, string userId);
@@ -77,17 +78,37 @@ namespace Judge1.Services
             }
         }
 
-        public async Task<PaginatedList<SubmissionInfoDto>> GetPaginatedSubmissionsAsync(int? pageIndex)
+        public async Task<PaginatedList<SubmissionInfoDto>> GetPaginatedSubmissionsAsync
+            (int? contestId, int? problemId, string userId, Verdict? verdict, int? pageIndex)
         {
-            return await _context.Submissions.OrderByDescending(s => s.Id)
-                .PaginateAsync(s => new SubmissionInfoDto(s), pageIndex ?? 1, PageSize);
-        }
+            var submissions = _context.Submissions.AsQueryable();
 
-        public async Task<List<SubmissionInfoDto>> GetSubmissionsByProblemAndUserAsync(int problemId, string userId)
-        {
-            return await _context.Submissions.OrderByDescending(s => s.Id)
-                .Where(s => s.ProblemId == problemId && s.UserId == userId)
-                .Select(s => new SubmissionInfoDto(s)).ToListAsync();
+            if (contestId.HasValue)
+            {
+                var problemIds = await _context.Problems
+                    .Where(p => p.ContestId == contestId.GetValueOrDefault())
+                    .Select(p => p.Id)
+                    .ToListAsync();
+                submissions = submissions.Where(s => problemIds.Contains(s.ProblemId));
+            }
+
+            if (problemId.HasValue)
+            {
+                submissions = submissions.Where(s => s.ProblemId == problemId.GetValueOrDefault());
+            }
+
+            if (!string.IsNullOrEmpty(userId))
+            {
+                submissions = submissions.Where(s => s.UserId == userId);
+            }
+
+            if (verdict.HasValue)
+            {
+                submissions = submissions.Where(s => s.Verdict == verdict.GetValueOrDefault());
+            }
+
+            return await submissions.OrderByDescending(s => s.Id)
+                .PaginateAsync(s => new SubmissionInfoDto(s), pageIndex ?? 1, PageSize);
         }
 
         public async Task<SubmissionInfoDto> GetSubmissionInfoAsync(int id, string userId)
@@ -96,11 +117,6 @@ namespace Judge1.Services
             if (submission == null)
             {
                 throw new NotFoundException();
-            }
-
-            if (!await CanViewSubmission(submission, userId))
-            {
-                throw new UnauthorizedAccessException("Not allowed to view this submission.");
             }
 
             return new SubmissionInfoDto(submission);
@@ -135,7 +151,7 @@ namespace Judge1.Services
             await _context.SaveChangesAsync();
 
             _runner.RunInBackground(submission.Id);
-            
+
             return new SubmissionViewDto(submission);
         }
     }
