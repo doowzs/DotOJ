@@ -10,7 +10,9 @@
     "MessageOfTheDay": "Hello, world!",
     "AdminUser": {
       "Email": "admin@judge1.local",
-      "Password": "password"
+      "Password": "password",
+      "ContestantId": "admin",
+      "ContestantName": "admin"
     }
   },
   "Logging": {

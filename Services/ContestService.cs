@@ -22,7 +22,7 @@ namespace Judge1.Services
         public Task<ContestEditDto> CreateContestAsync(ContestEditDto dto);
         public Task<ContestEditDto> UpdateContestAsync(int id, ContestEditDto dto);
         public Task DeleteContestAsync(int id);
-        public Task<PaginatedList<ContestRegistrationDto>> GetPaginatedRegistrationsAsync(int id, int? pageIndex);
+        public Task<PaginatedList<RegistrationDto>> GetPaginatedRegistrationsAsync(int id, int? pageIndex);
         public Task RegisterUserForContestAsync(int id, ApplicationUser user);
         public Task UnregisterUserFromContestAsync(int id, ApplicationUser user);
     }
@@ -43,7 +43,7 @@ namespace Judge1.Services
 
         public async Task ValidateContestId(int id)
         {
-            if (!await _context.Contests.AnyAsync(a => a.Id == id))
+            if (!await _context.Contests.AnyAsync(c => c.Id == id))
             {
                 throw new ValidationException("Invalid contest ID.");
             }
@@ -73,15 +73,15 @@ namespace Judge1.Services
         {
             var now = DateTime.Now.ToUniversalTime();
             var contests = await _context.Contests
-                .Where(a => a.EndTime > now)
-                .OrderBy(a => a.BeginTime)
+                .Where(c => c.EndTime > now)
+                .OrderBy(c => c.BeginTime)
                 .ToListAsync();
             if (userId != null)
             {
                 var infos = new List<ContestInfoDto>();
                 foreach (var contest in contests)
                 {
-                    var registered = await _context.ContestRegistrations
+                    var registered = await _context.Registrations
                         .AnyAsync(r => r.ContestId == contest.Id && r.UserId == userId);
                     infos.Add(new ContestInfoDto(contest, registered));
                 }
@@ -90,7 +90,7 @@ namespace Judge1.Services
             }
             else
             {
-                return contests.Select(a => new ContestInfoDto(a, false)).ToList();
+                return contests.Select(c => new ContestInfoDto(c, false)).ToList();
             }
         }
 
@@ -99,7 +99,7 @@ namespace Judge1.Services
         {
             // See https://github.com/dotnet/efcore/issues/17068 for GroupJoin issues.
             var contests = await _context.Contests
-                .OrderByDescending(a => a.Id)
+                .OrderByDescending(c => c.Id)
                 .PaginateAsync(pageIndex ?? 1, PageSize);
             IList<ContestInfoDto> infos;
             if (userId != null)
@@ -107,14 +107,14 @@ namespace Judge1.Services
                 infos = new List<ContestInfoDto>();
                 foreach (var contest in contests.Items)
                 {
-                    var registered = await _context.ContestRegistrations
+                    var registered = await _context.Registrations
                         .AnyAsync(r => r.ContestId == contest.Id && r.UserId == userId);
                     infos.Add(new ContestInfoDto(contest, registered));
                 }
             }
             else
             {
-                infos = contests.Items.Select(a => new ContestInfoDto(a, false)).ToList();
+                infos = contests.Items.Select(c => new ContestInfoDto(c, false)).ToList();
             }
 
             return new PaginatedList<ContestInfoDto>(contests.TotalItems, pageIndex ?? 1, PageSize, infos);
@@ -133,8 +133,8 @@ namespace Judge1.Services
                 throw new UnauthorizedAccessException("Not authorized to view this contest.");
             }
 
-            await _context.Entry(contest).Collection(a => a.Problems).LoadAsync();
-            await _context.Entry(contest).Collection(a => a.Notices).LoadAsync();
+            await _context.Entry(contest).Collection(c => c.Problems).LoadAsync();
+            await _context.Entry(contest).Collection(c => c.Clarifications).LoadAsync();
             return new ContestViewDto(contest);
         }
 
@@ -151,7 +151,7 @@ namespace Judge1.Services
 
         public async Task<ContestEditDto> CreateContestAsync(ContestEditDto dto)
         {
-            ValidateContestEditDto(dto);
+            await ValidateContestEditDto(dto);
             var contest = new Contest()
             {
                 Title = dto.Title,
@@ -191,29 +191,29 @@ namespace Judge1.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<PaginatedList<ContestRegistrationDto>>
+        public async Task<PaginatedList<RegistrationDto>>
             GetPaginatedRegistrationsAsync(int id, int? pageIndex)
         {
-            return await _context.ContestRegistrations
-                .Where(ar => ar.ContestId == id)
-                .PaginateAsync(ar => new ContestRegistrationDto(ar), pageIndex ?? 1, RegistrationPageSize);
+            return await _context.Registrations
+                .Where(r => r.ContestId == id)
+                .PaginateAsync(r => new RegistrationDto(r), pageIndex ?? 1, RegistrationPageSize);
         }
 
         public async Task RegisterUserForContestAsync(int id, ApplicationUser user)
         {
             var registered =
-                await _context.ContestRegistrations.AnyAsync(r => r.ContestId == id && r.UserId == user.Id);
+                await _context.Registrations.AnyAsync(r => r.ContestId == id && r.UserId == user.Id);
             if (!registered)
             {
-                var registration = new ContestRegistration
+                var registration = new Registration
                 {
                     ContestId = id,
                     UserId = user.Id,
                     IsContestManager = false,
                     IsParticipant = false,
-                    Statistics = new ContestParticipantStatistics()
+                    Statistics = new ParticipantStatistics()
                 };
-                await _context.ContestRegistrations.AddAsync(registration);
+                await _context.Registrations.AddAsync(registration);
                 await _context.SaveChangesAsync();
             }
         }
@@ -221,16 +221,16 @@ namespace Judge1.Services
         public async Task UnregisterUserFromContestAsync(int id, ApplicationUser user)
         {
             var registered =
-                await _context.ContestRegistrations.AnyAsync(r => r.ContestId == id && r.UserId == user.Id);
+                await _context.Registrations.AnyAsync(r => r.ContestId == id && r.UserId == user.Id);
             if (registered)
             {
-                var registration = new ContestRegistration
+                var registration = new Registration
                 {
                     ContestId = id,
                     UserId = user.Id,
                 };
-                _context.ContestRegistrations.Attach(registration);
-                _context.ContestRegistrations.Remove(registration);
+                _context.Registrations.Attach(registration);
+                _context.Registrations.Remove(registration);
                 await _context.SaveChangesAsync();
             }
         }

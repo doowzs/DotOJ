@@ -13,8 +13,8 @@ namespace Judge1.Data
     public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>
     {
         public DbSet<Contest> Contests { get; set; }
-        public DbSet<ContestNotice> ContestNotices { get; set; }
-        public DbSet<ContestRegistration> ContestRegistrations { get; set; }
+        public DbSet<Clarification> Clarifications { get; set; }
+        public DbSet<Registration> Registrations { get; set; }
         public DbSet<Problem> Problems { get; set; }
         public DbSet<Submission> Submissions { get; set; }
         public DbSet<Hack> Hacks { get; set; }
@@ -30,7 +30,7 @@ namespace Judge1.Data
             base.OnModelCreating(builder);
             
             // Setup composite key for ContestRegistration.
-            builder.Entity<ContestRegistration>()
+            builder.Entity<Registration>()
                 .HasKey(ar => new {ar.UserId, ar.ContestId});
             
             // Remove multiple cascade paths for Hack and Test.

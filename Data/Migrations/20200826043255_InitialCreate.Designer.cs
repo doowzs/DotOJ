@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Judge1.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200824153017_InitialCreate")]
+    [Migration("20200826043255_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -115,6 +115,14 @@ namespace Judge1.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("ContestantId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ContestantName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
@@ -168,6 +176,56 @@ namespace Judge1.Data.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("Judge1.Models.Clarification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("ContestId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsPublic")
+                        .HasColumnType("bit");
+
+                    b.Property<int?>("ProblemId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("RepliedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("RepliedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Reply")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ContestId");
+
+                    b.HasIndex("ProblemId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Clarifications");
+                });
+
             modelBuilder.Entity("Judge1.Models.Contest", b =>
                 {
                     b.Property<int>("Id")
@@ -204,64 +262,6 @@ namespace Judge1.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Contests");
-                });
-
-            modelBuilder.Entity("Judge1.Models.ContestNotice", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Content")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<int>("ContestId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ContestId");
-
-                    b.ToTable("ContestNotices");
-                });
-
-            modelBuilder.Entity("Judge1.Models.ContestRegistration", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("ContestId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsContestManager")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsParticipant")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("StatisticsSerialized")
-                        .HasColumnName("statistics")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("UpdatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("UserId", "ContestId");
-
-                    b.HasIndex("ContestId");
-
-                    b.ToTable("ContestRegistrations");
                 });
 
             modelBuilder.Entity("Judge1.Models.Hack", b =>
@@ -383,6 +383,37 @@ namespace Judge1.Data.Migrations
                     b.HasIndex("ContestId");
 
                     b.ToTable("Problems");
+                });
+
+            modelBuilder.Entity("Judge1.Models.Registration", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("ContestId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsContestManager")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsParticipant")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("StatisticsSerialized")
+                        .HasColumnName("statistics")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("UserId", "ContestId");
+
+                    b.HasIndex("ContestId");
+
+                    b.ToTable("Registrations");
                 });
 
             modelBuilder.Entity("Judge1.Models.Submission", b =>
@@ -610,22 +641,17 @@ namespace Judge1.Data.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Judge1.Models.ContestNotice", b =>
+            modelBuilder.Entity("Judge1.Models.Clarification", b =>
                 {
                     b.HasOne("Judge1.Models.Contest", "Contest")
-                        .WithMany("Notices")
+                        .WithMany("Clarifications")
                         .HasForeignKey("ContestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
 
-            modelBuilder.Entity("Judge1.Models.ContestRegistration", b =>
-                {
-                    b.HasOne("Judge1.Models.Contest", "Contest")
-                        .WithMany("Registrations")
-                        .HasForeignKey("ContestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("Judge1.Models.Problem", "Problem")
+                        .WithMany()
+                        .HasForeignKey("ProblemId");
 
                     b.HasOne("Judge1.Models.ApplicationUser", "User")
                         .WithMany()
@@ -654,6 +680,21 @@ namespace Judge1.Data.Migrations
                     b.HasOne("Judge1.Models.Contest", "Contest")
                         .WithMany("Problems")
                         .HasForeignKey("ContestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Judge1.Models.Registration", b =>
+                {
+                    b.HasOne("Judge1.Models.Contest", "Contest")
+                        .WithMany("Registrations")
+                        .HasForeignKey("ContestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Judge1.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });

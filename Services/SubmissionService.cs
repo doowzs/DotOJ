@@ -68,7 +68,7 @@ namespace Judge1.Services
             }
             else
             {
-                var registered = await _context.ContestRegistrations
+                var registered = await _context.Registrations
                     .AnyAsync(r => r.ContestId == contest.Id && r.UserId == userId);
                 if (registered && DateTime.Now.ToUniversalTime() < contest.BeginTime)
                 {

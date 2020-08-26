@@ -204,7 +204,9 @@ namespace Judge1
                 var adminUser = new ApplicationUser()
                 {
                     Email = Configuration["ApplicationConfig:AdminUser:Email"],
-                    UserName = Configuration["ApplicationConfig:AdminUser:Email"]
+                    UserName = Configuration["ApplicationConfig:AdminUser:Email"],
+                    ContestantId = Configuration["ApplicationConfig:AdminUser:ContestantId"],
+                    ContestantName = Configuration["ApplicationConfig:AdminUser:ContestantName"]
                 };
                 var password = Configuration["ApplicationConfig:AdminUser:Password"];
                 Console.WriteLine(password);

@@ -39,7 +39,9 @@ namespace Judge1.Data.Migrations
                     TwoFactorEnabled = table.Column<bool>(nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
                     LockoutEnabled = table.Column<bool>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false)
+                    AccessFailedCount = table.Column<int>(nullable: false),
+                    ContestantId = table.Column<string>(nullable: false),
+                    ContestantName = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -207,57 +209,6 @@ namespace Judge1.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ContestNotices",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    UpdatedAt = table.Column<DateTime>(nullable: false),
-                    ContestId = table.Column<int>(nullable: false),
-                    Content = table.Column<string>(type: "text", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ContestNotices", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ContestNotices_Contests_ContestId",
-                        column: x => x.ContestId,
-                        principalTable: "Contests",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ContestRegistrations",
-                columns: table => new
-                {
-                    UserId = table.Column<string>(nullable: false),
-                    ContestId = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    UpdatedAt = table.Column<DateTime>(nullable: false),
-                    IsParticipant = table.Column<bool>(nullable: false),
-                    IsContestManager = table.Column<bool>(nullable: false),
-                    statistics = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ContestRegistrations", x => new { x.UserId, x.ContestId });
-                    table.ForeignKey(
-                        name: "FK_ContestRegistrations_Contests_ContestId",
-                        column: x => x.ContestId,
-                        principalTable: "Contests",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ContestRegistrations_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Problems",
                 columns: table => new
                 {
@@ -288,6 +239,75 @@ namespace Judge1.Data.Migrations
                         name: "FK_Problems_Contests_ContestId",
                         column: x => x.ContestId,
                         principalTable: "Contests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Registrations",
+                columns: table => new
+                {
+                    UserId = table.Column<string>(nullable: false),
+                    ContestId = table.Column<int>(nullable: false),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    UpdatedAt = table.Column<DateTime>(nullable: false),
+                    IsParticipant = table.Column<bool>(nullable: false),
+                    IsContestManager = table.Column<bool>(nullable: false),
+                    statistics = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Registrations", x => new { x.UserId, x.ContestId });
+                    table.ForeignKey(
+                        name: "FK_Registrations_Contests_ContestId",
+                        column: x => x.ContestId,
+                        principalTable: "Contests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Registrations_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Clarifications",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    UpdatedAt = table.Column<DateTime>(nullable: false),
+                    ContestId = table.Column<int>(nullable: false),
+                    ProblemId = table.Column<int>(nullable: true),
+                    UserId = table.Column<string>(nullable: false),
+                    content = table.Column<string>(type: "text", nullable: false),
+                    Reply = table.Column<string>(type: "text", nullable: true),
+                    IsPublic = table.Column<bool>(nullable: false),
+                    RepliedAt = table.Column<DateTime>(nullable: false),
+                    RepliedBy = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Clarifications", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Clarifications_Contests_ContestId",
+                        column: x => x.ContestId,
+                        principalTable: "Contests",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Clarifications_Problems_ProblemId",
+                        column: x => x.ProblemId,
+                        principalTable: "Problems",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Clarifications_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -428,14 +448,19 @@ namespace Judge1.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ContestNotices_ContestId",
-                table: "ContestNotices",
+                name: "IX_Clarifications_ContestId",
+                table: "Clarifications",
                 column: "ContestId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ContestRegistrations_ContestId",
-                table: "ContestRegistrations",
-                column: "ContestId");
+                name: "IX_Clarifications_ProblemId",
+                table: "Clarifications",
+                column: "ProblemId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Clarifications_UserId",
+                table: "Clarifications",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DeviceCodes_DeviceCode",
@@ -471,6 +496,11 @@ namespace Judge1.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Problems_ContestId",
                 table: "Problems",
+                column: "ContestId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Registrations_ContestId",
+                table: "Registrations",
                 column: "ContestId");
 
             migrationBuilder.CreateIndex(
@@ -512,10 +542,7 @@ namespace Judge1.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "ContestNotices");
-
-            migrationBuilder.DropTable(
-                name: "ContestRegistrations");
+                name: "Clarifications");
 
             migrationBuilder.DropTable(
                 name: "DeviceCodes");
@@ -525,6 +552,9 @@ namespace Judge1.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "PersistedGrants");
+
+            migrationBuilder.DropTable(
+                name: "Registrations");
 
             migrationBuilder.DropTable(
                 name: "Tests");
