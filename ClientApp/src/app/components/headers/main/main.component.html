@@ -5,16 +5,32 @@
   <nz-page-header-extra>
     <ng-container *ngIf="(isAuthenticated | async) then authenticated else anonymous"></ng-container>
     <ng-template #anonymous>
-      <button nz-button nzType="text" routerLink="/authentication/register">Register</button>
-      <button nz-button nzType="text" routerLink="/authentication/login">Login</button>
+      <button nz-button nzType="text" routerLink="/authentication/register">
+        <i nz-icon nzType="user-add"></i><span>Register</span>
+      </button>
+      <button nz-button nzType="text" routerLink="/authentication/login">
+        <i nz-icon nzType="login"></i><span>Login</span>
+      </button>
     </ng-template>
     <ng-template #authenticated>
-      <button nz-button nzType="text" routerLink="/">Home</button>
-      <button nz-button nzType="text" routerLink="/contests">Contests</button>
-      <button nz-button nzType="text" nz-dropdown [nzDropdownMenu]="userMenu">{{ username | async }}</button>
+      <button nz-button routerLink="/"
+              routerLinkActive #rla="routerLinkActive" [routerLinkActiveOptions]="{exact: true}"
+              [class.ant-btn-link]="rla.isActive" [class.ant-btn-text]="!rla.isActive">
+        <i nz-icon nzType="home"></i><span>Home</span>
+      </button>
+      <button nz-button routerLink="/contests"
+              routerLinkActive #rlaContests="routerLinkActive" [routerLinkActiveOptions]="{exact: true}"
+              [class.ant-btn-link]="rlaContests.isActive" [class.ant-btn-text]="!rlaContests.isActive">
+        <i nz-icon nzType="calendar"></i><span>Contests</span>
+      </button>
+      <button nz-button nzType="text" nz-dropdown [nzDropdownMenu]="userMenu">
+        <i nz-icon nzType="user"></i><span>{{ username | async }}</span>
+      </button>
       <nz-dropdown-menu #userMenu>
         <ul nz-menu>
-          <li nz-menu-item routerLink="/authentication/logout" [state]="{ local: true }">Logout</li>
+          <li nz-menu-item routerLink="/authentication/logout" [state]="{ local: true }">
+            <i nz-icon nzType="logout"></i><span>Logout</span>
+          </li>
         </ul>
       </nz-dropdown-menu>
     </ng-template>
