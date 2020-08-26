@@ -30,8 +30,18 @@ export enum AuthenticationResultStatus {
 }
 
 export interface IUser {
-  name?: string;
+  id: string;
+  name: string;
+  roles: string[];
 }
+
+const mapUserData = (user: User): IUser => {
+  return user && {
+    id: user.profile['id'],
+    name: user.profile.name,
+    roles: user.profile['role'].split(' ')
+  } as IUser;
+};
 
 @Injectable({
   providedIn: 'root'
@@ -74,7 +84,7 @@ export class AuthorizeService {
     let user: User = null;
     try {
       user = await this.userManager.signinSilent(this.createArguments());
-      this.userSubject.next(user.profile);
+      this.userSubject.next(mapUserData(user));
       return this.success(state);
     } catch (silentError) {
       // User might not be authenticated, fallback to popup authentication
@@ -85,7 +95,7 @@ export class AuthorizeService {
           throw new Error('Popup disabled. Change \'authorize.service.ts:AuthorizeService.popupDisabled\' to false to enable it.');
         }
         user = await this.userManager.signinPopup(this.createArguments());
-        this.userSubject.next(user.profile);
+        this.userSubject.next(mapUserData(user));
         return this.success(state);
       } catch (popupError) {
         if (popupError.message === 'Popup window closed') {
@@ -111,7 +121,7 @@ export class AuthorizeService {
     try {
       await this.ensureUserManagerInitialized();
       const user = await this.userManager.signinCallback(url);
-      this.userSubject.next(user && user.profile);
+      this.userSubject.next(user && mapUserData(user));
       return this.success(user && user.state);
     } catch (error) {
       console.log('There was an error signing in: ', error);
@@ -192,8 +202,7 @@ export class AuthorizeService {
 
   private getUserFromStorage(): Observable<IUser> {
     return from(this.ensureUserManagerInitialized())
-      .pipe(
-        mergeMap(() => this.userManager.getUser()),
-        map(u => u && u.profile));
+      .pipe(mergeMap(() => this.userManager.getUser()),
+        map(user => user && mapUserData(user)));
   }
 }

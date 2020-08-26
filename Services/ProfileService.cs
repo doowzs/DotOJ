@@ -22,7 +22,8 @@ namespace Judge1.Services
         {
             var user = await _manager.GetUserAsync(context.Subject);
             var roles = await _manager.GetRolesAsync(user);
-            context.IssuedClaims.Add(new Claim(JwtClaimTypes.Name, user.UserName));
+            context.IssuedClaims.Add(new Claim(JwtClaimTypes.Id, user.ContestantId));
+            context.IssuedClaims.Add(new Claim(JwtClaimTypes.Name, user.ContestantName));
             context.IssuedClaims.AddRange(roles.Select(r => new Claim(JwtClaimTypes.Role, r)));
         }
 
