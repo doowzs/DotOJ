@@ -1,10 +1,8 @@
 ﻿import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import * as moment from 'moment';
 
-import { PaginatedList } from '../interfaces/pagination.interfaces';
 import { ProblemViewDto } from '../interfaces/problem.interfaces';
 
 @Injectable({
