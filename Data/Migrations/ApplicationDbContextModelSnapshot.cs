@@ -115,7 +115,7 @@ namespace Judge1.Data.Migrations
 
                     b.Property<string>("ContestantId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ContestantName")
                         .IsRequired()
@@ -162,6 +162,9 @@ namespace Judge1.Data.Migrations
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ContestantId")
+                        .IsUnique();
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");

@@ -29,7 +29,12 @@ namespace Judge1.Data
         {
             base.OnModelCreating(builder);
             
-            // Setup composite key for ContestRegistration.
+            // Setup unique index for ApplicationUser.
+            builder.Entity<ApplicationUser>()
+                .HasIndex(u => u.ContestantId)
+                .IsUnique();
+            
+            // Setup composite key for Registration.
             builder.Entity<Registration>()
                 .HasKey(ar => new {ar.UserId, ar.ContestId});
             
