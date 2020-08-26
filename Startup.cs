@@ -180,8 +180,6 @@ namespace Judge1
         private async Task ConfigureDatabase(IServiceProvider provider)
         {
             var logger = provider.GetService<ILogger<Startup>>();
-            logger.LogInformation("Configuring database");
-
             var context = provider.GetService<ApplicationDbContext>();
             await context.Database.MigrateAsync();
 
@@ -193,14 +191,14 @@ namespace Judge1
                 var exists = await roleManager.RoleExistsAsync(role);
                 if (!exists)
                 {
-                    logger.LogInformation($"Creating role {role}");
+                    logger.LogInformation($"Creating role {role}.");
                     await roleManager.CreateAsync(new IdentityRole(role));
                 }
             }
 
             if ((await userManager.FindByEmailAsync(Configuration["ApplicationConfig:AdminUser:Email"].ToUpper())) == null)
             {
-                logger.LogInformation("Creating admin user");
+                logger.LogInformation("Creating admin user.");
                 var adminUser = new ApplicationUser()
                 {
                     Email = Configuration["ApplicationConfig:AdminUser:Email"],
@@ -209,7 +207,6 @@ namespace Judge1
                     ContestantName = Configuration["ApplicationConfig:AdminUser:ContestantName"]
                 };
                 var password = Configuration["ApplicationConfig:AdminUser:Password"];
-                Console.WriteLine(password);
                 var result = await userManager.CreateAsync(adminUser, password);
                 if (result.Succeeded)
                 {
