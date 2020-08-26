@@ -16,19 +16,23 @@
     <PackageReference Include="Hangfire.AspNetCore" Version="1.7.12" />
     <PackageReference Include="Hangfire.Core" Version="1.7.12" />
     <PackageReference Include="Hangfire.SqlServer" Version="1.7.12" />
-    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.6" />
-    <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="3.1.6" />
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.6" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.6" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.6">
+    <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="3.1.7" />
+    <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="3.1.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.7" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.7">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="3.1.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.7" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.7">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
   </ItemGroup>
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
