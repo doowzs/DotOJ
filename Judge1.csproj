@@ -41,6 +41,7 @@
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Areas\Identity\Pages\Account\Manage" />
     <Folder Include="ClientApp\src\app\consts" />
   </ItemGroup>
 
