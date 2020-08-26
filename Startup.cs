@@ -103,7 +103,7 @@ namespace Judge1
                         policy.RequireRole(ApplicationRoles.Administrator, ApplicationRoles.JudgeResultManager);
                     });
             });
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddNewtonsoftJson();
             services.AddRazorPages();
             
             services.AddOptions();
