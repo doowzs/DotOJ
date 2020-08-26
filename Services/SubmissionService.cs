@@ -17,8 +17,9 @@ namespace Judge1.Services
     {
         public Task<PaginatedList<SubmissionInfoDto>> GetPaginatedSubmissionsAsync(int? pageIndex);
         public Task<List<SubmissionInfoDto>> GetSubmissionsByProblemAndUserAsync(int problemId, string userId);
+        public Task<SubmissionInfoDto> GetSubmissionInfoAsync(int id, string userId);
         public Task<SubmissionViewDto> GetSubmissionViewAsync(int id, string userId);
-        public Task<SubmissionViewDto> CreateSubmissionAsync(SubmissionViewDto dto, string userId);
+        public Task<SubmissionViewDto> CreateSubmissionAsync(SubmissionCreateDto dto, string userId);
     }
 
     public class SubmissionService : ISubmissionService
@@ -45,13 +46,8 @@ namespace Judge1.Services
                                                                && s.Verdict == Verdict.Accepted);
         }
 
-        public async Task ValidateSubmissionViewDto(SubmissionViewDto dto, string userId)
+        public async Task ValidateSubmissionCreateDto(SubmissionCreateDto dto, string userId)
         {
-            if (dto.UserId != userId)
-            {
-                throw new ValidationException("Invalid user ID.");
-            }
-
             var problem = await _context.Problems.FindAsync(dto.ProblemId);
             if (problem is null)
             {
@@ -94,6 +90,22 @@ namespace Judge1.Services
                 .Select(s => new SubmissionInfoDto(s)).ToListAsync();
         }
 
+        public async Task<SubmissionInfoDto> GetSubmissionInfoAsync(int id, string userId)
+        {
+            var submission = await _context.Submissions.FindAsync(id);
+            if (submission == null)
+            {
+                throw new NotFoundException();
+            }
+
+            if (!await CanViewSubmission(submission, userId))
+            {
+                throw new UnauthorizedAccessException("Not allowed to view this submission.");
+            }
+
+            return new SubmissionInfoDto(submission);
+        }
+
         public async Task<SubmissionViewDto> GetSubmissionViewAsync(int id, string userId)
         {
             var submission = await _context.Submissions.FindAsync(id);
@@ -110,12 +122,12 @@ namespace Judge1.Services
             return new SubmissionViewDto(submission);
         }
 
-        public async Task<SubmissionViewDto> CreateSubmissionAsync(SubmissionViewDto dto, string userId)
+        public async Task<SubmissionViewDto> CreateSubmissionAsync(SubmissionCreateDto dto, string userId)
         {
-            await ValidateSubmissionViewDto(dto, userId);
+            await ValidateSubmissionCreateDto(dto, userId);
             var submission = new Submission()
             {
-                UserId = dto.UserId,
+                UserId = userId,
                 ProblemId = dto.ProblemId.GetValueOrDefault(),
                 Program = dto.Program
             };

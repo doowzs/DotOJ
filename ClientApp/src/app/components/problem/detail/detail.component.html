@@ -4,7 +4,7 @@
   <p>Memory Limit: {{ problem.memoryLimit / 1024 }} MiB</p>
 
   <nz-divider nzText="Submissions" nzOrientation="left"></nz-divider>
-  <app-submission-creator [contestId]="problem.contestId" [problemId]="problem.id"></app-submission-creator>
+  <app-submission-creator [problemId]="problemId"></app-submission-creator>
 
   <nz-divider nzText="Description" nzOrientation="left" style="margin-top: 5rem !important;"></nz-divider>
   <markdown [data]="problem.description" katex></markdown>

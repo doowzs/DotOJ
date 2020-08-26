@@ -53,15 +53,34 @@ namespace Judge1.Controllers.Api.v1
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<SubmissionInfoDto>> GetSubmission(int id, bool? simple)
+        public async Task<ActionResult<SubmissionInfoDto>> GetSubmissionInfo(int id)
+        {
+            try
+            {
+                var submission = await _service.GetSubmissionInfoAsync(id, User.GetSubjectId());
+                return Ok(submission);
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized(e.Message);
+            }
+        }
+
+        [HttpGet("{id:int}/detail")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<SubmissionViewDto>> GetSubmissionView(int id)
         {
             try
             {
                 var submission = await _service.GetSubmissionViewAsync(id, User.GetSubjectId());
-                if (simple.GetValueOrDefault(false))
-                {
-                    submission.Program = null;
-                }
                 return Ok(submission);
             }
             catch (NotFoundException e)
@@ -80,7 +99,7 @@ namespace Judge1.Controllers.Api.v1
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<SubmissionInfoDto>> CreateSubmission(SubmissionViewDto dto)
+        public async Task<ActionResult<SubmissionInfoDto>> CreateSubmission(SubmissionCreateDto dto)
         {
             try
             {
