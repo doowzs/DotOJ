@@ -37,7 +37,6 @@ export class ContestService {
         const contest = list.items[i];
         contest.beginTime = moment.utc(contest.beginTime).local();
         contest.endTime = moment.utc(contest.endTime).local();
-        console.log(contest);
       }
       return list;
     }));

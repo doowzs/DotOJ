@@ -24,7 +24,6 @@ export class ContestHeaderComponent implements OnInit {
   ) {
     this.username = this.auth.getUser().pipe(map(u => u && u.name));
     this.contestId = this.route.snapshot.params.contestId;
-    console.log(this.contestId);
   }
 
   ngOnInit() {
