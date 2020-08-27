@@ -155,6 +155,7 @@ namespace Judge1.Services
 
         public async Task<ContestViewDto> GetContestViewAsync(int id, string userId)
         {
+            await ValidateContestId(id);
             if (!await CanViewContest(id, userId))
             {
                 throw new UnauthorizedAccessException("Not authorized to view this contest.");
@@ -190,13 +191,8 @@ namespace Judge1.Services
 
         public async Task<ContestEditDto> GetContestEditAsync(int id)
         {
-            var contest = await _context.Contests.FindAsync(id);
-            if (contest is null)
-            {
-                throw new NotFoundException();
-            }
-
-            return new ContestEditDto(contest);
+            await ValidateContestId(id);
+            return new ContestEditDto(await _context.Contests.FindAsync(id));
         }
 
         public async Task<ContestEditDto> CreateContestAsync(ContestEditDto dto)
@@ -243,6 +239,7 @@ namespace Judge1.Services
 
         public async Task<List<RegistrationInfoDto>> GetRegistrationInfosAsync(int id, string userId)
         {
+            await ValidateContestId(id);
             if (!await CanViewContest(id, userId))
             {
                 throw new UnauthorizedAccessException("Not authorized to view this contest.");

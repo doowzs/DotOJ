@@ -141,7 +141,6 @@ namespace Judge1.Models
         public bool HasSpecialJudge { get; }
         public bool HasHacking { get; }
         public List<TestCase> SampleCases { get; }
-        public List<SubmissionInfoDto> Submissions { get; }
         
         public ProblemViewDto(Problem problem) : base(problem)
         {
@@ -157,15 +156,6 @@ namespace Judge1.Models
             HasSpecialJudge = problem.HasSpecialJudge;
             HasHacking = problem.HasHacking;
             SampleCases = problem.SampleCases;
-            Submissions = new List<SubmissionInfoDto>();
-        }
-
-        public ProblemViewDto(Problem problem, IEnumerable<Submission> submissions) : this(problem)
-        {
-            foreach (var submission in submissions)
-            {
-                Submissions.Add(new SubmissionInfoDto(submission));
-            }
         }
     }
 

@@ -4,8 +4,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Judge1.Data;
-using Judge1.Exceptions;
 using Judge1.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -25,12 +25,47 @@ namespace Judge1.Services
         private const int PageSize = 50;
 
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _manager;
         private readonly ILogger<ProblemService> _logger;
 
-        public ProblemService(ApplicationDbContext context, ILogger<ProblemService> logger)
+        public ProblemService
+            (ApplicationDbContext context, UserManager<ApplicationUser> manager, ILogger<ProblemService> logger)
         {
             _context = context;
+            _manager = manager;
             _logger = logger;
+        }
+
+        private async Task<bool> CanViewProblem(int id, string userId)
+        {
+            var user = await _manager.FindByIdAsync(userId);
+            if (await _manager.IsInRoleAsync(user, ApplicationRoles.Administrator) ||
+                await _manager.IsInRoleAsync(user, ApplicationRoles.ContestManager))
+            {
+                return true;
+            }
+
+            var problem = await _context.Problems.FindAsync(id);
+            await _context.Entry(problem).Reference<Contest>(p => p.Contest).LoadAsync();
+            if (problem.Contest.IsPublic)
+            {
+                if (DateTime.Now.ToUniversalTime() < problem.Contest.BeginTime)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                var registered = await _context.Registrations
+                    .AnyAsync(r => r.ContestId == problem.Contest.Id && r.UserId == userId);
+                if (DateTime.Now.ToUniversalTime() < problem.Contest.BeginTime ||
+                    (!registered && DateTime.Now.ToUniversalTime() < problem.Contest.EndTime))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         private async Task ValidateProblemId(int id)
@@ -88,35 +123,19 @@ namespace Judge1.Services
             {
                 infos = problems.Items.Select(p => new ProblemInfoDto(p)).ToList();
             }
-            
+
             return new PaginatedList<ProblemInfoDto>(problems.TotalItems, pageIndex ?? 1, PageSize, infos);
         }
 
         public async Task<ProblemViewDto> GetProblemViewAsync(int id, string userId)
         {
-            var problem = await _context.Problems.FindAsync(id);
-            if (problem is null)
-            {
-                throw new NotFoundException();
-            }
-
-            await _context.Entry(problem).Reference(p => p.Contest).LoadAsync();
-            if (DateTime.Now.ToUniversalTime() < problem.Contest.BeginTime)
+            await ValidateProblemId(id);
+            if (!await CanViewProblem(id, userId))
             {
                 throw new UnauthorizedAccessException("Not authorized to view this problem.");
             }
 
-            if (userId is null)
-            {
-                return new ProblemViewDto(problem);
-            }
-            else
-            {
-                var submissions = await _context.Submissions
-                    .Where(s => s.ProblemId == id && s.UserId == userId)
-                    .ToListAsync();
-                return new ProblemViewDto(problem, submissions);
-            }
+            return new ProblemViewDto(await _context.Problems.FindAsync(id));
         }
 
         public async Task<ProblemEditDto> CreateProblemAsync(ProblemEditDto dto)

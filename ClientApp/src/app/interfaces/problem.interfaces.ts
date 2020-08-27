@@ -24,5 +24,4 @@ export interface ProblemViewDto {
   hasSpecialJudge: boolean;
   hasHacking: boolean;
   sampleCases: TestCase[];
-  submissions: any[];
 }
