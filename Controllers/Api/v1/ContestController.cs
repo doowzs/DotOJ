@@ -69,5 +69,27 @@ namespace Judge1.Controllers.Api.v1
                 return Unauthorized(e.Message);
             }
         }
+        
+        [HttpGet("{id:int}/registrations")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<ContestViewDto>> ViewRegistrations(int id)
+        {
+            try
+            {
+                return Ok(await _service.GetRegistrationInfosAsync(id, User.GetSubjectId()));
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized(e.Message);
+            }
+        }
     }
 }
