@@ -13,8 +13,6 @@ namespace Judge1.Services
 {
     public interface IContestService
     {
-        public Task ValidateContestId(int id);
-        public Task ValidateContestEditDto(ContestEditDto dto);
         public Task<List<ContestInfoDto>> GetCurrentContestInfosAsync(string userId);
         public Task<PaginatedList<ContestInfoDto>> GetPaginatedContestInfosAsync(int? pageIndex, string userId);
         public Task<ContestViewDto> GetContestViewAsync(int id, string userId);
@@ -22,9 +20,9 @@ namespace Judge1.Services
         public Task<ContestEditDto> CreateContestAsync(ContestEditDto dto);
         public Task<ContestEditDto> UpdateContestAsync(int id, ContestEditDto dto);
         public Task DeleteContestAsync(int id);
-        public Task<PaginatedList<RegistrationDto>> GetPaginatedRegistrationsAsync(int id, int? pageIndex);
-        public Task RegisterUserForContestAsync(int id, ApplicationUser user);
-        public Task UnregisterUserFromContestAsync(int id, ApplicationUser user);
+        public Task<List<RegistrationInfoDto>> GetRegistrationInfosAsync(int id, string userId);
+        public Task RegisterUserForContestAsync(int id, string userId);
+        public Task UnregisterUserFromContestAsync(int id, string userId);
     }
 
     public class ContestService : IContestService
@@ -41,7 +39,31 @@ namespace Judge1.Services
             _logger = logger;
         }
 
-        public async Task ValidateContestId(int id)
+        private async Task<bool> CanViewContest(int id, string userId)
+        {
+            var contest = await _context.Contests.FindAsync(id);
+            if (contest.IsPublic)
+            {
+                if (DateTime.Now.ToUniversalTime() < contest.BeginTime)
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                var registered = await _context.Registrations
+                    .AnyAsync(r => r.ContestId == contest.Id && r.UserId == userId);
+                if (DateTime.Now.ToUniversalTime() < contest.BeginTime ||
+                    (!registered && DateTime.Now.ToUniversalTime() < contest.EndTime))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private async Task ValidateContestId(int id)
         {
             if (!await _context.Contests.AnyAsync(c => c.Id == id))
             {
@@ -49,7 +71,7 @@ namespace Judge1.Services
             }
         }
 
-        public Task ValidateContestEditDto(ContestEditDto dto)
+        private Task ValidateContestEditDto(ContestEditDto dto)
         {
             if (string.IsNullOrEmpty(dto.Title))
             {
@@ -122,15 +144,15 @@ namespace Judge1.Services
 
         public async Task<ContestViewDto> GetContestViewAsync(int id, string userId)
         {
+            if (!await CanViewContest(id, userId))
+            {
+                throw new UnauthorizedAccessException("Not authorized to view this contest.");
+            }
+
             var contest = await _context.Contests.FindAsync(id);
             if (contest is null)
             {
                 throw new NotFoundException();
-            }
-
-            if (DateTime.Now.ToUniversalTime() < contest.BeginTime)
-            {
-                throw new UnauthorizedAccessException("Not authorized to view this contest.");
             }
 
             await _context.Entry(contest).Collection(c => c.Problems).LoadAsync();
@@ -151,7 +173,7 @@ namespace Judge1.Services
             {
                 problemInfos = contest.Problems.Select(p => new ProblemInfoDto(p)).ToList();
             }
-            
+
             return new ContestViewDto(contest, problemInfos);
         }
 
@@ -208,43 +230,48 @@ namespace Judge1.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<PaginatedList<RegistrationDto>>
-            GetPaginatedRegistrationsAsync(int id, int? pageIndex)
+        public async Task<List<RegistrationInfoDto>> GetRegistrationInfosAsync(int id, string userId)
         {
+            if (!await CanViewContest(id, userId))
+            {
+                throw new UnauthorizedAccessException("Not authorized to view this contest.");
+            }
+
             return await _context.Registrations
                 .Where(r => r.ContestId == id)
-                .PaginateAsync(r => new RegistrationDto(r), pageIndex ?? 1, RegistrationPageSize);
+                .Select(r => new RegistrationInfoDto(r))
+                .ToListAsync();
         }
 
-        public async Task RegisterUserForContestAsync(int id, ApplicationUser user)
+        public async Task RegisterUserForContestAsync(int id, string userId)
         {
             var registered =
-                await _context.Registrations.AnyAsync(r => r.ContestId == id && r.UserId == user.Id);
+                await _context.Registrations.AnyAsync(r => r.ContestId == id && r.UserId == userId);
             if (!registered)
             {
                 var registration = new Registration
                 {
                     ContestId = id,
-                    UserId = user.Id,
+                    UserId = userId,
                     IsContestManager = false,
                     IsParticipant = false,
-                    Statistics = new ParticipantStatistics()
+                    Statistics = new List<ProblemStatistics>()
                 };
                 await _context.Registrations.AddAsync(registration);
                 await _context.SaveChangesAsync();
             }
         }
 
-        public async Task UnregisterUserFromContestAsync(int id, ApplicationUser user)
+        public async Task UnregisterUserFromContestAsync(int id, string userId)
         {
             var registered =
-                await _context.Registrations.AnyAsync(r => r.ContestId == id && r.UserId == user.Id);
+                await _context.Registrations.AnyAsync(r => r.ContestId == id && r.UserId == userId);
             if (registered)
             {
                 var registration = new Registration
                 {
                     ContestId = id,
-                    UserId = user.Id,
+                    UserId = userId,
                 };
                 _context.Registrations.Attach(registration);
                 _context.Registrations.Remove(registration);

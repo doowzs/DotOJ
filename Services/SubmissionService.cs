@@ -39,7 +39,7 @@ namespace Judge1.Services
             _runner = runner;
         }
 
-        public async Task<bool> CanViewSubmission(Submission submission, string userId)
+        private async Task<bool> CanViewSubmission(Submission submission, string userId)
         {
             return submission.UserId == userId
                    || await _context.Submissions.AnyAsync(s => s.Id == submission.Id
@@ -47,7 +47,7 @@ namespace Judge1.Services
                                                                && s.Verdict == Verdict.Accepted);
         }
 
-        public async Task ValidateSubmissionCreateDto(SubmissionCreateDto dto, string userId)
+        private async Task ValidateSubmissionCreateDto(SubmissionCreateDto dto, string userId)
         {
             var problem = await _context.Problems.FindAsync(dto.ProblemId);
             if (problem is null)

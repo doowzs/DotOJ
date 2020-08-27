@@ -13,8 +13,6 @@ namespace Judge1.Services
 {
     public interface IProblemService
     {
-        public Task ValidateProblemId(int id);
-        public Task ValidateProblemEditDto(ProblemEditDto dto);
         public Task<PaginatedList<ProblemInfoDto>> GetPaginatedProblemInfosAsync(int? pageIndex, string userId);
         public Task<ProblemViewDto> GetProblemViewAsync(int id, string userId);
         public Task<ProblemEditDto> CreateProblemAsync(ProblemEditDto dto);
@@ -35,7 +33,7 @@ namespace Judge1.Services
             _logger = logger;
         }
 
-        public async Task ValidateProblemId(int id)
+        private async Task ValidateProblemId(int id)
         {
             if (!await _context.Problems.AnyAsync(p => p.Id == id))
             {
@@ -43,7 +41,7 @@ namespace Judge1.Services
             }
         }
 
-        public async Task ValidateProblemEditDto(ProblemEditDto dto)
+        private async Task ValidateProblemEditDto(ProblemEditDto dto)
         {
             if (!await _context.Contests.AnyAsync(a => a.Id == dto.ContestId))
             {
