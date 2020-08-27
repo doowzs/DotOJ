@@ -67,13 +67,10 @@ namespace Judge1.Services
             {
                 var registered = await _context.Registrations
                     .AnyAsync(r => r.ContestId == contest.Id && r.UserId == userId);
-                if (registered && DateTime.Now.ToUniversalTime() < contest.BeginTime)
+                if (DateTime.Now.ToUniversalTime() < contest.BeginTime ||
+                    (!registered && DateTime.Now.ToUniversalTime() < contest.EndTime))
                 {
                     throw new UnauthorizedAccessException("Cannot submit until contest has begun.");
-                }
-                else if (DateTime.Now.ToUniversalTime() < contest.EndTime)
-                {
-                    throw new UnauthorizedAccessException("Cannot submit until contest has ended.");
                 }
             }
         }
