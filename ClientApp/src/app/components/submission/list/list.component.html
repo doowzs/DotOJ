@@ -10,7 +10,7 @@
       Problem
     </th>
     <th nzColumnKey="language">Language</th>
-    <th nzColumnKey="codeLength">Length</th>
+    <th nzColumnKey="codeBytes">Length</th>
     <th nzColumnKey="verdict" [nzFilters]="verdictFilterList" [nzFilterMultiple]="false" [nzFilterFn]="true">
       Verdict
     </th>
@@ -22,7 +22,7 @@
     <td>{{ submission.id }}</td>
     <td>{{ getProblemLabel(submission.problemId) }}</td>
     <td>{{ submission.language.name }}</td>
-    <td>{{ submission.codeLength }} bytes</td>
+    <td>{{ submission.codeBytes }} bytes</td>
     <td>
       <nz-tag [nzColor]="submission.verdict.color">{{ submission.verdict.name }}</nz-tag>
     </td>

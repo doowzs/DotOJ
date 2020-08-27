@@ -12,9 +12,10 @@ export interface SubmissionInfoDto {
   userId: string;
   problemId: number;
   language: LanguageInfo | number;
-  codeLength: number;
+  codeBytes: number;
   verdict: VerdictInfo | number;
-  lastTestCase: number;
+  failedOn: number;
+  score: number;
   judgedAt: moment.Moment | string;
   createdAt: moment.Moment | string;
 }
@@ -25,7 +26,8 @@ export interface SubmissionViewDto {
   problemId: number;
   program: Program;
   verdict: VerdictInfo | number;
-  lastTestCase: number;
+  failedOn: number;
+  score: number;
   judgedAt: moment.Moment | string;
   createdAt: moment.Moment | string;
 }
