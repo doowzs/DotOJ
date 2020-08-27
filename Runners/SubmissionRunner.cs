@@ -68,6 +68,8 @@ namespace Judge1.Runners
             }
 
             submission.Verdict = Verdict.Accepted;
+            submission.FailedOn = -1;
+            submission.Score = 100;
             submission.JudgedAt = DateTime.Now;
             _context.Submissions.Update(submission);
             await _context.SaveChangesAsync();
