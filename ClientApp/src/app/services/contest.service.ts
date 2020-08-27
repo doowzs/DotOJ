@@ -53,6 +53,8 @@ export class ContestService {
           for (let i = 0; i < data.problems.length; ++i) {
             data.problems[i].label = String.fromCharCode('A'.charCodeAt(0) + i);
           }
+          data.beginTime = moment.utc(data.beginTime).local();
+          data.endTime = moment.utc(data.endTime).local();
           return data;
         }), tap(data => this.cachedData = data));
     }

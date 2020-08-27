@@ -17,6 +17,7 @@ import { AuthorizeService } from '../../../../api-authorization/authorize.servic
 export class SubmissionTimelineComponent implements OnInit, OnDestroy {
   VerdictStage = VerdictStage;
   @Input() public problemId: number;
+  @Input() public contestBeginTime: moment.Moment;
   @Input() public contestEndTime: moment.Moment;
 
   private destroy$ = new Subject();
@@ -55,15 +56,24 @@ export class SubmissionTimelineComponent implements OnInit, OnDestroy {
   }
 
   private addNewSubmission(submission: SubmissionInfoDto): void {
+    console.log(submission);
     const pending = (submission.verdict as VerdictInfo).stage === VerdictStage.RUNNING;
     if (pending) {
-      this.pendingSubmissions.push(submission);
+      this.pendingSubmissions.unshift(submission);
     } else {
       if (submission.judgedAt <= this.contestEndTime) {
-        this.contestSubmissions.push(submission);
+        this.contestSubmissions.unshift(submission);
       } else {
-        this.practiceSubmissions.push(submission);
+        this.practiceSubmissions.unshift(submission);
       }
+    }
+  }
+
+  public getSubmissionTimeString(submission: SubmissionInfoDto): string {
+    if (submission.createdAt < this.contestEndTime) {
+      return moment.utc((submission.createdAt as moment.Moment).diff(this.contestBeginTime)).format('+HH:mm');
+    } else {
+      return (submission.createdAt as moment.Moment).format('YYYY-MM-DD HH:mm');
     }
   }
 }

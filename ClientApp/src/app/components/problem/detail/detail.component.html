@@ -5,7 +5,10 @@
 
   <nz-divider nzText="Submissions" nzOrientation="left"></nz-divider>
   <app-submission-creator [problemId]="problemId"></app-submission-creator>
-  <app-submission-timeline [problemId]="problemId" [contestEndTime]="contest.endTime"></app-submission-timeline>
+  <app-submission-timeline [problemId]="problemId"
+                           [contestBeginTime]="contest.beginTime"
+                           [contestEndTime]="contest.endTime"
+  ></app-submission-timeline>
 
   <nz-divider nzText="Description" nzOrientation="left"></nz-divider>
   <markdown [data]="problem.description" katex></markdown>

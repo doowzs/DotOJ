@@ -1,3 +1,9 @@
-﻿nz-timeline {
+﻿#submission-timeline {
+  margin: 2rem 2rem;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+nz-timeline {
   margin: 1rem 1rem;
 }

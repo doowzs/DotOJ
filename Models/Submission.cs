@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text;
 using Newtonsoft.Json;
 
 namespace Judge1.Models
@@ -101,6 +102,8 @@ namespace Judge1.Models
         public int Id { get; }
         public string UserId { get; }
         public int ProblemId { get; }
+        public Language Language { get; }
+        public int CodeLength { get; }
         public Verdict Verdict { get; }
         public int LastTestCase { get; }
         public DateTime JudgedAt { get; }
@@ -110,6 +113,8 @@ namespace Judge1.Models
             Id = submission.Id;
             UserId = submission.UserId;
             ProblemId = submission.ProblemId;
+            Language = submission.Program.Language.GetValueOrDefault();
+            CodeLength = Encoding.UTF8.GetByteCount(submission.Program.Code);
             Verdict = submission.Verdict;
             LastTestCase = submission.LastTestCase;
             JudgedAt = submission.JudgedAt;

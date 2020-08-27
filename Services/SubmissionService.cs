@@ -20,7 +20,7 @@ namespace Judge1.Services
 
         public Task<SubmissionInfoDto> GetSubmissionInfoAsync(int id, string userId);
         public Task<SubmissionViewDto> GetSubmissionViewAsync(int id, string userId);
-        public Task<SubmissionViewDto> CreateSubmissionAsync(SubmissionCreateDto dto, string userId);
+        public Task<SubmissionInfoDto> CreateSubmissionAsync(SubmissionCreateDto dto, string userId);
     }
 
     public class SubmissionService : ISubmissionService
@@ -138,7 +138,7 @@ namespace Judge1.Services
             return new SubmissionViewDto(submission);
         }
 
-        public async Task<SubmissionViewDto> CreateSubmissionAsync(SubmissionCreateDto dto, string userId)
+        public async Task<SubmissionInfoDto> CreateSubmissionAsync(SubmissionCreateDto dto, string userId)
         {
             await ValidateSubmissionCreateDto(dto, userId);
             var submission = new Submission()
@@ -152,7 +152,7 @@ namespace Judge1.Services
 
             _runner.RunInBackground(submission.Id);
 
-            return new SubmissionViewDto(submission);
+            return new SubmissionInfoDto(submission);
         }
     }
 }

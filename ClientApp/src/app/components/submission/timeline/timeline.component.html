@@ -1,17 +1,24 @@
-﻿<nz-timeline>
-  <ng-template #submissionTimeLineItem let-submission="submission">
-    <nz-timeline-item>
-      <nz-tag>#{{ submission.id }}</nz-tag>
-      <nz-tag [nzColor]="submission.verdict.color">{{ submission.verdict.name }}</nz-tag>
-    </nz-timeline-item>
-  </ng-template>
-  <ng-container *ngFor="let submission of pendingSubmissions">
-    <ng-container *ngTemplateOutlet="submissionTimeLineItem; context: {submission: submission}"></ng-container>
-  </ng-container>
-  <ng-container *ngFor="let submission of practiceSubmissions">
-    <ng-container *ngTemplateOutlet="submissionTimeLineItem; context: {submission: submission}"></ng-container>
-  </ng-container>
-  <ng-container *ngFor="let submission of contestSubmissions">
-    <ng-container *ngTemplateOutlet="submissionTimeLineItem; context: {submission: submission}"></ng-container>
-  </ng-container>
-</nz-timeline>
+﻿<div id="submission-timeline">
+  <nz-timeline nzReverse="reverse">
+    <ng-template #submissionTimeLineItem let-submission="submission">
+      <nz-timeline-item [nzColor]="submission.verdict.color">
+        <nz-tag>#{{ submission.id }}</nz-tag>
+        <nz-tag [nzColor]="submission.verdict.color">{{ submission.verdict.name }}</nz-tag>
+        <span style="float: right;">
+          <nz-tag>{{ submission.language.name }}</nz-tag>
+          <nz-tag>{{ submission.codeLength }} bytes</nz-tag>
+          <nz-tag>{{ getSubmissionTimeString(submission) }}</nz-tag>
+        </span>
+      </nz-timeline-item>
+    </ng-template>
+    <ng-container *ngFor="let submission of pendingSubmissions">
+      <ng-container *ngTemplateOutlet="submissionTimeLineItem; context: {submission: submission}"></ng-container>
+    </ng-container>
+    <ng-container *ngFor="let submission of practiceSubmissions">
+      <ng-container *ngTemplateOutlet="submissionTimeLineItem; context: {submission: submission}"></ng-container>
+    </ng-container>
+    <ng-container *ngFor="let submission of contestSubmissions">
+      <ng-container *ngTemplateOutlet="submissionTimeLineItem; context: {submission: submission}"></ng-container>
+    </ng-container>
+  </nz-timeline>
+</div>
