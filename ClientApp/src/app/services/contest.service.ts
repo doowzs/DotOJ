@@ -13,7 +13,7 @@ import { RegistrationInfoDto } from '../interfaces/registration.interfaces';
 })
 export class ContestService {
   private cachedId: number;
-  private cachedData: ContestViewDto;
+  private cachedData: Observable<ContestViewDto>;
 
   constructor(private http: HttpClient) {
   }
@@ -45,11 +45,11 @@ export class ContestService {
 
   public getSingle(contestId: number): Observable<ContestViewDto> {
     if (this.cachedId === contestId && this.cachedData) {
-      return of(this.cachedData);
+      return this.cachedData;
     } else {
       this.cachedId = contestId;
       this.cachedData = null;
-      return this.http.get<ContestViewDto>('/contest/' + contestId.toString())
+      return this.cachedData = this.http.get<ContestViewDto>('/contest/' + contestId.toString())
         .pipe(map(data => {
           for (let i = 0; i < data.problems.length; ++i) {
             data.problems[i].label = String.fromCharCode('A'.charCodeAt(0) + i);
@@ -57,7 +57,7 @@ export class ContestService {
           data.beginTime = moment.utc(data.beginTime).local();
           data.endTime = moment.utc(data.endTime).local();
           return data;
-        }), tap(data => this.cachedData = data));
+        }));
     }
   }
 

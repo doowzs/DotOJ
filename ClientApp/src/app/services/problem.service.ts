@@ -10,22 +10,21 @@ import { ProblemViewDto } from '../interfaces/problem.interfaces';
 })
 export class ProblemService {
   private cachedId: number;
-  private cachedData: ProblemViewDto;
+  private cachedData: Observable<ProblemViewDto>;
 
   constructor(private http: HttpClient) {
   }
 
   public getSingle(problemId: number): Observable<ProblemViewDto> {
     if (this.cachedId === problemId && this.cachedData) {
-      return of(this.cachedData);
+      return this.cachedData;
     } else {
       this.cachedId = problemId;
       this.cachedData = null;
-      return this.http.get<ProblemViewDto>('/problem/' + problemId.toString())
+      return this.cachedData = this.http.get<ProblemViewDto>('/problem/' + problemId.toString())
         .pipe(map(data => {
-          // TODO: fix timestamps
           return data;
-        }), tap(data => this.cachedData = data));
+        }));
     }
   }
 }
