@@ -17,7 +17,7 @@ namespace Judge1.Services
         public Task ValidateContestEditDto(ContestEditDto dto);
         public Task<List<ContestInfoDto>> GetCurrentContestInfosAsync(string userId);
         public Task<PaginatedList<ContestInfoDto>> GetPaginatedContestInfosAsync(int? pageIndex, string userId);
-        public Task<ContestViewDto> GetContestViewAsync(int id);
+        public Task<ContestViewDto> GetContestViewAsync(int id, string userId);
         public Task<ContestEditDto> GetContestEditAsync(int id);
         public Task<ContestEditDto> CreateContestAsync(ContestEditDto dto);
         public Task<ContestEditDto> UpdateContestAsync(int id, ContestEditDto dto);
@@ -120,7 +120,7 @@ namespace Judge1.Services
             return new PaginatedList<ContestInfoDto>(contests.TotalItems, pageIndex ?? 1, PageSize, infos);
         }
 
-        public async Task<ContestViewDto> GetContestViewAsync(int id)
+        public async Task<ContestViewDto> GetContestViewAsync(int id, string userId)
         {
             var contest = await _context.Contests.FindAsync(id);
             if (contest is null)
@@ -135,7 +135,24 @@ namespace Judge1.Services
 
             await _context.Entry(contest).Collection(c => c.Problems).LoadAsync();
             await _context.Entry(contest).Collection(c => c.Clarifications).LoadAsync();
-            return new ContestViewDto(contest);
+
+            IList<ProblemInfoDto> problemInfos;
+            if (userId != null)
+            {
+                problemInfos = new List<ProblemInfoDto>();
+                foreach (var problem in contest.Problems)
+                {
+                    var solved = await _context.Submissions
+                        .AnyAsync(s => s.ProblemId == problem.Id && s.UserId == userId && s.FailedOn == -1);
+                    problemInfos.Add(new ProblemInfoDto(problem, solved));
+                }
+            }
+            else
+            {
+                problemInfos = contest.Problems.Select(p => new ProblemInfoDto(p)).ToList();
+            }
+            
+            return new ContestViewDto(contest, problemInfos);
         }
 
         public async Task<ContestEditDto> GetContestEditAsync(int id)

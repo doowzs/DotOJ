@@ -33,7 +33,7 @@ namespace Judge1.Controllers.Api.v1
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PaginatedList<ProblemInfoDto>>> ListProblems(int? pageIndex)
         {
-            return Ok(await _service.GetPaginatedProblemInfosAsync(pageIndex));
+            return Ok(await _service.GetPaginatedProblemInfosAsync(pageIndex, User.GetSubjectId()));
         }
 
         [HttpGet("{id:int}")]

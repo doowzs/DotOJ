@@ -58,7 +58,7 @@ namespace Judge1.Controllers.Api.v1
         {
             try
             {
-                return Ok(await _service.GetContestViewAsync(id));
+                return Ok(await _service.GetContestViewAsync(id, User.GetSubjectId()));
             }
             catch (NotFoundException e)
             {

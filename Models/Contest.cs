@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Newtonsoft.Json;
 
 namespace Judge1.Models
 {
@@ -71,9 +70,9 @@ namespace Judge1.Models
         public ContestMode Mode { get; }
         public DateTime BeginTime { get; }
         public DateTime EndTime { get; }
-        public List<ProblemInfoDto> Problems { get; }
+        public IList<ProblemInfoDto> Problems { get; }
 
-        public ContestViewDto(Contest contest) : base(contest)
+        public ContestViewDto(Contest contest, IList<ProblemInfoDto> problems) : base(contest)
         {
             Id = contest.Id;
             Title = contest.Title;
@@ -82,12 +81,7 @@ namespace Judge1.Models
             Mode = contest.Mode;
             BeginTime = contest.BeginTime;
             EndTime = contest.EndTime;
-            
-            Problems = new List<ProblemInfoDto>();
-            foreach (var problem in contest.Problems)
-            {
-                Problems.Add(new ProblemInfoDto(problem));
-            }
+            Problems = problems;
         }
     }
 

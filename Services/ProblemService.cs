@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ namespace Judge1.Services
     {
         public Task ValidateProblemId(int id);
         public Task ValidateProblemEditDto(ProblemEditDto dto);
-        public Task<PaginatedList<ProblemInfoDto>> GetPaginatedProblemInfosAsync(int? pageIndex);
+        public Task<PaginatedList<ProblemInfoDto>> GetPaginatedProblemInfosAsync(int? pageIndex, string userId);
         public Task<ProblemViewDto> GetProblemViewAsync(int id, string userId);
         public Task<ProblemEditDto> CreateProblemAsync(ProblemEditDto dto);
         public Task<ProblemEditDto> UpdateProblemAsync(ProblemEditDto dto);
@@ -70,11 +71,27 @@ namespace Judge1.Services
             }
         }
 
-        public async Task<PaginatedList<ProblemInfoDto>> GetPaginatedProblemInfosAsync(int? pageIndex)
+        public async Task<PaginatedList<ProblemInfoDto>> GetPaginatedProblemInfosAsync(int? pageIndex, string userId)
         {
-            return await _context.Problems
-                .Include(p => p.Submissions)
-                .PaginateAsync(p => new ProblemInfoDto(p), pageIndex ?? 1, PageSize);
+            var problems = await _context.Problems
+                .PaginateAsync(pageIndex ?? 1, PageSize);
+            IList<ProblemInfoDto> infos;
+            if (userId != null)
+            {
+                infos = new List<ProblemInfoDto>();
+                foreach (var problem in problems.Items)
+                {
+                    var solved = await _context.Submissions
+                        .AnyAsync(s => s.ProblemId == problem.Id && s.UserId == userId && s.FailedOn == -1);
+                    infos.Add(new ProblemInfoDto(problem, solved));
+                }
+            }
+            else
+            {
+                infos = problems.Items.Select(p => new ProblemInfoDto(p)).ToList();
+            }
+            
+            return new PaginatedList<ProblemInfoDto>(problems.TotalItems, pageIndex ?? 1, PageSize, infos);
         }
 
         public async Task<ProblemViewDto> GetProblemViewAsync(int id, string userId)
