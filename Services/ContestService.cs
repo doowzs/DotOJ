@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Judge1.Data;
 using Judge1.Exceptions;
 using Judge1.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -31,16 +32,26 @@ namespace Judge1.Services
         private const int RegistrationPageSize = 50;
 
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _manager;
         private readonly ILogger<ContestService> _logger;
 
-        public ContestService(ApplicationDbContext context, ILogger<ContestService> logger)
+        public ContestService
+            (ApplicationDbContext context, UserManager<ApplicationUser> manager, ILogger<ContestService> logger)
         {
             _context = context;
+            _manager = manager;
             _logger = logger;
         }
 
         private async Task<bool> CanViewContest(int id, string userId)
         {
+            var user = await _manager.FindByIdAsync(userId);
+            if (await _manager.IsInRoleAsync(user, ApplicationRoles.Administrator) ||
+                await _manager.IsInRoleAsync(user, ApplicationRoles.ContestManager))
+            {
+                return true;
+            }
+
             var contest = await _context.Contests.FindAsync(id);
             if (contest.IsPublic)
             {
