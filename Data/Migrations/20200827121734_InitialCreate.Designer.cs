@@ -10,14 +10,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Judge1.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200826064053_InitialCreate")]
+    [Migration("20200827121734_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.6")
+                .HasAnnotation("ProductVersion", "3.1.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -429,11 +429,11 @@ namespace Judge1.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("FailedOn")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("JudgedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<int>("LastTestCase")
-                        .HasColumnType("int");
 
                     b.Property<int>("ProblemId")
                         .HasColumnType("int");
@@ -442,6 +442,9 @@ namespace Judge1.Data.Migrations
                         .IsRequired()
                         .HasColumnName("program")
                         .HasColumnType("text");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");

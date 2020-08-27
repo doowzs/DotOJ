@@ -37,7 +37,8 @@ namespace Judge1.Models
         #region Submission Verdict
 
         public Verdict Verdict { get; set; }
-        public int LastTestCase { get; set; }
+        public int FailedOn { get; set; }
+        public int Score { get; set; }
         public DateTime JudgedAt { get; set; }
 
         #endregion
@@ -103,9 +104,10 @@ namespace Judge1.Models
         public string UserId { get; }
         public int ProblemId { get; }
         public Language Language { get; }
-        public int CodeLength { get; }
+        public int CodeBytes { get; }
         public Verdict Verdict { get; }
-        public int LastTestCase { get; }
+        public int FailedOn { get; }
+        public int Score { get; }
         public DateTime JudgedAt { get; }
 
         public SubmissionInfoDto(Submission submission) : base(submission)
@@ -114,9 +116,10 @@ namespace Judge1.Models
             UserId = submission.UserId;
             ProblemId = submission.ProblemId;
             Language = submission.Program.Language.GetValueOrDefault();
-            CodeLength = Encoding.UTF8.GetByteCount(submission.Program.Code);
+            CodeBytes = Encoding.UTF8.GetByteCount(submission.Program.Code);
             Verdict = submission.Verdict;
-            LastTestCase = submission.LastTestCase;
+            FailedOn = submission.FailedOn;
+            Score = submission.Score;
             JudgedAt = submission.JudgedAt;
         }
     }
@@ -128,7 +131,8 @@ namespace Judge1.Models
         public int? ProblemId { get; }
         public Program Program { get; }
         public Verdict Verdict { get; }
-        public int LastTestCase { get; }
+        public int FailedOn { get; }
+        public int Score { get; }
         public DateTime JudgedAt { get; }
 
         public SubmissionViewDto(Submission submission) : base(submission)
@@ -138,7 +142,8 @@ namespace Judge1.Models
             ProblemId = submission.ProblemId;
             Program = submission.Program;
             Verdict = submission.Verdict;
-            LastTestCase = submission.LastTestCase;
+            FailedOn = submission.FailedOn;
+            Score = submission.Score;
             JudgedAt = submission.JudgedAt;
         }
     }

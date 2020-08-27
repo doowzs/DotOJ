@@ -100,7 +100,11 @@ namespace Judge1.Runners
             submission.Verdict = response.Status == null
                 ? Verdict.Failed
                 : (response.Status.Id == Verdict.Accepted ? Verdict.Running : response.Status.Id);
-            submission.LastTestCase = index;
+            if (response.Status == null || response.Status.Id != Verdict.Accepted)
+            {
+                submission.FailedOn = index;
+                submission.Score = 0;
+            }
             submission.JudgedAt = DateTime.Now;
             _context.Submissions.Update(submission);
             await _context.SaveChangesAsync();
