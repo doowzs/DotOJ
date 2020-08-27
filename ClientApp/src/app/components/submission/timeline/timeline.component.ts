@@ -24,6 +24,7 @@ export class SubmissionTimelineComponent implements OnInit, OnDestroy {
   public userId: Observable<string>;
   public list: PaginatedList<SubmissionInfoDto>;
 
+  public hasSubmissions = false;
   public pendingSubmissions: SubmissionInfoDto[] = [];
   public practiceSubmissions: SubmissionInfoDto[] = [];
   public contestSubmissions: SubmissionInfoDto[] = [];
@@ -79,8 +80,8 @@ export class SubmissionTimelineComponent implements OnInit, OnDestroy {
   }
 
   private addNewSubmission(submission: SubmissionInfoDto): void {
-    const pending = (submission.verdict as VerdictInfo).stage === VerdictStage.RUNNING;
-    if (pending) {
+    this.hasSubmissions = true;
+    if ((submission.verdict as VerdictInfo).stage === VerdictStage.RUNNING) {
       this.pendingSubmissions.unshift(submission);
     } else {
       if (submission.judgedAt <= this.contestEndTime) {

@@ -1,5 +1,8 @@
 ﻿<div id="submission-timeline">
-  <nz-timeline nzReverse="reverse">
+  <ng-template #noSubmission>
+    <nz-empty nzNotFoundImage="simple"></nz-empty>
+  </ng-template>
+  <nz-timeline nzReverse="reverse" *ngIf="hasSubmissions; else noSubmission">
     <ng-template #submissionTimeLineItem let-submission="submission">
       <nz-timeline-item [nzColor]="submission.verdict.color">
         <nz-tag>#{{ submission.id }}</nz-tag>

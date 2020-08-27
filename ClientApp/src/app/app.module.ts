@@ -26,6 +26,7 @@ import { SubmissionCreatorComponent } from './components/submission/creator/crea
 import { SubmissionTimelineComponent } from './components/submission/timeline/timeline.component';
 
 import { MarkdownModule } from 'ngx-markdown';
+import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
 import { NzGridModule } from 'ng-zorro-antd/grid';
@@ -44,6 +45,7 @@ import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzNotificationModule } from 'ng-zorro-antd/notification';
 import { NzTimelineModule } from 'ng-zorro-antd/timeline';
 import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzEmptyModule } from 'ng-zorro-antd/empty';
 
 const loadApplicationConfig = (service: ApplicationConfigService) => {
   return () => service.loadApplicationConfig();
@@ -100,13 +102,15 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     NzToolTipModule,
     NzNotificationModule,
     NzTimelineModule,
-    NzTableModule
+    NzTableModule,
+    NzEmptyModule
   ],
   providers: [
     ApplicationConfigService,
     { provide: APP_INITIALIZER, useFactory: loadApplicationConfig, multi: true, deps: [ApplicationConfigService] },
     { provide: HTTP_INTERCEPTORS, useClass: ApplicationApiInterceptor, multi: true },
-    { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true }
+    { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true },
+    { provide: NZ_I18N, useValue: en_US }
   ],
   bootstrap: [AppComponent]
 })
