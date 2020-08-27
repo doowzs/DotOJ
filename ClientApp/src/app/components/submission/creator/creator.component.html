@@ -13,9 +13,7 @@
     </nz-select>
   </div>
   <div nz-col nzSpan="12">
-    <input #sourceFileInput type="file"
-           (click)="this.code = this.filename = null;"
-           (change)="selectSourceFile($event)"/>
+    <input #sourceFileInput type="file" (change)="selectSourceFile($event)"/>
     <button nz-button [nzType]="filename ? 'default' : 'dashed'" (click)="sourceFileInput.click()">
       {{ filename ? filename : 'Select Source File' }}
     </button>

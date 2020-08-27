@@ -56,7 +56,6 @@ export class SubmissionTimelineComponent implements OnInit, OnDestroy {
   }
 
   private addNewSubmission(submission: SubmissionInfoDto): void {
-    console.log(submission);
     const pending = (submission.verdict as VerdictInfo).stage === VerdictStage.RUNNING;
     if (pending) {
       this.pendingSubmissions.unshift(submission);

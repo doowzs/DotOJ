@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { Languages } from '../../../consts/languages.consts';
 import { SubmissionService } from '../../../services/submission.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
@@ -13,6 +13,7 @@ export class SubmissionCreatorComponent implements OnInit {
   readonly languageStorageKey = 'app-submission-creator-language';
 
   @Input() public problemId: number;
+  @ViewChild('sourceFileInput') sourceFileInput: ElementRef;
 
   public language: number;
   public filename: string;
@@ -51,6 +52,7 @@ export class SubmissionCreatorComponent implements OnInit {
         .subscribe(submission => {
           this.notification.create('success', 'Submitted', 'Code submitted as #' + submission.id.toString() + '.');
           this.code = this.filename = null;
+          this.sourceFileInput.nativeElement.value = '';
         }, error => {
           this.notification.create('error', 'Error', 'Submitting failed.');
         });
