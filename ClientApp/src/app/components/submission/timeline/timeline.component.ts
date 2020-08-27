@@ -1,5 +1,5 @@
 ﻿import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { forkJoin, interval, Observable, Subject } from 'rxjs';
 import { map, take, takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
 
@@ -37,6 +37,13 @@ export class SubmissionTimelineComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    interval(2000)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        if (this.pendingSubmissions.length) {
+          this.updatePendingSubmissions();
+        }
+      });
     this.service.newSubmission
       .pipe(takeUntil(this.destroy$))
       .subscribe(submission => this.addNewSubmission(submission));
@@ -53,6 +60,23 @@ export class SubmissionTimelineComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private updatePendingSubmissions(): void {
+    const observables: Observable<SubmissionInfoDto>[] = [];
+    for (let i = 0; i < this.pendingSubmissions.length; ++i) {
+      const submission = this.pendingSubmissions[i];
+      observables.push(this.service.getSingleAsInfo(submission.id));
+    }
+    forkJoin(observables).subscribe(updatedSubmissions => {
+      for (let i = 0; i < updatedSubmissions.length; ++i) {
+        const submission = updatedSubmissions[i];
+        if ((submission.verdict as VerdictInfo).stage !== VerdictStage.RUNNING) {
+          this.addNewSubmission(submission);
+        }
+      }
+      this.pendingSubmissions = updatedSubmissions.filter(s => (s.verdict as VerdictInfo).stage === VerdictStage.RUNNING);
+    });
   }
 
   private addNewSubmission(submission: SubmissionInfoDto): void {

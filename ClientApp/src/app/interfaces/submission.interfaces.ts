@@ -3,7 +3,7 @@ import { VerdictInfo } from '../consts/verdicts.consts';
 import { LanguageInfo } from '../consts/languages.consts';
 
 export interface Program {
-  language: number;
+  language: LanguageInfo | number;
   code: string;
 }
 
