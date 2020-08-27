@@ -1,0 +1,28 @@
+﻿<h2>Standings</h2>
+<nz-table #standingsTable *ngIf="contest && registrations"
+          nzShowPagination="false" [nzData]="registrations">
+  <thead>
+  <tr>
+    <th>Rank</th>
+    <th>Contestant</th>
+    <th *ngFor="let problem of contest.problems">
+      {{ problem.label }}
+    </th>
+    <th>Score</th>
+    <th>Penalties</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let registration of standingsTable.data; index as index">
+    <td>{{ index + 1 }}</td>
+    <td>{{ registration.contestantName }}</td>
+    <td *ngFor="let problem of contest.problems">
+      <ng-container *ngIf="getProblemItem(registration, problem) as problemItem">
+        <span>{{ problemItem[0] }}</span><br/><span>{{ problemItem[1] }}</span>
+      </ng-container>
+    </td>
+    <td>{{ getTotalScore(registration) }}</td>
+    <td>{{ getTotalPenalties(registration) }}</td>
+  </tr>
+  </tbody>
+</nz-table>

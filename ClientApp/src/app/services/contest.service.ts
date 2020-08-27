@@ -6,6 +6,7 @@ import * as moment from 'moment';
 
 import { PaginatedList } from '../interfaces/pagination.interfaces';
 import { ContestInfoDto, ContestViewDto } from '../interfaces/contest.interfaces';
+import { RegistrationInfoDto } from '../interfaces/registration.interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -58,5 +59,19 @@ export class ContestService {
           return data;
         }), tap(data => this.cachedData = data));
     }
+  }
+
+  public getRegistrations(contestId: number): Observable<RegistrationInfoDto[]> {
+    return this.http.get<RegistrationInfoDto[]>('/contest/' + contestId.toString() + '/registrations')
+      .pipe(map(data => {
+        for (let i = 0; i < data.length; ++i) {
+          const registration = data[i];
+          for (let j = 0; j < registration.statistics.length; ++j) {
+            const statistic = registration.statistics[j];
+            statistic.acceptedAt = moment.utc(statistic.acceptedAt).local();
+          }
+        }
+        return data;
+      }));
   }
 }

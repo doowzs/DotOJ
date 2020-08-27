@@ -20,6 +20,7 @@ import { ContestListComponent } from './components/contest/list/list.component';
 import { ContestViewComponent } from './components/contest/view/view.component';
 import { ContestRuleComponent } from './components/contest/rule/rule.component';
 import { ContestDescriptionComponent } from './components/contest/description/description.component';
+import { ContestStandingsComponent } from './components/contest/standings/standings.component';
 import { ProblemDetailComponent } from './components/problem/detail/detail.component';
 import { SubmissionListComponent } from './components/submission/list/list.component';
 import { SubmissionCreatorComponent } from './components/submission/creator/creator.component';
@@ -62,6 +63,7 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     ContestViewComponent,
     ContestRuleComponent,
     ContestDescriptionComponent,
+    ContestStandingsComponent,
     ProblemDetailComponent,
     SubmissionListComponent,
     SubmissionCreatorComponent,
@@ -79,7 +81,8 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
         path: 'contest/:contestId', component: ContestViewComponent, children: [
           { path: '', pathMatch: 'full', component: ContestDescriptionComponent },
           { path: 'problem/:problemId', component: ProblemDetailComponent },
-          { path: 'submissions', component: SubmissionListComponent }
+          { path: 'submissions', component: SubmissionListComponent },
+          { path: 'standings', component: ContestStandingsComponent }
         ]
       }
     ]),
