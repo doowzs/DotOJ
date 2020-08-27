@@ -13,11 +13,14 @@
             <ul>
               <li nz-menu-item *ngFor="let problem of contest.problems"
                   [routerLink]="['/contest', contestId, 'problem', problem.id]"
-                  [routerLinkActive]="['ant-menu-item-selected']"
-                  [routerLinkActiveOptions]="{exact: true}">
+                  [routerLinkActive]="['ant-menu-item-selected']">
                 {{ problem.label }}: {{ problem.title }}
               </li>
             </ul>
+          </li>
+          <li nz-menu-item [routerLink]="['/contest', contestId, 'submissions']"
+              [routerLinkActive]="['ant-menu-item-selected']">
+            Submissions
           </li>
         </ul>
       </nz-sider>

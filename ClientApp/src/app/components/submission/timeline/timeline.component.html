@@ -7,7 +7,7 @@
         <span style="float: right;">
           <nz-tag>{{ submission.language.name }}</nz-tag>
           <nz-tag>{{ submission.codeLength }} bytes</nz-tag>
-          <nz-tag>{{ getSubmissionTimeString(submission) }}</nz-tag>
+          <nz-tag>{{ submission.createdAt.format('YYYY-MM-DD HH:mm') }}</nz-tag>
         </span>
       </nz-timeline-item>
     </ng-template>

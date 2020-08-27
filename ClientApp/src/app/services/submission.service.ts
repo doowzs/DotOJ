@@ -7,7 +7,7 @@ import * as moment from 'moment';
 import { SubmissionInfoDto, SubmissionViewDto } from '../interfaces/submission.interfaces';
 import { AuthorizeService } from '../../api-authorization/authorize.service';
 import { PaginatedList } from '../interfaces/pagination.interfaces';
-import { VerdictInfo, Verdicts } from '../consts/verdicts.consts';
+import { fixSubmissionREVerdictCode, Verdicts } from '../consts/verdicts.consts';
 import { Languages } from '../consts/languages.consts';
 
 @Injectable({
@@ -25,6 +25,7 @@ export class SubmissionService {
   }
 
   private mapInfoFields(data: SubmissionInfoDto): SubmissionInfoDto {
+    fixSubmissionREVerdictCode(data);
     data.verdict = Verdicts.find(v => v.code === data.verdict);
     data.language = Languages.find(l => l.code === data.language);
     data.createdAt = moment.utc(data.createdAt).local();
@@ -33,28 +34,33 @@ export class SubmissionService {
   }
 
   private mapViewFields(data: SubmissionViewDto): SubmissionViewDto {
+    fixSubmissionREVerdictCode(data);
     data.verdict = Verdicts.find(v => v.code === data.verdict);
     data.program.language = Languages.find(l => l.code === data.program.language);
     data.createdAt = moment.utc(data.createdAt).local();
     data.judgedAt = moment.utc(data.judgedAt).local();
     return data;
-  };
+  }
 
-  public getPaginatedList(contestId: number | null, problemId: number | null, userId: string | null, verdict: VerdictInfo | null)
-    : Observable<PaginatedList<SubmissionInfoDto>> {
-    const params = new HttpParams();
-    if (contestId !== null) {
-      params.set('contestId', contestId.toString());
+  public getPaginatedList(contestId: number | null, problemId: number | null, userId: string | null, verdict: number | null,
+                          pageIndex: number | null): Observable<PaginatedList<SubmissionInfoDto>> {
+    let params = new HttpParams();
+    if (contestId) {
+      params = params.set('contestId', contestId.toString());
     }
-    if (problemId !== null) {
-      params.set('problemId', problemId.toString());
+    if (problemId) {
+      params = params.set('problemId', problemId.toString());
     }
-    if (userId !== null) {
-      params.set('userId', userId);
+    if (userId) {
+      params = params.set('userId', userId);
     }
-    if (verdict !== null) {
-      params.set('verdict', verdict.code.toString());
+    if (verdict) {
+      params = params.set('verdict', verdict.toString());
     }
+    if (pageIndex) {
+      params = params.set('pageIndex', pageIndex.toString());
+    }
+
     return this.http.get<PaginatedList<SubmissionInfoDto>>('/submission', { params: params })
       .pipe(map(list => {
         for (let i = 0; i < list.items.length; ++i) {

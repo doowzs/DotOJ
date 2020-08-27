@@ -15,7 +15,6 @@ import { AuthorizeService } from '../../../../api-authorization/authorize.servic
   styleUrls: ['./timeline.component.css']
 })
 export class SubmissionTimelineComponent implements OnInit, OnDestroy {
-  VerdictStage = VerdictStage;
   @Input() public problemId: number;
   @Input() public contestBeginTime: moment.Moment;
   @Input() public contestEndTime: moment.Moment;
@@ -48,7 +47,7 @@ export class SubmissionTimelineComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(submission => this.addNewSubmission(submission));
     this.userId.pipe(take(1)).subscribe(userId => {
-      this.service.getPaginatedList(null, this.problemId, userId, null)
+      this.service.getPaginatedList(null, this.problemId, userId, null, 1)
         .subscribe(list => {
           for (let i = 0; i < list.items.length; ++i) {
             this.addNewSubmission(list.items[i]);
@@ -89,14 +88,6 @@ export class SubmissionTimelineComponent implements OnInit, OnDestroy {
       } else {
         this.practiceSubmissions.unshift(submission);
       }
-    }
-  }
-
-  public getSubmissionTimeString(submission: SubmissionInfoDto): string {
-    if (submission.createdAt < this.contestEndTime) {
-      return moment.utc((submission.createdAt as moment.Moment).diff(this.contestBeginTime)).format('+HH:mm');
-    } else {
-      return (submission.createdAt as moment.Moment).format('YYYY-MM-DD HH:mm');
     }
   }
 }

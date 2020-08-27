@@ -21,6 +21,7 @@ import { ContestViewComponent } from './components/contest/view/view.component';
 import { ContestRuleComponent } from './components/contest/rule/rule.component';
 import { ContestDescriptionComponent } from './components/contest/description/description.component';
 import { ProblemDetailComponent } from './components/problem/detail/detail.component';
+import { SubmissionListComponent } from './components/submission/list/list.component';
 import { SubmissionCreatorComponent } from './components/submission/creator/creator.component';
 import { SubmissionTimelineComponent } from './components/submission/timeline/timeline.component';
 
@@ -42,6 +43,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzNotificationModule } from 'ng-zorro-antd/notification';
 import { NzTimelineModule } from 'ng-zorro-antd/timeline';
+import { NzTableModule } from 'ng-zorro-antd/table';
 
 const loadApplicationConfig = (service: ApplicationConfigService) => {
   return () => service.loadApplicationConfig();
@@ -59,6 +61,7 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     ContestRuleComponent,
     ContestDescriptionComponent,
     ProblemDetailComponent,
+    SubmissionListComponent,
     SubmissionCreatorComponent,
     SubmissionTimelineComponent
   ],
@@ -73,7 +76,8 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
       {
         path: 'contest/:contestId', component: ContestViewComponent, children: [
           { path: '', pathMatch: 'full', component: ContestDescriptionComponent },
-          { path: 'problem/:problemId', component: ProblemDetailComponent }
+          { path: 'problem/:problemId', component: ProblemDetailComponent },
+          { path: 'submissions', component: SubmissionListComponent }
         ]
       }
     ]),
@@ -95,7 +99,8 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     NzSelectModule,
     NzToolTipModule,
     NzNotificationModule,
-    NzTimelineModule
+    NzTimelineModule,
+    NzTableModule
   ],
   providers: [
     ApplicationConfigService,
