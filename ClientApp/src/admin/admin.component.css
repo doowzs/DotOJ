@@ -1,0 +1,20 @@
+﻿.header-title {
+  color: #ffffff;
+  font-size: 1.2rem;
+}
+
+.header-content {
+  color: #ffffff;
+}
+
+.header-extra {
+  display: inline-block;
+  float: right;
+}
+
+.outer-content {
+}
+
+.inner-content {
+  padding: 2rem 3rem;
+}
