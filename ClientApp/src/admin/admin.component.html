@@ -19,6 +19,19 @@
               [routerLinkActiveOptions]="{exact: true}">
             Dashboard
           </li>
+          <li nz-submenu nzTitle="Contests" nzOpen>
+            <ul>
+              <li nz-menu-item routerLink="/admin/contest"
+                  [routerLinkActive]="['ant-menu-item-selected']"
+                  [routerLinkActiveOptions]="{exact: true}">
+                List
+              </li>
+              <li nz-menu-item routerLink="/admin/contest/new"
+                  [routerLinkActive]="['ant-menu-item-selected']">
+                Create
+              </li>
+            </ul>
+          </li>
         </ul>
       </nz-sider>
       <nz-content class="inner-content">
