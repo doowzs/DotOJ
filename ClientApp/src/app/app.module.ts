@@ -47,6 +47,7 @@ import { NzNotificationModule } from 'ng-zorro-antd/notification';
 import { NzTimelineModule } from 'ng-zorro-antd/timeline';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
+import { AdminModule } from '../admin/admin.module';
 
 const loadApplicationConfig = (service: ApplicationConfigService) => {
   return () => service.loadApplicationConfig();
@@ -86,6 +87,7 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
         ]
       }
     ]),
+    AdminModule,
     ApiAuthorizationModule,
     MarkdownModule.forRoot(),
     NzLayoutModule,
