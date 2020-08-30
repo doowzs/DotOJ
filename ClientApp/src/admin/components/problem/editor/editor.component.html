@@ -1,0 +1,18 @@
+﻿<h2>
+  {{ edit ? 'Edit' : 'View' }} Problem <span *ngIf="problem">#{{ problem.id }}</span>
+  <span style="float: right;">
+    <button nz-button nzType="primary" style="margin-right: 1rem;"
+            *ngIf="!edit" (click)="editProblem()">
+      <i nz-icon nzType="edit"></i><span>Edit</span>
+    </button>
+    <button nz-button nzType="default" nzDanger
+            nz-popconfirm nzPopconfirmTitle="Are you sure you want to delete this problem?"
+            (nzOnConfirm)="deleteProblem()">
+      <i nz-icon nzType="delete"></i><span>Delete</span>
+    </button>
+  </span>
+</h2>
+<app-admin-problem-form *ngIf="problem"
+                        [problem]="problem" [disabled]="!edit"
+                        (formSubmit)="updateProblem($event)"
+></app-admin-problem-form>

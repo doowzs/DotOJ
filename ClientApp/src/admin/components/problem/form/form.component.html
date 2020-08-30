@@ -1,0 +1,99 @@
+﻿<form nz-form [formGroup]="form" (ngSubmit)="submitForm(form.value)">
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="contest-id">Contest</nz-form-label>
+    <nz-form-control>
+      <input nz-input formControlName="contestId" id="contest-id"/>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="title">Title</nz-form-label>
+    <nz-form-control>
+      <input nz-input formControlName="title" id="title"/>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="description">Description</nz-form-label>
+    <nz-form-control>
+      <textarea nz-input formControlName="description" id="description" rows="8"></textarea>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="input-format">Input Format</nz-form-label>
+    <nz-form-control>
+      <textarea nz-input formControlName="inputFormat" id="input-format" rows="5"></textarea>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="output-format">Output Format</nz-form-label>
+    <nz-form-control>
+      <textarea nz-input formControlName="outputFormat" id="output-format" rows="5"></textarea>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzFor="footnote">Footnote</nz-form-label>
+    <nz-form-control>
+      <textarea nz-input formControlName="footNote" id="footnote" rows="3"></textarea>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="time-limit">Time Limit</nz-form-label>
+    <nz-form-control>
+      <nz-input-group nzSuffix="ms">
+        <input nz-input formControlName="timeLimit" id="time-limit"/>
+      </nz-input-group>
+    </nz-form-control>
+    <span style="width: 1rem;"></span>
+    <nz-form-label nzRequired nzFor="memory-limit">Memory Limit</nz-form-label>
+    <nz-form-control>
+      <nz-input-group nzSuffix="KiB">
+        <input nz-input formControlName="memoryLimit" id="memory-limit"/>
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-divider></nz-divider>
+  <ng-container *ngFor="let control of sampleCaseControls; index as index">
+    <div nz-row>
+      <div nz-col nzSpan="12">
+        <h4>Sample #{{ index + 1 }}</h4>
+      </div>
+      <div nz-col nzSpan="12" style="text-align: right;">
+        <button style="float: right;" *ngIf="sampleCaseControls.length > 1"
+                nz-button nzType="link" type="button" nzDanger [disabled]="disabled"
+                nz-popconfirm nzPopconfirmTitle="Are you sure?" (nzOnConfirm)="removeSampleCase(control)">
+          <i nz-icon nzType="delete"></i><span>Remove</span>
+        </button>
+      </div>
+    </div>
+    <nz-form-item>
+      <nz-form-label nzRequired [nzFor]="control.instances[0]">Input</nz-form-label>
+      <nz-form-control>
+        <textarea nz-input [formControlName]="control.instances[0]"
+                  [attr.id]="control.instances[0]" rows="5"
+        ></textarea>
+      </nz-form-control>
+      <span style="width: 1rem;"></span>
+      <nz-form-label nzRequired [nzFor]="control.instances[1]">Output</nz-form-label>
+      <nz-form-control>
+        <textarea nz-input [formControlName]="control.instances[1]"
+                  [attr.id]="control.instances[1]" rows="5">
+        </textarea>
+      </nz-form-control>
+    </nz-form-item>
+  </ng-container>
+  <div nz-row>
+    <div nz-col nzSpan="24">
+      <button nz-button nzType="default" type="button" style="width: 100%;"
+              [disabled]="disabled" (click)="addSampleCase()">
+        <i nz-icon nzType="plus"></i><span>Add Sample Case</span>
+      </button>
+    </div>
+  </div>
+  <nz-divider></nz-divider>
+  <div nz-row>
+    <div nz-col nzSpan="24">
+      <button nz-button nzType="primary" [disabled]="!form.valid" type="submit" style="width: 100%;">
+        <i nz-icon nzType="check"></i><span>Submit</span>
+      </button>
+    </div>
+  </div>
+</form>

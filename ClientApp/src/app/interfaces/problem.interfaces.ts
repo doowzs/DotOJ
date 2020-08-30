@@ -25,3 +25,19 @@ export interface ProblemViewDto {
   hasHacking: boolean;
   sampleCases: TestCase[];
 }
+
+export interface ProblemEditDto {
+  id: number;
+  contestId: number;
+  title: string;
+  description: string;
+  inputFormat: string;
+  outputFormat: string;
+  footNote: string;
+  timeLimit: number;
+  memoryLimit: number;
+  hasSpecialJudge: boolean;
+  hasHacking: boolean;
+  sampleCases: TestCase[];
+  testCases: TestCase[];
+}

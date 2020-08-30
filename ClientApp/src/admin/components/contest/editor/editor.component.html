@@ -14,5 +14,5 @@
 </h2>
 <app-admin-contest-form *ngIf="contest"
                         [contest]="contest" [disabled]="!edit"
-                        (submit)="updateContest($event)"
+                        (formSubmit)="updateContest($event)"
 ></app-admin-contest-form>

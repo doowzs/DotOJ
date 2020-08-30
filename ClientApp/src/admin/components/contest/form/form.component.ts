@@ -11,7 +11,7 @@ import { ContestEditDto } from '../../../../app/interfaces/contest.interfaces';
 export class AdminContestFormComponent implements OnInit, OnChanges {
   @Input() public contest: ContestEditDto;
   @Input() public disabled = false;
-  @Output() public submit: EventEmitter<ContestEditDto> = new EventEmitter();
+  @Output() public formSubmit: EventEmitter<ContestEditDto> = new EventEmitter();
 
   public form: FormGroup;
 
@@ -51,7 +51,7 @@ export class AdminContestFormComponent implements OnInit, OnChanges {
   }
 
   public submitForm(data: any) {
-    this.submit.emit({
+    this.formSubmit.emit({
       id: data.id,
       title: data.title,
       description: data.description,

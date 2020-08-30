@@ -1,0 +1,23 @@
+﻿<h2>List Problems</h2>
+<nz-table #problemTable *ngIf="list" [nzData]="list.items" [nzFrontPagination]="false"
+          [nzPageIndex]="list.pageIndex" [nzPageSize]="list.pageSize" [nzTotal]="list.totalItems"
+          (nzPageIndexChange)="onPageIndexChange($event)">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Contest</th>
+    <th>Title</th>
+    <th>Action</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let problem of problemTable.data">
+    <td>{{ problem.id }}</td>
+    <td>{{ problem.contestId }}</td>
+    <td>{{ problem.title }}</td>
+    <td>
+      <button nz-button nzType="default" [routerLink]="['/admin/problem', problem.id]">View</button>
+    </td>
+  </tr>
+  </tbody>
+</nz-table>
