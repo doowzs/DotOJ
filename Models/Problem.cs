@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 
 namespace Judge1.Models
 {
-
     [NotMapped]
     public class TestCase
     {
@@ -19,11 +18,11 @@ namespace Judge1.Models
     public class Problem : ModelWithTimestamps
     {
         public int Id { get; set; }
-        
+
         public int ContestId { get; set; }
         public Contest Contest { get; set; }
         public List<Submission> Submissions { get; set; }
-        
+
         #region Problem Description
 
         [Required] public string Title { get; set; }
@@ -109,7 +108,7 @@ namespace Judge1.Models
         public int ContestId { get; }
         public string Title { get; }
         public bool Solved { get; }
-        
+
         public ProblemInfoDto(Problem problem)
         {
             Id = problem.Id;
@@ -123,7 +122,7 @@ namespace Judge1.Models
             Solved = solved;
         }
     }
-    
+
     [NotMapped]
     public class ProblemViewDto : DtoWithTimestamps
     {
@@ -141,7 +140,7 @@ namespace Judge1.Models
         public bool HasSpecialJudge { get; }
         public bool HasHacking { get; }
         public List<TestCase> SampleCases { get; }
-        
+
         public ProblemViewDto(Problem problem) : base(problem)
         {
             Id = problem.Id;
@@ -162,7 +161,7 @@ namespace Judge1.Models
     [NotMapped]
     public class ProblemEditDto : DtoWithTimestamps
     {
-        public int Id { get; }
+        public int? Id { get; }
         [Required] public int? ContestId { get; set; }
         [Required] public string Title { get; set; }
         [Required] public string Description { get; set; }
@@ -171,7 +170,7 @@ namespace Judge1.Models
         [Required] public string FootNote { get; set; }
 
         [Required, Range(100.0, 60000.0)] public double? TimeLimit { get; set; }
-        [Required, Range(1024.0, 2.0 * 1024 * 1024)] public double? MemoryLimit { get; set; }
+        [Required, Range(1024.0, 2097152.0)] public double? MemoryLimit { get; set; }
 
         [Required] public bool HasSpecialJudge { get; set; }
         public string SpecialJudgeProgram { get; set; }
@@ -182,6 +181,10 @@ namespace Judge1.Models
 
         [Required] public List<TestCase> SampleCases { get; set; }
         public List<TestCase> TestCases { get; }
+
+        public ProblemEditDto()
+        {
+        }
 
         public ProblemEditDto(Problem problem) : base(problem)
         {

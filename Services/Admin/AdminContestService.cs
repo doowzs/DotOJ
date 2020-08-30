@@ -82,7 +82,7 @@ namespace Judge1.Services.Admin
         public async Task<ContestEditDto> CreateContestAsync(ContestEditDto dto)
         {
             await ValidateContestEditDtoAsync(dto);
-            var contest = new Contest()
+            var contest = new Contest
             {
                 Title = dto.Title,
                 Description = dto.Description,
