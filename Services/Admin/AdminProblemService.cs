@@ -71,17 +71,7 @@ namespace Judge1.Services.Admin
                 throw new ValidationException("Invalid problem input or output format.");
             }
 
-            if (dto.TimeLimit < 100 || dto.TimeLimit > 60000)
-            {
-                throw new ValidationException("Invalid problem time limit.");
-            }
-
-            if (dto.MemoryLimit < 1000 || dto.MemoryLimit > 2 * 1024 * 1024)
-            {
-                throw new ValidationException("Invalid problem memory limit.");
-            }
-
-            if (dto.HasHacking || dto.HasSpecialJudge)
+            if (dto.HasSpecialJudge || dto.HasHacking)
             {
                 throw new NotImplementedException("Hacking and Special Judge is not implemented.");
             }
@@ -116,8 +106,8 @@ namespace Judge1.Services.Admin
                 FootNote = dto.FootNote,
                 TimeLimit = dto.TimeLimit.GetValueOrDefault(),
                 MemoryLimit = dto.MemoryLimit.GetValueOrDefault(),
-                HasHacking = false,
                 HasSpecialJudge = false,
+                HasHacking = false,
                 SampleCases = dto.SampleCases,
                 TestCases = new List<TestCase>()
             };
@@ -139,8 +129,8 @@ namespace Judge1.Services.Admin
             problem.FootNote = dto.FootNote;
             problem.TimeLimit = dto.TimeLimit.GetValueOrDefault();
             problem.MemoryLimit = dto.MemoryLimit.GetValueOrDefault();
-            problem.HasHacking = false;
             problem.HasSpecialJudge = false;
+            problem.HasHacking = false;
             problem.SampleCases = dto.SampleCases;
             _context.Problems.Update(problem);
             await _context.SaveChangesAsync();

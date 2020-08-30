@@ -163,25 +163,25 @@ namespace Judge1.Models
     public class ProblemEditDto : DtoWithTimestamps
     {
         public int Id { get; }
-        [Required] public int? ContestId { get; }
-        [Required] public string Title { get; }
-        [Required] public string Description { get; }
-        [Required] public string InputFormat { get; }
-        [Required] public string OutputFormat { get; }
-        [Required] public string FootNote { get; }
+        [Required] public int? ContestId { get; set; }
+        [Required] public string Title { get; set; }
+        [Required] public string Description { get; set; }
+        [Required] public string InputFormat { get; set; }
+        [Required] public string OutputFormat { get; set; }
+        [Required] public string FootNote { get; set; }
 
-        [Required, Range(0.0, Double.PositiveInfinity)] public double? TimeLimit { get; }
-        [Required, Range(0.0, Double.PositiveInfinity)] public double? MemoryLimit { get; }
+        [Required, Range(100.0, 60000.0)] public double? TimeLimit { get; set; }
+        [Required, Range(1024.0, 2.0 * 1024 * 1024)] public double? MemoryLimit { get; set; }
 
-        [Required] public bool HasSpecialJudge { get; }
-        public string SpecialJudgeProgram { get; }
+        [Required] public bool HasSpecialJudge { get; set; }
+        public string SpecialJudgeProgram { get; set; }
 
-        [Required] public bool HasHacking { get; }
-        public string StandardProgram { get; }
-        public string ValidatorProgram { get; }
+        [Required] public bool HasHacking { get; set; }
+        public string StandardProgram { get; set; }
+        public string ValidatorProgram { get; set; }
 
-        [Required] public List<TestCase> SampleCases { get; }
-        [Required] public List<TestCase> TestCases { get; }
+        [Required] public List<TestCase> SampleCases { get; set; }
+        public List<TestCase> TestCases { get; }
 
         public ProblemEditDto(Problem problem) : base(problem)
         {
