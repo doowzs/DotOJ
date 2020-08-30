@@ -26,6 +26,7 @@ import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzTableModule } from 'ng-zorro-antd/table';
+import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 
 @NgModule({
   imports: [
@@ -42,7 +43,7 @@ import { NzTableModule } from 'ng-zorro-antd/table';
             path: 'contest', children: [
               { path: '', pathMatch: 'full', component: AdminContestListComponent },
               { path: 'new', component: AdminContestCreatorComponent },
-              { path: ':id', component: AdminContestEditorComponent }
+              { path: ':contestId', component: AdminContestEditorComponent }
             ]
           }
         ]
@@ -60,7 +61,8 @@ import { NzTableModule } from 'ng-zorro-antd/table';
     NzSelectModule,
     NzDatePickerModule,
     NzCheckboxModule,
-    NzTableModule
+    NzTableModule,
+    NzPopconfirmModule
   ],
   declarations: [
     AdminComponent,

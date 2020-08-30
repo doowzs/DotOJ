@@ -1,16 +1,19 @@
 ﻿import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import * as moment from 'moment';
 
 import { PaginatedList } from '../../app/interfaces/pagination.interfaces';
-import { ContestCreateDto, ContestInfoDto } from '../../app/interfaces/contest.interfaces';
-import { map } from 'rxjs/operators';
+import { ContestEditDto, ContestInfoDto } from '../../app/interfaces/contest.interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdminContestService {
+  private cachedId: number;
+  private cachedData: Observable<ContestEditDto>;
+
   constructor(private http: HttpClient) {
   }
 
@@ -27,7 +30,20 @@ export class AdminContestService {
     }));
   }
 
-  public createSingle(contest: ContestCreateDto): Observable<any> {
+  public getSingle(contestId: number): Observable<ContestEditDto> {
+    return this.http.get<ContestEditDto>('/admin/contest/' + contestId.toString());
+  }
+
+  public createSingle(contest: ContestEditDto): Observable<any> {
     return this.http.post('/admin/contest', contest);
   }
+
+  public updateSingle(contest: ContestEditDto): Observable<ContestEditDto> {
+    return this.http.put<ContestEditDto>('/admin/contest/' + contest.id.toString(), contest);
+  }
+
+  public deleteSingle(contestId: number): Observable<any> {
+    return this.http.delete('/admin/contest/' + contestId.toString());
+  }
 }
+

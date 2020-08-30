@@ -30,7 +30,8 @@ export interface ContestViewDto {
   problems: ProblemInfoDto[];
 }
 
-export interface ContestCreateDto {
+export interface ContestEditDto {
+  id: number;
   title: string;
   description: string;
   isPublic: boolean;

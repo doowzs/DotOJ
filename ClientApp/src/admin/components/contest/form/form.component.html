@@ -14,7 +14,10 @@
   <nz-form-item>
     <nz-form-label nzRequired nzFor="accessibility">Accessibility</nz-form-label>
     <nz-form-control>
-      <label nz-checkbox formControlName="isPublic">Public Access</label>
+      <nz-select formControlName="isPublic" id="accessibility" nzPlaceHolder="Accessibility">
+        <nz-option nzValue="false" nzLabel="Public Access"></nz-option>
+        <nz-option nzValue="true" nzLabel="Private Access - Requires registration"></nz-option>
+      </nz-select>
     </nz-form-control>
   </nz-form-item>
   <nz-form-item>
@@ -22,7 +25,7 @@
     <nz-form-control>
       <nz-select formControlName="mode" id="mode" nzPlaceHolder="Mode">
         <nz-option nzValue="0" nzLabel="Practice/Exam"></nz-option>
-        <nz-option nzValue="1" nzLabel="One Shot (ICPC)"></nz-option>
+        <nz-option nzValue="1" nzLabel="One Shot (ICPC Mode)"></nz-option>
         <nz-option nzValue="2" nzLabel="Until Fail (OI Mode)"></nz-option>
         <nz-option nzValue="3" nzLabel="Samples Only (CF Mode)"></nz-option>
       </nz-select>
