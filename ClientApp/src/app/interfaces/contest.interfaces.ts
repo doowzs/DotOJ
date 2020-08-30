@@ -28,5 +28,13 @@ export interface ContestViewDto {
   beginTime: string | moment.Moment;
   endTime: string | moment.Moment;
   problems: ProblemInfoDto[];
-  notices: any[];
+}
+
+export interface ContestCreateDto {
+  title: string;
+  description: string;
+  isPublic: boolean;
+  mode: ContestMode;
+  beginTime: string;
+  endTime: string;
 }

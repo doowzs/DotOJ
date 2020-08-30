@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 import { PaginatedList } from '../../app/interfaces/pagination.interfaces';
-import { ContestInfoDto } from '../../app/interfaces/contest.interfaces';
+import { ContestCreateDto, ContestInfoDto } from '../../app/interfaces/contest.interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +15,10 @@ export class AdminContestService {
   public getPaginatedList(pageIndex: number): Observable<PaginatedList<ContestInfoDto>> {
     return this.http.get<PaginatedList<ContestInfoDto>>('/admin/contest', {
       params: new HttpParams().set('pageIndex', pageIndex.toString())
-    })
+    });
+  }
+
+  public createSingle(contest: ContestCreateDto): Observable<any> {
+    return this.http.post('/admin/contest', contest);
   }
 }
