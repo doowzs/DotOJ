@@ -18,7 +18,6 @@ using Hangfire.SqlServer;
 using Judge1.Runners;
 using Judge1.Services.Admin;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace Judge1
 {
@@ -117,6 +116,7 @@ namespace Judge1
             services.AddScoped<ISubmissionService, SubmissionService>();
             
             services.AddScoped<IAdminContestService, AdminContestService>();
+            services.AddScoped<IAdminProblemService, AdminProblemService>();
 
             services.AddScoped<ISubmissionRunner, SubmissionRunner>();
 

@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Judge1.Data;
+using Judge1.Exceptions;
 using Judge1.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -34,11 +35,11 @@ namespace Judge1.Services.Admin
             _logger = logger;
         }
 
-        private async Task ValidateContestId(int id)
+        private async Task EnsureContestExists(int id)
         {
             if (!await _context.Contests.AnyAsync(c => c.Id == id))
             {
-                throw new ValidationException("Invalid contest ID.");
+                throw new NotFoundException();
             }
         }
 
@@ -74,7 +75,7 @@ namespace Judge1.Services.Admin
 
         public async Task<ContestEditDto> GetContestEditAsync(int id)
         {
-            await ValidateContestId(id);
+            await EnsureContestExists(id);
             return new ContestEditDto(await _context.Contests.FindAsync(id));
         }
 
@@ -97,7 +98,7 @@ namespace Judge1.Services.Admin
 
         public async Task<ContestEditDto> UpdateContestAsync(int id, ContestEditDto dto)
         {
-            await ValidateContestId(id);
+            await EnsureContestExists(id);
             await ValidateContestEditDto(dto);
             var contest = await _context.Contests.FindAsync(id);
             contest.Title = dto.Title;
@@ -113,7 +114,7 @@ namespace Judge1.Services.Admin
 
         public async Task DeleteContestAsync(int id)
         {
-            await ValidateContestId(id);
+            await EnsureContestExists(id);
             var contest = new Contest {Id = id};
             _context.Contests.Attach(contest);
             _context.Contests.Remove(contest);

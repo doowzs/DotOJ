@@ -44,7 +44,7 @@ namespace Judge1.Services
         {
             if (!await _context.Contests.AnyAsync(c => c.Id == id))
             {
-                throw new ValidationException("Invalid contest ID.");
+                throw new NotFoundException();
             }
         }
 
