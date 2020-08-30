@@ -38,7 +38,7 @@ namespace Judge1.Services
             _logger = logger;
         }
 
-        private async Task EnsureProblemExists(int id)
+        private async Task EnsureProblemExistsAsync(int id)
         {
             if (!await _context.Problems.AnyAsync(p => p.Id == id))
             {
@@ -46,7 +46,7 @@ namespace Judge1.Services
             }
         }
 
-        private async Task EnsureUserCanViewProblem(int id)
+        private async Task EnsureUserCanViewProblemAsync(int id)
         {
             var user = await _manager.GetUserAsync(_accessor.HttpContext.User);
             if (await _manager.IsInRoleAsync(user, ApplicationRoles.Administrator) ||
@@ -93,8 +93,8 @@ namespace Judge1.Services
 
         public async Task<ProblemViewDto> GetProblemViewAsync(int id)
         {
-            await EnsureProblemExists(id);
-            await EnsureUserCanViewProblem(id);
+            await EnsureProblemExistsAsync(id);
+            await EnsureUserCanViewProblemAsync(id);
             return new ProblemViewDto(await _context.Problems.FindAsync(id));
         }
     }

@@ -46,7 +46,7 @@ namespace Judge1.Services
             _logger = logger;
         }
 
-        private async Task EnsureUserCanViewSubmission(Submission submission)
+        private async Task EnsureUserCanViewSubmissionAsync(Submission submission)
         {
             var user = await _manager.GetUserAsync(_accessor.HttpContext.User);
             if (await _manager.IsInRoleAsync(user, ApplicationRoles.Administrator) ||
@@ -65,7 +65,7 @@ namespace Judge1.Services
             }
         }
 
-        private async Task ValidateSubmissionCreateDto(SubmissionCreateDto dto)
+        private async Task ValidateSubmissionCreateDtoAsync(SubmissionCreateDto dto)
         {
             var problem = await _context.Problems.FindAsync(dto.ProblemId);
             if (problem is null)
@@ -146,14 +146,14 @@ namespace Judge1.Services
                 throw new NotFoundException();
             }
 
-            await EnsureUserCanViewSubmission(submission);
+            await EnsureUserCanViewSubmissionAsync(submission);
 
             return new SubmissionViewDto(submission);
         }
 
         public async Task<SubmissionInfoDto> CreateSubmissionAsync(SubmissionCreateDto dto)
         {
-            await ValidateSubmissionCreateDto(dto);
+            await ValidateSubmissionCreateDtoAsync(dto);
             var submission = new Submission()
             {
                 UserId = _accessor.HttpContext.User.GetSubjectId(),

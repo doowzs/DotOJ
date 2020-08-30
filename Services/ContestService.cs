@@ -40,7 +40,7 @@ namespace Judge1.Services
             _logger = logger;
         }
 
-        private async Task EnsureContestExists(int id)
+        private async Task EnsureContestExistsAsync(int id)
         {
             if (!await _context.Contests.AnyAsync(c => c.Id == id))
             {
@@ -48,7 +48,7 @@ namespace Judge1.Services
             }
         }
 
-        private async Task EnsureUserCanViewContest(int id)
+        private async Task EnsureUserCanViewContestAsync(int id)
         {
             var user = await _manager.GetUserAsync(_accessor.HttpContext.User);
             if (await _manager.IsInRoleAsync(user, ApplicationRoles.Administrator) ||
@@ -131,8 +131,8 @@ namespace Judge1.Services
 
         public async Task<ContestViewDto> GetContestViewAsync(int id)
         {
-            await EnsureContestExists(id);
-            await EnsureUserCanViewContest(id);
+            await EnsureContestExistsAsync(id);
+            await EnsureUserCanViewContestAsync(id);
 
             var contest = await _context.Contests.FindAsync(id);
             if (contest is null)
@@ -165,8 +165,8 @@ namespace Judge1.Services
 
         public async Task<List<RegistrationInfoDto>> GetRegistrationInfosAsync(int id)
         {
-            await EnsureContestExists(id);
-            await EnsureUserCanViewContest(id);
+            await EnsureContestExistsAsync(id);
+            await EnsureUserCanViewContestAsync(id);
 
             return await _context.Registrations
                 .Where(r => r.ContestId == id)

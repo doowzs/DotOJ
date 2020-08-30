@@ -35,7 +35,7 @@ namespace Judge1.Services.Admin
             _logger = logger;
         }
 
-        private async Task EnsureContestExists(int id)
+        private async Task EnsureContestExistsAsync(int id)
         {
             if (!await _context.Contests.AnyAsync(c => c.Id == id))
             {
@@ -43,7 +43,7 @@ namespace Judge1.Services.Admin
             }
         }
 
-        private Task ValidateContestEditDto(ContestEditDto dto)
+        private Task ValidateContestEditDtoAsync(ContestEditDto dto)
         {
             if (string.IsNullOrEmpty(dto.Title))
             {
@@ -75,13 +75,13 @@ namespace Judge1.Services.Admin
 
         public async Task<ContestEditDto> GetContestEditAsync(int id)
         {
-            await EnsureContestExists(id);
+            await EnsureContestExistsAsync(id);
             return new ContestEditDto(await _context.Contests.FindAsync(id));
         }
 
         public async Task<ContestEditDto> CreateContestAsync(ContestEditDto dto)
         {
-            await ValidateContestEditDto(dto);
+            await ValidateContestEditDtoAsync(dto);
             var contest = new Contest()
             {
                 Title = dto.Title,
@@ -98,8 +98,8 @@ namespace Judge1.Services.Admin
 
         public async Task<ContestEditDto> UpdateContestAsync(int id, ContestEditDto dto)
         {
-            await EnsureContestExists(id);
-            await ValidateContestEditDto(dto);
+            await EnsureContestExistsAsync(id);
+            await ValidateContestEditDtoAsync(dto);
             var contest = await _context.Contests.FindAsync(id);
             contest.Title = dto.Title;
             contest.Description = dto.Description;
@@ -114,7 +114,7 @@ namespace Judge1.Services.Admin
 
         public async Task DeleteContestAsync(int id)
         {
-            await EnsureContestExists(id);
+            await EnsureContestExistsAsync(id);
             var contest = new Contest {Id = id};
             _context.Contests.Attach(contest);
             _context.Contests.Remove(contest);
