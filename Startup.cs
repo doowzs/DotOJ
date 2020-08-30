@@ -16,6 +16,7 @@ using Microsoft.Extensions.Hosting;
 using Hangfire;
 using Hangfire.SqlServer;
 using Judge1.Runners;
+using Judge1.Services.Admin;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -111,9 +112,11 @@ namespace Judge1
 
             services.AddHttpClient(); // IHttpClientFactory
 
-            services.AddScoped<IProblemService, ProblemService>();
             services.AddScoped<IContestService, ContestService>();
+            services.AddScoped<IProblemService, ProblemService>();
             services.AddScoped<ISubmissionService, SubmissionService>();
+            
+            services.AddScoped<IAdminContestService, AdminContestService>();
 
             services.AddScoped<ISubmissionRunner, SubmissionRunner>();
 

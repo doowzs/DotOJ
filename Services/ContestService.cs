@@ -17,19 +17,12 @@ namespace Judge1.Services
         public Task<List<ContestInfoDto>> GetCurrentContestInfosAsync(string userId);
         public Task<PaginatedList<ContestInfoDto>> GetPaginatedContestInfosAsync(int? pageIndex, string userId);
         public Task<ContestViewDto> GetContestViewAsync(int id, string userId);
-        public Task<ContestEditDto> GetContestEditAsync(int id);
-        public Task<ContestEditDto> CreateContestAsync(ContestEditDto dto);
-        public Task<ContestEditDto> UpdateContestAsync(int id, ContestEditDto dto);
-        public Task DeleteContestAsync(int id);
         public Task<List<RegistrationInfoDto>> GetRegistrationInfosAsync(int id, string userId);
-        public Task RegisterUserForContestAsync(int id, string userId);
-        public Task UnregisterUserFromContestAsync(int id, string userId);
     }
 
     public class ContestService : IContestService
     {
         private const int PageSize = 20;
-        private const int RegistrationPageSize = 50;
 
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _manager;
@@ -80,26 +73,6 @@ namespace Judge1.Services
             {
                 throw new ValidationException("Invalid contest ID.");
             }
-        }
-
-        private Task ValidateContestEditDto(ContestEditDto dto)
-        {
-            if (string.IsNullOrEmpty(dto.Title))
-            {
-                throw new ValidationException("Title cannot be empty.");
-            }
-
-            if (!Enum.IsDefined(typeof(ContestMode), dto.Mode.GetValueOrDefault()))
-            {
-                throw new ValidationException("Invalid contest mode.");
-            }
-
-            if (dto.BeginTime >= dto.EndTime)
-            {
-                throw new ValidationException("Invalid begin and end time.");
-            }
-
-            return Task.CompletedTask;
         }
 
         public async Task<List<ContestInfoDto>> GetCurrentContestInfosAsync(string userId)
@@ -189,54 +162,6 @@ namespace Judge1.Services
             return new ContestViewDto(contest, problemInfos);
         }
 
-        public async Task<ContestEditDto> GetContestEditAsync(int id)
-        {
-            await ValidateContestId(id);
-            return new ContestEditDto(await _context.Contests.FindAsync(id));
-        }
-
-        public async Task<ContestEditDto> CreateContestAsync(ContestEditDto dto)
-        {
-            await ValidateContestEditDto(dto);
-            var contest = new Contest()
-            {
-                Title = dto.Title,
-                Description = dto.Description,
-                IsPublic = dto.IsPublic.GetValueOrDefault(),
-                Mode = dto.Mode.GetValueOrDefault(),
-                BeginTime = dto.BeginTime,
-                EndTime = dto.EndTime
-            };
-            await _context.Contests.AddAsync(contest);
-            await _context.SaveChangesAsync();
-            return new ContestEditDto(contest);
-        }
-
-        public async Task<ContestEditDto> UpdateContestAsync(int id, ContestEditDto dto)
-        {
-            await ValidateContestId(id);
-            await ValidateContestEditDto(dto);
-            var contest = await _context.Contests.FindAsync(id);
-            contest.Title = dto.Title;
-            contest.Description = dto.Description;
-            contest.IsPublic = dto.IsPublic.GetValueOrDefault();
-            contest.Mode = dto.Mode.GetValueOrDefault();
-            contest.BeginTime = dto.BeginTime;
-            contest.EndTime = dto.EndTime;
-            _context.Contests.Update(contest);
-            await _context.SaveChangesAsync();
-            return new ContestEditDto(contest);
-        }
-
-        public async Task DeleteContestAsync(int id)
-        {
-            await ValidateContestId(id);
-            var contest = new Contest {Id = id};
-            _context.Contests.Attach(contest);
-            _context.Contests.Remove(contest);
-            await _context.SaveChangesAsync();
-        }
-
         public async Task<List<RegistrationInfoDto>> GetRegistrationInfosAsync(int id, string userId)
         {
             await ValidateContestId(id);
@@ -249,42 +174,6 @@ namespace Judge1.Services
                 .Where(r => r.ContestId == id)
                 .Select(r => new RegistrationInfoDto(r))
                 .ToListAsync();
-        }
-
-        public async Task RegisterUserForContestAsync(int id, string userId)
-        {
-            var registered =
-                await _context.Registrations.AnyAsync(r => r.ContestId == id && r.UserId == userId);
-            if (!registered)
-            {
-                var registration = new Registration
-                {
-                    ContestId = id,
-                    UserId = userId,
-                    IsContestManager = false,
-                    IsParticipant = false,
-                    Statistics = new List<ProblemStatistics>()
-                };
-                await _context.Registrations.AddAsync(registration);
-                await _context.SaveChangesAsync();
-            }
-        }
-
-        public async Task UnregisterUserFromContestAsync(int id, string userId)
-        {
-            var registered =
-                await _context.Registrations.AnyAsync(r => r.ContestId == id && r.UserId == userId);
-            if (registered)
-            {
-                var registration = new Registration
-                {
-                    ContestId = id,
-                    UserId = userId,
-                };
-                _context.Registrations.Attach(registration);
-                _context.Registrations.Remove(registration);
-                await _context.SaveChangesAsync();
-            }
         }
     }
 }

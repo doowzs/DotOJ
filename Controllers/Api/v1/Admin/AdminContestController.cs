@@ -3,7 +3,7 @@ using System.Net.Mime;
 using System.Threading.Tasks;
 using Judge1.Exceptions;
 using Judge1.Models;
-using Judge1.Services;
+using Judge1.Services.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,13 +13,13 @@ namespace Judge1.Controllers.Api.v1.Admin
 {
     [Authorize(Policy = "ManageContests")]
     [ApiController]
-    [Route("api/v1/admin/[controller]")]
-    public class ContestController : ControllerBase
+    [Route("api/v1/admin/contest")]
+    public class AdminContestController : ControllerBase
     {
-        private readonly IContestService _service;
-        private readonly ILogger<ContestController> _logger;
+        private readonly IAdminContestService _service;
+        private readonly ILogger<AdminContestController> _logger;
 
-        public ContestController(IContestService service, ILogger<ContestController> logger)
+        public AdminContestController(IAdminContestService service, ILogger<AdminContestController> logger)
         {
             _service = service;
             _logger = logger;
@@ -31,7 +31,7 @@ namespace Judge1.Controllers.Api.v1.Admin
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PaginatedList<ContestInfoDto>>> ListContests(int? pageIndex)
         {
-            return Ok(await _service.GetPaginatedContestInfosAsync(pageIndex, null));
+            return Ok(await _service.GetPaginatedContestInfosAsync(pageIndex));
         }
 
         [HttpGet("{id:int}")]
