@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using IdentityServer4.Extensions;
 using Judge1.Data;
 using Judge1.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -13,11 +15,8 @@ namespace Judge1.Services
 {
     public interface IProblemService
     {
-        public Task<PaginatedList<ProblemInfoDto>> GetPaginatedProblemInfosAsync(int? pageIndex, string userId);
-        public Task<ProblemViewDto> GetProblemViewAsync(int id, string userId);
-        public Task<ProblemEditDto> CreateProblemAsync(ProblemEditDto dto);
-        public Task<ProblemEditDto> UpdateProblemAsync(ProblemEditDto dto);
-        public Task DeleteProblemAsync(int id);
+        public Task<PaginatedList<ProblemInfoDto>> GetPaginatedProblemInfosAsync(int? pageIndex);
+        public Task<ProblemViewDto> GetProblemViewAsync(int id);
     }
 
     public class ProblemService : IProblemService
@@ -26,23 +25,33 @@ namespace Judge1.Services
 
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _manager;
+        private readonly IHttpContextAccessor _accessor;
         private readonly ILogger<ProblemService> _logger;
 
-        public ProblemService
-            (ApplicationDbContext context, UserManager<ApplicationUser> manager, ILogger<ProblemService> logger)
+        public ProblemService(ApplicationDbContext context, UserManager<ApplicationUser> manager,
+            IHttpContextAccessor accessor, ILogger<ProblemService> logger)
         {
             _context = context;
             _manager = manager;
+            _accessor = accessor;
             _logger = logger;
         }
 
-        private async Task<bool> CanViewProblem(int id, string userId)
+        private async Task EnsureProblemExists(int id)
         {
-            var user = await _manager.FindByIdAsync(userId);
+            if (!await _context.Problems.AnyAsync(p => p.Id == id))
+            {
+                throw new ValidationException("Invalid problem ID.");
+            }
+        }
+
+        private async Task EnsureUserCanViewProblem(int id)
+        {
+            var user = await _manager.GetUserAsync(_accessor.HttpContext.User);
             if (await _manager.IsInRoleAsync(user, ApplicationRoles.Administrator) ||
                 await _manager.IsInRoleAsync(user, ApplicationRoles.ContestManager))
             {
-                return true;
+                return;
             }
 
             var problem = await _context.Problems.FindAsync(id);
@@ -51,157 +60,41 @@ namespace Judge1.Services
             {
                 if (DateTime.Now.ToUniversalTime() < problem.Contest.BeginTime)
                 {
-                    return false;
+                    throw new UnauthorizedAccessException("Not authorized to view this problem.");
                 }
             }
             else
             {
                 var registered = await _context.Registrations
-                    .AnyAsync(r => r.ContestId == problem.Contest.Id && r.UserId == userId);
+                    .AnyAsync(r => r.ContestId == problem.Contest.Id && r.UserId == user.Id);
                 if (DateTime.Now.ToUniversalTime() < problem.Contest.BeginTime ||
                     (!registered && DateTime.Now.ToUniversalTime() < problem.Contest.EndTime))
                 {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        private async Task ValidateProblemId(int id)
-        {
-            if (!await _context.Problems.AnyAsync(p => p.Id == id))
-            {
-                throw new ValidationException("Invalid problem ID.");
-            }
-        }
-
-        private async Task ValidateProblemEditDto(ProblemEditDto dto)
-        {
-            if (!await _context.Contests.AnyAsync(a => a.Id == dto.ContestId))
-            {
-                throw new ValidationException("Invalid contest ID.");
-            }
-
-            if (dto.HasSpecialJudge)
-            {
-                if (dto.SpecialJudgeProgram is null)
-                {
-                    throw new ValidationException("Special judge problem cannot be null.");
-                }
-            }
-
-            if (dto.HasHacking)
-            {
-                if (dto.StandardProgram is null)
-                {
-                    throw new ValidationException("Standard program cannot be null.");
-                }
-                else if (dto.ValidatorProgram is null)
-                {
-                    throw new ValidationException("Validator program cannot be null.");
+                    throw new UnauthorizedAccessException("Not authorized to view this problem.");
                 }
             }
         }
 
-        public async Task<PaginatedList<ProblemInfoDto>> GetPaginatedProblemInfosAsync(int? pageIndex, string userId)
+        public async Task<PaginatedList<ProblemInfoDto>> GetPaginatedProblemInfosAsync(int? pageIndex)
         {
-            var problems = await _context.Problems
-                .PaginateAsync(pageIndex ?? 1, PageSize);
-            IList<ProblemInfoDto> infos;
-            if (userId != null)
+            var userId = _accessor.HttpContext.User.GetSubjectId();
+            var problems = await _context.Problems.PaginateAsync(pageIndex ?? 1, PageSize);
+            var infos = new List<ProblemInfoDto>();
+            foreach (var problem in problems.Items)
             {
-                infos = new List<ProblemInfoDto>();
-                foreach (var problem in problems.Items)
-                {
-                    var solved = await _context.Submissions
-                        .AnyAsync(s => s.ProblemId == problem.Id && s.UserId == userId && s.FailedOn == -1);
-                    infos.Add(new ProblemInfoDto(problem, solved));
-                }
-            }
-            else
-            {
-                infos = problems.Items.Select(p => new ProblemInfoDto(p)).ToList();
+                var solved = await _context.Submissions
+                    .AnyAsync(s => s.ProblemId == problem.Id && s.UserId == userId && s.FailedOn == -1);
+                infos.Add(new ProblemInfoDto(problem, solved));
             }
 
             return new PaginatedList<ProblemInfoDto>(problems.TotalItems, pageIndex ?? 1, PageSize, infos);
         }
 
-        public async Task<ProblemViewDto> GetProblemViewAsync(int id, string userId)
+        public async Task<ProblemViewDto> GetProblemViewAsync(int id)
         {
-            await ValidateProblemId(id);
-            if (!await CanViewProblem(id, userId))
-            {
-                throw new UnauthorizedAccessException("Not authorized to view this problem.");
-            }
-
+            await EnsureProblemExists(id);
+            await EnsureUserCanViewProblem(id);
             return new ProblemViewDto(await _context.Problems.FindAsync(id));
-        }
-
-        public async Task<ProblemEditDto> CreateProblemAsync(ProblemEditDto dto)
-        {
-            await ValidateProblemEditDto(dto);
-            var contest = await _context.Contests.FindAsync(dto.ContestId);
-            var problem = new Problem()
-            {
-                Id = 0,
-                ContestId = dto.ContestId.GetValueOrDefault(),
-                Title = dto.Title,
-                Description = dto.Description,
-                InputFormat = dto.InputFormat,
-                OutputFormat = dto.OutputFormat,
-                FootNote = dto.FootNote,
-                TimeLimit = dto.TimeLimit.GetValueOrDefault(),
-                MemoryLimit = dto.MemoryLimit.GetValueOrDefault(),
-                HasSpecialJudge = dto.HasSpecialJudge,
-                SpecialJudgeProgramSerialized = dto.SpecialJudgeProgram,
-                HasHacking = dto.HasHacking,
-                StandardProgramSerialized = dto.StandardProgram,
-                ValidatorProgramSerialized = dto.ValidatorProgram,
-                SampleCases = dto.SampleCases,
-                TestCases = dto.TestCases,
-            };
-            await _context.Problems.AddAsync(problem);
-            await _context.SaveChangesAsync();
-            return new ProblemEditDto(problem);
-        }
-
-        public async Task<ProblemEditDto> UpdateProblemAsync(ProblemEditDto dto)
-        {
-            await ValidateProblemId(dto.Id);
-            await ValidateProblemEditDto(dto);
-            var oldProblem = await _context.Problems.FindAsync(dto.Id);
-            var problem = new Problem()
-            {
-                Id = dto.Id,
-                ContestId = dto.ContestId.GetValueOrDefault(),
-                Title = dto.Title,
-                Description = dto.Description,
-                InputFormat = dto.InputFormat,
-                OutputFormat = dto.OutputFormat,
-                FootNote = dto.FootNote,
-                TimeLimit = dto.TimeLimit.GetValueOrDefault(),
-                MemoryLimit = dto.MemoryLimit.GetValueOrDefault(),
-                HasSpecialJudge = dto.HasSpecialJudge,
-                SpecialJudgeProgramSerialized = dto.SpecialJudgeProgram,
-                HasHacking = dto.HasHacking,
-                StandardProgramSerialized = dto.StandardProgram,
-                ValidatorProgramSerialized = dto.ValidatorProgram,
-                SampleCases = dto.SampleCases,
-                TestCases = dto.TestCases,
-            };
-            _context.Problems.Update(problem);
-            await _context.SaveChangesAsync();
-            return new ProblemEditDto(problem);
-        }
-
-        public async Task DeleteProblemAsync(int id)
-        {
-            await ValidateProblemId(id);
-            var problem = new Problem() {Id = id};
-            _context.Problems.Attach(problem);
-            _context.Problems.Remove(problem);
-            await _context.SaveChangesAsync();
         }
     }
 }

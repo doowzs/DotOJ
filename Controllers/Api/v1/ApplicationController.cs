@@ -1,5 +1,4 @@
 using System.Net.Mime;
-using System.Threading.Tasks;
 using Judge1.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -9,7 +8,7 @@ using Microsoft.Extensions.Options;
 namespace Judge1.Controllers.Api.v1
 {
     [ApiController]
-    [Route("api/v1/[controller]")]
+    [Route("api/v1/application")]
     public class ApplicationController : ControllerBase
     {
         private readonly IOptions<ApplicationConfig> _config;

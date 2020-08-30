@@ -40,6 +40,14 @@ namespace Judge1.Services
             _logger = logger;
         }
 
+        private async Task EnsureContestExists(int id)
+        {
+            if (!await _context.Contests.AnyAsync(c => c.Id == id))
+            {
+                throw new ValidationException("Invalid contest ID.");
+            }
+        }
+
         private async Task EnsureUserCanViewContest(int id)
         {
             var user = await _manager.GetUserAsync(_accessor.HttpContext.User);
@@ -66,14 +74,6 @@ namespace Judge1.Services
                 {
                     throw new UnauthorizedAccessException("Not authorized to view this contest.");
                 }
-            }
-        }
-
-        private async Task ValidateContestId(int id)
-        {
-            if (!await _context.Contests.AnyAsync(c => c.Id == id))
-            {
-                throw new ValidationException("Invalid contest ID.");
             }
         }
 
@@ -131,7 +131,7 @@ namespace Judge1.Services
 
         public async Task<ContestViewDto> GetContestViewAsync(int id)
         {
-            await ValidateContestId(id);
+            await EnsureContestExists(id);
             await EnsureUserCanViewContest(id);
 
             var contest = await _context.Contests.FindAsync(id);
@@ -165,7 +165,7 @@ namespace Judge1.Services
 
         public async Task<List<RegistrationInfoDto>> GetRegistrationInfosAsync(int id)
         {
-            await ValidateContestId(id);
+            await EnsureContestExists(id);
             await EnsureUserCanViewContest(id);
 
             return await _context.Registrations

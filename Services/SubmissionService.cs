@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using IdentityServer4.Extensions;
 using Judge1.Data;
 using Judge1.Exceptions;
 using Judge1.Models;
 using Judge1.Runners;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -18,9 +21,9 @@ namespace Judge1.Services
         public Task<PaginatedList<SubmissionInfoDto>> GetPaginatedSubmissionsAsync
             (int? contestId, int? problemId, string userId, Verdict? verdict, int? pageIndex);
 
-        public Task<SubmissionInfoDto> GetSubmissionInfoAsync(int id, string userId);
-        public Task<SubmissionViewDto> GetSubmissionViewAsync(int id, string userId);
-        public Task<SubmissionInfoDto> CreateSubmissionAsync(SubmissionCreateDto dto, string userId);
+        public Task<SubmissionInfoDto> GetSubmissionInfoAsync(int id);
+        public Task<SubmissionViewDto> GetSubmissionViewAsync(int id);
+        public Task<SubmissionInfoDto> CreateSubmissionAsync(SubmissionCreateDto dto);
     }
 
     public class SubmissionService : ISubmissionService
@@ -28,26 +31,41 @@ namespace Judge1.Services
         private const int PageSize = 50;
 
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<SubmissionService> _logger;
+        private readonly UserManager<ApplicationUser> _manager;
+        private readonly IHttpContextAccessor _accessor;
         private readonly ISubmissionRunner _runner;
+        private readonly ILogger<SubmissionService> _logger;
 
-        public SubmissionService(ApplicationDbContext context,
-            ILogger<SubmissionService> logger, ISubmissionRunner runner)
+        public SubmissionService(ApplicationDbContext context, UserManager<ApplicationUser> manager,
+            IHttpContextAccessor accessor, ISubmissionRunner runner, ILogger<SubmissionService> logger)
         {
             _context = context;
-            _logger = logger;
+            _manager = manager;
+            _accessor = accessor;
             _runner = runner;
+            _logger = logger;
         }
 
-        private async Task<bool> CanViewSubmission(Submission submission, string userId)
+        private async Task EnsureUserCanViewSubmission(Submission submission)
         {
-            return submission.UserId == userId
-                   || await _context.Submissions.AnyAsync(s => s.Id == submission.Id
-                                                               && s.UserId == userId
-                                                               && s.Verdict == Verdict.Accepted);
+            var user = await _manager.GetUserAsync(_accessor.HttpContext.User);
+            if (await _manager.IsInRoleAsync(user, ApplicationRoles.Administrator) ||
+                await _manager.IsInRoleAsync(user, ApplicationRoles.JudgeResultManager))
+            {
+                return;
+            }
+
+            var accessible = submission.UserId == user.Id
+                             || await _context.Submissions.AnyAsync(s => s.Id == submission.Id
+                                                                         && s.UserId == user.Id
+                                                                         && s.Verdict == Verdict.Accepted);
+            if (!accessible)
+            {
+                throw new UnauthorizedAccessException("Not allowed to view this submission.");
+            }
         }
 
-        private async Task ValidateSubmissionCreateDto(SubmissionCreateDto dto, string userId)
+        private async Task ValidateSubmissionCreateDto(SubmissionCreateDto dto)
         {
             var problem = await _context.Problems.FindAsync(dto.ProblemId);
             if (problem is null)
@@ -65,6 +83,7 @@ namespace Judge1.Services
             }
             else
             {
+                var userId = _accessor.HttpContext.User.GetSubjectId();
                 var registered = await _context.Registrations
                     .AnyAsync(r => r.ContestId == contest.Id && r.UserId == userId);
                 if (DateTime.Now.ToUniversalTime() < contest.BeginTime ||
@@ -108,7 +127,7 @@ namespace Judge1.Services
                 .PaginateAsync(s => new SubmissionInfoDto(s), pageIndex ?? 1, PageSize);
         }
 
-        public async Task<SubmissionInfoDto> GetSubmissionInfoAsync(int id, string userId)
+        public async Task<SubmissionInfoDto> GetSubmissionInfoAsync(int id)
         {
             var submission = await _context.Submissions.FindAsync(id);
             if (submission == null)
@@ -119,7 +138,7 @@ namespace Judge1.Services
             return new SubmissionInfoDto(submission);
         }
 
-        public async Task<SubmissionViewDto> GetSubmissionViewAsync(int id, string userId)
+        public async Task<SubmissionViewDto> GetSubmissionViewAsync(int id)
         {
             var submission = await _context.Submissions.FindAsync(id);
             if (submission == null)
@@ -127,20 +146,17 @@ namespace Judge1.Services
                 throw new NotFoundException();
             }
 
-            if (!await CanViewSubmission(submission, userId))
-            {
-                throw new UnauthorizedAccessException("Not allowed to view this submission.");
-            }
+            await EnsureUserCanViewSubmission(submission);
 
             return new SubmissionViewDto(submission);
         }
 
-        public async Task<SubmissionInfoDto> CreateSubmissionAsync(SubmissionCreateDto dto, string userId)
+        public async Task<SubmissionInfoDto> CreateSubmissionAsync(SubmissionCreateDto dto)
         {
-            await ValidateSubmissionCreateDto(dto, userId);
+            await ValidateSubmissionCreateDto(dto);
             var submission = new Submission()
             {
-                UserId = userId,
+                UserId = _accessor.HttpContext.User.GetSubjectId(),
                 ProblemId = dto.ProblemId.GetValueOrDefault(),
                 Program = dto.Program
             };

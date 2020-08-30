@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using System.Threading.Tasks;
-using IdentityServer4.Extensions;
 using Judge1.Exceptions;
 using Judge1.Models;
 using Judge1.Services;
@@ -16,7 +14,7 @@ namespace Judge1.Controllers.Api.v1
 {
     [Authorize]
     [ApiController]
-    [Route("api/v1/[controller]")]
+    [Route("api/v1/submission")]
     public class SubmissionController : ControllerBase
     {
         private readonly ISubmissionService _service;
@@ -48,7 +46,7 @@ namespace Judge1.Controllers.Api.v1
         {
             try
             {
-                var submission = await _service.GetSubmissionInfoAsync(id, User.GetSubjectId());
+                var submission = await _service.GetSubmissionInfoAsync(id);
                 return Ok(submission);
             }
             catch (NotFoundException e)
@@ -71,7 +69,7 @@ namespace Judge1.Controllers.Api.v1
         {
             try
             {
-                var submission = await _service.GetSubmissionViewAsync(id, User.GetSubjectId());
+                var submission = await _service.GetSubmissionViewAsync(id);
                 return Ok(submission);
             }
             catch (NotFoundException e)
@@ -94,7 +92,7 @@ namespace Judge1.Controllers.Api.v1
         {
             try
             {
-                return Ok(await _service.CreateSubmissionAsync(dto, User.GetSubjectId()));
+                return Ok(await _service.CreateSubmissionAsync(dto));
             }
             catch (ValidationException e)
             {
