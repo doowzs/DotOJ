@@ -60,8 +60,7 @@ namespace Judge1.Controllers.Api.v1.Admin
         {
             try
             {
-                var contest = await _service.CreateContestAsync(dto);
-                return Created(nameof(ViewContest), contest);
+                return Created(nameof(ViewContest), await _service.CreateContestAsync(dto));
             }
             catch (ValidationException e)
             {
@@ -78,8 +77,7 @@ namespace Judge1.Controllers.Api.v1.Admin
         {
             try
             {
-                var contest = await _service.UpdateContestAsync(id, dto);
-                return Ok(contest);
+                return Ok(await _service.UpdateContestAsync(id, dto));
             }
             catch (NotFoundException e)
             {
