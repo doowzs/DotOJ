@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using IdentityServer4.Extensions;
 using Judge1.Data;
 using Judge1.Exceptions;
 using Judge1.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -14,10 +16,10 @@ namespace Judge1.Services
 {
     public interface IContestService
     {
-        public Task<List<ContestInfoDto>> GetCurrentContestInfosAsync(string userId);
-        public Task<PaginatedList<ContestInfoDto>> GetPaginatedContestInfosAsync(int? pageIndex, string userId);
-        public Task<ContestViewDto> GetContestViewAsync(int id, string userId);
-        public Task<List<RegistrationInfoDto>> GetRegistrationInfosAsync(int id, string userId);
+        public Task<List<ContestInfoDto>> GetCurrentContestInfosAsync();
+        public Task<PaginatedList<ContestInfoDto>> GetPaginatedContestInfosAsync(int? pageIndex);
+        public Task<ContestViewDto> GetContestViewAsync(int id);
+        public Task<List<RegistrationInfoDto>> GetRegistrationInfosAsync(int id);
     }
 
     public class ContestService : IContestService
@@ -26,23 +28,25 @@ namespace Judge1.Services
 
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _manager;
+        private readonly IHttpContextAccessor _accessor;
         private readonly ILogger<ContestService> _logger;
 
-        public ContestService
-            (ApplicationDbContext context, UserManager<ApplicationUser> manager, ILogger<ContestService> logger)
+        public ContestService(ApplicationDbContext context, UserManager<ApplicationUser> manager,
+            IHttpContextAccessor accessor, ILogger<ContestService> logger)
         {
             _context = context;
             _manager = manager;
+            _accessor = accessor;
             _logger = logger;
         }
 
-        private async Task<bool> CanViewContest(int id, string userId)
+        private async Task EnsureUserCanViewContest(int id)
         {
-            var user = await _manager.FindByIdAsync(userId);
+            var user = await _manager.GetUserAsync(_accessor.HttpContext.User);
             if (await _manager.IsInRoleAsync(user, ApplicationRoles.Administrator) ||
                 await _manager.IsInRoleAsync(user, ApplicationRoles.ContestManager))
             {
-                return true;
+                return;
             }
 
             var contest = await _context.Contests.FindAsync(id);
@@ -50,21 +54,19 @@ namespace Judge1.Services
             {
                 if (DateTime.Now.ToUniversalTime() < contest.BeginTime)
                 {
-                    return false;
+                    throw new UnauthorizedAccessException("Not authorized to view this contest.");
                 }
             }
             else
             {
                 var registered = await _context.Registrations
-                    .AnyAsync(r => r.ContestId == contest.Id && r.UserId == userId);
+                    .AnyAsync(r => r.ContestId == contest.Id && r.UserId == user.Id);
                 if (DateTime.Now.ToUniversalTime() < contest.BeginTime ||
                     (!registered && DateTime.Now.ToUniversalTime() < contest.EndTime))
                 {
-                    return false;
+                    throw new UnauthorizedAccessException("Not authorized to view this contest.");
                 }
             }
-
-            return true;
         }
 
         private async Task ValidateContestId(int id)
@@ -75,15 +77,16 @@ namespace Judge1.Services
             }
         }
 
-        public async Task<List<ContestInfoDto>> GetCurrentContestInfosAsync(string userId)
+        public async Task<List<ContestInfoDto>> GetCurrentContestInfosAsync()
         {
             var now = DateTime.Now.ToUniversalTime();
             var contests = await _context.Contests
                 .Where(c => c.EndTime > now)
                 .OrderBy(c => c.BeginTime)
                 .ToListAsync();
-            if (userId != null)
+            if (_accessor.HttpContext.User.IsAuthenticated())
             {
+                var userId = _accessor.HttpContext.User.GetSubjectId();
                 var infos = new List<ContestInfoDto>();
                 foreach (var contest in contests)
                 {
@@ -100,16 +103,16 @@ namespace Judge1.Services
             }
         }
 
-        public async Task<PaginatedList<ContestInfoDto>>
-            GetPaginatedContestInfosAsync(int? pageIndex, string userId)
+        public async Task<PaginatedList<ContestInfoDto>> GetPaginatedContestInfosAsync(int? pageIndex)
         {
             // See https://github.com/dotnet/efcore/issues/17068 for GroupJoin issues.
             var contests = await _context.Contests
                 .OrderByDescending(c => c.Id)
                 .PaginateAsync(pageIndex ?? 1, PageSize);
             IList<ContestInfoDto> infos;
-            if (userId != null)
+            if (_accessor.HttpContext.User.IsAuthenticated())
             {
+                var userId = _accessor.HttpContext.User.GetSubjectId();
                 infos = new List<ContestInfoDto>();
                 foreach (var contest in contests.Items)
                 {
@@ -126,13 +129,10 @@ namespace Judge1.Services
             return new PaginatedList<ContestInfoDto>(contests.TotalItems, pageIndex ?? 1, PageSize, infos);
         }
 
-        public async Task<ContestViewDto> GetContestViewAsync(int id, string userId)
+        public async Task<ContestViewDto> GetContestViewAsync(int id)
         {
             await ValidateContestId(id);
-            if (!await CanViewContest(id, userId))
-            {
-                throw new UnauthorizedAccessException("Not authorized to view this contest.");
-            }
+            await EnsureUserCanViewContest(id);
 
             var contest = await _context.Contests.FindAsync(id);
             if (contest is null)
@@ -144,8 +144,9 @@ namespace Judge1.Services
             await _context.Entry(contest).Collection(c => c.Clarifications).LoadAsync();
 
             IList<ProblemInfoDto> problemInfos;
-            if (userId != null)
+            if (_accessor.HttpContext.User.IsAuthenticated())
             {
+                var userId = _accessor.HttpContext.User.GetSubjectId();
                 problemInfos = new List<ProblemInfoDto>();
                 foreach (var problem in contest.Problems)
                 {
@@ -162,13 +163,10 @@ namespace Judge1.Services
             return new ContestViewDto(contest, problemInfos);
         }
 
-        public async Task<List<RegistrationInfoDto>> GetRegistrationInfosAsync(int id, string userId)
+        public async Task<List<RegistrationInfoDto>> GetRegistrationInfosAsync(int id)
         {
             await ValidateContestId(id);
-            if (!await CanViewContest(id, userId))
-            {
-                throw new UnauthorizedAccessException("Not authorized to view this contest.");
-            }
+            await EnsureUserCanViewContest(id);
 
             return await _context.Registrations
                 .Where(r => r.ContestId == id)

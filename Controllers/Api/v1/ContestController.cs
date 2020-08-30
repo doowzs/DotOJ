@@ -34,8 +34,7 @@ namespace Judge1.Controllers.Api.v1
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<ContestInfoDto>>> ListCurrentContests()
         {
-            var subject = User.Identity.IsAuthenticated ? User.GetSubjectId() : null;
-            return Ok(await _service.GetCurrentContestInfosAsync(subject));
+            return Ok(await _service.GetCurrentContestInfosAsync());
         }
 
         [HttpGet]
@@ -44,8 +43,7 @@ namespace Judge1.Controllers.Api.v1
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PaginatedList<ContestInfoDto>>> ListContests(int? pageIndex)
         {
-            return Ok(await _service.GetPaginatedContestInfosAsync(pageIndex,
-                User.Identity.IsAuthenticated ? User.GetSubjectId() : null));
+            return Ok(await _service.GetPaginatedContestInfosAsync(pageIndex));
         }
 
         [HttpGet("{id:int}")]
@@ -58,7 +56,7 @@ namespace Judge1.Controllers.Api.v1
         {
             try
             {
-                return Ok(await _service.GetContestViewAsync(id, User.GetSubjectId()));
+                return Ok(await _service.GetContestViewAsync(id));
             }
             catch (NotFoundException e)
             {
@@ -80,7 +78,7 @@ namespace Judge1.Controllers.Api.v1
         {
             try
             {
-                return Ok(await _service.GetRegistrationInfosAsync(id, User.GetSubjectId()));
+                return Ok(await _service.GetRegistrationInfosAsync(id));
             }
             catch (NotFoundException e)
             {
