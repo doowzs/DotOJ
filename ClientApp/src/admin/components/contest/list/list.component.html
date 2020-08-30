@@ -1,1 +1,36 @@
 ﻿<h2>List Contests</h2>
+<nz-table #contestTable *ngIf="list" [nzData]="list.items" [nzFrontPagination]="false"
+          [nzPageIndex]="list.pageIndex" [nzPageSize]="list.pageSize" [nzTotal]="list.totalItems"
+          (nzPageIndexChange)="onPageIndexChange($event)">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Title</th>
+    <th>Accessibility</th>
+    <th>Mode</th>
+    <th>Period</th>
+    <th>Action</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let contest of contestTable.data">
+    <td>{{ contest.id }}</td>
+    <td>{{ contest.title }}</td>
+    <td>{{ contest.isPublic ? 'Public' : 'Private' }}</td>
+    <td>
+      <ng-container [ngSwitch]="contest.mode">
+        <span *ngSwitchCase="ContestMode.Practice">Practice/Exam</span>
+        <span *ngSwitchCase="ContestMode.UntilFail">Until Fail (ICPC Mode)</span>
+        <span *ngSwitchCase="ContestMode.OneShot">One Shot (OI Mode)</span>
+        <span *ngSwitchCase="ContestMode.SampleOnly">Sample Only (CF Mode)</span>
+      </ng-container>
+    </td>
+    <td>
+      {{ contest.beginTime.format('YYYY-MM-DD HH:mm') }} - {{ contest.endTime.format('YYYY-MM-DD HH:mm') }}
+    </td>
+    <td>
+      <button nz-button nzType="default" [routerLink]="['/admin/contest', contest.id]">View</button>
+    </td>
+  </tr>
+  </tbody>
+</nz-table>

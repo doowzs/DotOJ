@@ -25,6 +25,7 @@ import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzSelectModule } from 'ng-zorro-antd/select';
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
 import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
+import { NzTableModule } from 'ng-zorro-antd/table';
 
 @NgModule({
   imports: [
@@ -58,7 +59,8 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
     NzInputModule,
     NzSelectModule,
     NzDatePickerModule,
-    NzCheckboxModule
+    NzCheckboxModule,
+    NzTableModule
   ],
   declarations: [
     AdminComponent,
