@@ -1,0 +1,33 @@
+﻿<h2>Registrations of Contest <span *ngIf="contest">#{{ contest.id }}</span></h2>
+<nz-divider></nz-divider>
+<nz-table #userTable *ngIf="list && registrations" [nzData]="list.items" [nzFrontPagination]="false"
+          [nzPageIndex]="list.pageIndex" [nzPageSize]="list.pageSize" [nzTotal]="list.totalItems"
+          (nzPageIndexChange)="onPageIndexChange($event)">
+  <thead>
+  <tr>
+    <th>Email</th>
+    <th>Contestant ID</th>
+    <th>Contestant Name</th>
+    <th>Registered</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let user of userTable.data">
+    <td>{{ user.email }}</td>
+    <td>{{ user.contestantId }}</td>
+    <td>{{ user.contestantName }}</td>
+    <td>{{ isUserRegistered(user.id) ? 'Yes' : '' }}</td>
+    <td>
+      <button nz-button nzType="default" *ngIf="isUserRegistered(user.id); else unregister">
+        <i nz-icon nzType="plus"></i><span>Add</span>
+      </button>
+      <ng-template #unregister>
+        <button nz-button nzType="link" nzDanger>
+          <i nz-icon nzType="cross"></i><span>Remove</span>
+        </button>
+      </ng-template>
+    </td>
+  </tr>
+  </tbody>
+</nz-table>

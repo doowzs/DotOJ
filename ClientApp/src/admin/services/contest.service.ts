@@ -6,6 +6,7 @@ import * as moment from 'moment';
 
 import { PaginatedList } from '../../app/interfaces/pagination.interfaces';
 import { ContestEditDto, ContestInfoDto } from '../../app/interfaces/contest.interfaces';
+import { RegistrationInfoDto } from '../../app/interfaces/registration.interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -41,6 +42,20 @@ export class AdminContestService {
 
   public deleteSingle(contestId: number): Observable<any> {
     return this.http.delete('/admin/contest/' + contestId.toString());
+  }
+
+  public getRegistrations(contestId: number): Observable<RegistrationInfoDto[]> {
+    return this.http.get<RegistrationInfoDto[]>('/admin/contest/' + contestId.toString() + '/registrations');
+  }
+
+  public addRegistrations(contestId: number, userIds: string[]): Observable<RegistrationInfoDto[]> {
+    return this.http.post<RegistrationInfoDto[]>('/admin/contest/' + contestId.toString() + '/registrations', userIds);
+  }
+
+  public removeRegistrations(contestId: number, userIds: string[]): Observable<any> {
+    return this.http.delete('/admin/contest/' + contestId.toString() + '/registrations', {
+      params: new HttpParams().append('userIds', userIds.toString())
+    });
   }
 }
 

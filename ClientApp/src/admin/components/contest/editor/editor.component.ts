@@ -20,7 +20,7 @@ export class AdminContestEditorComponent implements OnInit {
     private service: AdminContestService
   ) {
     this.edit = this.route.snapshot.queryParams.edit ?? false;
-    this.contestId = this.route.snapshot.params.contestId;
+    this.contestId = this.route.snapshot.parent.params.contestId;
   }
 
   ngOnInit() {

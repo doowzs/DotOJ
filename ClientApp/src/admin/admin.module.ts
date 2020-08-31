@@ -17,6 +17,7 @@ import { AdminContestListComponent } from './components/contest/list/list.compon
 import { AdminContestFormComponent } from './components/contest/form/form.component';
 import { AdminContestCreatorComponent } from './components/contest/creator/creator.component';
 import { AdminContestEditorComponent } from './components/contest/editor/editor.component';
+import { AdminContestRegistrationsComponent } from './components/contest/registrations/registrations.component';
 import { AdminProblemListComponent } from './components/problem/list/list.component';
 import { AdminProblemFormComponent } from './components/problem/form/form.component';
 import { AdminProblemCreatorComponent } from './components/problem/creator/creator.component';
@@ -59,7 +60,12 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
             path: 'contest', children: [
               { path: '', pathMatch: 'full', component: AdminContestListComponent },
               { path: 'new', component: AdminContestCreatorComponent },
-              { path: ':contestId', component: AdminContestEditorComponent }
+              {
+                path: ':contestId', children: [
+                  { path: '', pathMatch: 'full', component: AdminContestEditorComponent },
+                  { path: 'registrations', component: AdminContestRegistrationsComponent }
+                ]
+              }
             ]
           },
           {
@@ -103,6 +109,7 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
     AdminContestFormComponent,
     AdminContestCreatorComponent,
     AdminContestEditorComponent,
+    AdminContestRegistrationsComponent,
     AdminProblemListComponent,
     AdminProblemFormComponent,
     AdminProblemCreatorComponent,
