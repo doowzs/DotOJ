@@ -11,9 +11,6 @@ import { ContestEditDto, ContestInfoDto } from '../../app/interfaces/contest.int
   providedIn: 'root'
 })
 export class AdminContestService {
-  private cachedId: number;
-  private cachedData: Observable<ContestEditDto>;
-
   constructor(private http: HttpClient) {
   }
 

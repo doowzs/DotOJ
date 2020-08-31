@@ -9,9 +9,6 @@ import { PaginatedList } from '../../app/interfaces/pagination.interfaces';
   providedIn: 'root'
 })
 export class AdminProblemService {
-  public cachedId: number;
-  public cachedData: Observable<ProblemEditDto>;
-
   constructor(private http: HttpClient) {
   }
 
