@@ -180,7 +180,6 @@ namespace Judge1.Models
         public string ValidatorProgram { get; set; }
 
         [Required] public List<TestCase> SampleCases { get; set; }
-        public List<TestCase> TestCases { get; }
 
         public ProblemEditDto()
         {
@@ -203,7 +202,6 @@ namespace Judge1.Models
             StandardProgram = problem.StandardProgramSerialized;
             ValidatorProgram = problem.ValidatorProgramSerialized;
             SampleCases = problem.SampleCases;
-            TestCases = problem.TestCases;
         }
     }
 

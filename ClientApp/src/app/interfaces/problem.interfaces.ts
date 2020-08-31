@@ -39,5 +39,4 @@ export interface ProblemEditDto {
   hasSpecialJudge: boolean;
   hasHacking: boolean;
   sampleCases: TestCase[];
-  testCases: TestCase[];
 }
