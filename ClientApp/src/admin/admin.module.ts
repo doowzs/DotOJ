@@ -18,6 +18,7 @@ import { AdminProblemListComponent } from './components/problem/list/list.compon
 import { AdminProblemCreatorComponent } from './components/problem/creator/creator.component';
 import { AdminProblemEditorComponent } from './components/problem/editor/editor.component';
 import { AdminProblemFormComponent } from './components/problem/form/form.component';
+import { AdminProblemTestCasesComponent } from './components/problem/test-cases/test-cases.component';
 
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
@@ -35,49 +36,54 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 
 @NgModule({
-  imports: [
-    CommonModule,
-    BrowserModule,
-    BrowserAnimationsModule,
-    ReactiveFormsModule,
-    RouterModule.forChild([
-      {
-        path: 'admin', component: AdminComponent, canActivate: [AuthorizeGuard],
-        children: [
-          { path: '', pathMatch: 'full', component: AdminDashboardComponent },
-          {
-            path: 'contest', children: [
-              { path: '', pathMatch: 'full', component: AdminContestListComponent },
-              { path: 'new', component: AdminContestCreatorComponent },
-              { path: ':contestId', component: AdminContestEditorComponent }
-            ]
-          },
-          {
-            path: 'problem', children: [
-              { path: '', pathMatch: 'full', component: AdminProblemListComponent },
-              { path: 'new', component: AdminProblemCreatorComponent },
-              { path: ':problemId', component: AdminProblemEditorComponent }
-            ]
-          }
-        ]
-      }
-    ]),
-    ApiAuthorizationModule,
-    NzLayoutModule,
-    NzMenuModule,
-    NzCardModule,
-    NzPageHeaderModule,
-    NzButtonModule,
-    NzIconModule,
-    NzFormModule,
-    NzInputModule,
-    NzSelectModule,
-    NzDatePickerModule,
-    NzCheckboxModule,
-    NzTableModule,
-    NzPopconfirmModule,
-    NzDividerModule
-  ],
+    imports: [
+        CommonModule,
+        BrowserModule,
+        BrowserAnimationsModule,
+        ReactiveFormsModule,
+        RouterModule.forChild([
+            {
+                path: 'admin', component: AdminComponent, canActivate: [AuthorizeGuard],
+                children: [
+                    { path: '', pathMatch: 'full', component: AdminDashboardComponent },
+                    {
+                        path: 'contest', children: [
+                            { path: '', pathMatch: 'full', component: AdminContestListComponent },
+                            { path: 'new', component: AdminContestCreatorComponent },
+                            { path: ':contestId', component: AdminContestEditorComponent }
+                        ]
+                    },
+                    {
+                        path: 'problem', children: [
+                            { path: '', pathMatch: 'full', component: AdminProblemListComponent },
+                            { path: 'new', component: AdminProblemCreatorComponent },
+                            {
+                                path: ':problemId', children: [
+                                    { path: '', pathMatch: 'full', component: AdminProblemEditorComponent },
+                                    { path: 'test-cases', component: AdminProblemTestCasesComponent }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]),
+        ApiAuthorizationModule,
+        NzLayoutModule,
+        NzMenuModule,
+        NzCardModule,
+        NzPageHeaderModule,
+        NzButtonModule,
+        NzIconModule,
+        NzFormModule,
+        NzInputModule,
+        NzSelectModule,
+        NzDatePickerModule,
+        NzCheckboxModule,
+        NzTableModule,
+        NzPopconfirmModule,
+        NzDividerModule,
+    ],
   declarations: [
     AdminComponent,
     AdminDashboardComponent,
@@ -88,7 +94,8 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
     AdminProblemListComponent,
     AdminProblemFormComponent,
     AdminProblemCreatorComponent,
-    AdminProblemEditorComponent
+    AdminProblemEditorComponent,
+    AdminProblemTestCasesComponent
   ],
   exports: [
     RouterModule

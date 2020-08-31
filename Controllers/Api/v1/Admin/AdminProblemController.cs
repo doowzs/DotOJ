@@ -107,5 +107,45 @@ namespace Judge1.Controllers.Api.v1.Admin
                 return NotFound(e.Message);
             }
         }
+
+        [HttpGet("{id:int}/test-cases")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> ViewProblemTestCases(int id)
+        {
+            try
+            {
+                return Ok(await _service.GetProblemTestCasesAsync(id));
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+        }
+
+
+        [HttpPost("{id:int}/test-cases")]
+        [Consumes("multipart/form-data")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> UpdateProblemTestCases(int id, [FromForm(Name = "zip-file")] IFormFile file)
+        {
+            try
+            {
+                return Ok(await _service.UpdateProblemTestCasesAsync(id, file));
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (ValidationException e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }

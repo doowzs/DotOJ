@@ -100,8 +100,7 @@ export class AdminProblemFormComponent implements OnInit, OnChanges {
       memoryLimit: data.memoryLimit,
       hasSpecialJudge: false,
       hasHacking: false,
-      sampleCases: sampleCases,
-      testCases: null
+      sampleCases: sampleCases
     });
   }
 }

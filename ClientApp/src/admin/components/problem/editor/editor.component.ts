@@ -20,7 +20,7 @@ export class AdminProblemEditorComponent implements OnInit {
     private service: AdminProblemService
   ) {
     this.edit = this.route.snapshot.queryParams.edit ?? false;
-    this.problemId = this.route.snapshot.params.problemId;
+    this.problemId = this.route.snapshot.parent.params.problemId;
   }
 
   ngOnInit() {

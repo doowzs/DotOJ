@@ -1,0 +1,40 @@
+﻿<h2>Test Cases of Problem <span *ngIf="problem">#{{ problem.id }}</span></h2>
+<div nz-row nzGutter="20">
+  <div nz-col nzSpan="18">
+    <input #zipFileInput type="file" accept="application/zip" (change)="selectZipFile($event)"/>
+    <button nz-button [nzType]="file ? 'default' : 'dashed'" (click)="zipFileInput.click()">
+      {{ file ? file.name : 'Select Zip File' }}
+    </button>
+  </div>
+  <div nz-col nzSpan="6">
+    <button nz-button nzType="primary" [disabled]="!file"
+            nz-popconfirm nzPopconfirmTitle="This will override all test cases. Continue?"
+            (nzOnConfirm)="updateTestCases()">
+      <ng-container *ngIf="!progress; else uploadProgress">
+        <i nz-icon nzType="upload"></i><span>Upload</span>
+      </ng-container>
+      <ng-template #uploadProgress>
+        {{ progress }}%
+      </ng-template>
+    </button>
+  </div>
+</div>
+<nz-divider></nz-divider>
+<div *ngIf="testCases">
+  <nz-table #testCasesTable [nzData]="testCases" [nzShowPagination]="false">
+    <thead>
+    <tr>
+      <th>#</th>
+      <th>Input</th>
+      <th>Output</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let testCase of testCasesTable.data; index as index">
+      <td>{{ index + 1 }}</td>
+      <td>{{ testCase.input }}</td>
+      <td>{{ testCase.output }}</td>
+    </tr>
+    </tbody>
+  </nz-table>
+</div>

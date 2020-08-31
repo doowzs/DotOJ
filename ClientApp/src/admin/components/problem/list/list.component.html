@@ -7,7 +7,7 @@
     <th>ID</th>
     <th>Contest</th>
     <th>Title</th>
-    <th>Action</th>
+    <th>Actions</th>
   </tr>
   </thead>
   <tbody>
@@ -17,6 +17,10 @@
     <td>{{ problem.title }}</td>
     <td>
       <button nz-button nzType="default" [routerLink]="['/admin/problem', problem.id]">View</button>
+      <button nz-button nzType="default" style="margin-left: 1rem;"
+              [routerLink]="['/admin/problem', problem.id, 'test-cases']">
+        Test Cases
+      </button>
     </td>
   </tr>
   </tbody>
