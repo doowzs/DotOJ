@@ -107,7 +107,8 @@ namespace Judge1
             services.AddRazorPages();
             
             services.AddOptions();
-            services.Configure<ApplicationConfig>(Configuration.GetSection("ApplicationConfig"));
+            services.Configure<ApplicationConfig>(Configuration.GetSection("Application"));
+            services.Configure<JudgingConfig>(Configuration.GetSection("Judging"));
 
             services.AddHttpClient(); // IHttpClientFactory
 
@@ -199,17 +200,17 @@ namespace Judge1
                 }
             }
 
-            if ((await userManager.FindByEmailAsync(Configuration["ApplicationConfig:AdminUser:Email"].ToUpper())) == null)
+            if ((await userManager.FindByEmailAsync(Configuration["Application:AdminUser:Email"].ToUpper())) == null)
             {
                 logger.LogInformation("Creating admin user.");
                 var adminUser = new ApplicationUser()
                 {
-                    Email = Configuration["ApplicationConfig:AdminUser:Email"],
-                    UserName = Configuration["ApplicationConfig:AdminUser:Email"],
-                    ContestantId = Configuration["ApplicationConfig:AdminUser:ContestantId"],
-                    ContestantName = Configuration["ApplicationConfig:AdminUser:ContestantName"]
+                    Email = Configuration["Application:AdminUser:Email"],
+                    UserName = Configuration["Application:AdminUser:Email"],
+                    ContestantId = Configuration["Application:AdminUser:ContestantId"],
+                    ContestantName = Configuration["Application:AdminUser:ContestantName"]
                 };
-                var password = Configuration["ApplicationConfig:AdminUser:Password"];
+                var password = Configuration["Application:AdminUser:Password"];
                 var result = await userManager.CreateAsync(adminUser, password);
                 if (result.Succeeded)
                 {
