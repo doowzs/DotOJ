@@ -115,7 +115,8 @@ namespace Judge1
             services.AddScoped<IContestService, ContestService>();
             services.AddScoped<IProblemService, ProblemService>();
             services.AddScoped<ISubmissionService, SubmissionService>();
-            
+
+            services.AddScoped<IAdminUserService, AdminUserService>();
             services.AddScoped<IAdminContestService, AdminContestService>();
             services.AddScoped<IAdminProblemService, AdminProblemService>();
 
