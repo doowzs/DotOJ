@@ -1,8 +1,11 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 import { UserEditDto } from '../../../../app/interfaces/user.interfaces';
 import { AdminUserService } from '../../../services/user.service';
+import { AuthorizeService } from '../../../../api-authorization/authorize.service';
 
 
 @Component({
@@ -14,14 +17,17 @@ export class AdminUserEditorComponent implements OnInit {
   public edit: boolean;
   public userId: string;
   public user: UserEditDto;
+  public sub: Observable<string>;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private service: AdminUserService
+    private service: AdminUserService,
+    private auth: AuthorizeService
   ) {
     this.edit = this.route.snapshot.queryParams.edit ?? false;
     this.userId = this.route.snapshot.params.userId;
+    this.sub = this.auth.getUser().pipe(map(u => u && u.sub));
   }
 
   ngOnInit() {

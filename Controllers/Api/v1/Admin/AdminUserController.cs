@@ -1,5 +1,7 @@
-﻿using System.Net.Mime;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Net.Mime;
 using System.Threading.Tasks;
+using IdentityServer4.Extensions;
 using Judge1.Exceptions;
 using Judge1.Models;
 using Judge1.Services.Admin;
@@ -47,6 +49,56 @@ namespace Judge1.Controllers.Api.v1.Admin
             catch (NotFoundException e)
             {
                 return NotFound(e.Message);
+            }
+        }
+
+        [HttpPut("{id:guid}")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<ApplicationUserEditDto>> UpdateUser(string id, ApplicationUserEditDto dto)
+        {
+            try
+            {
+                return Ok(await _service.UpdateUserAsync(id, dto));
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (ValidationException e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpDelete("{id:guid}")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<ApplicationUserEditDto>> DeleteUser(string id)
+        {
+            try
+            {
+                if (User.GetSubjectId() == id)
+                {
+                    throw new ValidationException("Cannot delete yourself.");
+                }
+
+                await _service.DeleteUserAsync(id);
+                return NoContent();
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (ValidationException e)
+            {
+                return BadRequest(e.Message);
             }
         }
     }
