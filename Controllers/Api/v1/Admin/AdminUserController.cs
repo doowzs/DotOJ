@@ -33,7 +33,7 @@ namespace Judge1.Controllers.Api.v1.Admin
             return Ok(await _service.GetPaginatedUserInfosAsync(pageIndex));
         }
 
-        [HttpGet]
+        [HttpGet("{id:guid}")]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]

@@ -13,11 +13,19 @@ export class AdminUserService {
 
   public getPaginatedList(pageIndex: number): Observable<PaginatedList<UserInfoDto>> {
     return this.http.get<PaginatedList<UserInfoDto>>('/admin/user', {
-      params: new HttpParams().append('pageIndex', pageIndex.toString());
+      params: new HttpParams().append('pageIndex', pageIndex.toString())
     });
   }
 
   public getSingle(id: string): Observable<UserEditDto> {
     return this.http.get<UserEditDto>('/admin/user/' + id);
+  }
+
+  public updateSingle(id: string, user: UserEditDto): Observable<UserEditDto> {
+    return this.http.put<UserEditDto>('/admin/user/' + id, user);
+  }
+
+  public deleteSingle(id: string): Observable<any> {
+    return this.http.delete('/admin/user/' + id);
   }
 }

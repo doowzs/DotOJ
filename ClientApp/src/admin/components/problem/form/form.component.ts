@@ -2,7 +2,6 @@
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 
 import { ProblemEditDto, TestCase } from '../../../../app/interfaces/problem.interfaces';
-import { sample } from 'rxjs/operators';
 
 @Component({
   selector: 'app-admin-problem-form',
