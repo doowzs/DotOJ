@@ -1,7 +1,6 @@
 ﻿import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { forkJoin, interval, Observable, Subject } from 'rxjs';
 import { map, take, takeUntil } from 'rxjs/operators';
-import * as moment from 'moment';
 
 import { VerdictInfo, VerdictStage } from '../../../consts/verdicts.consts';
 import { SubmissionService } from '../../../services/submission.service';
@@ -65,9 +64,17 @@ export class SubmissionTimelineComponent implements OnInit, OnDestroy {
     }
     forkJoin(observables).subscribe(updatedSubmissions => {
       for (let i = 0; i < updatedSubmissions.length; ++i) {
-        const submission = updatedSubmissions[i];
-        this.submissions.find(s => s.id === submission.id).verdict = submission.verdict;
+        const updated = updatedSubmissions[i];
+        const submission = this.submissions.find(s => s.id === updated.id);
+        submission.verdict = updated.verdict;
+        submission.failedOn = updated.failedOn;
+        submission.score = updated.score;
+        submission.judgedAt = updated.judgedAt;
       }
     });
+  }
+
+  public failedOnSample(submission: SubmissionInfoDto): boolean {
+    return (submission.verdict as VerdictInfo).stage === VerdictStage.REJECTED && submission.failedOn === 0;
   }
 }
