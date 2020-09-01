@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.IO;
 using System.Text;
 using Newtonsoft.Json;
 
@@ -42,33 +43,55 @@ namespace Judge1.Models
     }
 
     [NotMapped]
-    public class RunnerOptions
+    public class RunnerOptionsBase
     {
         [JsonProperty("source_code")] public string SourceCode { get; set; }
         [JsonProperty("language_id")] public int LanguageId { get; set; }
         [JsonProperty("compiler_options")] public string CompilerOptions { get; set; }
-        [JsonProperty("stdin")] public string Stdin { get; set; }
-        [JsonProperty("expected_output")] public string ExpectedOutput { get; set; }
         [JsonProperty("cpu_time_limit")] public float CpuTimeLimit { get; set; }
         [JsonProperty("memory_limit")] public float MemoryLimit { get; set; }
 
-        public RunnerOptions(Submission submission, string input, string output)
+        public RunnerOptionsBase(Submission submission)
         {
             if (submission.Program is null)
             {
                 throw new NullReferenceException("Problem of submission is not loaded.");
             }
-            
+
             SourceCode = submission.Program.Code;
             SourceCode = Convert.ToBase64String(Encoding.UTF8.GetBytes(submission.Program.Code));
             LanguageId = RunnerLanguageOptions
                 .CompilerOptionsDict[submission.Program.Language.GetValueOrDefault()].languageId;
             CompilerOptions = RunnerLanguageOptions
                 .CompilerOptionsDict[submission.Program.Language.GetValueOrDefault()].compilerOptions;
-            Stdin = Convert.ToBase64String(Encoding.UTF8.GetBytes(input));
-            ExpectedOutput = Convert.ToBase64String(Encoding.UTF8.GetBytes(output));
             CpuTimeLimit = (float) submission.Problem.TimeLimit / 1000;
             MemoryLimit = (float) submission.Problem.MemoryLimit;
+        }
+    }
+
+    [NotMapped]
+    public class RunnerOptionsInline : RunnerOptionsBase
+    {
+        [JsonProperty("stdin")] public string Stdin { get; set; }
+        [JsonProperty("expected_output")] public string ExpectedOutput { get; set; }
+
+        public RunnerOptionsInline(Submission submission, string input, string output) : base(submission)
+        {
+            Stdin = input;
+            ExpectedOutput = output;
+        }
+    }
+
+    [NotMapped]
+    public class RunnerOptionsFile : RunnerOptionsBase
+    {
+        [JsonProperty("stdin")] public FileStream Stdin { get; set; }
+        [JsonProperty("expected_output")] public FileStream ExpectedOutput { get; set; }
+
+        public RunnerOptionsFile(Submission submission, string input, string output) : base(submission)
+        {
+            Stdin = new FileStream(input, FileMode.Open);
+            ExpectedOutput = new FileStream(output, FileMode.Open);
         }
     }
 

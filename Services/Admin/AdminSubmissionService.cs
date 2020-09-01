@@ -35,19 +35,21 @@ namespace Judge1.Services.Admin
 
         private async Task EnsureSubmissionExists(int id)
         {
-            var submission = _context.Submissions.FindAsync(id);
+            var submission = await _context.Submissions.FindAsync(id);
             if (submission == null)
             {
                 throw new NotFoundException();
             }
         }
 
-        private async Task ValidateSubmissionEditDto(SubmissionEditDto dto)
+        private Task ValidateSubmissionEditDto(SubmissionEditDto dto)
         {
             if (!Enum.IsDefined(typeof(Verdict), dto.Verdict.GetValueOrDefault()))
             {
                 throw new ValidationException("Invalid verdict.");
             }
+
+            return Task.CompletedTask;
         }
 
         public async Task<PaginatedList<SubmissionInfoDto>> GetPaginatedSubmissionInfosAsync

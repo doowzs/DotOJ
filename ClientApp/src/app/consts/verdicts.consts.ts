@@ -15,6 +15,10 @@ export interface VerdictInfo {
 
 export const Verdicts: VerdictInfo[] = [
   {
+    code: -2, name: 'Voided', showCase: false, stage: VerdictStage.ERROR,
+    color: 'default', explain: 'A newer submission has voided this one.'
+  },
+  {
     code: -1, name: 'Service Failed', showCase: false, stage: VerdictStage.ERROR,
     color: 'volcano', explain: 'An error occurred in the frontend judging service.'
   },
@@ -23,8 +27,8 @@ export const Verdicts: VerdictInfo[] = [
     color: 'blue', explain: 'Your code is submitted and is waiting to be processed.'
   },
   {
-    code: 1, name: 'In Queue', showCase: false, stage: VerdictStage.RUNNING,
-    color: 'blue', explain: 'Your code is waiting in queue to be processed by the judging service.'
+    code: 1, name: 'Submitted', showCase: false, stage: VerdictStage.RUNNING,
+    color: 'green', explain: 'Your code is submitted and will be processed after contest ends.'
   },
   {
     code: 2, name: 'Running', showCase: true, stage: VerdictStage.RUNNING,

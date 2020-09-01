@@ -11,7 +11,7 @@ namespace Judge1.Models
     {
         public int ProblemId { get; set; }
         public int Penalties { get; set; }
-        public DateTime AcceptedAt { get; set; }
+        public DateTime? AcceptedAt { get; set; }
         public int Score { get; set; }
     }
     

@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Hangfire;
 using IdentityServer4.Extensions;
 using Judge1.Data;
 using Judge1.Exceptions;
+using Judge1.Judges;
 using Judge1.Models;
-using Judge1.Runners;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Judge1.Services
@@ -33,16 +32,16 @@ namespace Judge1.Services
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _manager;
         private readonly IHttpContextAccessor _accessor;
-        private readonly ISubmissionRunner _runner;
+        private readonly IContestJudge _judge;
         private readonly ILogger<SubmissionService> _logger;
 
         public SubmissionService(ApplicationDbContext context, UserManager<ApplicationUser> manager,
-            IHttpContextAccessor accessor, ISubmissionRunner runner, ILogger<SubmissionService> logger)
+            IHttpContextAccessor accessor, IContestJudge judge, ILogger<SubmissionService> logger)
         {
             _context = context;
             _manager = manager;
             _accessor = accessor;
-            _runner = runner;
+            _judge = judge;
             _logger = logger;
         }
 
@@ -163,7 +162,7 @@ namespace Judge1.Services
             await _context.Submissions.AddAsync(submission);
             await _context.SaveChangesAsync();
 
-            _runner.RunInBackground(submission.Id);
+            BackgroundJob.Enqueue(() => _judge.JudgeSubmission(submission.Id));
 
             return new SubmissionInfoDto(submission);
         }
