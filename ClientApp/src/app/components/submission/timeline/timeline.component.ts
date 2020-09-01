@@ -16,18 +16,12 @@ import { AuthorizeService } from '../../../../api-authorization/authorize.servic
 })
 export class SubmissionTimelineComponent implements OnInit, OnDestroy {
   @Input() public problemId: number;
-  @Input() public contestBeginTime: moment.Moment;
-  @Input() public contestEndTime: moment.Moment;
 
   private destroy$ = new Subject();
 
   public userId: Observable<string>;
   public list: PaginatedList<SubmissionInfoDto>;
-
-  public hasSubmissions = false;
-  public pendingSubmissions: SubmissionInfoDto[] = [];
-  public practiceSubmissions: SubmissionInfoDto[] = [];
-  public contestSubmissions: SubmissionInfoDto[] = [];
+  public submissions: SubmissionInfoDto[] = [];
 
   constructor(
     private auth: AuthorizeService,
@@ -40,18 +34,18 @@ export class SubmissionTimelineComponent implements OnInit, OnDestroy {
     interval(2000)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
-        if (this.pendingSubmissions.length) {
+        if (this.submissions.filter(s => (s.verdict as VerdictInfo).stage === VerdictStage.RUNNING).length > 0) {
           this.updatePendingSubmissions();
         }
       });
     this.service.newSubmission
       .pipe(takeUntil(this.destroy$))
-      .subscribe(submission => this.addNewSubmission(submission));
+      .subscribe(submission => this.submissions.unshift(submission));
     this.userId.pipe(take(1)).subscribe(userId => {
       this.service.getPaginatedList(null, this.problemId, userId, null, 1)
         .subscribe(list => {
           for (let i = 0; i < list.items.length; ++i) {
-            this.addNewSubmission(list.items[i]);
+            this.submissions.unshift(list.items[i]);
           }
         });
     });
@@ -64,31 +58,16 @@ export class SubmissionTimelineComponent implements OnInit, OnDestroy {
 
   private updatePendingSubmissions(): void {
     const observables: Observable<SubmissionInfoDto>[] = [];
-    for (let i = 0; i < this.pendingSubmissions.length; ++i) {
-      const submission = this.pendingSubmissions[i];
+    const pendingSubmissions = this.submissions.filter(s => (s.verdict as VerdictInfo).stage === VerdictStage.RUNNING);
+    for (let i = 0; i < pendingSubmissions.length; ++i) {
+      const submission = pendingSubmissions[i];
       observables.push(this.service.getSingleAsInfo(submission.id));
     }
     forkJoin(observables).subscribe(updatedSubmissions => {
       for (let i = 0; i < updatedSubmissions.length; ++i) {
         const submission = updatedSubmissions[i];
-        if ((submission.verdict as VerdictInfo).stage !== VerdictStage.RUNNING) {
-          this.addNewSubmission(submission);
-        }
+        this.submissions.find(s => s.id === submission.id).verdict = submission.verdict;
       }
-      this.pendingSubmissions = updatedSubmissions.filter(s => (s.verdict as VerdictInfo).stage === VerdictStage.RUNNING);
     });
-  }
-
-  private addNewSubmission(submission: SubmissionInfoDto): void {
-    this.hasSubmissions = true;
-    if ((submission.verdict as VerdictInfo).stage === VerdictStage.RUNNING) {
-      this.pendingSubmissions.unshift(submission);
-    } else {
-      if (submission.judgedAt <= this.contestEndTime) {
-        this.contestSubmissions.unshift(submission);
-      } else {
-        this.practiceSubmissions.unshift(submission);
-      }
-    }
   }
 }

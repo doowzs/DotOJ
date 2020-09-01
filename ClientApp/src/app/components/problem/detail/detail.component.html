@@ -1,14 +1,11 @@
-﻿<ng-container *ngIf="problem && contest">
+﻿<ng-container *ngIf="problem">
   <h2>{{ problem.title }}</h2>
   <p>Time Limit: {{ problem.timeLimit }} ms</p>
   <p>Memory Limit: {{ problem.memoryLimit / 1024 }} MiB</p>
 
   <nz-divider nzText="Submissions" nzOrientation="left"></nz-divider>
   <app-submission-creator [problemId]="problemId"></app-submission-creator>
-  <app-submission-timeline [problemId]="problemId"
-                           [contestBeginTime]="contest.beginTime"
-                           [contestEndTime]="contest.endTime"
-  ></app-submission-timeline>
+  <app-submission-timeline [problemId]="problemId"></app-submission-timeline>
 
   <nz-divider nzText="Description" nzOrientation="left"></nz-divider>
   <markdown [data]="problem.description" katex></markdown>
