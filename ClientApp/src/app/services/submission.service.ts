@@ -85,7 +85,7 @@ export class SubmissionService {
       problemId: problemId,
       program: {
         language: language,
-        code: code
+        code: btoa(code)
       }
     }).pipe(map(this.mapInfoFields), tap(data => this.newSubmission.next(data)));
   }

@@ -45,13 +45,15 @@ namespace Judge1.Judges.Submission
                 var outputFile =
                     Path.Combine(_options.Value.DataPath, submission.ProblemId.ToString(), testCase.Output);
 
-                await using (var inputStream = new FileStream(inputFile, FileMode.Open))
-                await using (var outputStream = new FileStream(outputFile, FileMode.Open))
-                using (var inputReader = new StreamReader(inputStream))
-                using (var outputReader = new StreamReader(outputStream))
+                await using (var inputFileStream = new FileStream(inputFile, FileMode.Open))
+                await using (var outputFileStream = new FileStream(outputFile, FileMode.Open))
+                await using (var inputMemoryStream = new MemoryStream())
+                await using (var outputMemoryStream = new MemoryStream())
                 {
-                    var input = await inputReader.ReadToEndAsync();
-                    var output = await outputReader.ReadToEndAsync();
+                    await inputFileStream.CopyToAsync(inputMemoryStream);
+                    await outputFileStream.CopyToAsync(outputMemoryStream);
+                    var input = Convert.ToBase64String(inputMemoryStream.GetBuffer());
+                    var output = Convert.ToBase64String(outputMemoryStream.GetBuffer());
                     options = new RunnerOptions(submission, input, output);
                 }
             }
@@ -62,7 +64,8 @@ namespace Judge1.Judges.Submission
 
             using var stringContent = new StringContent(JsonConvert.SerializeObject(options),
                 Encoding.UTF8, MediaTypeNames.Application.Json);
-            using var response = await client.PostAsync(_instance.Endpoint + "/submissions", stringContent);
+            using var response =
+                await client.PostAsync(_instance.Endpoint + "/submissions?base64_encoded=true", stringContent);
             if (!response.IsSuccessStatusCode)
             {
                 throw new Exception($"Create API call failed with code {response.StatusCode}.");
@@ -162,7 +165,7 @@ namespace Judge1.Judges.Submission
                 client.DefaultRequestHeaders.Add("X-Auth-Token", _instance.AuthToken);
 
                 using var response = await client.GetAsync(_instance.Endpoint + "/submissions/batch" +
-                                                           "?tokens=" + string.Join(",", tokens) +
+                                                           "?base64_encoded=true&tokens=" + string.Join(",", tokens) +
                                                            "&fields=token,time,memory,compile_output,message,status_id");
                 if (!response.IsSuccessStatusCode)
                 {
