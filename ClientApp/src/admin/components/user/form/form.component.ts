@@ -26,7 +26,7 @@ export class AdminUserFormComponent implements OnInit, OnChanges {
       isAdministrator: [false, [Validators.required]],
       isUserManager: [false, [Validators.required]],
       isContestManager: [false, [Validators.required]],
-      isJudgeResultManager: [false, [Validators.required]]
+      isSubmissionManager: [false, [Validators.required]]
     });
   }
 
@@ -41,7 +41,7 @@ export class AdminUserFormComponent implements OnInit, OnChanges {
         isAdministrator: this.user.isAdministrator,
         isUserManager: this.user.isUserManager,
         isContestManager: this.user.isContestManager,
-        isJudgeResultManager: this.user.isJudgeResultManager
+        isSubmissionManager: this.user.isSubmissionManager
       });
     }
     if (this.disabled) {
@@ -70,7 +70,7 @@ export class AdminUserFormComponent implements OnInit, OnChanges {
       isAdministrator: data.isAdministrator,
       isUserManager: data.isUserManager,
       isContestManager: data.isContestManager,
-      isJudgeResultManager: data.isJudgeResultManager
+      isSubmissionManager: data.isSubmissionManager
     });
   }
 }

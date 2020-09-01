@@ -11,14 +11,14 @@ namespace Judge1.Models
         public const string Administrator = "Administrator";
         public const string UserManager = "UserManager";
         public const string ContestManager = "ContestManager";
-        public const string JudgeResultManager = "JudgeResultManager";
+        public const string SubmissionManager = "SubmissionManager";
 
         public static IEnumerable<string> RoleList = new List<string>()
         {
             Administrator,
             UserManager,
             ContestManager,
-            JudgeResultManager
+            SubmissionManager
         };
     }
 
@@ -62,7 +62,7 @@ namespace Judge1.Models
         [Required] public bool? IsAdministrator { get; set; }
         [Required] public bool? IsUserManager { get; set; }
         [Required] public bool? IsContestManager { get; set; }
-        [Required] public bool? IsJudgeResultManager { get; set; }
+        [Required] public bool? IsSubmissionManager { get; set; }
 
         public ApplicationUserEditDto()
         {
@@ -78,7 +78,7 @@ namespace Judge1.Models
             IsAdministrator = roles.Contains(ApplicationRoles.Administrator);
             IsUserManager = roles.Contains(ApplicationRoles.UserManager);
             IsContestManager = roles.Contains(ApplicationRoles.ContestManager);
-            IsJudgeResultManager = roles.Contains(ApplicationRoles.JudgeResultManager);
+            IsSubmissionManager = roles.Contains(ApplicationRoles.SubmissionManager);
         }
     }
 }

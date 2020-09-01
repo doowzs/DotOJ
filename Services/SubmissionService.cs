@@ -50,7 +50,7 @@ namespace Judge1.Services
         {
             var user = await _manager.GetUserAsync(_accessor.HttpContext.User);
             if (await _manager.IsInRoleAsync(user, ApplicationRoles.Administrator) ||
-                await _manager.IsInRoleAsync(user, ApplicationRoles.JudgeResultManager))
+                await _manager.IsInRoleAsync(user, ApplicationRoles.SubmissionManager))
             {
                 return;
             }

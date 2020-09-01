@@ -97,10 +97,10 @@ namespace Judge1
                     {
                         policy.RequireRole(ApplicationRoles.Administrator, ApplicationRoles.ContestManager);
                     });
-                options.AddPolicy("ManageJudgeResults",
+                options.AddPolicy("ManageSubmissions",
                     policy =>
                     {
-                        policy.RequireRole(ApplicationRoles.Administrator, ApplicationRoles.JudgeResultManager);
+                        policy.RequireRole(ApplicationRoles.Administrator, ApplicationRoles.SubmissionManager);
                     });
             });
             services.AddControllersWithViews().AddNewtonsoftJson();
@@ -119,6 +119,7 @@ namespace Judge1
             services.AddScoped<IAdminUserService, AdminUserService>();
             services.AddScoped<IAdminContestService, AdminContestService>();
             services.AddScoped<IAdminProblemService, AdminProblemService>();
+            services.AddScoped<IAdminSubmissionService, AdminSubmissionService>();
 
             services.AddScoped<ISubmissionRunner, SubmissionRunner>();
 

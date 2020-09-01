@@ -15,5 +15,5 @@ export interface UserEditDto {
   isAdministrator: boolean;
   isUserManager: boolean;
   isContestManager: boolean;
-  isJudgeResultManager: boolean;
+  isSubmissionManager: boolean;
 }

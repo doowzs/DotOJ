@@ -79,7 +79,7 @@ namespace Judge1.Services.Admin
                 new KeyValuePair<bool, string>
                     (dto.IsContestManager.GetValueOrDefault(), ApplicationRoles.ContestManager),
                 new KeyValuePair<bool, string>
-                    (dto.IsJudgeResultManager.GetValueOrDefault(), ApplicationRoles.JudgeResultManager)
+                    (dto.IsSubmissionManager.GetValueOrDefault(), ApplicationRoles.SubmissionManager)
             };
             foreach (var pair in pairs)
             {
