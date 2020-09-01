@@ -8,6 +8,8 @@ namespace Judge1.Models
     {
         public string Name { get; set; }
         public string Endpoint { get; set; }
+        public string AuthUser { get; set; }
+        public string AuthToken { get; set; }
     }
 
     [NotMapped]

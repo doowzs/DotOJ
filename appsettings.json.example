@@ -20,7 +20,9 @@
     "Instances": [
       {
         "Name": "local",
-        "Endpoint": "http://judge0"
+        "Endpoint": "http://judge0",
+        "AuthUser": "judge1",
+        "AuthToken": "judge1"
       }
     ]
   },
