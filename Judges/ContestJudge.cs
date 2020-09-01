@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using Judge1.Data;
 using Judge1.Judges.Submission;
 using Judge1.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Judge1.Judges
@@ -105,46 +107,72 @@ namespace Judge1.Judges
                         throw new NotImplementedException();
                 }
 
+                #region Update judge result of submission
+
                 var result = await judge.Judge(submission, problem);
                 submission.Verdict = result.Verdict;
                 submission.FailedOn = result.FailedOn;
                 submission.Score = result.Score;
                 submission.JudgedAt = DateTime.Now.ToUniversalTime();
                 _context.Submissions.Update(submission);
+                await _context.SaveChangesAsync();
 
-                var accepted = result.Verdict == Verdict.Accepted;
+                #endregion
+
+                #region Rebuild statistics of registration
+
                 var registration = await _context.Registrations.FindAsync(user.Id, contest.Id);
-                var statistic = registration.Statistics.Find(s => s.ProblemId == problem.Id);
-                if (statistic == null)
                 {
-                    statistic = new ProblemStatistics()
+                    var statistics = new List<ProblemStatistics>();
+
+                    var problemIds = await _context.Problems
+                        .Where(p => p.ContestId == contest.Id)
+                        .Select(p => p.Id)
+                        .ToListAsync();
+                    foreach (var problemId in problemIds)
                     {
-                        ProblemId = problem.Id,
-                        Penalties = (accepted || result.FailedOn <= 0) ? 0 : 1,
-                        AcceptedAt = accepted ? DateTime.Now.ToUniversalTime() : (DateTime?) null,
-                        Score = result.Score
-                    };
-                    registration.Statistics.Add(statistic);
-                }
-                else
-                {
-                    if (!statistic.AcceptedAt.HasValue)
-                    {
-                        if (accepted)
+                        DateTime? acceptedAt = null;
+                        int penalties = 0, score = 0;
+
+                        var firstSolved = await _context.Submissions
+                            .OrderBy(s => s.Id)
+                            .Where(s => s.ProblemId == problemId && s.Verdict == Verdict.Accepted)
+                            .SingleOrDefaultAsync();
+                        if (firstSolved != null)
                         {
-                            statistic.AcceptedAt = DateTime.Now.ToUniversalTime();
+                            acceptedAt = firstSolved.CreatedAt;
+                            penalties = await _context.Submissions
+                                .Where(s => s.ProblemId == problemId && s.Verdict > Verdict.Accepted &&
+                                            s.Id < firstSolved.Id && s.FailedOn > 0)
+                                .CountAsync();
                         }
-                        else if (result.FailedOn > 0)
+                        else
                         {
-                            statistic.Penalties++;
+                            penalties = await _context.Submissions
+                                .Where(s => s.ProblemId == problemId && s.Verdict > Verdict.Accepted && s.FailedOn > 0)
+                                .CountAsync();
                         }
+
+                        score = await _context.Submissions
+                            .Where(s => s.ProblemId == problemId)
+                            .MaxAsync(s => s.Score);
+
+                        var problemStatistics = new ProblemStatistics
+                        {
+                            ProblemId = problemId,
+                            AcceptedAt = acceptedAt,
+                            Penalties = penalties,
+                            Score = score
+                        };
+                        statistics.Add(problemStatistics);
                     }
 
-                    statistic.Score = Math.Max(statistic.Score, result.Score);
+                    registration.Statistics = statistics;
                 }
-
                 _context.Registrations.Update(registration);
                 await _context.SaveChangesAsync();
+
+                #endregion
             }
             catch (Exception e)
             {
