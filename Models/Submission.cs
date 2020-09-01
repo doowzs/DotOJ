@@ -98,6 +98,7 @@ namespace Judge1.Models
         public DateTime JudgedAt { get; set; }
     }
 
+    [NotMapped]
     public class SubmissionInfoDto : DtoWithTimestamps
     {
         public int Id { get; }
@@ -124,6 +125,7 @@ namespace Judge1.Models
         }
     }
 
+    [NotMapped]
     public class SubmissionViewDto : DtoWithTimestamps
     {
         public int Id { get; }
@@ -157,6 +159,29 @@ namespace Judge1.Models
 
         public SubmissionCreateDto()
         {
+        }
+    }
+
+    [NotMapped]
+    public class SubmissionEditDto
+    {
+        public int Id { get; }
+        public string UserId { get; }
+        public int ProblemId { get; }
+        public Program Program { get; }
+        [Required] public Verdict Verdict { get; set; }
+
+        public SubmissionEditDto()
+        {
+        }
+
+        public SubmissionEditDto(Submission submission)
+        {
+            Id = submission.Id;
+            UserId = submission.UserId;
+            ProblemId = submission.ProblemId;
+            Program = submission.Program;
+            Verdict = submission.Verdict;
         }
     }
 }
