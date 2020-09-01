@@ -58,4 +58,18 @@ export class AdminContestRegistrationsComponent implements OnInit {
   public isUserRegistered(userId: string): boolean {
     return !!this.registrations.find(r => r.userId === userId);
   }
+
+  public addRegistration(userId: string) {
+    this.contestService.addRegistrations(this.contest.id, [userId])
+      .subscribe(registrations => {
+        this.registrations = this.registrations.concat(registrations);
+      });
+  }
+
+  public removeRegistration(userId: string) {
+    this.contestService.removeRegistrations(this.contest.id, [userId])
+      .subscribe(() => {
+        this.registrations.splice(this.registrations.findIndex(r => r.userId === userId), 1);
+      });
+  }
 }

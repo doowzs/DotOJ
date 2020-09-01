@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using Judge1.Exceptions;
@@ -99,6 +100,58 @@ namespace Judge1.Controllers.Api.v1.Admin
             try
             {
                 await _service.DeleteContestAsync(id);
+                return NoContent();
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+        }
+
+        [HttpGet("{id:int}/registrations")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<RegistrationInfoDto>>> ListRegistrations(int id)
+        {
+            try
+            {
+                return Ok(await _service.GetRegistrationsAsync(id));
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+        }
+
+        [HttpPost("{id:int}/registrations")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<RegistrationInfoDto>>> AddRegistrations(int id, List<string> userIds)
+        {
+            try
+            {
+                return Ok(await _service.AddRegistrationsAsync(id, userIds));
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+        }
+
+        [HttpDelete("{id:int}/registrations")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> RemoveRegistrations(int id, [FromQuery] List<string> userIds)
+        {
+            try
+            {
+                await _service.RemoveRegistrationsAsync(id, userIds);
                 return NoContent();
             }
             catch (NotFoundException e)

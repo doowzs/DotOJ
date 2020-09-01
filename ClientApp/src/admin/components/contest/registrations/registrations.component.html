@@ -19,12 +19,13 @@
     <td>{{ user.contestantName }}</td>
     <td>{{ isUserRegistered(user.id) ? 'Yes' : '' }}</td>
     <td>
-      <button nz-button nzType="default" *ngIf="isUserRegistered(user.id); else unregister">
+      <button *ngIf="!isUserRegistered(user.id); else unregister"
+              nz-button nzType="link" (click)="addRegistration(user.id)">
         <i nz-icon nzType="plus"></i><span>Add</span>
       </button>
       <ng-template #unregister>
-        <button nz-button nzType="link" nzDanger>
-          <i nz-icon nzType="cross"></i><span>Remove</span>
+        <button nz-button nzType="link" nzDanger (click)="removeRegistration(user.id)">
+          <i nz-icon nzType="close"></i><span>Remove</span>
         </button>
       </ng-template>
     </td>

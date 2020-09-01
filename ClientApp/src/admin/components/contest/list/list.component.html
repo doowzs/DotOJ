@@ -30,6 +30,10 @@
     </td>
     <td>
       <button nz-button nzType="default" [routerLink]="['/admin/contest', contest.id]">View</button>
+      <button nz-button nzType="default" style="margin-left: 1rem;"
+              [routerLink]="['/admin/contest', contest.id, 'registrations']">
+        Registrations
+      </button>
     </td>
   </tr>
   </tbody>
