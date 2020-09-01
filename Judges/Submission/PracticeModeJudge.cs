@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
+using IdentityServer4.Extensions;
 using Judge1.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -21,56 +21,59 @@ namespace Judge1.Judges.Submission
         private readonly IHttpClientFactory _factory;
         private readonly IOptions<JudgingConfig> _options;
         private readonly ILogger<PracticeModeJudge> _logger;
-        private readonly string _endpoint;
+        private readonly JudgeInstance _instance;
 
         public PracticeModeJudge(IServiceProvider provider)
         {
             _factory = provider.GetRequiredService<IHttpClientFactory>();
             _options = provider.GetRequiredService<IOptions<JudgingConfig>>();
             _logger = provider.GetRequiredService<ILogger<PracticeModeJudge>>();
-            _endpoint = _options.Value.Instances[0].Endpoint + "/submissions";
+            _instance = _options.Value.Instances[0];
         }
 
         private async Task<RunInfo> CreateRun(Models.Submission submission, int index, TestCase testCase, bool inline)
         {
-            using (var client = _factory.CreateClient())
-            await using (var buffer = new MemoryStream())
+            RunnerOptions options;
+            if (inline)
             {
-                using (var sw = new StreamWriter(buffer, Encoding.UTF8, 1000, true))
-                using (var jtw = new JsonTextWriter(sw))
-                {
-                    var serializer = new JsonSerializer();
-                    if (inline)
-                    {
-                        var options = new RunnerOptionsInline(submission, testCase.Input, testCase.Output);
-                        serializer.Serialize(jtw, options);
-                    }
-                    else
-                    {
-                        var options = new RunnerOptionsFile(submission,
-                            Path.Combine(_options.Value.DataPath, submission.ProblemId.ToString(), testCase.Input),
-                            Path.Combine(_options.Value.DataPath, submission.ProblemId.ToString(), testCase.Output));
-                        serializer.Serialize(jtw, options);
-                    }
+                options = new RunnerOptions(submission, testCase.Input, testCase.Output);
+            }
+            else
+            {
+                var inputFile =
+                    Path.Combine(_options.Value.DataPath, submission.ProblemId.ToString(), testCase.Input);
+                var outputFile =
+                    Path.Combine(_options.Value.DataPath, submission.ProblemId.ToString(), testCase.Output);
 
-                    await jtw.FlushAsync();
-                }
-
-                using (var request = new HttpRequestMessage(HttpMethod.Post, _endpoint))
-                using (var content = new StreamContent(buffer))
+                await using (var inputStream = new FileStream(inputFile, FileMode.Open))
+                await using (var outputStream = new FileStream(outputFile, FileMode.Open))
+                using (var inputReader = new StreamReader(inputStream))
+                using (var outputReader = new StreamReader(outputStream))
                 {
-                    content.Headers.ContentType = new MediaTypeHeaderValue(MediaTypeNames.Application.Json);
-                    request.Content = content;
-                    var response = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead);
-                    _logger.LogInformation(await response.Content.ReadAsStringAsync());
+                    var input = await inputReader.ReadToEndAsync();
+                    var output = await outputReader.ReadToEndAsync();
+                    options = new RunnerOptions(submission, input, output);
                 }
             }
 
+            using var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Add("X-Auth-User", _instance.AuthUser);
+            client.DefaultRequestHeaders.Add("X-Auth-Token", _instance.AuthToken);
+
+            using var stringContent = new StringContent(JsonConvert.SerializeObject(options),
+                Encoding.UTF8, MediaTypeNames.Application.Json);
+            using var response = await client.PostAsync(_instance.Endpoint + "/submissions", stringContent);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Create API call failed with code {response.StatusCode}.");
+            }
+
+            var token = JsonConvert.DeserializeObject<RunnerToken>(await response.Content.ReadAsStringAsync());
             return new RunInfo
             {
                 Index = index,
-                Token = "",
-                Verdict = Verdict.Accepted
+                Token = token.Token,
+                Verdict = Verdict.Running
             };
         }
 
@@ -94,12 +97,102 @@ namespace Judge1.Judges.Submission
 
         private async Task<JudgeResult> PollRuns(List<RunInfo> runInfos)
         {
-            await Task.Delay(1);
-            return new JudgeResult
+            var tokens = new List<string>();
+            foreach (var runInfo in runInfos)
             {
-                Verdict = Verdict.Accepted,
-                FailedOn = -1, Score = 100
-            };
+                if (runInfo.Verdict == Verdict.Running)
+                {
+                    tokens.Add(runInfo.Token);
+                }
+            }
+
+            if (tokens.IsNullOrEmpty())
+            {
+                var verdict = Verdict.Accepted;
+                int failedOn = -1, count = 0, total = 0;
+                float time = 0.0f, memory = 0.0f;
+
+                foreach (var runInfo in runInfos)
+                {
+                    if (runInfo.Verdict == Verdict.CompilationError || runInfo.Verdict == Verdict.InternalError)
+                    {
+                        return new JudgeResult
+                        {
+                            Verdict = Verdict.CompilationError,
+                            FailedOn = 0,
+                            Message = runInfo.Message,
+                            Time = 0, Memory = 0, Score = 0
+                        };
+                    }
+
+                    if (runInfo.Index > 0)
+                    {
+                        if (runInfo.Verdict == Verdict.Accepted)
+                        {
+                            ++count;
+                        }
+
+                        ++total;
+                    }
+
+                    if (runInfo.Verdict != Verdict.Accepted && failedOn == -1)
+                    {
+                        verdict = runInfo.Verdict;
+                        failedOn = runInfo.Index;
+                    }
+
+                    time = Math.Max(time, runInfo.Time);
+                    memory = Math.Max(time, runInfo.Memory);
+                }
+
+                return new JudgeResult
+                {
+                    Verdict = verdict,
+                    Time = (int) (time * 1000),
+                    Memory = (int) memory,
+                    Message = "",
+                    FailedOn = failedOn,
+                    Score = total == 0 ? 100 : count * 100 / total
+                };
+            }
+            else
+            {
+                using var client = _factory.CreateClient();
+                client.DefaultRequestHeaders.Add("X-Auth-User", _instance.AuthUser);
+                client.DefaultRequestHeaders.Add("X-Auth-Token", _instance.AuthToken);
+
+                using var response = await client.GetAsync(_instance.Endpoint + "/submissions/batch" +
+                                                           "?tokens=" + string.Join(",", tokens) +
+                                                           "&fields=token,time,memory,compile_output,message,status_id");
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"Polling API call failed with code {response.StatusCode}.");
+                }
+
+                _logger.LogInformation(await response.Content.ReadAsStringAsync());
+                var runnerResponse =
+                    JsonConvert.DeserializeObject<RunnerResponse>(await response.Content.ReadAsStringAsync());
+                foreach (var status in runnerResponse.Statuses)
+                {
+                    var runInfo = runInfos.Find(r => r.Token == status.Token);
+                    if (runInfo == null)
+                    {
+                        throw new Exception("RunInfo not found in runInfos.");
+                    }
+
+                    if (status.Verdict > Verdict.Running)
+                    {
+                        runInfo.Verdict = status.Verdict;
+                        runInfo.Time = float.Parse(status.Time);
+                        runInfo.Memory = status.Memory.GetValueOrDefault();
+                        runInfo.Message = status.Verdict == Verdict.InternalError
+                            ? status.Message
+                            : status.CompileOutput;
+                    }
+                }
+
+                return null;
+            }
         }
 
         public async Task<JudgeResult> Judge(Models.Submission submission, Problem problem)

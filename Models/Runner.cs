@@ -43,15 +43,17 @@ namespace Judge1.Models
     }
 
     [NotMapped]
-    public class RunnerOptionsBase
+    public class RunnerOptions
     {
         [JsonProperty("source_code")] public string SourceCode { get; set; }
         [JsonProperty("language_id")] public int LanguageId { get; set; }
         [JsonProperty("compiler_options")] public string CompilerOptions { get; set; }
+        [JsonProperty("stdin")] public string Stdin { get; set; }
+        [JsonProperty("expected_output")] public string ExpectedOutput { get; set; }
         [JsonProperty("cpu_time_limit")] public float CpuTimeLimit { get; set; }
         [JsonProperty("memory_limit")] public float MemoryLimit { get; set; }
 
-        public RunnerOptionsBase(Submission submission)
+        public RunnerOptions(Submission submission, string input, string output)
         {
             if (submission.Program is null)
             {
@@ -59,58 +61,37 @@ namespace Judge1.Models
             }
 
             SourceCode = submission.Program.Code;
-            SourceCode = Convert.ToBase64String(Encoding.UTF8.GetBytes(submission.Program.Code));
             LanguageId = RunnerLanguageOptions
                 .CompilerOptionsDict[submission.Program.Language.GetValueOrDefault()].languageId;
             CompilerOptions = RunnerLanguageOptions
                 .CompilerOptionsDict[submission.Program.Language.GetValueOrDefault()].compilerOptions;
+            Stdin = input;
+            ExpectedOutput = output;
             CpuTimeLimit = (float) submission.Problem.TimeLimit / 1000;
             MemoryLimit = (float) submission.Problem.MemoryLimit;
         }
     }
 
     [NotMapped]
-    public class RunnerOptionsInline : RunnerOptionsBase
+    public class RunnerToken
     {
-        [JsonProperty("stdin")] public string Stdin { get; set; }
-        [JsonProperty("expected_output")] public string ExpectedOutput { get; set; }
-
-        public RunnerOptionsInline(Submission submission, string input, string output) : base(submission)
-        {
-            Stdin = input;
-            ExpectedOutput = output;
-        }
+        [JsonProperty("token")] public string Token { get; set; }
     }
 
     [NotMapped]
-    public class RunnerOptionsFile : RunnerOptionsBase
+    public class RunnerStatus
     {
-        [JsonProperty("stdin")] public FileStream Stdin { get; set; }
-        [JsonProperty("expected_output")] public FileStream ExpectedOutput { get; set; }
-
-        public RunnerOptionsFile(Submission submission, string input, string output) : base(submission)
-        {
-            Stdin = new FileStream(input, FileMode.Open);
-            ExpectedOutput = new FileStream(output, FileMode.Open);
-        }
+        [JsonProperty("token")] public string Token { get; set; }
+        [JsonProperty("compile_output")] public string CompileOutput { get; set; }
+        [JsonProperty("time")] public string Time { get; set; }
+        [JsonProperty("memory")] public float? Memory { get; set; }
+        [JsonProperty("message")] public string Message { get; set; }
+        [JsonProperty("status_id")] public Verdict Verdict { get; set; }
     }
 
     [NotMapped]
     public class RunnerResponse
     {
-        public class RunnerResponseStatus
-        {
-            [JsonProperty("id")] public Verdict Id { get; set; }
-            [JsonProperty("description")] public string Description { get; set; }
-        }
-
-        [JsonProperty("token")] public string Token { get; set; }
-        [JsonProperty("compile_output")] public string CompileOutput { get; set; }
-        [JsonProperty("stdout")] public string Stdout { get; set; }
-        [JsonProperty("stderr")] public string Stderr { get; set; }
-        [JsonProperty("time")] public string Time { get; set; }
-        [JsonProperty("memory")] public float? Memory { get; set; }
-        [JsonProperty("message")] public string Message { get; set; }
-        [JsonProperty("status")] public RunnerResponseStatus Status { get; set; }
+        [JsonProperty("submissions")] public List<RunnerStatus> Statuses { get; set; }
     }
 }
