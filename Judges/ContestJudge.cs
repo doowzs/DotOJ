@@ -83,66 +83,77 @@ namespace Judge1.Judges
                 throw new ValidationException("Invalid submission ID.");
             }
 
-            var user = await _manager.FindByIdAsync(submission.UserId);
-            var problem = await _context.Problems.FindAsync(submission.ProblemId);
-            var contest = await _context.Contests.FindAsync(problem.ContestId);
-            await EnsureUserCanSubmit(user, contest);
-
-            submission.Verdict = Verdict.Running;
-            submission.FailedOn = -1;
-            _context.Submissions.Update(submission);
-            await _context.SaveChangesAsync();
-
-            ISubmissionJudge judge;
-            switch (contest.Mode)
+            try
             {
-                case ContestMode.Practice:
-                    judge = new PracticeModeJudge(_provider);
-                    break;
-                default:
-                    throw new NotImplementedException();
-            }
+                var user = await _manager.FindByIdAsync(submission.UserId);
+                var problem = await _context.Problems.FindAsync(submission.ProblemId);
+                var contest = await _context.Contests.FindAsync(problem.ContestId);
+                await EnsureUserCanSubmit(user, contest);
 
-            var result = await judge.Judge(submission, problem);
-            submission.Verdict = result.Verdict;
-            submission.FailedOn = result.FailedOn;
-            submission.Score = result.Score;
-            submission.JudgedAt = DateTime.Now.ToUniversalTime();
-            _context.Submissions.Update(submission);
+                submission.Verdict = Verdict.Running;
+                submission.FailedOn = -1;
+                _context.Submissions.Update(submission);
+                await _context.SaveChangesAsync();
 
-            var accepted = result.Verdict == Verdict.Accepted;
-            var registration = await _context.Registrations.FindAsync(user.Id, contest.Id);
-            var statistic = registration.Statistics.Find(s => s.ProblemId == problem.Id);
-            if (statistic == null)
-            {
-                statistic = new ProblemStatistics()
+                ISubmissionJudge judge;
+                switch (contest.Mode)
                 {
-                    ProblemId = problem.Id,
-                    Penalties = (accepted || result.FailedOn <= 0) ? 0 : 1,
-                    AcceptedAt = accepted ? DateTime.Now.ToUniversalTime() : (DateTime?) null,
-                    Score = result.Score
-                };
-                registration.Statistics.Add(statistic);
-            }
-            else
-            {
-                if (!statistic.AcceptedAt.HasValue)
-                {
-                    if (accepted)
-                    {
-                        statistic.AcceptedAt = DateTime.Now.ToUniversalTime();
-                    }
-                    else if (result.FailedOn > 0)
-                    {
-                        statistic.Penalties++;
-                    }
+                    case ContestMode.Practice:
+                        judge = new PracticeModeJudge(_provider);
+                        break;
+                    default:
+                        throw new NotImplementedException();
                 }
 
-                statistic.Score = Math.Max(statistic.Score, result.Score);
-            }
+                var result = await judge.Judge(submission, problem);
+                submission.Verdict = result.Verdict;
+                submission.FailedOn = result.FailedOn;
+                submission.Score = result.Score;
+                submission.JudgedAt = DateTime.Now.ToUniversalTime();
+                _context.Submissions.Update(submission);
 
-            _context.Registrations.Update(registration);
-            await _context.SaveChangesAsync();
+                var accepted = result.Verdict == Verdict.Accepted;
+                var registration = await _context.Registrations.FindAsync(user.Id, contest.Id);
+                var statistic = registration.Statistics.Find(s => s.ProblemId == problem.Id);
+                if (statistic == null)
+                {
+                    statistic = new ProblemStatistics()
+                    {
+                        ProblemId = problem.Id,
+                        Penalties = (accepted || result.FailedOn <= 0) ? 0 : 1,
+                        AcceptedAt = accepted ? DateTime.Now.ToUniversalTime() : (DateTime?) null,
+                        Score = result.Score
+                    };
+                    registration.Statistics.Add(statistic);
+                }
+                else
+                {
+                    if (!statistic.AcceptedAt.HasValue)
+                    {
+                        if (accepted)
+                        {
+                            statistic.AcceptedAt = DateTime.Now.ToUniversalTime();
+                        }
+                        else if (result.FailedOn > 0)
+                        {
+                            statistic.Penalties++;
+                        }
+                    }
+
+                    statistic.Score = Math.Max(statistic.Score, result.Score);
+                }
+
+                _context.Registrations.Update(registration);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                submission.Verdict = Verdict.Failed;
+                submission.FailedOn = -1;
+                submission.Score = 0;
+                submission.JudgedAt = DateTime.Now.ToUniversalTime();
+                _context.Submissions.Update(submission);
+            }
         }
     }
 }
