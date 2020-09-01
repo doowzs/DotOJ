@@ -121,7 +121,7 @@ namespace Judge1.Judges.Submission
                     {
                         return new JudgeResult
                         {
-                            Verdict = Verdict.CompilationError,
+                            Verdict = runInfo.Verdict,
                             FailedOn = 0,
                             Message = runInfo.Message,
                             Time = 0, Memory = 0, Score = 0
@@ -186,7 +186,7 @@ namespace Judge1.Judges.Submission
                     if (status.Verdict > Verdict.Running)
                     {
                         runInfo.Verdict = status.Verdict;
-                        runInfo.Time = float.Parse(status.Time);
+                        runInfo.Time = string.IsNullOrEmpty(status.Time) ? 0.0f : float.Parse(status.Time);
                         runInfo.Memory = status.Memory.GetValueOrDefault();
                         runInfo.Message = status.Verdict == Verdict.InternalError
                             ? status.Message
@@ -214,8 +214,9 @@ namespace Judge1.Judges.Submission
             return new JudgeResult
             {
                 Verdict = Verdict.Failed,
-                FailedOn = -1,
-                Score = 0
+                FailedOn = 0,
+                Score = 0,
+                Message = "Judge timeout."
             };
         }
     }

@@ -176,11 +176,13 @@ namespace Judge1.Judges
             }
             catch (Exception e)
             {
+                _logger.LogError($"Error when judging submission #{submissionId}: {e.Message}");
                 submission.Verdict = Verdict.Failed;
                 submission.FailedOn = -1;
                 submission.Score = 0;
                 submission.JudgedAt = DateTime.Now.ToUniversalTime();
                 _context.Submissions.Update(submission);
+                await _context.SaveChangesAsync();
             }
         }
     }
