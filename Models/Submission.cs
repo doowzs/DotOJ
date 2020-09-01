@@ -169,7 +169,7 @@ namespace Judge1.Models
         public string UserId { get; }
         public int ProblemId { get; }
         public Program Program { get; }
-        [Required] public Verdict Verdict { get; set; }
+        [Required] public Verdict? Verdict { get; set; }
 
         public SubmissionEditDto()
         {
