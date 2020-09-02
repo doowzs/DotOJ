@@ -1,4 +1,6 @@
-﻿import { SubmissionInfoDto, SubmissionViewDto } from '../interfaces/submission.interfaces';
+﻿import { SubmissionEditDto, SubmissionInfoDto, SubmissionViewDto } from '../interfaces/submission.interfaces';
+import { Languages } from './languages.consts';
+import * as moment from 'moment';
 
 export enum VerdictStage {
   ERROR, RUNNING, ACCEPTED, REJECTED
@@ -64,8 +66,38 @@ export const Verdicts: VerdictInfo[] = [
   }
 ];
 
-export const fixSubmissionREVerdictCode = (submission: SubmissionInfoDto | SubmissionViewDto) => {
+export const fixSubmissionREVerdictCode = (submission: SubmissionInfoDto | SubmissionViewDto | SubmissionEditDto) => {
   if (submission.verdict >= 8 && submission.verdict <= 12) {
     submission.verdict = 7;
   }
+};
+
+export const mapSubmissionInfoDtoFields = (submission: SubmissionInfoDto): SubmissionInfoDto => {
+  fixSubmissionREVerdictCode(submission);
+  submission.verdict = Verdicts.find(v => v.code === submission.verdict);
+  submission.language = Languages.find(l => l.code === submission.language);
+  submission.createdAt = moment.utc(submission.createdAt).local();
+  submission.judgedAt = moment.utc(submission.judgedAt).local();
+  return submission;
+};
+
+export const mapSubmissionViewDtoFields = (submission: SubmissionViewDto): SubmissionViewDto => {
+  fixSubmissionREVerdictCode(submission);
+  submission.verdict = Verdicts.find(v => v.code === submission.verdict);
+  submission.program.language = Languages.find(l => l.code === submission.program.language);
+  submission.message = atob(submission.message);
+  submission.createdAt = moment.utc(submission.createdAt).local();
+  submission.judgedAt = moment.utc(submission.judgedAt).local();
+  return submission;
+};
+
+export const mapSubmissionEditDtoFields = (submission: SubmissionEditDto): SubmissionEditDto => {
+  fixSubmissionREVerdictCode(submission);
+  submission.verdict = Verdicts.find(v => v.code === submission.verdict);
+  submission.program.language = Languages.find(l => l.code === submission.program.language);
+  submission.program.code = atob(submission.program.code);
+  submission.message = atob(submission.message);
+  submission.createdAt = moment.utc(submission.createdAt).local();
+  submission.judgedAt = moment.utc(submission.judgedAt).local();
+  return submission;
 };

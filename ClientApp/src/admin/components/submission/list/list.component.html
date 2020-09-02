@@ -1,0 +1,37 @@
+﻿<h2>List Submissions</h2>
+<nz-table #submissionTable *ngIf="list" [nzData]="list.items" [nzFrontPagination]="false"
+          [nzPageIndex]="list.pageIndex" [nzPageSize]="list.pageSize" [nzTotal]="list.totalItems"
+          (nzPageIndexChange)="onPageIndexChange($event)">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Contestant</th>
+    <th>Problem</th>
+    <th>Verdict</th>
+    <th>Time</th>
+    <th>Memory</th>
+    <th>Language</th>
+    <th>Length</th>
+    <th>Created At</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let submission of submissionTable.data">
+    <td>{{ submission.id }}</td>
+    <td>
+      <button nz-button nzType="link" [routerLink]="['/admin/user', submission.userId]">
+        {{ submission.contestantId }}
+      </button>
+    </td>
+    <td>{{ submission.problemId }}</td>
+    <td><nz-tag [nzColor]="submission.verdict.color">{{ submission.verdict.name }}</nz-tag></td>
+    <td>{{ submission.time }}</td>
+    <td>{{ submission.memory }}</td>
+    <td>{{ submission.language.name }}</td>
+    <td>{{ submission.codeBytes }} bytes</td>
+    <td>{{ submission.createdAt.format('YYYY-MM-DD HH:mm') }}</td>
+    <td><button nz-button nzType="default" [routerLink]="['/admin/submission', submission.id]">View</button></td>
+  </tr>
+  </tbody>
+</nz-table>

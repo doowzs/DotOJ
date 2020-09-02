@@ -11,7 +11,7 @@ namespace Judge1.Models
         public int Id { get; set; }
 
         #region Relationships
-        
+
         [Required] public string UserId { get; set; }
         public ApplicationUser User { get; set; }
 
@@ -23,6 +23,7 @@ namespace Judge1.Models
         #region Submission Content
 
         [NotMapped] public Program Program { get; set; }
+
         [Required, Column("program", TypeName = "text")]
         public string ProgramSerialized
         {
@@ -55,7 +56,7 @@ namespace Judge1.Models
 
         [Required] public string UserId { get; set; }
         public ApplicationUser User { get; set; }
-        
+
         public int SubmissionId { get; set; }
         public Submission Submission { get; set; }
 
@@ -64,10 +65,10 @@ namespace Judge1.Models
         #region Hacking Content and Verdict
 
         [Required, Column(TypeName = "text")] public string Input { get; set; }
-        
+
         public bool? IsValid { get; set; }
         public DateTime ValidatedAt { get; set; }
-        
+
         public bool? IsSuccessful { get; set; }
         public DateTime JudgedAt { get; set; }
 
@@ -77,14 +78,15 @@ namespace Judge1.Models
     public class Test : ModelWithTimestamps
     {
         public int Id { get; set; }
-        
+
         [Required] public string UserId { get; set; }
         public ApplicationUser User { get; set; }
-        
+
         public int ProblemId { get; set; }
         public Problem Problem { get; set; }
-        
+
         [NotMapped] public Program Program { get; set; }
+
         [Required, Column("program", TypeName = "text")]
         public string ProgramSerialized
         {
@@ -93,7 +95,7 @@ namespace Judge1.Models
                 ? null
                 : JsonConvert.DeserializeObject<Program>(value);
         }
-        
+
         [Required, Column(TypeName = "text")] public string Input { get; set; }
         [Column(TypeName = "text")] public string Output { get; set; }
 
@@ -188,10 +190,18 @@ namespace Judge1.Models
     {
         public int Id { get; }
         public string UserId { get; }
+        public string ContestantId { get; }
+        public string ContestantName { get; }
         public int ProblemId { get; }
         public Program Program { get; }
         [Required] public Verdict? Verdict { get; set; }
+        public int? Time { get; }
+        public int? Memory { get; }
+        public int? FailedOn { get; }
+        public int? Score { get; }
         [Required] public string Message { get; set; }
+        public DateTime? JudgedAt { get; }
+        public DateTime CreatedAt { get; }
 
         public SubmissionEditDto()
         {
@@ -201,10 +211,18 @@ namespace Judge1.Models
         {
             Id = submission.Id;
             UserId = submission.UserId;
+            ContestantId = submission.User.ContestantId;
+            ContestantName = submission.User.ContestantName;
             ProblemId = submission.ProblemId;
             Program = submission.Program;
             Verdict = submission.Verdict;
+            Time = submission.Time;
+            Memory = submission.Memory;
+            FailedOn = submission.FailedOn;
+            Score = submission.Score;
             Message = submission.Message;
+            JudgedAt = submission.JudgedAt;
+            CreatedAt = submission.CreatedAt;
         }
     }
 }

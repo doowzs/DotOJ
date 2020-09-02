@@ -1,0 +1,91 @@
+﻿<form nz-form [formGroup]="form" (ngSubmit)="submitForm(form.value)">
+  <nz-form-item>
+    <nz-form-label nzFor="userId">User ID</nz-form-label>
+    <nz-form-control>
+      <input nz-input formControlName="userId" id="userId"/>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzFor="problemId">Problem ID</nz-form-label>
+    <nz-form-control>
+      <input nz-input formControlName="problemId" id="problemId"/>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzFor="language">Language</nz-form-label>
+    <nz-form-control>
+      <input nz-input formControlName="language" id="language"/>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzFor="code">Code</nz-form-label>
+    <nz-form-control>
+      <textarea nz-input formControlName="code" id="code" rows="10"></textarea>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzFor="verdict" nzRequired>Verdict</nz-form-label>
+    <nz-form-control>
+      <nz-select formControlName="verdict" id="verdict" nzPlaceHolder="Verdict">
+        <nz-option *ngFor="let verdict of Verdicts"
+                   [nzValue]="verdict.code" [nzLabel]="'[' + verdict.code + '] - ' + verdict.name">
+          <span>[{{ verdict.code }}] - {{ verdict.name }}</span>
+        </nz-option>
+      </nz-select>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzFor="time">Time</nz-form-label>
+    <nz-form-control>
+      <nz-input-group nzSuffix="ms">
+        <input nz-input formControlName="time" id="time"/>
+      </nz-input-group>
+    </nz-form-control>
+    <span style="width: 1rem;"></span>
+    <nz-form-label nzFor="memory">Memory</nz-form-label>
+    <nz-form-control>
+      <nz-input-group nzSuffix="KiB">
+        <input nz-input formControlName="memory" id="memory"/>
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzFor="failedOn">Failed On</nz-form-label>
+    <nz-form-control>
+      <input nz-input formControlName="failedOn" id="failedOn"/>
+    </nz-form-control>
+    <span style="width: 1rem;"></span>
+    <nz-form-label nzFor="score">Score</nz-form-label>
+    <nz-form-control>
+      <nz-input-group nzSuffix="%">
+        <input nz-input formControlName="score" id="score"/>
+      </nz-input-group>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzFor="message" nzRequired>Message</nz-form-label>
+    <nz-form-control>
+      <textarea nz-input formControlName="message" id="message" rows="5"></textarea>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzFor="createdAt">Created At</nz-form-label>
+    <nz-form-control>
+      <input nz-input formControlName="createdAt" id="createdAt"/>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzFor="judgedAt">Judged At</nz-form-label>
+    <nz-form-control>
+      <input nz-input formControlName="judgedAt" id="judgedAt"/>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-divider></nz-divider>
+  <div nz-row>
+    <div nz-col nzSpan="24">
+      <button nz-button nzType="primary" [disabled]="!form.valid" type="submit" style="width: 100%;">
+        <i nz-icon nzType="check"></i><span>Submit</span>
+      </button>
+    </div>
+  </div>
+</form>

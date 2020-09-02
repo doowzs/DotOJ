@@ -54,6 +54,14 @@
               </li>
             </ul>
           </li>
+          <li nz-submenu nzTitle="Submissions" nzOpen>
+            <ul>
+              <li nz-menu-item routerLink="/admin/submission"
+                  [routerLinkActive]="['ant-menu-item-selected']"
+                  [routerLinkActiveOptions]="{exact: true}">
+                List
+            </ul>
+          </li>
         </ul>
       </nz-sider>
       <nz-content class="inner-content">

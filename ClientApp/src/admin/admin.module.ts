@@ -23,6 +23,9 @@ import { AdminProblemFormComponent } from './components/problem/form/form.compon
 import { AdminProblemCreatorComponent } from './components/problem/creator/creator.component';
 import { AdminProblemEditorComponent } from './components/problem/editor/editor.component';
 import { AdminProblemTestCasesComponent } from './components/problem/test-cases/test-cases.component';
+import { AdminSubmissionListComponent } from './components/submission/list/list.component';
+import { AdminSubmissionFormComponent } from './components/submission/form/form.component';
+import { AdminSubmissionEditorComponent } from './components/submission/editor/editor.component';
 
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
@@ -38,6 +41,7 @@ import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzTagModule } from 'ng-zorro-antd/tag';
 
 @NgModule({
   imports: [
@@ -79,6 +83,12 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
                 ]
               }
             ]
+          },
+          {
+            path: 'submission', children: [
+              { path: '', pathMatch: 'full', component: AdminSubmissionListComponent },
+              { path: ':submissionId', component: AdminSubmissionEditorComponent }
+            ]
           }
         ]
       }
@@ -98,6 +108,7 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
     NzTableModule,
     NzPopconfirmModule,
     NzDividerModule,
+    NzTagModule,
   ],
   declarations: [
     AdminComponent,
@@ -114,7 +125,10 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
     AdminProblemFormComponent,
     AdminProblemCreatorComponent,
     AdminProblemEditorComponent,
-    AdminProblemTestCasesComponent
+    AdminProblemTestCasesComponent,
+    AdminSubmissionListComponent,
+    AdminSubmissionFormComponent,
+    AdminSubmissionEditorComponent
   ],
   exports: [
     RouterModule

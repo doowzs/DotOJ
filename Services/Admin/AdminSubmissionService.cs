@@ -89,13 +89,15 @@ namespace Judge1.Services.Admin
             }
 
             return await submissions.OrderByDescending(s => s.Id)
-                .PaginateAsync(s => new SubmissionInfoDto(s), pageIndex ?? 1, PageSize);
+                .PaginateAsync(s => s.User, s => new SubmissionInfoDto(s), pageIndex ?? 1, PageSize);
         }
 
         public async Task<SubmissionEditDto> GetSubmissionEditAsync(int id)
         {
             await EnsureSubmissionExists(id);
-            return new SubmissionEditDto(await _context.Submissions.FindAsync(id));
+            var submission = await _context.Submissions.FindAsync(id);
+            await _context.Entry(submission).Reference(s => s.User).LoadAsync();
+            return new SubmissionEditDto(submission);
         }
 
         public async Task<SubmissionEditDto> UpdateSubmissionAsync(int id, SubmissionEditDto dto)
@@ -104,9 +106,20 @@ namespace Judge1.Services.Admin
             await ValidateSubmissionEditDto(dto);
             var submission = await _context.Submissions.FindAsync(id);
             submission.Verdict = dto.Verdict.GetValueOrDefault();
+            submission.Time = submission.Memory = null;
+            submission.FailedOn = -1;
+            submission.Score = submission.Verdict == Verdict.Accepted ? 100 : 0;
+            submission.Message = dto.Message;
             submission.JudgedAt = DateTime.Now.ToUniversalTime();
             _context.Update(submission);
             await _context.SaveChangesAsync();
+
+            var problem = await _context.Problems.FindAsync(submission.ProblemId);
+            var registration = await _context.Registrations.FindAsync(submission.UserId, problem.ContestId);
+            await registration.RebuildStatisticsAsync(_context);
+            await _context.SaveChangesAsync();
+
+            await _context.Entry(submission).Reference(s => s.User).LoadAsync();
             return new SubmissionEditDto(submission);
         }
 
@@ -117,11 +130,21 @@ namespace Judge1.Services.Admin
             _context.Submissions.Attach(submission);
             _context.Submissions.Remove(submission);
             await _context.SaveChangesAsync();
+
+            var problem = await _context.Problems.FindAsync(submission.ProblemId);
+            var registration = await _context.Registrations.FindAsync(submission.UserId, problem.ContestId);
+            await registration.RebuildStatisticsAsync(_context);
+            await _context.SaveChangesAsync();
         }
 
-        public async Task<List<SubmissionInfoDto>>RejudgeSubmissionsAsync
+        public async Task<List<SubmissionInfoDto>> RejudgeSubmissionsAsync
             (int? contestId, int? problemId, int? submissionId)
         {
+            if (!contestId.HasValue && !problemId.HasValue && !submissionId.HasValue)
+            {
+                throw new ValidationException("At lease one parameter is required.");
+            }
+
             var queryable = _context.Submissions.AsQueryable();
             if (contestId.HasValue)
             {

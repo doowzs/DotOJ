@@ -40,3 +40,20 @@ export interface SubmissionViewDto {
   judgedAt: moment.Moment | string;
   createdAt: moment.Moment | string;
 }
+
+export interface SubmissionEditDto {
+  id: number;
+  userId: string;
+  contestantId: string;
+  contestantName: string;
+  problemId: number;
+  program: Program;
+  verdict: VerdictInfo | number;
+  time: number;
+  memory: number;
+  failedOn: number;
+  score: number;
+  message: string;
+  judgedAt: moment.Moment | string;
+  createdAt: moment.Moment | string;
+}

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using System.Threading.Tasks;
@@ -76,7 +77,7 @@ namespace Judge1.Controllers.Api.v1.Admin
         }
 
 
-        [HttpPut("{id:int}")]
+        [HttpDelete("{id:int}")]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
@@ -98,10 +99,18 @@ namespace Judge1.Controllers.Api.v1.Admin
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<SubmissionInfoDto>> RejudgeSubmissions
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<List<SubmissionInfoDto>>> RejudgeSubmissions
             (int? contestId, int? problemId, int? submissionId)
         {
-            return Ok(await _service.RejudgeSubmissionsAsync(contestId, problemId, submissionId));
+            try
+            {
+                return Ok(await _service.RejudgeSubmissionsAsync(contestId, problemId, submissionId));
+            }
+            catch (ValidationException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }
