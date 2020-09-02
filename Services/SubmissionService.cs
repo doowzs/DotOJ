@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Hangfire;
 using IdentityServer4.Extensions;
@@ -92,6 +92,11 @@ namespace Judge1.Services
                     throw new UnauthorizedAccessException("Cannot submit until contest has begun.");
                 }
             }
+
+            if (!Regex.IsMatch(dto.Program.Code, @"^[a-zA-Z0-9\+/]*={0,3}$", RegexOptions.None))
+            {
+                throw new ValidationException("Invalid program code.");
+            }
         }
 
         public async Task<PaginatedList<SubmissionInfoDto>> GetPaginatedSubmissionsAsync
@@ -166,6 +171,7 @@ namespace Judge1.Services
 
             BackgroundJob.Enqueue(() => _judge.JudgeSubmission(submission.Id));
 
+            await _context.Entry(submission).Reference(s => s.User).LoadAsync();
             return new SubmissionInfoDto(submission);
         }
     }
