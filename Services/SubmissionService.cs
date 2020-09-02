@@ -47,8 +47,8 @@ namespace Judge1.Services
 
             var accessible = submission.UserId == user.Id
                              || await Context.Submissions.AnyAsync(s => s.Id == submission.Id
-                                                                         && s.UserId == user.Id
-                                                                         && s.Verdict == Verdict.Accepted);
+                                                                        && s.UserId == user.Id
+                                                                        && s.Verdict == Verdict.Accepted);
             if (!accessible)
             {
                 throw new UnauthorizedAccessException("Not allowed to view this submission.");
@@ -171,7 +171,10 @@ namespace Judge1.Services
             BackgroundJob.Enqueue(() => Judge.JudgeSubmission(submission.Id));
 
             await Context.Entry(submission).Reference(s => s.User).LoadAsync();
-            return new SubmissionInfoDto(submission);
+            var result = new SubmissionInfoDto(submission);
+            await LogInformation($"CreateSubmission ProblemId={result.ProblemId} " +
+                                 $"Langauge={result.Language} Length={result.CodeBytes}");
+            return result;
         }
     }
 }

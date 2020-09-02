@@ -113,6 +113,7 @@ namespace Judge1.Services.Admin
             await registration.RebuildStatisticsAsync(Context);
             await Context.SaveChangesAsync();
 
+            await LogInformation($"UpdateSubmission Id={submission.Id} Verdict={submission.Verdict}");
             await Context.Entry(submission).Reference(s => s.User).LoadAsync();
             return new SubmissionEditDto(submission);
         }
@@ -129,6 +130,7 @@ namespace Judge1.Services.Admin
             var registration = await Context.Registrations.FindAsync(submission.UserId, problem.ContestId);
             await registration.RebuildStatisticsAsync(Context);
             await Context.SaveChangesAsync();
+            await LogInformation($"DeleteSubmission Id={id}");
         }
 
         public async Task<List<SubmissionInfoDto>> RejudgeSubmissionsAsync
@@ -171,6 +173,8 @@ namespace Judge1.Services.Admin
 
             Context.UpdateRange(submissions);
             await Context.SaveChangesAsync();
+            await LogInformation($"RejudgeSubmissions ContestId={contestId} " +
+                                 $"ProblemId={problemId} SubmissionId={submissionId}");
 
             var infos = new List<SubmissionInfoDto>();
             foreach (var submission in submissions)

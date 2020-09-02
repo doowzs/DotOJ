@@ -20,7 +20,7 @@ namespace Judge1.Services.Admin
     {
         private const int PageSize = 50;
 
-        public AdminUserService(IServiceProvider provider): base(provider)
+        public AdminUserService(IServiceProvider provider) : base(provider)
         {
         }
 
@@ -73,10 +73,13 @@ namespace Judge1.Services.Admin
                 new KeyValuePair<bool, string>
                     (dto.IsSubmissionManager.GetValueOrDefault(), ApplicationRoles.SubmissionManager)
             };
+
+            var roles = new List<string>();
             foreach (var pair in pairs)
             {
                 if (pair.Key)
                 {
+                    roles.Add(pair.Value);
                     if (!await Manager.IsInRoleAsync(user, pair.Value))
                     {
                         await Manager.AddToRoleAsync(user, pair.Value);
@@ -91,6 +94,8 @@ namespace Judge1.Services.Admin
                 }
             }
 
+            await LogInformation($"UpdateUser Id={user.Id} ContestantId={user.ContestantId} " +
+                                 $"ContestantName={user.ContestantName} Roles={roles}");
             return new ApplicationUserEditDto(user, await Manager.GetRolesAsync(user));
         }
 
@@ -104,6 +109,7 @@ namespace Judge1.Services.Admin
                 throw new ValidationException("Cannot delete user with some roles.");
             }
 
+            await LogInformation($"DeleteUser Id={id}");
             await Manager.DeleteAsync(user);
         }
     }

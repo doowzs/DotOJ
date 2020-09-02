@@ -17,8 +17,8 @@ namespace Judge1.Services.Admin
         public Task<ContestEditDto> UpdateContestAsync(int id, ContestEditDto dto);
         public Task DeleteContestAsync(int id);
         public Task<List<RegistrationInfoDto>> GetRegistrationsAsync(int id);
-        public Task<List<RegistrationInfoDto>> AddRegistrationsAsync(int id, IEnumerable<string> userIds);
-        public Task RemoveRegistrationsAsync(int id, IEnumerable<string> userIds);
+        public Task<List<RegistrationInfoDto>> AddRegistrationsAsync(int id, IList<string> userIds);
+        public Task RemoveRegistrationsAsync(int id, IList<string> userIds);
         public Task<List<RegistrationInfoDto>> CopyRegistrationsAsync(int to, int from);
     }
 
@@ -88,6 +88,9 @@ namespace Judge1.Services.Admin
             };
             await Context.Contests.AddAsync(contest);
             await Context.SaveChangesAsync();
+
+            await LogInformation($"UpdateContest Id={contest.Id} Title={contest.Title} " +
+                                 $"IsPublic={contest.IsPublic} Mode={contest.Mode}");
             return new ContestEditDto(contest);
         }
 
@@ -104,6 +107,9 @@ namespace Judge1.Services.Admin
             contest.EndTime = dto.EndTime;
             Context.Contests.Update(contest);
             await Context.SaveChangesAsync();
+
+            await LogInformation($"UpdateContest Id={contest.Id} Title={contest.Title} " +
+                                 $"IsPublic={contest.IsPublic} Mode={contest.Mode}");
             return new ContestEditDto(contest);
         }
 
@@ -114,6 +120,7 @@ namespace Judge1.Services.Admin
             Context.Contests.Attach(contest);
             Context.Contests.Remove(contest);
             await Context.SaveChangesAsync();
+            await LogInformation($"DeleteContest Id={id}");
         }
 
         public async Task<List<RegistrationInfoDto>> GetRegistrationsAsync(int id)
@@ -126,7 +133,7 @@ namespace Judge1.Services.Admin
                 .ToListAsync();
         }
 
-        public async Task<List<RegistrationInfoDto>> AddRegistrationsAsync(int id, IEnumerable<string> userIds)
+        public async Task<List<RegistrationInfoDto>> AddRegistrationsAsync(int id, IList<string> userIds)
         {
             await EnsureContestExistsAsync(id);
             var registrations = new List<RegistrationInfoDto>();
@@ -158,10 +165,11 @@ namespace Judge1.Services.Admin
             }
 
             await Context.SaveChangesAsync();
+            await LogInformation($"AddRegistrations Contest={id} Users={string.Join(",", userIds)}");
             return registrations;
         }
 
-        public async Task RemoveRegistrationsAsync(int id, IEnumerable<string> userIds)
+        public async Task RemoveRegistrationsAsync(int id, IList<string> userIds)
         {
             await EnsureContestExistsAsync(id);
             foreach (var userId in userIds)
@@ -180,6 +188,7 @@ namespace Judge1.Services.Admin
                 }
             }
 
+            await LogInformation($"RemoveRegistrations Contest={id} Users={string.Join(",", userIds)}");
             await Context.SaveChangesAsync();
         }
 
@@ -212,6 +221,8 @@ namespace Judge1.Services.Admin
                 .ToListAsync();
             await Context.Registrations.AddRangeAsync(registrations);
             await Context.SaveChangesAsync();
+
+            await LogInformation($"CopyRegistrations To={to} From={from} Copied={registrations.Count}");
 
             return await Context.Registrations
                 .Where(r => r.ContestId == to)

@@ -108,6 +108,9 @@ namespace Judge1.Services.Admin
             };
             await Context.Problems.AddAsync(problem);
             await Context.SaveChangesAsync();
+
+            await LogInformation($"CreateProblem Id={problem.Id} Contest={problem.ContestId} Title={problem.Id} " +
+                                 $"HasSpecialJudge={problem.HasSpecialJudge} HasHacking={problem.HasHacking}");
             return new ProblemEditDto(problem);
         }
 
@@ -129,6 +132,9 @@ namespace Judge1.Services.Admin
             problem.SampleCases = dto.SampleCases;
             Context.Problems.Update(problem);
             await Context.SaveChangesAsync();
+
+            await LogInformation($"UpdateProblem Id={problem.Id} Contest={problem.ContestId} Title={problem.Id} " +
+                                 $"HasSpecialJudge={problem.HasSpecialJudge} HasHacking={problem.HasHacking}");
             return new ProblemEditDto(problem);
         }
 
@@ -139,6 +145,7 @@ namespace Judge1.Services.Admin
             Context.Problems.Attach(problem);
             Context.Problems.Remove(problem);
             await Context.SaveChangesAsync();
+            await LogInformation($"DeleteProblem Id={problem.Id}");
         }
 
         public async Task<List<TestCase>> GetProblemTestCasesAsync(int id)
@@ -228,6 +235,7 @@ namespace Judge1.Services.Admin
             problem.TestCases = testCases;
             await Context.SaveChangesAsync();
 
+            await LogInformation($"UpdateProblemTestCases Id={problem.Id} Count={problem.TestCases.Count}");
             return testCases;
         }
     }
