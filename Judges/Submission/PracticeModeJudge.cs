@@ -122,9 +122,8 @@ namespace Judge1.Judges.Submission
                         return new JudgeResult
                         {
                             Verdict = runInfo.Verdict,
-                            FailedOn = 0,
-                            Message = runInfo.Message,
-                            Time = 0, Memory = 0, Score = 0
+                            FailedOn = 0, Score = 0,
+                            Message = runInfo.Message
                         };
                     }
 
@@ -144,8 +143,15 @@ namespace Judge1.Judges.Submission
                         failedOn = runInfo.Index;
                     }
 
-                    time = Math.Max(time, runInfo.Time);
-                    memory = Math.Max(time, runInfo.Memory);
+                    if (runInfo.Time.HasValue)
+                    {
+                        time = Math.Max(time, runInfo.Time.Value);
+                    }
+
+                    if (runInfo.Memory.HasValue)
+                    {
+                        memory = Math.Max(memory, runInfo.Memory.Value);
+                    }
                 }
 
                 return new JudgeResult
@@ -186,8 +192,8 @@ namespace Judge1.Judges.Submission
                     if (status.Verdict > Verdict.Running)
                     {
                         runInfo.Verdict = status.Verdict;
-                        runInfo.Time = string.IsNullOrEmpty(status.Time) ? 0.0f : float.Parse(status.Time);
-                        runInfo.Memory = status.Memory.GetValueOrDefault();
+                        runInfo.Time = string.IsNullOrEmpty(status.Time) ? (float?) null : float.Parse(status.Time);
+                        runInfo.Memory = status.Memory;
                         runInfo.Message = status.Verdict == Verdict.InternalError
                             ? status.Message
                             : status.CompileOutput;
@@ -214,8 +220,7 @@ namespace Judge1.Judges.Submission
             return new JudgeResult
             {
                 Verdict = Verdict.Failed,
-                FailedOn = 0,
-                Score = 0,
+                FailedOn = 0, Score = 0,
                 Message = "Judge timeout."
             };
         }
