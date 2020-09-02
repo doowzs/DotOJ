@@ -111,8 +111,11 @@ namespace Judge1.Judges
 
                 var result = await judge.Judge(submission, problem);
                 submission.Verdict = result.Verdict;
+                submission.Time = result.Time;
+                submission.Memory = result.Memory;
                 submission.FailedOn = result.FailedOn;
                 submission.Score = result.Score;
+                submission.Message = result.Message;
                 submission.JudgedAt = DateTime.Now.ToUniversalTime();
                 _context.Submissions.Update(submission);
                 await _context.SaveChangesAsync();
@@ -137,7 +140,7 @@ namespace Judge1.Judges
                         var firstSolved = await _context.Submissions
                             .OrderBy(s => s.Id)
                             .Where(s => s.ProblemId == problemId && s.Verdict == Verdict.Accepted)
-                            .SingleOrDefaultAsync();
+                            .FirstOrDefaultAsync();
                         if (firstSolved != null)
                         {
                             acceptedAt = firstSolved.CreatedAt;
@@ -154,8 +157,8 @@ namespace Judge1.Judges
                         }
 
                         score = await _context.Submissions
-                            .Where(s => s.ProblemId == problemId)
-                            .MaxAsync(s => s.Score);
+                            .Where(s => s.ProblemId == problemId && s.Score.HasValue)
+                            .MaxAsync(s => s.Score.GetValueOrDefault());
 
                         var problemStatistics = new ProblemStatistics
                         {

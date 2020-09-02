@@ -9,8 +9,8 @@ namespace Judge1.Judges.Submission
         public string Token { get; set; }
 
         public Verdict Verdict { get; set; }
-        public float Time { get; set; }
-        public float Memory { set; get; }
+        public float? Time { get; set; }
+        public float? Memory { set; get; }
         public string Message { set; get; }
     }
 

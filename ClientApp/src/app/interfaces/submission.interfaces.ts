@@ -14,6 +14,8 @@ export interface SubmissionInfoDto {
   language: LanguageInfo | number;
   codeBytes: number;
   verdict: VerdictInfo | number;
+  time: number;
+  memory: number;
   failedOn: number;
   score: number;
   judgedAt: moment.Moment | string;
@@ -26,8 +28,11 @@ export interface SubmissionViewDto {
   problemId: number;
   program: Program;
   verdict: VerdictInfo | number;
+  time: number;
+  memory: number;
   failedOn: number;
   score: number;
+  message: string;
   judgedAt: moment.Moment | string;
   createdAt: moment.Moment | string;
 }
