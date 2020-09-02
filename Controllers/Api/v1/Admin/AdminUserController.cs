@@ -27,7 +27,6 @@ namespace Judge1.Controllers.Api.v1.Admin
         }
 
         [HttpGet]
-        [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PaginatedList<ApplicationUserInfoDto>>> ListUsers(int? pageIndex)
@@ -36,7 +35,6 @@ namespace Judge1.Controllers.Api.v1.Admin
         }
 
         [HttpGet("{id:guid}")]
-        [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -75,7 +73,6 @@ namespace Judge1.Controllers.Api.v1.Admin
         }
 
         [HttpDelete("{id:guid}")]
-        [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
