@@ -10,6 +10,8 @@ export interface Program {
 export interface SubmissionInfoDto {
   id: number;
   userId: string;
+  contestantId: string;
+  contestantName: string;
   problemId: number;
   language: LanguageInfo | number;
   codeBytes: number;
@@ -25,6 +27,8 @@ export interface SubmissionInfoDto {
 export interface SubmissionViewDto {
   id: number;
   userId: string;
+  contestantId: string;
+  contestantName: string;
   problemId: number;
   program: Program;
   verdict: VerdictInfo | number;

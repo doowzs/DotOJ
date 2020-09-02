@@ -106,6 +106,8 @@ namespace Judge1.Models
     {
         public int Id { get; }
         public string UserId { get; }
+        public string ContestantId { get; }
+        public string ContestantName { get; }
         public int ProblemId { get; }
         public Language Language { get; }
         public int CodeBytes { get; }
@@ -120,6 +122,8 @@ namespace Judge1.Models
         {
             Id = submission.Id;
             UserId = submission.UserId;
+            ContestantId = submission.User.ContestantId;
+            ContestantName = submission.User.ContestantName;
             ProblemId = submission.ProblemId;
             Language = submission.Program.Language.GetValueOrDefault();
             CodeBytes = Encoding.UTF8.GetByteCount(submission.Program.Code);
@@ -137,6 +141,8 @@ namespace Judge1.Models
     {
         public int Id { get; }
         public string UserId { get; }
+        public string ContestantId { get; }
+        public string ContestantName { get; }
         public int ProblemId { get; }
         public Program Program { get; }
         public Verdict? Verdict { get; }
@@ -151,6 +157,8 @@ namespace Judge1.Models
         {
             Id = submission.Id;
             UserId = submission.UserId;
+            ContestantId = submission.User.ContestantId;
+            ContestantName = submission.User.ContestantName;
             ProblemId = submission.ProblemId;
             Program = submission.Program;
             Verdict = submission.Verdict;

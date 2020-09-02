@@ -6,6 +6,9 @@
   <thead>
   <tr>
     <th nzColumnKey="id">ID</th>
+    <th nzColumnKey="contestantId">
+      Contestant
+    </th>
     <th nzColumnKey="problemId" [nzFilters]="problemFilterList" [nzFilterMultiple]="false" [nzFilterFn]="true">
       Problem
     </th>
@@ -22,6 +25,7 @@
   <tbody>
   <tr *ngFor="let submission of submissionsTable.data">
     <td>{{ submission.id }}</td>
+    <td>{{ submission.contestantId }}</td>
     <td>{{ getProblemLabel(submission.problemId) }}</td>
     <td>
       <nz-tag [nzColor]="submission.verdict.color">{{ submission.verdict.name }}</nz-tag>

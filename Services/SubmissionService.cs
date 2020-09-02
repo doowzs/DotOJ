@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -123,7 +124,7 @@ namespace Judge1.Services
             }
 
             return await submissions.OrderByDescending(s => s.Id)
-                .PaginateAsync(s => new SubmissionInfoDto(s), pageIndex ?? 1, PageSize);
+                .PaginateAsync(s => s.User, s => new SubmissionInfoDto(s), pageIndex ?? 1, PageSize);
         }
 
         public async Task<SubmissionInfoDto> GetSubmissionInfoAsync(int id)
@@ -134,6 +135,7 @@ namespace Judge1.Services
                 throw new NotFoundException();
             }
 
+            await _context.Entry(submission).Reference(s => s.User).LoadAsync();
             return new SubmissionInfoDto(submission);
         }
 
@@ -146,7 +148,7 @@ namespace Judge1.Services
             }
 
             await EnsureUserCanViewSubmissionAsync(submission);
-
+            await _context.Entry(submission).Reference(s => s.User).LoadAsync();
             return new SubmissionViewDto(submission);
         }
 
