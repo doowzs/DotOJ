@@ -93,5 +93,15 @@ namespace Judge1.Controllers.Api.v1.Admin
                 return NotFound(e.Message);
             }
         }
+
+        [HttpPost("rejudge")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<SubmissionInfoDto>> RejudgeSubmissions
+            (int? contestId, int? problemId, int? submissionId)
+        {
+            return Ok(await _service.RejudgeSubmissionsAsync(contestId, problemId, submissionId));
+        }
     }
 }

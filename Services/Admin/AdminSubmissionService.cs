@@ -1,9 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Hangfire;
 using Judge1.Data;
 using Judge1.Exceptions;
+using Judge1.Judges;
 using Judge1.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -18,6 +21,7 @@ namespace Judge1.Services.Admin
         public Task<SubmissionEditDto> GetSubmissionEditAsync(int id);
         public Task<SubmissionEditDto> UpdateSubmissionAsync(int id, SubmissionEditDto dto);
         public Task DeleteSubmissionAsync(int id);
+        public Task<List<SubmissionInfoDto>> RejudgeSubmissionsAsync(int? contestId, int? problemId, int? submissionId);
     }
 
     public class AdminSubmissionService : IAdminSubmissionService
@@ -25,11 +29,14 @@ namespace Judge1.Services.Admin
         private const int PageSize = 50;
 
         private readonly ApplicationDbContext _context;
+        private readonly IContestJudge _judge;
         private readonly ILogger<AdminSubmissionService> _logger;
 
-        public AdminSubmissionService(ApplicationDbContext context, ILogger<AdminSubmissionService> logger)
+        public AdminSubmissionService(ApplicationDbContext context, IContestJudge judge,
+            ILogger<AdminSubmissionService> logger)
         {
             _context = context;
+            _judge = judge;
             _logger = logger;
         }
 
@@ -110,6 +117,52 @@ namespace Judge1.Services.Admin
             _context.Submissions.Attach(submission);
             _context.Submissions.Remove(submission);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<SubmissionInfoDto>>RejudgeSubmissionsAsync
+            (int? contestId, int? problemId, int? submissionId)
+        {
+            var queryable = _context.Submissions.AsQueryable();
+            if (contestId.HasValue)
+            {
+                var problemIds = await _context.Problems
+                    .Where(p => p.ContestId == contestId.Value)
+                    .Select(p => p.Id)
+                    .ToListAsync();
+                queryable = queryable.Where(s => problemIds.Contains(s.Id));
+            }
+
+            if (problemId.HasValue)
+            {
+                queryable = queryable.Where(s => s.ProblemId == problemId.Value);
+            }
+
+            if (submissionId.HasValue)
+            {
+                queryable = queryable.Where(s => s.Id == submissionId.Value);
+            }
+
+            var submissions = await queryable.ToListAsync();
+            foreach (var submission in submissions)
+            {
+                submission.Verdict = Verdict.Pending;
+                submission.Time = submission.Memory = null;
+                submission.FailedOn = submission.FailedOn = null;
+                submission.Message = null;
+                submission.JudgedAt = null;
+            }
+
+            _context.UpdateRange(submissions);
+            await _context.SaveChangesAsync();
+
+            var infos = new List<SubmissionInfoDto>();
+            foreach (var submission in submissions)
+            {
+                infos.Add(new SubmissionInfoDto(submission));
+                BackgroundJob.Enqueue(() => _judge.JudgeSubmission(submission.Id));
+            }
+
+            return infos;
         }
     }
 }
