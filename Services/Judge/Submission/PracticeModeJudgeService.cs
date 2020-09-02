@@ -8,27 +8,24 @@ using System.Threading.Tasks;
 using IdentityServer4.Extensions;
 using Judge1.Models;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
-namespace Judge1.Judges.Submission
+namespace Judge1.Services.Judge.Submission
 {
-    public class PracticeModeJudge : ISubmissionJudge
+    public class PracticeModeJudgeService : LoggableService<PracticeModeJudgeService>, ISubmissionJudgeService
     {
         private const int JudgeTimeLimit = 300;
 
-        private readonly IHttpClientFactory _factory;
-        private readonly IOptions<JudgingConfig> _options;
-        private readonly ILogger<PracticeModeJudge> _logger;
-        private readonly JudgeInstance _instance;
+        protected readonly IHttpClientFactory Factory;
+        protected readonly IOptions<JudgingConfig> Options;
+        protected readonly JudgeInstance Instance;
 
-        public PracticeModeJudge(IServiceProvider provider)
+        public PracticeModeJudgeService(IServiceProvider provider) : base(provider)
         {
-            _factory = provider.GetRequiredService<IHttpClientFactory>();
-            _options = provider.GetRequiredService<IOptions<JudgingConfig>>();
-            _logger = provider.GetRequiredService<ILogger<PracticeModeJudge>>();
-            _instance = _options.Value.Instances[0];
+            Factory = provider.GetRequiredService<IHttpClientFactory>();
+            Options = provider.GetRequiredService<IOptions<JudgingConfig>>();
+            Instance = Options.Value.Instances[0];
         }
 
         private async Task<RunInfo> CreateRun(Models.Submission submission, int index, TestCase testCase, bool inline)
@@ -41,9 +38,9 @@ namespace Judge1.Judges.Submission
             else
             {
                 var inputFile =
-                    Path.Combine(_options.Value.DataPath, submission.ProblemId.ToString(), testCase.Input);
+                    Path.Combine(Options.Value.DataPath, submission.ProblemId.ToString(), testCase.Input);
                 var outputFile =
-                    Path.Combine(_options.Value.DataPath, submission.ProblemId.ToString(), testCase.Output);
+                    Path.Combine(Options.Value.DataPath, submission.ProblemId.ToString(), testCase.Output);
 
                 await using (var inputFileStream = new FileStream(inputFile, FileMode.Open))
                 await using (var outputFileStream = new FileStream(outputFile, FileMode.Open))
@@ -58,14 +55,14 @@ namespace Judge1.Judges.Submission
                 }
             }
 
-            using var client = _factory.CreateClient();
-            client.DefaultRequestHeaders.Add("X-Auth-User", _instance.AuthUser);
-            client.DefaultRequestHeaders.Add("X-Auth-Token", _instance.AuthToken);
+            using var client = Factory.CreateClient();
+            client.DefaultRequestHeaders.Add("X-Auth-User", Instance.AuthUser);
+            client.DefaultRequestHeaders.Add("X-Auth-Token", Instance.AuthToken);
 
             using var stringContent = new StringContent(JsonConvert.SerializeObject(options),
                 Encoding.UTF8, MediaTypeNames.Application.Json);
             using var response =
-                await client.PostAsync(_instance.Endpoint + "/submissions?base64_encoded=true", stringContent);
+                await client.PostAsync(Instance.Endpoint + "/submissions?base64_encoded=true", stringContent);
             if (!response.IsSuccessStatusCode)
             {
                 throw new Exception($"Create API call failed with code {response.StatusCode}.");
@@ -166,11 +163,11 @@ namespace Judge1.Judges.Submission
             }
             else
             {
-                using var client = _factory.CreateClient();
-                client.DefaultRequestHeaders.Add("X-Auth-User", _instance.AuthUser);
-                client.DefaultRequestHeaders.Add("X-Auth-Token", _instance.AuthToken);
+                using var client = Factory.CreateClient();
+                client.DefaultRequestHeaders.Add("X-Auth-User", Instance.AuthUser);
+                client.DefaultRequestHeaders.Add("X-Auth-Token", Instance.AuthToken);
 
-                using var response = await client.GetAsync(_instance.Endpoint + "/submissions/batch" +
+                using var response = await client.GetAsync(Instance.Endpoint + "/submissions/batch" +
                                                            "?base64_encoded=true&tokens=" + string.Join(",", tokens) +
                                                            "&fields=token,time,memory,compile_output,message,status_id");
                 if (!response.IsSuccessStatusCode)

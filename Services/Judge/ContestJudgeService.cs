@@ -2,41 +2,28 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using Judge1.Data;
-using Judge1.Judges.Submission;
 using Judge1.Models;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Logging;
+using Judge1.Services.Judge.Submission;
 
-namespace Judge1.Judges
+namespace Judge1.Services.Judge
 {
-    public interface IContestJudge
+    public interface IContestJudgeService
     {
         public Task JudgeSubmission(int submissionId);
     }
 
-    public class ContestJudge : IContestJudge
+    public class ContestJudgeService : LoggableService<ContestJudgeService>, IContestJudgeService
     {
-        private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _manager;
-        private readonly IServiceProvider _provider;
-        private readonly ILogger<ContestJudge> _logger;
-
-        public ContestJudge(ApplicationDbContext context, UserManager<ApplicationUser> manager,
-            IServiceProvider provider, ILogger<ContestJudge> logger)
+        public ContestJudgeService(IServiceProvider provider) : base(provider)
         {
-            _context = context;
-            _manager = manager;
-            _provider = provider;
-            _logger = logger;
         }
 
         private async Task EnsureUserCanSubmit(ApplicationUser user, Contest contest)
         {
             var begun = DateTime.Now.ToUniversalTime() > contest.BeginTime;
             var ended = DateTime.Now.ToUniversalTime() > contest.EndTime;
-            var privileged = await _manager.IsInRoleAsync(user, ApplicationRoles.Administrator) ||
-                             await _manager.IsInRoleAsync(user, ApplicationRoles.ContestManager);
+            var privileged = await Manager.IsInRoleAsync(user, ApplicationRoles.Administrator) ||
+                             await Manager.IsInRoleAsync(user, ApplicationRoles.ContestManager);
 
             // Only administrators can submit before contest begins.
             if (!begun && !privileged)
@@ -51,12 +38,12 @@ namespace Judge1.Judges
             }
 
             // Otherwise, only registered user can submit to a running contest.
-            bool registered = await _context.Registrations.FindAsync(user.Id, contest.Id) != null;
+            bool registered = await Context.Registrations.FindAsync(user.Id, contest.Id) != null;
             if (contest.IsPublic)
             {
                 if (!registered)
                 {
-                    await _context.Registrations.AddAsync(new Registration
+                    await Context.Registrations.AddAsync(new Registration
                     {
                         UserId = user.Id,
                         ContestId = contest.Id,
@@ -77,7 +64,7 @@ namespace Judge1.Judges
 
         public async Task JudgeSubmission(int submissionId)
         {
-            var submission = await _context.Submissions.FindAsync(submissionId);
+            var submission = await Context.Submissions.FindAsync(submissionId);
             if (submission == null)
             {
                 throw new ValidationException("Invalid submission ID.");
@@ -85,21 +72,21 @@ namespace Judge1.Judges
 
             try
             {
-                var user = await _manager.FindByIdAsync(submission.UserId);
-                var problem = await _context.Problems.FindAsync(submission.ProblemId);
-                var contest = await _context.Contests.FindAsync(problem.ContestId);
+                var user = await Manager.FindByIdAsync(submission.UserId);
+                var problem = await Context.Problems.FindAsync(submission.ProblemId);
+                var contest = await Context.Contests.FindAsync(problem.ContestId);
                 await EnsureUserCanSubmit(user, contest);
 
                 submission.Verdict = Verdict.Running;
                 submission.FailedOn = -1;
-                _context.Submissions.Update(submission);
-                await _context.SaveChangesAsync();
+                Context.Submissions.Update(submission);
+                await Context.SaveChangesAsync();
 
-                ISubmissionJudge judge;
+                ISubmissionJudgeService judgeService;
                 switch (contest.Mode)
                 {
                     case ContestMode.Practice:
-                        judge = new PracticeModeJudge(_provider);
+                        judgeService = new PracticeModeJudgeService(Provider);
                         break;
                     default:
                         throw new NotImplementedException();
@@ -107,7 +94,7 @@ namespace Judge1.Judges
 
                 #region Update judge result of submission
 
-                var result = await judge.Judge(submission, problem);
+                var result = await judgeService.Judge(submission, problem);
                 submission.Verdict = result.Verdict;
                 submission.Time = result.Time;
                 submission.Memory = result.Memory;
@@ -115,29 +102,29 @@ namespace Judge1.Judges
                 submission.Score = result.Score;
                 submission.Message = result.Message;
                 submission.JudgedAt = DateTime.Now.ToUniversalTime();
-                _context.Submissions.Update(submission);
-                await _context.SaveChangesAsync();
+                Context.Submissions.Update(submission);
+                await Context.SaveChangesAsync();
 
                 #endregion
 
                 #region Rebuild statistics of registration
 
-                var registration = await _context.Registrations.FindAsync(user.Id, contest.Id);
-                await registration.RebuildStatisticsAsync(_context);
-                _context.Registrations.Update(registration);
-                await _context.SaveChangesAsync();
+                var registration = await Context.Registrations.FindAsync(user.Id, contest.Id);
+                await registration.RebuildStatisticsAsync(Context);
+                Context.Registrations.Update(registration);
+                await Context.SaveChangesAsync();
 
                 #endregion
             }
             catch (Exception e)
             {
-                _logger.LogError($"Error when judging submission #{submissionId}: {e.Message}");
                 submission.Verdict = Verdict.Failed;
                 submission.FailedOn = -1;
                 submission.Score = 0;
                 submission.JudgedAt = DateTime.Now.ToUniversalTime();
-                _context.Submissions.Update(submission);
-                await _context.SaveChangesAsync();
+                Context.Submissions.Update(submission);
+                await Context.SaveChangesAsync();
+                await LogError($"JudgeSubmissionError Id={submissionId} Error={e.Message}");
             }
         }
     }

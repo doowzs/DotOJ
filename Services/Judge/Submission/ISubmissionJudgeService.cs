@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Judge1.Models;
 
-namespace Judge1.Judges.Submission
+namespace Judge1.Services.Judge.Submission
 {
     public class RunInfo
     {
@@ -24,7 +24,7 @@ namespace Judge1.Judges.Submission
         public int Score { get; set; }
     }
 
-    public interface ISubmissionJudge
+    public interface ISubmissionJudgeService
     {
         public Task<JudgeResult> Judge(Models.Submission submission, Problem problem);
     }

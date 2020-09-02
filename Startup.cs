@@ -15,8 +15,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Hangfire;
 using Hangfire.SqlServer;
-using Judge1.Judges;
 using Judge1.Services.Admin;
+using Judge1.Services.Judge;
 using Microsoft.Extensions.Logging;
 
 namespace Judge1
@@ -83,20 +83,11 @@ namespace Judge1
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("ManageUsers",
-                    policy =>
-                    {
-                        policy.RequireRole(ApplicationRoles.Administrator, ApplicationRoles.UserManager);
-                    });
+                    policy => { policy.RequireRole(ApplicationRoles.Administrator, ApplicationRoles.UserManager); });
                 options.AddPolicy("ManageContests",
-                    policy =>
-                    {
-                        policy.RequireRole(ApplicationRoles.Administrator, ApplicationRoles.ContestManager);
-                    });
+                    policy => { policy.RequireRole(ApplicationRoles.Administrator, ApplicationRoles.ContestManager); });
                 options.AddPolicy("ManageProblems",
-                    policy =>
-                    {
-                        policy.RequireRole(ApplicationRoles.Administrator, ApplicationRoles.ContestManager);
-                    });
+                    policy => { policy.RequireRole(ApplicationRoles.Administrator, ApplicationRoles.ContestManager); });
                 options.AddPolicy("ManageSubmissions",
                     policy =>
                     {
@@ -105,7 +96,7 @@ namespace Judge1
             });
             services.AddControllersWithViews().AddNewtonsoftJson();
             services.AddRazorPages();
-            
+
             services.AddOptions();
             services.Configure<ApplicationConfig>(Configuration.GetSection("Application"));
             services.Configure<JudgingConfig>(Configuration.GetSection("Judging"));
@@ -121,7 +112,7 @@ namespace Judge1
             services.AddScoped<IAdminProblemService, AdminProblemService>();
             services.AddScoped<IAdminSubmissionService, AdminSubmissionService>();
 
-            services.AddScoped<IContestJudge, ContestJudge>();
+            services.AddScoped<IContestJudgeService, ContestJudgeService>();
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/dist"; });

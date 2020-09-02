@@ -5,8 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Hangfire;
 using Judge1.Exceptions;
-using Judge1.Judges;
 using Judge1.Models;
+using Judge1.Services.Judge;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -27,11 +27,11 @@ namespace Judge1.Services.Admin
     {
         private const int PageSize = 50;
 
-        protected readonly IContestJudge Judge;
+        protected readonly IContestJudgeService JudgeService;
 
         public AdminSubmissionService(IServiceProvider provider) : base(provider)
         {
-            Judge = provider.GetRequiredService<IContestJudge>();
+            JudgeService = provider.GetRequiredService<IContestJudgeService>();
         }
 
         private async Task EnsureSubmissionExists(int id)
@@ -180,7 +180,7 @@ namespace Judge1.Services.Admin
             foreach (var submission in submissions)
             {
                 infos.Add(new SubmissionInfoDto(submission));
-                BackgroundJob.Enqueue(() => Judge.JudgeSubmission(submission.Id));
+                BackgroundJob.Enqueue(() => JudgeService.JudgeSubmission(submission.Id));
             }
 
             return infos;

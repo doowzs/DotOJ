@@ -16,6 +16,7 @@ namespace Judge1.Services
         protected readonly IHttpContextAccessor Accessor;
         protected readonly UserManager<ApplicationUser> Manager;
         protected readonly ILogger<T> Logger;
+        protected readonly IServiceProvider Provider;
 
         private ApplicationUser _user;
 
@@ -25,6 +26,7 @@ namespace Judge1.Services
             Accessor = provider.GetRequiredService<IHttpContextAccessor>();
             Manager = provider.GetRequiredService<UserManager<ApplicationUser>>();
             Logger = provider.GetRequiredService<ILogger<T>>();
+            Provider = provider;
         }
 
         public async Task GetCurrentLoggedInUser()
@@ -45,25 +47,25 @@ namespace Judge1.Services
         public async Task LogDebug(string message, params object[] args)
         {
             await GetCurrentLoggedInUser();
-            Logger.LogDebug($"{typeof(T)} {message} User={_user?.Email}", args);
+            Logger.LogDebug($"{message} User={_user?.Email}", args);
         }
 
         public async Task LogInformation(string message, params object[] args)
         {
             await GetCurrentLoggedInUser();
-            Logger.LogInformation($"{typeof(T)} {message} User={_user?.Email}", args);
+            Logger.LogInformation($"{message} User={_user?.Email}", args);
         }
 
         public async Task LogError(string message, params object[] args)
         {
             await GetCurrentLoggedInUser();
-            Logger.LogError($"{typeof(T)} {message} User={_user?.Email}", args);
+            Logger.LogError($"{message} User={_user?.Email}", args);
         }
 
         public async Task LogCritical(string message, params object[] args)
         {
             await GetCurrentLoggedInUser();
-            Logger.LogCritical($"{typeof(T)} {message} User={_user?.Email}", args);
+            Logger.LogCritical($"{message} User={_user?.Email}", args);
         }
     }
 }
