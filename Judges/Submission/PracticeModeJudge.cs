@@ -178,7 +178,6 @@ namespace Judge1.Judges.Submission
                     throw new Exception($"Polling API call failed with code {response.StatusCode}.");
                 }
 
-                _logger.LogInformation(await response.Content.ReadAsStringAsync());
                 var runnerResponse =
                     JsonConvert.DeserializeObject<RunnerResponse>(await response.Content.ReadAsStringAsync());
                 foreach (var status in runnerResponse.Statuses)
