@@ -6,14 +6,11 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Hangfire;
 using IdentityServer4.Extensions;
-using Judge1.Data;
 using Judge1.Exceptions;
 using Judge1.Judges;
 using Judge1.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Judge1.Services
 {
@@ -28,37 +25,28 @@ namespace Judge1.Services
         public Task<SubmissionInfoDto> CreateSubmissionAsync(SubmissionCreateDto dto);
     }
 
-    public class SubmissionService : ISubmissionService
+    public class SubmissionService : LoggableService<SubmissionService>, ISubmissionService
     {
         private const int PageSize = 50;
 
-        private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _manager;
-        private readonly IHttpContextAccessor _accessor;
-        private readonly IContestJudge _judge;
-        private readonly ILogger<SubmissionService> _logger;
+        protected readonly IContestJudge Judge;
 
-        public SubmissionService(ApplicationDbContext context, UserManager<ApplicationUser> manager,
-            IHttpContextAccessor accessor, IContestJudge judge, ILogger<SubmissionService> logger)
+        public SubmissionService(IServiceProvider provider) : base(provider)
         {
-            _context = context;
-            _manager = manager;
-            _accessor = accessor;
-            _judge = judge;
-            _logger = logger;
+            Judge = provider.GetRequiredService<IContestJudge>();
         }
 
         private async Task EnsureUserCanViewSubmissionAsync(Submission submission)
         {
-            var user = await _manager.GetUserAsync(_accessor.HttpContext.User);
-            if (await _manager.IsInRoleAsync(user, ApplicationRoles.Administrator) ||
-                await _manager.IsInRoleAsync(user, ApplicationRoles.SubmissionManager))
+            var user = await Manager.GetUserAsync(Accessor.HttpContext.User);
+            if (await Manager.IsInRoleAsync(user, ApplicationRoles.Administrator) ||
+                await Manager.IsInRoleAsync(user, ApplicationRoles.SubmissionManager))
             {
                 return;
             }
 
             var accessible = submission.UserId == user.Id
-                             || await _context.Submissions.AnyAsync(s => s.Id == submission.Id
+                             || await Context.Submissions.AnyAsync(s => s.Id == submission.Id
                                                                          && s.UserId == user.Id
                                                                          && s.Verdict == Verdict.Accepted);
             if (!accessible)
@@ -69,13 +57,13 @@ namespace Judge1.Services
 
         private async Task ValidateSubmissionCreateDtoAsync(SubmissionCreateDto dto)
         {
-            var problem = await _context.Problems.FindAsync(dto.ProblemId);
+            var problem = await Context.Problems.FindAsync(dto.ProblemId);
             if (problem is null)
             {
                 throw new ValidationException("Invalid problem ID.");
             }
 
-            var contest = await _context.Contests.FindAsync(problem.ContestId);
+            var contest = await Context.Contests.FindAsync(problem.ContestId);
             if (contest.IsPublic)
             {
                 if (DateTime.Now.ToUniversalTime() < contest.BeginTime)
@@ -85,8 +73,8 @@ namespace Judge1.Services
             }
             else
             {
-                var userId = _accessor.HttpContext.User.GetSubjectId();
-                var registered = await _context.Registrations
+                var userId = Accessor.HttpContext.User.GetSubjectId();
+                var registered = await Context.Registrations
                     .AnyAsync(r => r.ContestId == contest.Id && r.UserId == userId);
                 if (DateTime.Now.ToUniversalTime() < contest.BeginTime ||
                     (!registered && DateTime.Now.ToUniversalTime() < contest.EndTime))
@@ -104,11 +92,11 @@ namespace Judge1.Services
         public async Task<PaginatedList<SubmissionInfoDto>> GetPaginatedSubmissionsAsync
             (int? contestId, int? problemId, string userId, Verdict? verdict, int? pageIndex)
         {
-            var submissions = _context.Submissions.AsQueryable();
+            var submissions = Context.Submissions.AsQueryable();
 
             if (contestId.HasValue)
             {
-                var problemIds = await _context.Problems
+                var problemIds = await Context.Problems
                     .Where(p => p.ContestId == contestId.GetValueOrDefault())
                     .Select(p => p.Id)
                     .ToListAsync();
@@ -136,7 +124,7 @@ namespace Judge1.Services
 
         public async Task<List<SubmissionInfoDto>> GetBatchSubmissionInfosAsync(IEnumerable<int> ids)
         {
-            return await _context.Submissions
+            return await Context.Submissions
                 .Where(s => ids.Contains(s.Id))
                 .Include(s => s.User)
                 .Select(s => new SubmissionInfoDto(s))
@@ -145,26 +133,26 @@ namespace Judge1.Services
 
         public async Task<SubmissionInfoDto> GetSubmissionInfoAsync(int id)
         {
-            var submission = await _context.Submissions.FindAsync(id);
+            var submission = await Context.Submissions.FindAsync(id);
             if (submission == null)
             {
                 throw new NotFoundException();
             }
 
-            await _context.Entry(submission).Reference(s => s.User).LoadAsync();
+            await Context.Entry(submission).Reference(s => s.User).LoadAsync();
             return new SubmissionInfoDto(submission);
         }
 
         public async Task<SubmissionViewDto> GetSubmissionViewAsync(int id)
         {
-            var submission = await _context.Submissions.FindAsync(id);
+            var submission = await Context.Submissions.FindAsync(id);
             if (submission == null)
             {
                 throw new NotFoundException();
             }
 
             await EnsureUserCanViewSubmissionAsync(submission);
-            await _context.Entry(submission).Reference(s => s.User).LoadAsync();
+            await Context.Entry(submission).Reference(s => s.User).LoadAsync();
             return new SubmissionViewDto(submission);
         }
 
@@ -173,16 +161,16 @@ namespace Judge1.Services
             await ValidateSubmissionCreateDtoAsync(dto);
             var submission = new Submission()
             {
-                UserId = _accessor.HttpContext.User.GetSubjectId(),
+                UserId = Accessor.HttpContext.User.GetSubjectId(),
                 ProblemId = dto.ProblemId.GetValueOrDefault(),
                 Program = dto.Program
             };
-            await _context.Submissions.AddAsync(submission);
-            await _context.SaveChangesAsync();
+            await Context.Submissions.AddAsync(submission);
+            await Context.SaveChangesAsync();
 
-            BackgroundJob.Enqueue(() => _judge.JudgeSubmission(submission.Id));
+            BackgroundJob.Enqueue(() => Judge.JudgeSubmission(submission.Id));
 
-            await _context.Entry(submission).Reference(s => s.User).LoadAsync();
+            await Context.Entry(submission).Reference(s => s.User).LoadAsync();
             return new SubmissionInfoDto(submission);
         }
     }

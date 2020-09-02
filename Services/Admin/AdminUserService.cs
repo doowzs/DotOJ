@@ -1,13 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using Judge1.Data;
 using Judge1.Exceptions;
 using Judge1.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Judge1.Services.Admin
 {
@@ -19,22 +16,17 @@ namespace Judge1.Services.Admin
         public Task DeleteUserAsync(string id);
     }
 
-    public class AdminUserService : IAdminUserService
+    public class AdminUserService : LoggableService<AdminUserService>, IAdminUserService
     {
         private const int PageSize = 50;
 
-        private readonly UserManager<ApplicationUser> _manager;
-        private readonly ILogger<AdminUserService> _logger;
-
-        public AdminUserService(UserManager<ApplicationUser> manager, ILogger<AdminUserService> logger)
+        public AdminUserService(IServiceProvider provider): base(provider)
         {
-            _manager = manager;
-            _logger = logger;
         }
 
         private async Task EnsureUserExists(string id)
         {
-            var user = await _manager.FindByIdAsync(id);
+            var user = await Manager.FindByIdAsync(id);
             if (user == null)
             {
                 throw new NotFoundException();
@@ -43,7 +35,7 @@ namespace Judge1.Services.Admin
 
         private async Task ValidateApplicationUserEditDto(string id, ApplicationUserEditDto dto)
         {
-            if (await _manager.Users.AnyAsync(u => u.Id != id && u.ContestantId == dto.ContestantId))
+            if (await Manager.Users.AnyAsync(u => u.Id != id && u.ContestantId == dto.ContestantId))
             {
                 throw new ValidationException("Contestant ID already taken.");
             }
@@ -51,14 +43,14 @@ namespace Judge1.Services.Admin
 
         public async Task<PaginatedList<ApplicationUserInfoDto>> GetPaginatedUserInfosAsync(int? pageIndex)
         {
-            return await _manager.Users.PaginateAsync(u => new ApplicationUserInfoDto(u), pageIndex ?? 1, PageSize);
+            return await Manager.Users.PaginateAsync(u => new ApplicationUserInfoDto(u), pageIndex ?? 1, PageSize);
         }
 
         public async Task<ApplicationUserEditDto> GetUserEditAsync(string id)
         {
             await EnsureUserExists(id);
-            var user = await _manager.FindByIdAsync(id);
-            var roles = await _manager.GetRolesAsync(user);
+            var user = await Manager.FindByIdAsync(id);
+            var roles = await Manager.GetRolesAsync(user);
             return new ApplicationUserEditDto(user, roles);
         }
 
@@ -67,10 +59,10 @@ namespace Judge1.Services.Admin
             await EnsureUserExists(id);
             await ValidateApplicationUserEditDto(id, dto);
 
-            var user = await _manager.FindByIdAsync(id);
+            var user = await Manager.FindByIdAsync(id);
             user.ContestantId = dto.ContestantId;
             user.ContestantName = dto.ContestantName;
-            await _manager.UpdateAsync(user);
+            await Manager.UpdateAsync(user);
 
             var pairs = new List<KeyValuePair<bool, string>>
             {
@@ -85,34 +77,34 @@ namespace Judge1.Services.Admin
             {
                 if (pair.Key)
                 {
-                    if (!await _manager.IsInRoleAsync(user, pair.Value))
+                    if (!await Manager.IsInRoleAsync(user, pair.Value))
                     {
-                        await _manager.AddToRoleAsync(user, pair.Value);
+                        await Manager.AddToRoleAsync(user, pair.Value);
                     }
                 }
                 else
                 {
-                    if (await _manager.IsInRoleAsync(user, pair.Value))
+                    if (await Manager.IsInRoleAsync(user, pair.Value))
                     {
-                        await _manager.RemoveFromRoleAsync(user, pair.Value);
+                        await Manager.RemoveFromRoleAsync(user, pair.Value);
                     }
                 }
             }
 
-            return new ApplicationUserEditDto(user, await _manager.GetRolesAsync(user));
+            return new ApplicationUserEditDto(user, await Manager.GetRolesAsync(user));
         }
 
         public async Task DeleteUserAsync(string id)
         {
             await EnsureUserExists(id);
-            var user = await _manager.FindByIdAsync(id);
-            var roles = await _manager.GetRolesAsync(user);
+            var user = await Manager.FindByIdAsync(id);
+            var roles = await Manager.GetRolesAsync(user);
             if (roles.Count > 0)
             {
                 throw new ValidationException("Cannot delete user with some roles.");
             }
 
-            await _manager.DeleteAsync(user);
+            await Manager.DeleteAsync(user);
         }
     }
 }

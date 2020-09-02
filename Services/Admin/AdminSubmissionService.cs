@@ -4,12 +4,11 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Hangfire;
-using Judge1.Data;
 using Judge1.Exceptions;
 using Judge1.Judges;
 using Judge1.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Judge1.Services.Admin
 {
@@ -24,25 +23,20 @@ namespace Judge1.Services.Admin
         public Task<List<SubmissionInfoDto>> RejudgeSubmissionsAsync(int? contestId, int? problemId, int? submissionId);
     }
 
-    public class AdminSubmissionService : IAdminSubmissionService
+    public class AdminSubmissionService : LoggableService<AdminSubmissionService>, IAdminSubmissionService
     {
         private const int PageSize = 50;
 
-        private readonly ApplicationDbContext _context;
-        private readonly IContestJudge _judge;
-        private readonly ILogger<AdminSubmissionService> _logger;
+        protected readonly IContestJudge Judge;
 
-        public AdminSubmissionService(ApplicationDbContext context, IContestJudge judge,
-            ILogger<AdminSubmissionService> logger)
+        public AdminSubmissionService(IServiceProvider provider) : base(provider)
         {
-            _context = context;
-            _judge = judge;
-            _logger = logger;
+            Judge = provider.GetRequiredService<IContestJudge>();
         }
 
         private async Task EnsureSubmissionExists(int id)
         {
-            var submission = await _context.Submissions.FindAsync(id);
+            var submission = await Context.Submissions.FindAsync(id);
             if (submission == null)
             {
                 throw new NotFoundException();
@@ -62,11 +56,11 @@ namespace Judge1.Services.Admin
         public async Task<PaginatedList<SubmissionInfoDto>> GetPaginatedSubmissionInfosAsync
             (int? contestId, int? problemId, string userId, Verdict? verdict, int? pageIndex)
         {
-            var submissions = _context.Submissions.AsQueryable();
+            var submissions = Context.Submissions.AsQueryable();
 
             if (contestId.HasValue)
             {
-                var problemIds = await _context.Problems
+                var problemIds = await Context.Problems
                     .Where(p => p.ContestId == contestId.GetValueOrDefault())
                     .Select(p => p.Id)
                     .ToListAsync();
@@ -95,8 +89,8 @@ namespace Judge1.Services.Admin
         public async Task<SubmissionEditDto> GetSubmissionEditAsync(int id)
         {
             await EnsureSubmissionExists(id);
-            var submission = await _context.Submissions.FindAsync(id);
-            await _context.Entry(submission).Reference(s => s.User).LoadAsync();
+            var submission = await Context.Submissions.FindAsync(id);
+            await Context.Entry(submission).Reference(s => s.User).LoadAsync();
             return new SubmissionEditDto(submission);
         }
 
@@ -104,22 +98,22 @@ namespace Judge1.Services.Admin
         {
             await EnsureSubmissionExists(id);
             await ValidateSubmissionEditDto(dto);
-            var submission = await _context.Submissions.FindAsync(id);
+            var submission = await Context.Submissions.FindAsync(id);
             submission.Verdict = dto.Verdict.GetValueOrDefault();
             submission.Time = submission.Memory = null;
             submission.FailedOn = -1;
             submission.Score = submission.Verdict == Verdict.Accepted ? 100 : 0;
             submission.Message = dto.Message;
             submission.JudgedAt = DateTime.Now.ToUniversalTime();
-            _context.Update(submission);
-            await _context.SaveChangesAsync();
+            Context.Update(submission);
+            await Context.SaveChangesAsync();
 
-            var problem = await _context.Problems.FindAsync(submission.ProblemId);
-            var registration = await _context.Registrations.FindAsync(submission.UserId, problem.ContestId);
-            await registration.RebuildStatisticsAsync(_context);
-            await _context.SaveChangesAsync();
+            var problem = await Context.Problems.FindAsync(submission.ProblemId);
+            var registration = await Context.Registrations.FindAsync(submission.UserId, problem.ContestId);
+            await registration.RebuildStatisticsAsync(Context);
+            await Context.SaveChangesAsync();
 
-            await _context.Entry(submission).Reference(s => s.User).LoadAsync();
+            await Context.Entry(submission).Reference(s => s.User).LoadAsync();
             return new SubmissionEditDto(submission);
         }
 
@@ -127,14 +121,14 @@ namespace Judge1.Services.Admin
         {
             await EnsureSubmissionExists(id);
             var submission = new Submission {Id = id};
-            _context.Submissions.Attach(submission);
-            _context.Submissions.Remove(submission);
-            await _context.SaveChangesAsync();
+            Context.Submissions.Attach(submission);
+            Context.Submissions.Remove(submission);
+            await Context.SaveChangesAsync();
 
-            var problem = await _context.Problems.FindAsync(submission.ProblemId);
-            var registration = await _context.Registrations.FindAsync(submission.UserId, problem.ContestId);
-            await registration.RebuildStatisticsAsync(_context);
-            await _context.SaveChangesAsync();
+            var problem = await Context.Problems.FindAsync(submission.ProblemId);
+            var registration = await Context.Registrations.FindAsync(submission.UserId, problem.ContestId);
+            await registration.RebuildStatisticsAsync(Context);
+            await Context.SaveChangesAsync();
         }
 
         public async Task<List<SubmissionInfoDto>> RejudgeSubmissionsAsync
@@ -145,10 +139,10 @@ namespace Judge1.Services.Admin
                 throw new ValidationException("At lease one parameter is required.");
             }
 
-            var queryable = _context.Submissions.AsQueryable();
+            var queryable = Context.Submissions.AsQueryable();
             if (contestId.HasValue)
             {
-                var problemIds = await _context.Problems
+                var problemIds = await Context.Problems
                     .Where(p => p.ContestId == contestId.Value)
                     .Select(p => p.Id)
                     .ToListAsync();
@@ -175,14 +169,14 @@ namespace Judge1.Services.Admin
                 submission.JudgedAt = null;
             }
 
-            _context.UpdateRange(submissions);
-            await _context.SaveChangesAsync();
+            Context.UpdateRange(submissions);
+            await Context.SaveChangesAsync();
 
             var infos = new List<SubmissionInfoDto>();
             foreach (var submission in submissions)
             {
                 infos.Add(new SubmissionInfoDto(submission));
-                BackgroundJob.Enqueue(() => _judge.JudgeSubmission(submission.Id));
+                BackgroundJob.Enqueue(() => Judge.JudgeSubmission(submission.Id));
             }
 
             return infos;

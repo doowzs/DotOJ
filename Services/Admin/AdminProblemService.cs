@@ -4,16 +4,11 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.IO.Compression;
 using System.Threading.Tasks;
-using IdentityModel;
-using Judge1.Data;
 using Judge1.Exceptions;
 using Judge1.Models;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.Extensions.FileSystemGlobbing;
-using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
 namespace Judge1.Services.Admin
@@ -29,29 +24,20 @@ namespace Judge1.Services.Admin
         public Task<List<TestCase>> UpdateProblemTestCasesAsync(int id, IFormFile file);
     }
 
-    public class AdminProblemService : IAdminProblemService
+    public class AdminProblemService : LoggableService<AdminProblemService>, IAdminProblemService
     {
         private const int PageSize = 20;
 
-        private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _manager;
-        private readonly IHttpContextAccessor _accessor;
-        private readonly IOptions<JudgingConfig> _options;
-        private readonly ILogger<AdminProblemService> _logger;
+        protected readonly IOptions<JudgingConfig> Options;
 
-        public AdminProblemService(ApplicationDbContext context, UserManager<ApplicationUser> manager,
-            IHttpContextAccessor accessor, IOptions<JudgingConfig> options, ILogger<AdminProblemService> logger)
+        public AdminProblemService(IServiceProvider provider) : base(provider)
         {
-            _context = context;
-            _manager = manager;
-            _accessor = accessor;
-            _options = options;
-            _logger = logger;
+            Options = provider.GetRequiredService<IOptions<JudgingConfig>>();
         }
 
         private async Task EnsureProblemExists(int id)
         {
-            if (!await _context.Problems.AnyAsync(p => p.Id == id))
+            if (!await Context.Problems.AnyAsync(p => p.Id == id))
             {
                 throw new NotFoundException();
             }
@@ -59,7 +45,7 @@ namespace Judge1.Services.Admin
 
         private async Task ValidateProblemEditDtoAsync(ProblemEditDto dto)
         {
-            var contest = await _context.Contests.FindAsync(dto.ContestId.GetValueOrDefault());
+            var contest = await Context.Contests.FindAsync(dto.ContestId.GetValueOrDefault());
             if (contest == null)
             {
                 throw new ValidationException("Invalid contest ID.");
@@ -93,13 +79,13 @@ namespace Judge1.Services.Admin
 
         public async Task<PaginatedList<ProblemInfoDto>> GetPaginatedProblemInfosAsync(int? pageIndex)
         {
-            return await _context.Problems.PaginateAsync(p => new ProblemInfoDto(p), pageIndex ?? 1, PageSize);
+            return await Context.Problems.PaginateAsync(p => new ProblemInfoDto(p), pageIndex ?? 1, PageSize);
         }
 
         public async Task<ProblemEditDto> GetProblemEditAsync(int id)
         {
             await EnsureProblemExists(id);
-            return new ProblemEditDto(await _context.Problems.FindAsync(id));
+            return new ProblemEditDto(await Context.Problems.FindAsync(id));
         }
 
         public async Task<ProblemEditDto> CreateProblemAsync(ProblemEditDto dto)
@@ -120,8 +106,8 @@ namespace Judge1.Services.Admin
                 SampleCases = dto.SampleCases,
                 TestCases = new List<TestCase>()
             };
-            await _context.Problems.AddAsync(problem);
-            await _context.SaveChangesAsync();
+            await Context.Problems.AddAsync(problem);
+            await Context.SaveChangesAsync();
             return new ProblemEditDto(problem);
         }
 
@@ -129,7 +115,7 @@ namespace Judge1.Services.Admin
         {
             await EnsureProblemExists(id);
             await ValidateProblemEditDtoAsync(dto);
-            var problem = await _context.Problems.FindAsync(id);
+            var problem = await Context.Problems.FindAsync(id);
             problem.ContestId = dto.ContestId.GetValueOrDefault();
             problem.Title = dto.Title;
             problem.Description = dto.Description;
@@ -141,8 +127,8 @@ namespace Judge1.Services.Admin
             problem.HasSpecialJudge = false;
             problem.HasHacking = false;
             problem.SampleCases = dto.SampleCases;
-            _context.Problems.Update(problem);
-            await _context.SaveChangesAsync();
+            Context.Problems.Update(problem);
+            await Context.SaveChangesAsync();
             return new ProblemEditDto(problem);
         }
 
@@ -150,15 +136,15 @@ namespace Judge1.Services.Admin
         {
             await EnsureProblemExists(id);
             var problem = new Problem {Id = id};
-            _context.Problems.Attach(problem);
-            _context.Problems.Remove(problem);
-            await _context.SaveChangesAsync();
+            Context.Problems.Attach(problem);
+            Context.Problems.Remove(problem);
+            await Context.SaveChangesAsync();
         }
 
         public async Task<List<TestCase>> GetProblemTestCasesAsync(int id)
         {
             await EnsureProblemExists(id);
-            return (await _context.Problems.FindAsync(id)).TestCases;
+            return (await Context.Problems.FindAsync(id)).TestCases;
         }
 
         public async Task<List<TestCase>> UpdateProblemTestCasesAsync(int id, IFormFile file)
@@ -171,7 +157,7 @@ namespace Judge1.Services.Admin
             {
                 var inputs = new HashSet<string>();
                 var outputs = new HashSet<string>();
-                var path = Path.Combine(_options.Value.DataPath, id.ToString());
+                var path = Path.Combine(Options.Value.DataPath, id.ToString());
 
                 // Traverse all files in zip archive and get filenames.
                 foreach (var entry in zip.Entries)
@@ -238,9 +224,9 @@ namespace Judge1.Services.Admin
                 }
             }
 
-            var problem = await _context.Problems.FindAsync(id);
+            var problem = await Context.Problems.FindAsync(id);
             problem.TestCases = testCases;
-            await _context.SaveChangesAsync();
+            await Context.SaveChangesAsync();
 
             return testCases;
         }

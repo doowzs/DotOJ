@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading.Tasks;
 using IdentityServer4.Extensions;
-using Judge1.Data;
 using Judge1.Exceptions;
 using Judge1.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Judge1.Services
 {
@@ -20,27 +14,17 @@ namespace Judge1.Services
         public Task<ProblemViewDto> GetProblemViewAsync(int id);
     }
 
-    public class ProblemService : IProblemService
+    public class ProblemService : LoggableService<ProblemService>, IProblemService
     {
         private const int PageSize = 50;
 
-        private readonly ApplicationDbContext _context;
-        private readonly UserManager<ApplicationUser> _manager;
-        private readonly IHttpContextAccessor _accessor;
-        private readonly ILogger<ProblemService> _logger;
-
-        public ProblemService(ApplicationDbContext context, UserManager<ApplicationUser> manager,
-            IHttpContextAccessor accessor, ILogger<ProblemService> logger)
+        public ProblemService(IServiceProvider provider) : base(provider)
         {
-            _context = context;
-            _manager = manager;
-            _accessor = accessor;
-            _logger = logger;
         }
 
         private async Task EnsureProblemExistsAsync(int id)
         {
-            if (!await _context.Problems.AnyAsync(p => p.Id == id))
+            if (!await Context.Problems.AnyAsync(p => p.Id == id))
             {
                 throw new NotFoundException();
             }
@@ -48,15 +32,15 @@ namespace Judge1.Services
 
         private async Task EnsureUserCanViewProblemAsync(int id)
         {
-            var user = await _manager.GetUserAsync(_accessor.HttpContext.User);
-            if (await _manager.IsInRoleAsync(user, ApplicationRoles.Administrator) ||
-                await _manager.IsInRoleAsync(user, ApplicationRoles.ContestManager))
+            var user = await Manager.GetUserAsync(Accessor.HttpContext.User);
+            if (await Manager.IsInRoleAsync(user, ApplicationRoles.Administrator) ||
+                await Manager.IsInRoleAsync(user, ApplicationRoles.ContestManager))
             {
                 return;
             }
 
-            var problem = await _context.Problems.FindAsync(id);
-            await _context.Entry(problem).Reference<Contest>(p => p.Contest).LoadAsync();
+            var problem = await Context.Problems.FindAsync(id);
+            await Context.Entry(problem).Reference<Contest>(p => p.Contest).LoadAsync();
             if (problem.Contest.IsPublic)
             {
                 if (DateTime.Now.ToUniversalTime() < problem.Contest.BeginTime)
@@ -66,7 +50,7 @@ namespace Judge1.Services
             }
             else
             {
-                var registered = await _context.Registrations
+                var registered = await Context.Registrations
                     .AnyAsync(r => r.ContestId == problem.Contest.Id && r.UserId == user.Id);
                 if (DateTime.Now.ToUniversalTime() < problem.Contest.BeginTime ||
                     (!registered && DateTime.Now.ToUniversalTime() < problem.Contest.EndTime))
@@ -78,12 +62,12 @@ namespace Judge1.Services
 
         public async Task<PaginatedList<ProblemInfoDto>> GetPaginatedProblemInfosAsync(int? pageIndex)
         {
-            var userId = _accessor.HttpContext.User.GetSubjectId();
-            var problems = await _context.Problems.PaginateAsync(pageIndex ?? 1, PageSize);
+            var userId = Accessor.HttpContext.User.GetSubjectId();
+            var problems = await Context.Problems.PaginateAsync(pageIndex ?? 1, PageSize);
             var infos = new List<ProblemInfoDto>();
             foreach (var problem in problems.Items)
             {
-                var solved = await _context.Submissions
+                var solved = await Context.Submissions
                     .AnyAsync(s => s.ProblemId == problem.Id && s.UserId == userId && s.Verdict == Verdict.Accepted);
                 infos.Add(new ProblemInfoDto(problem, solved));
             }
@@ -95,7 +79,7 @@ namespace Judge1.Services
         {
             await EnsureProblemExistsAsync(id);
             await EnsureUserCanViewProblemAsync(id);
-            return new ProblemViewDto(await _context.Problems.FindAsync(id));
+            return new ProblemViewDto(await Context.Problems.FindAsync(id));
         }
     }
 }

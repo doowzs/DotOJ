@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Judge1.Data;
 using Judge1.Exceptions;
 using Judge1.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Judge1.Services.Admin
 {
@@ -24,22 +22,17 @@ namespace Judge1.Services.Admin
         public Task<List<RegistrationInfoDto>> CopyRegistrationsAsync(int to, int from);
     }
 
-    public class AdminContestService : IAdminContestService
+    public class AdminContestService : LoggableService<AdminContestService>, IAdminContestService
     {
         private const int PageSize = 20;
 
-        private readonly ApplicationDbContext _context;
-        private readonly ILogger<AdminContestService> _logger;
-
-        public AdminContestService(ApplicationDbContext context, ILogger<AdminContestService> logger)
+        public AdminContestService(IServiceProvider provider) : base(provider)
         {
-            _context = context;
-            _logger = logger;
         }
 
         private async Task EnsureContestExistsAsync(int id)
         {
-            if (!await _context.Contests.AnyAsync(c => c.Id == id))
+            if (!await Context.Contests.AnyAsync(c => c.Id == id))
             {
                 throw new NotFoundException();
             }
@@ -68,7 +61,7 @@ namespace Judge1.Services.Admin
 
         public async Task<PaginatedList<ContestInfoDto>> GetPaginatedContestInfosAsync(int? pageIndex)
         {
-            var contests = await _context.Contests
+            var contests = await Context.Contests
                 .OrderByDescending(c => c.Id)
                 .PaginateAsync(pageIndex ?? 1, PageSize);
             var infos = contests.Items.Select(c => new ContestInfoDto(c, false)).ToList();
@@ -78,7 +71,7 @@ namespace Judge1.Services.Admin
         public async Task<ContestEditDto> GetContestEditAsync(int id)
         {
             await EnsureContestExistsAsync(id);
-            return new ContestEditDto(await _context.Contests.FindAsync(id));
+            return new ContestEditDto(await Context.Contests.FindAsync(id));
         }
 
         public async Task<ContestEditDto> CreateContestAsync(ContestEditDto dto)
@@ -93,8 +86,8 @@ namespace Judge1.Services.Admin
                 BeginTime = dto.BeginTime,
                 EndTime = dto.EndTime
             };
-            await _context.Contests.AddAsync(contest);
-            await _context.SaveChangesAsync();
+            await Context.Contests.AddAsync(contest);
+            await Context.SaveChangesAsync();
             return new ContestEditDto(contest);
         }
 
@@ -102,15 +95,15 @@ namespace Judge1.Services.Admin
         {
             await EnsureContestExistsAsync(id);
             await ValidateContestEditDtoAsync(dto);
-            var contest = await _context.Contests.FindAsync(id);
+            var contest = await Context.Contests.FindAsync(id);
             contest.Title = dto.Title;
             contest.Description = dto.Description;
             contest.IsPublic = dto.IsPublic.GetValueOrDefault();
             contest.Mode = dto.Mode.GetValueOrDefault();
             contest.BeginTime = dto.BeginTime;
             contest.EndTime = dto.EndTime;
-            _context.Contests.Update(contest);
-            await _context.SaveChangesAsync();
+            Context.Contests.Update(contest);
+            await Context.SaveChangesAsync();
             return new ContestEditDto(contest);
         }
 
@@ -118,15 +111,15 @@ namespace Judge1.Services.Admin
         {
             await EnsureContestExistsAsync(id);
             var contest = new Contest {Id = id};
-            _context.Contests.Attach(contest);
-            _context.Contests.Remove(contest);
-            await _context.SaveChangesAsync();
+            Context.Contests.Attach(contest);
+            Context.Contests.Remove(contest);
+            await Context.SaveChangesAsync();
         }
 
         public async Task<List<RegistrationInfoDto>> GetRegistrationsAsync(int id)
         {
             await EnsureContestExistsAsync(id);
-            return await _context.Registrations
+            return await Context.Registrations
                 .Where(r => r.ContestId == id)
                 .Include(r => r.User)
                 .Select(r => new RegistrationInfoDto(r))
@@ -140,14 +133,14 @@ namespace Judge1.Services.Admin
             foreach (var userId in userIds)
             {
                 var registered =
-                    await _context.Registrations.AnyAsync(r => r.ContestId == id && r.UserId == userId);
+                    await Context.Registrations.AnyAsync(r => r.ContestId == id && r.UserId == userId);
                 if (registered)
                 {
-                    var registration = await _context.Registrations.FindAsync(userId, id);
-                    await _context.Entry(registration).Reference(r => r.User).LoadAsync();
+                    var registration = await Context.Registrations.FindAsync(userId, id);
+                    await Context.Entry(registration).Reference(r => r.User).LoadAsync();
                     registrations.Add(new RegistrationInfoDto(registration));
                 }
-                else if (await _context.Users.AnyAsync(u => u.Id == userId))
+                else if (await Context.Users.AnyAsync(u => u.Id == userId))
                 {
                     var registration = new Registration
                     {
@@ -157,14 +150,14 @@ namespace Judge1.Services.Admin
                         IsParticipant = true,
                         Statistics = new List<ProblemStatistics>()
                     };
-                    await _context.Registrations.AddAsync(registration);
+                    await Context.Registrations.AddAsync(registration);
 
-                    await _context.Entry(registration).Reference(r => r.User).LoadAsync();
+                    await Context.Entry(registration).Reference(r => r.User).LoadAsync();
                     registrations.Add(new RegistrationInfoDto(registration));
                 }
             }
 
-            await _context.SaveChangesAsync();
+            await Context.SaveChangesAsync();
             return registrations;
         }
 
@@ -174,7 +167,7 @@ namespace Judge1.Services.Admin
             foreach (var userId in userIds)
             {
                 var registered =
-                    await _context.Registrations.AnyAsync(r => r.ContestId == id && r.UserId == userId);
+                    await Context.Registrations.AnyAsync(r => r.ContestId == id && r.UserId == userId);
                 if (registered)
                 {
                     var registration = new Registration
@@ -182,12 +175,12 @@ namespace Judge1.Services.Admin
                         ContestId = id,
                         UserId = userId,
                     };
-                    _context.Registrations.Attach(registration);
-                    _context.Registrations.Remove(registration);
+                    Context.Registrations.Attach(registration);
+                    Context.Registrations.Remove(registration);
                 }
             }
 
-            await _context.SaveChangesAsync();
+            await Context.SaveChangesAsync();
         }
 
         public async Task<List<RegistrationInfoDto>> CopyRegistrationsAsync(int to, int from)
@@ -202,11 +195,11 @@ namespace Judge1.Services.Admin
 
             List<Registration> registrations;
 
-            registrations = await _context.Registrations.Where(r => r.ContestId == to).ToListAsync();
-            _context.Registrations.RemoveRange(registrations);
-            await _context.SaveChangesAsync();
+            registrations = await Context.Registrations.Where(r => r.ContestId == to).ToListAsync();
+            Context.Registrations.RemoveRange(registrations);
+            await Context.SaveChangesAsync();
 
-            registrations = await _context.Registrations
+            registrations = await Context.Registrations
                 .Where(r => r.ContestId == from)
                 .Select(r => new Registration
                 {
@@ -217,10 +210,10 @@ namespace Judge1.Services.Admin
                     Statistics = new List<ProblemStatistics>()
                 })
                 .ToListAsync();
-            await _context.Registrations.AddRangeAsync(registrations);
-            await _context.SaveChangesAsync();
+            await Context.Registrations.AddRangeAsync(registrations);
+            await Context.SaveChangesAsync();
 
-            return await _context.Registrations
+            return await Context.Registrations
                 .Where(r => r.ContestId == to)
                 .Include(r => r.User)
                 .Select(r => new RegistrationInfoDto(r))
