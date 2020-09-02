@@ -132,31 +132,37 @@ namespace Judge1.Judges
                         .Where(p => p.ContestId == contest.Id)
                         .Select(p => p.Id)
                         .ToListAsync();
+                    var userSubmissions = _context.Submissions.Where(s => s.UserId == user.Id);
                     foreach (var problemId in problemIds)
                     {
+                        if (!await userSubmissions.AnyAsync(s => s.ProblemId == problemId))
+                        {
+                            continue;
+                        }
+
+
                         DateTime? acceptedAt = null;
                         int penalties = 0, score = 0;
-
-                        var firstSolved = await _context.Submissions
+                        var problemSubmissions = userSubmissions.Where(s => s.ProblemId == problemId);
+                        var firstSolved = await problemSubmissions
                             .OrderBy(s => s.Id)
-                            .Where(s => s.ProblemId == problemId && s.Verdict == Verdict.Accepted)
+                            .Where(s => s.Verdict == Verdict.Accepted)
                             .FirstOrDefaultAsync();
                         if (firstSolved != null)
                         {
                             acceptedAt = firstSolved.CreatedAt;
-                            penalties = await _context.Submissions
-                                .Where(s => s.ProblemId == problemId && s.Verdict > Verdict.Accepted &&
-                                            s.Id < firstSolved.Id && s.FailedOn > 0)
+                            penalties = await problemSubmissions
+                                .Where(s => s.Verdict > Verdict.Accepted && s.Id < firstSolved.Id && s.FailedOn > 0)
                                 .CountAsync();
                         }
                         else
                         {
-                            penalties = await _context.Submissions
+                            penalties = await problemSubmissions
                                 .Where(s => s.ProblemId == problemId && s.Verdict > Verdict.Accepted && s.FailedOn > 0)
                                 .CountAsync();
                         }
 
-                        score = await _context.Submissions
+                        score = await problemSubmissions
                             .Where(s => s.ProblemId == problemId && s.Score.HasValue)
                             .MaxAsync(s => s.Score.GetValueOrDefault());
 
