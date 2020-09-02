@@ -1,8 +1,8 @@
 {
   "ConnectionStrings": {
     "SqliteConnection": "DataSource=app.db;",
-    "SqlExpressConnection": "Server=mssql;Database=judge1;User Id=judge1;Password=judge1;",
-    "HangfireConnection": "Server=mssql;Database=hangfire;User Id=hangfire;Password=hangfire;"
+    "MySqlConnection": "Server=mariadb;Uid=root;Pwd=root;Database=judge1",
+    "HangfireConnection": "Server=mariadb;Uid=root;Pwd=root;Database=hangfire;"
   },
   "Application": {
     "Host": "https://judge1",
