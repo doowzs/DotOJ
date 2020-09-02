@@ -80,7 +80,6 @@ namespace Judge1.Services.Judge
 
             try
             {
-                throw new Exception("THIS IS A TEST");
                 await LogInformation($"JudgeSubmission Start Id={submission.Id} Problem={submission.ProblemId}");
 
                 var user = await Manager.FindByIdAsync(submission.UserId);
