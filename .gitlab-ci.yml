@@ -15,6 +15,6 @@ package:
       - master
   artifacts:
     paths:
-      - Dockerize/release.zip
+      - dockerize.zip
   script:
     - bash ./release.sh
