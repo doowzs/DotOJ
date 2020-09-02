@@ -161,7 +161,7 @@ namespace Judge1.Judges.Submission
                     Memory = (int) memory,
                     Message = "",
                     FailedOn = failedOn,
-                    Score = total == 0 ? 100 : count * 100 / total
+                    Score = total == 0 ? (verdict == Verdict.Accepted ? 100 : 0) : count * 100 / total
                 };
             }
             else
