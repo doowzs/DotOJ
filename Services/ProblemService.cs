@@ -84,7 +84,7 @@ namespace Judge1.Services
             foreach (var problem in problems.Items)
             {
                 var solved = await _context.Submissions
-                    .AnyAsync(s => s.ProblemId == problem.Id && s.UserId == userId && s.FailedOn == -1);
+                    .AnyAsync(s => s.ProblemId == problem.Id && s.UserId == userId && s.Verdict == Verdict.Accepted);
                 infos.Add(new ProblemInfoDto(problem, solved));
             }
 

@@ -151,7 +151,8 @@ namespace Judge1.Services
                 foreach (var problem in contest.Problems)
                 {
                     var solved = await _context.Submissions
-                        .AnyAsync(s => s.ProblemId == problem.Id && s.UserId == userId && s.FailedOn == -1);
+                        .AnyAsync(s =>
+                            s.ProblemId == problem.Id && s.UserId == userId && s.Verdict == Verdict.Accepted);
                     problemInfos.Add(new ProblemInfoDto(problem, solved));
                 }
             }
