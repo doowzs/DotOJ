@@ -11,7 +11,7 @@ namespace Judge1.Notifications
     public interface INotificationBase
     {
         public bool IsEnabled();
-        public Task SendNotification(bool atAdmins, string message, params object[] args);
+        public Task SendNotification(bool atAdmins, string title, string message, params object[] args);
     }
 
     public abstract class NotificationBase<TL> : INotificationBase where TL : class
@@ -32,7 +32,7 @@ namespace Judge1.Notifications
             return false;
         }
 
-        public virtual Task SendNotification(bool atAdmins, string message, params object[] args)
+        public virtual Task SendNotification(bool atAdmins, string title, string message, params object[] args)
         {
             return Task.CompletedTask;
         }

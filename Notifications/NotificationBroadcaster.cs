@@ -7,7 +7,7 @@ namespace Judge1.Notifications
 {
     public interface INotificationBroadcaster
     {
-        public Task SendNotification(bool atAdmins, string message, params object[] args);
+        public Task SendNotification(bool atAdmins, string title, string message, params object[] args);
     }
 
     public class NotificationBroadcaster : INotificationBroadcaster
@@ -20,13 +20,13 @@ namespace Judge1.Notifications
             Notifiers.Add((INotificationBase) provider.GetRequiredService<IDingTalkNotification>());
         }
 
-        public async Task SendNotification(bool atAdmins, string message, params object[] args)
+        public async Task SendNotification(bool atAdmins, string title, string message, params object[] args)
         {
             foreach (var notifier in Notifiers)
             {
                 if (notifier.IsEnabled())
                 {
-                    await notifier.SendNotification(atAdmins, message, args);
+                    await notifier.SendNotification(atAdmins, title, message, args);
                 }
             }
         }

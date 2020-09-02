@@ -5,6 +5,7 @@ namespace Judge1.Models
     [NotMapped]
     public class ApplicationConfig
     {
+        public string Host { get; set; }
         public string Title { get; set; }
         public string Author { get; set; }
         public string MessageOfTheDay { get; set; }

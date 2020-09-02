@@ -12,27 +12,27 @@ using Newtonsoft.Json;
 
 namespace Judge1.Notifications
 {
-    public class DingTalkText
+    public class DingTalkMarkdown
     {
-        [JsonProperty("content")] public string Content;
+        [JsonProperty("title")] public string Title { get; set; }
+        [JsonProperty("text")] public string Text { get; set; }
     }
 
     public class DingTalkAt
     {
-        [JsonProperty("atMobiles")] public IList<string> AtMobiles;
-        [JsonProperty("isAtAll")] public bool IsAtAll;
+        [JsonProperty("atMobiles")] public IList<string> AtMobiles { get; set; }
+        [JsonProperty("isAtAll")] public bool IsAtAll { get; set; }
     }
 
     public sealed class DingTalkRequest
     {
-        [JsonProperty("msgtype")] public string Type { get; set; }
-        [JsonProperty("text")] public DingTalkText Text { get; set; }
+        [JsonProperty("msgtype")] public string Type => "markdown";
+        [JsonProperty("markdown")] public DingTalkMarkdown Markdown { get; set; }
         [JsonProperty("at")] public DingTalkAt At { get; set; }
 
-        public DingTalkRequest(string content, IList<string> atMobiles, bool isAtAll)
+        public DingTalkRequest(string title, string content, IList<string> atMobiles, bool isAtAll)
         {
-            Type = "text";
-            Text = new DingTalkText {Content = content};
+            Markdown = new DingTalkMarkdown {Title = title, Text = content};
             At = new DingTalkAt {AtMobiles = atMobiles, IsAtAll = isAtAll};
         }
     }
@@ -45,9 +45,8 @@ namespace Judge1.Notifications
 
     public interface IDingTalkNotification
     {
-        public Task SendText(string message, params object[] args);
-        public Task SendText(bool isAtAll, string message, params object[] args);
-        public Task SendText(IList<string> atMobiles, bool isAtAll, string message, params object[] args);
+        public Task SendMarkdown
+            (IList<string> atMobiles, bool isAtAll, string title, string message, params object[] args);
     }
 
     public sealed class DingTalkNotification : NotificationBase<DingTalkNotification>, IDingTalkNotification
@@ -67,9 +66,9 @@ namespace Judge1.Notifications
             return Enabled;
         }
 
-        public override async Task SendNotification(bool atAdmins, string message, params object[] args)
+        public override async Task SendNotification(bool atAdmins, string title, string message, params object[] args)
         {
-            await SendText(atAdmins ? Admins : null, false, message, args);
+            await SendMarkdown(atAdmins ? Admins : null, false, title, message, args);
         }
 
         private string CalculateSignature(long timestamp)
@@ -80,22 +79,13 @@ namespace Judge1.Notifications
             return HttpUtility.UrlEncode(Convert.ToBase64String(signed), Encoding.UTF8);
         }
 
-        public async Task SendText(string message, params object[] args)
-        {
-            await SendText(null, false, message, args);
-        }
-
-        public async Task SendText(bool isAtAll, string message, params object[] args)
-        {
-            await SendText(null, isAtAll, message, args);
-        }
-
-        public async Task SendText(IList<string> atMobiles, bool isAtAll, string message, params object[] args)
+        public async Task SendMarkdown
+            (IList<string> atMobiles, bool isAtAll, string title, string message, params object[] args)
         {
             if (!Enabled) return;
 
             using var client = Factory.CreateClient();
-            var request = new DingTalkRequest(string.Format(message, args), atMobiles, isAtAll);
+            var request = new DingTalkRequest(title, string.Format(message, args), atMobiles, isAtAll);
             var jsonReq = JsonConvert.SerializeObject(request);
             var content = new StringContent(jsonReq, Encoding.UTF8, MediaTypeNames.Application.Json);
 
@@ -105,7 +95,7 @@ namespace Judge1.Notifications
 
             var jsonRes = await result.Content.ReadAsStringAsync();
             var response = JsonConvert.DeserializeObject<DingTalkResponse>(jsonRes);
-            if (response.Code == 310000)
+            if (response.Code > 0)
             {
                 Logger.LogError($"SendText Error Message={response.Message}");
             }
