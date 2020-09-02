@@ -18,15 +18,17 @@ namespace Judge1.Services
         protected readonly ILogger<T> Logger;
         protected readonly IServiceProvider Provider;
 
+        private bool _noUser;
         private ApplicationUser _user;
 
-        public LoggableService(IServiceProvider provider)
+        public LoggableService(IServiceProvider provider, bool noUser = false)
         {
             Context = provider.GetRequiredService<ApplicationDbContext>();
             Accessor = provider.GetRequiredService<IHttpContextAccessor>();
             Manager = provider.GetRequiredService<UserManager<ApplicationUser>>();
             Logger = provider.GetRequiredService<ILogger<T>>();
             Provider = provider;
+            _noUser = noUser;
         }
 
         public async Task GetCurrentLoggedInUser()
@@ -47,25 +49,45 @@ namespace Judge1.Services
         public async Task LogDebug(string message, params object[] args)
         {
             await GetCurrentLoggedInUser();
-            Logger.LogDebug($"{message} User={_user?.Email}", args);
+            if (_noUser)
+            {
+                Logger.LogDebug($"{message}", args);
+            } else {
+                Logger.LogDebug($"{message} User={_user?.Email}", args);
+            }
         }
 
         public async Task LogInformation(string message, params object[] args)
         {
             await GetCurrentLoggedInUser();
-            Logger.LogInformation($"{message} User={_user?.Email}", args);
+            if (_noUser)
+            {
+                Logger.LogInformation($"{message}", args);
+            } else {
+                Logger.LogInformation($"{message} User={_user?.Email}", args);
+            }
         }
 
         public async Task LogError(string message, params object[] args)
         {
             await GetCurrentLoggedInUser();
-            Logger.LogError($"{message} User={_user?.Email}", args);
+            if (_noUser)
+            {
+                Logger.LogError($"{message}", args);
+            } else {
+                Logger.LogError($"{message} User={_user?.Email}", args);
+            }
         }
 
         public async Task LogCritical(string message, params object[] args)
         {
             await GetCurrentLoggedInUser();
-            Logger.LogCritical($"{message} User={_user?.Email}", args);
+            if (_noUser)
+            {
+                Logger.LogCritical($"{message}", args);
+            } else {
+                Logger.LogCritical($"{message} User={_user?.Email}", args);
+            }
         }
     }
 }

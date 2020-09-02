@@ -14,7 +14,7 @@ namespace Judge1.Services.Judge
 
     public class ContestJudgeService : LoggableService<ContestJudgeService>, IContestJudgeService
     {
-        public ContestJudgeService(IServiceProvider provider) : base(provider)
+        public ContestJudgeService(IServiceProvider provider) : base(provider, true)
         {
         }
 

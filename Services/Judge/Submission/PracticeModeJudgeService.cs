@@ -21,7 +21,7 @@ namespace Judge1.Services.Judge.Submission
         protected readonly IOptions<JudgingConfig> Options;
         protected readonly JudgeInstance Instance;
 
-        public PracticeModeJudgeService(IServiceProvider provider) : base(provider)
+        public PracticeModeJudgeService(IServiceProvider provider) : base(provider, true)
         {
             Factory = provider.GetRequiredService<IHttpClientFactory>();
             Options = provider.GetRequiredService<IOptions<JudgingConfig>>();
