@@ -49,11 +49,13 @@ namespace Judge1.Models
         {
             var statistics = new List<ProblemStatistics>();
 
+            var contest = await context.Contests.FindAsync(ContestId);
             var problemIds = await context.Problems
                 .Where(p => p.ContestId == ContestId)
                 .Select(p => p.Id)
                 .ToListAsync();
-            var userSubmissions = context.Submissions.Where(s => s.UserId == UserId);
+            var userSubmissions = context.Submissions
+                .Where(s => s.UserId == UserId && s.CreatedAt >= contest.BeginTime && s.CreatedAt <= contest.EndTime);
             foreach (var problemId in problemIds)
             {
                 if (!await userSubmissions.AnyAsync(s => s.ProblemId == problemId))
