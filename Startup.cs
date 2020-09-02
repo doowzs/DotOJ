@@ -15,6 +15,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Hangfire;
 using Hangfire.SqlServer;
+using Judge1.Notifications;
 using Judge1.Services.Admin;
 using Judge1.Services.Judge;
 using Microsoft.Extensions.Logging;
@@ -100,6 +101,7 @@ namespace Judge1
             services.AddOptions();
             services.Configure<ApplicationConfig>(Configuration.GetSection("Application"));
             services.Configure<JudgingConfig>(Configuration.GetSection("Judging"));
+            services.Configure<NotificationConfig>(Configuration.GetSection("Notification"));
 
             services.AddHttpClient(); // IHttpClientFactory
 
@@ -113,6 +115,9 @@ namespace Judge1
             services.AddScoped<IAdminSubmissionService, AdminSubmissionService>();
 
             services.AddScoped<IContestJudgeService, ContestJudgeService>();
+
+            services.AddScoped<IDingTalkNotification, DingTalkNotification>();
+            services.AddScoped<INotificationBroadcaster, NotificationBroadcaster>();
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/dist"; });

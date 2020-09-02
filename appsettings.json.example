@@ -26,6 +26,14 @@
       }
     ]
   },
+  "Notification": {
+    "DingTalk": {
+      "Enabled": false,
+      "Token": "",
+      "Secret": "",
+      "Admins": []
+    }
+  },
   "Logging": {
     "LogLevel": {
       "Default": "Information",
