@@ -37,9 +37,12 @@ namespace Judge1.Models
         #region Submission Verdict
 
         public Verdict Verdict { get; set; }
-        public int FailedOn { get; set; }
-        public int Score { get; set; }
-        public DateTime JudgedAt { get; set; }
+        public int? Time { get; set; }
+        public int? Memory { get; set; }
+        public int? FailedOn { get; set; }
+        public int? Score { get; set; }
+        public string Message { get; set; }
+        public DateTime? JudgedAt { get; set; }
 
         #endregion
     }
@@ -107,9 +110,11 @@ namespace Judge1.Models
         public Language Language { get; }
         public int CodeBytes { get; }
         public Verdict Verdict { get; }
-        public int FailedOn { get; }
-        public int Score { get; }
-        public DateTime JudgedAt { get; }
+        public int? Time { get; }
+        public int? Memory { get; }
+        public int? FailedOn { get; }
+        public int? Score { get; }
+        public DateTime? JudgedAt { get; }
 
         public SubmissionInfoDto(Submission submission) : base(submission)
         {
@@ -119,6 +124,8 @@ namespace Judge1.Models
             Language = submission.Program.Language.GetValueOrDefault();
             CodeBytes = Encoding.UTF8.GetByteCount(submission.Program.Code);
             Verdict = submission.Verdict;
+            Time = submission.Time;
+            Memory = submission.Memory;
             FailedOn = submission.FailedOn;
             Score = submission.Score;
             JudgedAt = submission.JudgedAt;
@@ -130,12 +137,15 @@ namespace Judge1.Models
     {
         public int Id { get; }
         public string UserId { get; }
-        public int? ProblemId { get; }
+        public int ProblemId { get; }
         public Program Program { get; }
-        public Verdict Verdict { get; }
-        public int FailedOn { get; }
-        public int Score { get; }
-        public DateTime JudgedAt { get; }
+        public Verdict? Verdict { get; }
+        public int? Time { get; }
+        public int? Memory { get; }
+        public int? FailedOn { get; }
+        public int? Score { get; }
+        public string Message { get; }
+        public DateTime? JudgedAt { get; }
 
         public SubmissionViewDto(Submission submission) : base(submission)
         {
@@ -144,8 +154,11 @@ namespace Judge1.Models
             ProblemId = submission.ProblemId;
             Program = submission.Program;
             Verdict = submission.Verdict;
+            Time = submission.Time;
+            Memory = submission.Memory;
             FailedOn = submission.FailedOn;
             Score = submission.Score;
+            Message = submission.Message;
             JudgedAt = submission.JudgedAt;
         }
     }
@@ -170,6 +183,7 @@ namespace Judge1.Models
         public int ProblemId { get; }
         public Program Program { get; }
         [Required] public Verdict? Verdict { get; set; }
+        [Required] public string Message { get; set; }
 
         public SubmissionEditDto()
         {
@@ -182,6 +196,7 @@ namespace Judge1.Models
             ProblemId = submission.ProblemId;
             Program = submission.Program;
             Verdict = submission.Verdict;
+            Message = submission.Message;
         }
     }
 }

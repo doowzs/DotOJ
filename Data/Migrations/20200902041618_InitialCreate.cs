@@ -324,9 +324,12 @@ namespace Judge1.Data.Migrations
                     ProblemId = table.Column<int>(nullable: false),
                     program = table.Column<string>(type: "text", nullable: false),
                     Verdict = table.Column<int>(nullable: false),
-                    FailedOn = table.Column<int>(nullable: false),
-                    Score = table.Column<int>(nullable: false),
-                    JudgedAt = table.Column<DateTime>(nullable: false)
+                    Time = table.Column<int>(nullable: true),
+                    Memory = table.Column<int>(nullable: true),
+                    FailedOn = table.Column<int>(nullable: true),
+                    Score = table.Column<int>(nullable: true),
+                    Message = table.Column<string>(nullable: true),
+                    JudgedAt = table.Column<DateTime>(nullable: true)
                 },
                 constraints: table =>
                 {
