@@ -21,6 +21,7 @@ namespace Judge1.Services.Admin
         public Task<List<RegistrationInfoDto>> GetRegistrationsAsync(int id);
         public Task<List<RegistrationInfoDto>> AddRegistrationsAsync(int id, IEnumerable<string> userIds);
         public Task RemoveRegistrationsAsync(int id, IEnumerable<string> userIds);
+        public Task<List<RegistrationInfoDto>> CopyRegistrationsAsync(int to, int from);
     }
 
     public class AdminContestService : IAdminContestService
@@ -187,6 +188,43 @@ namespace Judge1.Services.Admin
             }
 
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<RegistrationInfoDto>> CopyRegistrationsAsync(int to, int from)
+        {
+            if (to == from)
+            {
+                throw new ValidationException("Two contests cannot be the same.");
+            }
+
+            await EnsureContestExistsAsync(to);
+            await EnsureContestExistsAsync(from);
+
+            List<Registration> registrations;
+
+            registrations = await _context.Registrations.Where(r => r.ContestId == to).ToListAsync();
+            _context.Registrations.RemoveRange(registrations);
+            await _context.SaveChangesAsync();
+
+            registrations = await _context.Registrations
+                .Where(r => r.ContestId == from)
+                .Select(r => new Registration
+                {
+                    ContestId = to,
+                    UserId = r.UserId,
+                    IsParticipant = r.IsParticipant,
+                    IsContestManager = r.IsContestManager,
+                    Statistics = new List<ProblemStatistics>()
+                })
+                .ToListAsync();
+            await _context.Registrations.AddRangeAsync(registrations);
+            await _context.SaveChangesAsync();
+
+            return await _context.Registrations
+                .Where(r => r.ContestId == to)
+                .Include(r => r.User)
+                .Select(r => new RegistrationInfoDto(r))
+                .ToListAsync();
         }
     }
 }

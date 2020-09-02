@@ -72,4 +72,11 @@ export class AdminContestRegistrationsComponent implements OnInit {
         this.registrations.splice(this.registrations.findIndex(r => r.userId === userId), 1);
       });
   }
+
+  public copyRegistrations(fromId: string) {
+    this.contestService.copyRegistrations(this.contestId, Number(fromId))
+      .subscribe(registrations => {
+        this.registrations = registrations;
+      });
+  }
 }

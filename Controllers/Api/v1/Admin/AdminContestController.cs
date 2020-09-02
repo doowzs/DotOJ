@@ -154,5 +154,27 @@ namespace Judge1.Controllers.Api.v1.Admin
                 return NotFound(e.Message);
             }
         }
+        
+        [HttpPost("{id:int}/registrations/copy")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<RegistrationInfoDto>>> CopyRegistrations
+            (int id, [FromQuery(Name = "contestId")] int contestId)
+        {
+            try
+            {
+                return Ok(await _service.CopyRegistrationsAsync(id, contestId));
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (ValidationException e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
     }
 }

@@ -58,5 +58,11 @@ export class AdminContestService {
       params: new HttpParams().append('userIds', userIds.toString())
     });
   }
+
+  public copyRegistrations(contestId: number, fromId: number): Observable<RegistrationInfoDto[]> {
+    return this.http.post<RegistrationInfoDto[]>('/admin/contest/' + contestId.toString() + '/registrations/copy', {}, {
+      params: new HttpParams().append('contestId', fromId.toString())
+    });
+  }
 }
 

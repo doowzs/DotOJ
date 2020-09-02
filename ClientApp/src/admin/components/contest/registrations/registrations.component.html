@@ -1,5 +1,23 @@
 ﻿<h2>Registrations of Contest <span *ngIf="contest">#{{ contest.id }}</span></h2>
 <nz-divider></nz-divider>
+<div nz-row [nzGutter]="20">
+  <div nz-col [nzSpan]="16">
+    <nz-form-item>
+      <nz-form-label nzFor="contestId" nzRequired>Contest ID</nz-form-label>
+      <nz-form-control>
+        <input #copyInput nz-input placeholder="Contest ID" id="contestId"/>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+  <div nz-col [nzSpan]="8">
+    <button nz-button nzType="primary" style="width: 100%;"
+            nz-popconfirm nzPopconfirmTitle="This will override all registrations of this contest. Continue?"
+            (nzOnConfirm)="copyRegistrations(copyInput.value)">
+      <i nz-icon nzType="copy"></i><span>Copy from contest</span>
+    </button>
+  </div>
+</div>
+<nz-divider></nz-divider>
 <nz-table #userTable *ngIf="list && registrations" [nzData]="list.items" [nzFrontPagination]="false"
           [nzPageIndex]="list.pageIndex" [nzPageSize]="list.pageSize" [nzTotal]="list.totalItems"
           (nzPageIndexChange)="onPageIndexChange($event)">
