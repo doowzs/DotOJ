@@ -13,12 +13,11 @@ Rename `env-example` to `.env` and change configs in these files:
 
 Dependencies: docker, docker-compose.
 
-Optional dependencies: T-SQL client, openssl.
+Optional dependencies: openssl.
 
-1. Start SQL Server with `docker-compose up -d mssql` and wait it to initialize.
-2. Execute T-SQL commands in `mssql/initdb.sql` to prepare DB environment.
-3. Run `web/cert.sh` to create a signing certificate for web service or provide with an existing one.
-4. Start all the rest services with `docker-compose up -d`.
+1. Start MariaDB Server with `docker-compose up -d mariadb` and wait it to initialize.
+2. Run `web/cert.sh` to create a signing certificate for web service or provide with an existing one.
+3. Start all the rest services with `docker-compose up -d`.
 
 ## References
 

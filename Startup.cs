@@ -1,6 +1,7 @@
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
+using System.Transactions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,7 +15,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Hangfire;
-using Hangfire.SqlServer;
+using Hangfire.MySql;
 using Judge1.Notifications;
 using Judge1.Services.Admin;
 using Judge1.Services.Judge;
@@ -40,7 +41,7 @@ namespace Judge1
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("SqlExpressConnection")));
+                options.UseMySql(Configuration.GetConnectionString("MySqlConnection")));
 
             services.AddDefaultIdentity<ApplicationUser>(options =>
                 {
@@ -61,15 +62,20 @@ namespace Judge1
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                 .UseSimpleAssemblyNameTypeSerializer()
                 .UseRecommendedSerializerSettings()
-                .UseSqlServerStorage(Configuration.GetConnectionString("HangfireConnection"),
-                    new SqlServerStorageOptions()
+                .UseStorage(new MySqlStorage(Configuration.GetConnectionString("HangfireConnection"),
+                    new MySqlStorageOptions
                     {
-                        CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
-                        SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
-                        QueuePollInterval = TimeSpan.Zero,
-                        UseRecommendedIsolationLevel = true,
-                        DisableGlobalLocks = true
-                    }));
+                        TransactionIsolationLevel = IsolationLevel.ReadCommitted,
+                        QueuePollInterval = TimeSpan.FromSeconds(15),
+                        JobExpirationCheckInterval = TimeSpan.FromHours(1),
+                        CountersAggregateInterval = TimeSpan.FromMinutes(5),
+                        PrepareSchemaIfNecessary = true,
+                        DashboardJobListLimit = 50000,
+                        TransactionTimeout = TimeSpan.FromMinutes(1),
+                        TablesPrefix = "Hangfire"
+                    })
+                )
+            );
             services.AddHangfireServer();
 
             // See https://stackoverflow.com/questions/52526186/net-core-identity

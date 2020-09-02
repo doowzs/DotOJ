@@ -29,20 +29,16 @@ services:
       - frontend
       - backend
 
-  mssql:
+  mariadb:
     build:
-      context: ./mssql
+      context: ./mariadb
     environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_PID=${MSSQL_EDITION}
-      - SA_PASSWORD=${MSSQL_PASSWORD}
-      - MSSQL_DATABASE=${MSSQL_DATABASE}
-    # Disable volume mounting for macOS due to O_DIRECT
-    # https://github.com/microsoft/mssql-docker/issues/12
+      - MYSQL_ROOT_PASSWORD=root
     volumes:
-      - ${DATA_PATH_HOST}/mssql:/var/opt/mssql
+      - ${DATA_PATH_HOST}/mariadb:/var/lib/mysql
+      - ./mariadb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     ports:
-      - "${MSSQL_PORT}:1433"
+      - "${MARIADB_PORT}:3306"
     networks:
       - backend
   
