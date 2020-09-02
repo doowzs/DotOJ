@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Threading.Tasks;
 using Judge1.Data;
 using Judge1.Judges.Submission;
 using Judge1.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Judge1.Judges
@@ -125,59 +123,7 @@ namespace Judge1.Judges
                 #region Rebuild statistics of registration
 
                 var registration = await _context.Registrations.FindAsync(user.Id, contest.Id);
-                {
-                    var statistics = new List<ProblemStatistics>();
-
-                    var problemIds = await _context.Problems
-                        .Where(p => p.ContestId == contest.Id)
-                        .Select(p => p.Id)
-                        .ToListAsync();
-                    var userSubmissions = _context.Submissions.Where(s => s.UserId == user.Id);
-                    foreach (var problemId in problemIds)
-                    {
-                        if (!await userSubmissions.AnyAsync(s => s.ProblemId == problemId))
-                        {
-                            continue;
-                        }
-
-
-                        DateTime? acceptedAt = null;
-                        int penalties = 0, score = 0;
-                        var problemSubmissions = userSubmissions.Where(s => s.ProblemId == problemId);
-                        var firstSolved = await problemSubmissions
-                            .OrderBy(s => s.Id)
-                            .Where(s => s.Verdict == Verdict.Accepted)
-                            .FirstOrDefaultAsync();
-                        if (firstSolved != null)
-                        {
-                            acceptedAt = firstSolved.CreatedAt;
-                            penalties = await problemSubmissions
-                                .Where(s => s.Verdict > Verdict.Accepted && s.Id < firstSolved.Id && s.FailedOn > 0)
-                                .CountAsync();
-                        }
-                        else
-                        {
-                            penalties = await problemSubmissions
-                                .Where(s => s.ProblemId == problemId && s.Verdict > Verdict.Accepted && s.FailedOn > 0)
-                                .CountAsync();
-                        }
-
-                        score = await problemSubmissions
-                            .Where(s => s.ProblemId == problemId && s.Score.HasValue)
-                            .MaxAsync(s => s.Score.GetValueOrDefault());
-
-                        var problemStatistics = new ProblemStatistics
-                        {
-                            ProblemId = problemId,
-                            AcceptedAt = acceptedAt,
-                            Penalties = penalties,
-                            Score = score
-                        };
-                        statistics.Add(problemStatistics);
-                    }
-
-                    registration.Statistics = statistics;
-                }
+                await registration.RebuildStatisticsAsync(_context);
                 _context.Registrations.Update(registration);
                 await _context.SaveChangesAsync();
 
