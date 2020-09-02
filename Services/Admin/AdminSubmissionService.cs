@@ -152,7 +152,7 @@ namespace Judge1.Services.Admin
                     .Where(p => p.ContestId == contestId.Value)
                     .Select(p => p.Id)
                     .ToListAsync();
-                queryable = queryable.Where(s => problemIds.Contains(s.Id));
+                queryable = queryable.Where(s => problemIds.Contains(s.ProblemId));
             }
 
             if (problemId.HasValue)
@@ -165,7 +165,7 @@ namespace Judge1.Services.Admin
                 queryable = queryable.Where(s => s.Id == submissionId.Value);
             }
 
-            var submissions = await queryable.ToListAsync();
+            var submissions = await queryable.Include(s => s.User).ToListAsync();
             foreach (var submission in submissions)
             {
                 submission.Verdict = Verdict.Pending;
