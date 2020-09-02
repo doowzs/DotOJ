@@ -1,4 +1,4 @@
-﻿import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+﻿import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { forkJoin, interval, Observable, Subject } from 'rxjs';
 import { map, take, takeUntil } from 'rxjs/operators';
 
@@ -13,14 +13,14 @@ import { AuthorizeService } from '../../../../api-authorization/authorize.servic
   templateUrl: './timeline.component.html',
   styleUrls: ['./timeline.component.css']
 })
-export class SubmissionTimelineComponent implements OnInit, OnDestroy {
+export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy {
   @Input() public problemId: number;
 
   private destroy$ = new Subject();
 
   public userId: Observable<string>;
   public list: PaginatedList<SubmissionInfoDto>;
-  public submissions: SubmissionInfoDto[] = [];
+  public submissions: SubmissionInfoDto[];
 
   constructor(
     private auth: AuthorizeService,
@@ -40,6 +40,19 @@ export class SubmissionTimelineComponent implements OnInit, OnDestroy {
     this.service.newSubmission
       .pipe(takeUntil(this.destroy$))
       .subscribe(submission => this.submissions.unshift(submission));
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    this.loadSubmissions(changes.problemId.currentValue);
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  private loadSubmissions(problemId: number): void {
+    this.submissions = [];
     this.userId.pipe(take(1)).subscribe(userId => {
       this.service.getPaginatedList(null, this.problemId, userId, null, 1)
         .subscribe(list => {
@@ -48,11 +61,6 @@ export class SubmissionTimelineComponent implements OnInit, OnDestroy {
           }
         });
     });
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   private updatePendingSubmissions(): void {
