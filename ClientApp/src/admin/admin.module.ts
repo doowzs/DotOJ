@@ -26,6 +26,7 @@ import { AdminProblemTestCasesComponent } from './components/problem/test-cases/
 import { AdminSubmissionListComponent } from './components/submission/list/list.component';
 import { AdminSubmissionFormComponent } from './components/submission/form/form.component';
 import { AdminSubmissionEditorComponent } from './components/submission/editor/editor.component';
+import { AdminSubmissionRejudgeComponent } from './components/submission/rejudge/rejudge.component';
 
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
@@ -87,6 +88,7 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
           {
             path: 'submission', children: [
               { path: '', pathMatch: 'full', component: AdminSubmissionListComponent },
+              { path: 'rejudge', component: AdminSubmissionRejudgeComponent },
               { path: ':submissionId', component: AdminSubmissionEditorComponent }
             ]
           }
@@ -128,7 +130,8 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
     AdminProblemTestCasesComponent,
     AdminSubmissionListComponent,
     AdminSubmissionFormComponent,
-    AdminSubmissionEditorComponent
+    AdminSubmissionEditorComponent,
+    AdminSubmissionRejudgeComponent
   ],
   exports: [
     RouterModule

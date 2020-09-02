@@ -41,16 +41,28 @@ export class AdminSubmissionService {
   }
 
   public rejudge(contestId: number | null, problemId: number | null, submissionId: number | null): Observable<SubmissionInfoDto[]> {
-    return this.http.post<SubmissionInfoDto[]>('/admin/submission/rejudge', {
-      contestId: contestId,
-      problemId: problemId,
-      submissionId: submissionId
-    }).pipe(map(list => {
-      for (let i = 0; i < list.length; ++i) {
-        const submission = list[i];
-        list[i] = mapSubmissionInfoDtoFields(submission);
-      }
-      return list;
-    }));
+    if (contestId == null && problemId == null && submissionId == null) {
+      return;
+    }
+
+    let params = new HttpParams();
+    if (contestId) {
+      params = params.set('contestId', contestId.toString());
+    }
+    if (problemId) {
+      params = params.set('problemId', problemId.toString());
+    }
+    if (submissionId) {
+      params = params.set('submissionId', submissionId.toString());
+    }
+
+    return this.http.post<SubmissionInfoDto[]>('/admin/submission/rejudge', {}, { params: params })
+      .pipe(map(list => {
+        for (let i = 0; i < list.length; ++i) {
+          const submission = list[i];
+          list[i] = mapSubmissionInfoDtoFields(submission);
+        }
+        return list;
+      }));
   }
 }
