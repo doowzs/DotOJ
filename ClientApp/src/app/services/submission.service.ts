@@ -53,6 +53,24 @@ export class SubmissionService {
       }));
   }
 
+  public getBatchInfos(submissionIds: number[]): Observable<SubmissionInfoDto[]> {
+    if (submissionIds.length === 0) {
+      return;
+    }
+
+    let params = new HttpParams();
+    for (let i = 0; i < submissionIds.length; ++i) {
+      params = params.append('id', submissionIds[i].toString());
+    }
+    return this.http.get<SubmissionInfoDto[]>('/submission/batch', { params: params })
+      .pipe(map(list => {
+        for (let i = 0; i < list.length; ++i) {
+          list[i] = mapSubmissionInfoDtoFields(list[i]);
+        }
+        return list;
+      }));
+  }
+
   public getSingleAsInfo(submissionId: number): Observable<SubmissionInfoDto> {
     return this.http.get<SubmissionInfoDto>('/submission/' + submissionId.toString())
       .pipe(map(mapSubmissionInfoDtoFields));

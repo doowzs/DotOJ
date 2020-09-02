@@ -64,24 +64,20 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
   }
 
   private updatePendingSubmissions(): void {
-    const observables: Observable<SubmissionInfoDto>[] = [];
-    const pendingSubmissions = this.submissions.filter(s => (s.verdict as VerdictInfo).stage === VerdictStage.RUNNING);
-    for (let i = 0; i < pendingSubmissions.length; ++i) {
-      const submission = pendingSubmissions[i];
-      observables.push(this.service.getSingleAsInfo(submission.id));
-    }
-    forkJoin(observables).subscribe(updatedSubmissions => {
-      for (let i = 0; i < updatedSubmissions.length; ++i) {
-        const updated = updatedSubmissions[i];
-        const submission = this.submissions.find(s => s.id === updated.id);
-        submission.verdict = updated.verdict;
-        submission.time = updated.time;
-        submission.memory = updated.memory;
-        submission.failedOn = updated.failedOn;
-        submission.score = updated.score;
-        submission.judgedAt = updated.judgedAt;
-      }
-    });
+    const submissionIds = this.submissions.filter(s => (s.verdict as VerdictInfo).stage === VerdictStage.RUNNING).map(s => s.id);
+    this.service.getBatchInfos(submissionIds)
+      .subscribe(updatedSubmissions => {
+        for (let i = 0; i < updatedSubmissions.length; ++i) {
+          const updated = updatedSubmissions[i];
+          const submission = this.submissions.find(s => s.id === updated.id);
+          submission.verdict = updated.verdict;
+          submission.time = updated.time;
+          submission.memory = updated.memory;
+          submission.failedOn = updated.failedOn;
+          submission.score = updated.score;
+          submission.judgedAt = updated.judgedAt;
+        }
+      });
   }
 
   public failedOnSample(submission: SubmissionInfoDto): boolean {

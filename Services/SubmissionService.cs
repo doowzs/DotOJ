@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -21,6 +22,7 @@ namespace Judge1.Services
         public Task<PaginatedList<SubmissionInfoDto>> GetPaginatedSubmissionsAsync
             (int? contestId, int? problemId, string userId, Verdict? verdict, int? pageIndex);
 
+        public Task<List<SubmissionInfoDto>> GetBatchSubmissionInfosAsync(IEnumerable<int> ids);
         public Task<SubmissionInfoDto> GetSubmissionInfoAsync(int id);
         public Task<SubmissionViewDto> GetSubmissionViewAsync(int id);
         public Task<SubmissionInfoDto> CreateSubmissionAsync(SubmissionCreateDto dto);
@@ -130,6 +132,15 @@ namespace Judge1.Services
 
             return await submissions.OrderByDescending(s => s.Id)
                 .PaginateAsync(s => s.User, s => new SubmissionInfoDto(s), pageIndex ?? 1, PageSize);
+        }
+
+        public async Task<List<SubmissionInfoDto>> GetBatchSubmissionInfosAsync(IEnumerable<int> ids)
+        {
+            return await _context.Submissions
+                .Where(s => ids.Contains(s.Id))
+                .Include(s => s.User)
+                .Select(s => new SubmissionInfoDto(s))
+                .ToListAsync();
         }
 
         public async Task<SubmissionInfoDto> GetSubmissionInfoAsync(int id)

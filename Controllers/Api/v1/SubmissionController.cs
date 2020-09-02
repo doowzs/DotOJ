@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using System.Threading.Tasks;
@@ -34,6 +35,15 @@ namespace Judge1.Controllers.Api.v1
             ListSubmissions(int? contestId, int? problemId, string userId, Verdict? verdict, int? pageIndex)
         {
             return Ok(await _service.GetPaginatedSubmissionsAsync(contestId, problemId, userId, verdict, pageIndex));
+        }
+
+        [HttpGet("batch")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<SubmissionInfoDto>>> GetBatchSubmissionInfos
+            ([FromQuery(Name = "id")] List<int> ids)
+        {
+            return Ok(await _service.GetBatchSubmissionInfosAsync(ids));
         }
 
         [HttpGet("{id:int}")]
