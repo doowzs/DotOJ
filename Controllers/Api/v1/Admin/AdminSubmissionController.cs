@@ -93,7 +93,6 @@ namespace Judge1.Controllers.Api.v1.Admin
         }
 
         [HttpPost("rejudge")]
-        [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
