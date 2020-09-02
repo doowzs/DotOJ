@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using System.Threading.Tasks;
@@ -27,7 +28,6 @@ namespace Judge1.Controllers.Api.v1
         }
 
         [HttpGet]
-        [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PaginatedList<SubmissionInfoDto>>>
@@ -36,8 +36,16 @@ namespace Judge1.Controllers.Api.v1
             return Ok(await _service.GetPaginatedSubmissionsAsync(contestId, problemId, userId, verdict, pageIndex));
         }
 
+        [HttpGet("batch")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<SubmissionInfoDto>>> GetBatchSubmissionInfos
+            ([FromQuery(Name = "id")] List<int> ids)
+        {
+            return Ok(await _service.GetBatchSubmissionInfosAsync(ids));
+        }
+
         [HttpGet("{id:int}")]
-        [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -60,7 +68,6 @@ namespace Judge1.Controllers.Api.v1
         }
 
         [HttpGet("{id:int}/detail")]
-        [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

@@ -1,4 +1,6 @@
-﻿import { SubmissionInfoDto, SubmissionViewDto } from '../interfaces/submission.interfaces';
+﻿import { SubmissionEditDto, SubmissionInfoDto, SubmissionViewDto } from '../interfaces/submission.interfaces';
+import { Languages } from './languages.consts';
+import * as moment from 'moment';
 
 export enum VerdictStage {
   ERROR, RUNNING, ACCEPTED, REJECTED
@@ -15,16 +17,20 @@ export interface VerdictInfo {
 
 export const Verdicts: VerdictInfo[] = [
   {
+    code: -2, name: 'Voided', showCase: false, stage: VerdictStage.ERROR,
+    color: 'gray', explain: 'A newer submission has voided this one.'
+  },
+  {
     code: -1, name: 'Service Failed', showCase: false, stage: VerdictStage.ERROR,
-    color: 'volcano', explain: 'An error occurred in the frontend judging service.'
+    color: 'gray', explain: 'An error occurred in the frontend judging service.'
   },
   {
     code: 0, name: 'Pending', showCase: false, stage: VerdictStage.RUNNING,
     color: 'blue', explain: 'Your code is submitted and is waiting to be processed.'
   },
   {
-    code: 1, name: 'In Queue', showCase: false, stage: VerdictStage.RUNNING,
-    color: 'blue', explain: 'Your code is waiting in queue to be processed by the judging service.'
+    code: 1, name: 'Submitted', showCase: false, stage: VerdictStage.RUNNING,
+    color: 'green', explain: 'Your code is submitted and will be processed after contest ends.'
   },
   {
     code: 2, name: 'Running', showCase: true, stage: VerdictStage.RUNNING,
@@ -52,7 +58,7 @@ export const Verdicts: VerdictInfo[] = [
   },
   {
     code: 13, name: 'Internal Error', showCase: false, stage: VerdictStage.ERROR,
-    color: 'volcano', explain: 'An error occurred in the backend judging service.'
+    color: 'gray', explain: 'An error occurred in the backend judging service.'
   },
   {
     code: 14, name: 'Exec Format Error', showCase: false, stage: VerdictStage.REJECTED,
@@ -60,8 +66,38 @@ export const Verdicts: VerdictInfo[] = [
   }
 ];
 
-export const fixSubmissionREVerdictCode = (submission: SubmissionInfoDto | SubmissionViewDto) => {
+export const fixSubmissionREVerdictCode = (submission: SubmissionInfoDto | SubmissionViewDto | SubmissionEditDto) => {
   if (submission.verdict >= 8 && submission.verdict <= 12) {
     submission.verdict = 7;
   }
+};
+
+export const mapSubmissionInfoDtoFields = (submission: SubmissionInfoDto): SubmissionInfoDto => {
+  fixSubmissionREVerdictCode(submission);
+  submission.verdict = Verdicts.find(v => v.code === submission.verdict);
+  submission.language = Languages.find(l => l.code === submission.language);
+  submission.createdAt = moment.utc(submission.createdAt).local();
+  submission.judgedAt = moment.utc(submission.judgedAt).local();
+  return submission;
+};
+
+export const mapSubmissionViewDtoFields = (submission: SubmissionViewDto): SubmissionViewDto => {
+  fixSubmissionREVerdictCode(submission);
+  submission.verdict = Verdicts.find(v => v.code === submission.verdict);
+  submission.program.language = Languages.find(l => l.code === submission.program.language);
+  submission.message = atob(submission.message);
+  submission.createdAt = moment.utc(submission.createdAt).local();
+  submission.judgedAt = moment.utc(submission.judgedAt).local();
+  return submission;
+};
+
+export const mapSubmissionEditDtoFields = (submission: SubmissionEditDto): SubmissionEditDto => {
+  fixSubmissionREVerdictCode(submission);
+  submission.verdict = Verdicts.find(v => v.code === submission.verdict);
+  submission.program.language = Languages.find(l => l.code === submission.program.language);
+  submission.program.code = atob(submission.program.code);
+  submission.message = atob(submission.message);
+  submission.createdAt = moment.utc(submission.createdAt).local();
+  submission.judgedAt = moment.utc(submission.judgedAt).local();
+  return submission;
 };

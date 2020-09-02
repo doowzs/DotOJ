@@ -19,6 +19,15 @@
               [routerLinkActiveOptions]="{exact: true}">
             Dashboard
           </li>
+          <li nz-submenu nzTitle="Users" nzOpen>
+            <ul>
+              <li nz-menu-item routerLink="/admin/user"
+                  [routerLinkActive]="['ant-menu-item-selected']"
+                  [routerLinkActiveOptions]="{exact: true}">
+                List
+              </li>
+            </ul>
+          </li>
           <li nz-submenu nzTitle="Contests" nzOpen>
             <ul>
               <li nz-menu-item routerLink="/admin/contest"
@@ -42,6 +51,19 @@
               <li nz-menu-item routerLink="/admin/problem/new"
                   [routerLinkActive]="['ant-menu-item-selected']">
                 Create
+              </li>
+            </ul>
+          </li>
+          <li nz-submenu nzTitle="Submissions" nzOpen>
+            <ul>
+              <li nz-menu-item routerLink="/admin/submission"
+                  [routerLinkActive]="['ant-menu-item-selected']"
+                  [routerLinkActiveOptions]="{exact: true}">
+                List
+              </li>
+              <li nz-menu-item routerLink="/admin/submission/rejudge"
+                  [routerLinkActive]="['ant-menu-item-selected']">
+                Rejudge
               </li>
             </ul>
           </li>

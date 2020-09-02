@@ -1,0 +1,23 @@
+﻿<h2>List Users</h2>
+<nz-table #userTable *ngIf="list" [nzData]="list.items" [nzFrontPagination]="false"
+          [nzPageIndex]="list.pageIndex" [nzPageSize]="list.pageSize" [nzTotal]="list.totalItems"
+          (nzPageIndexChange)="onPageIndexChange($event)">
+  <thead>
+  <tr>
+    <th>Email</th>
+    <th>Contestant ID</th>
+    <th>Contestant Name</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let user of userTable.data">
+    <td>{{ user.email }}</td>
+    <td>{{ user.contestantId }}</td>
+    <td>{{ user.contestantName }}</td>
+    <td>
+      <button nz-button nzType="default" [routerLink]="['/admin/user', user.id]">View</button>
+    </td>
+  </tr>
+  </tbody>
+</nz-table>

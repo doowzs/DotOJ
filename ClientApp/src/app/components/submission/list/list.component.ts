@@ -64,7 +64,6 @@ export class SubmissionListComponent implements OnInit {
             byDefault: problem.id === Number(this.problemId)
           });
         }
-
         this.loadSubmissions();
       });
   }
@@ -79,6 +78,7 @@ export class SubmissionListComponent implements OnInit {
   }
 
   public onQueryParamsChange(params: NzTableQueryParams) {
+    const isInit = this.route.snapshot.queryParams.pageIndex == null;
     this.problemId = params.filter.find(f => f.key === 'problemId').value;
     this.verdict = params.filter.find(f => f.key === 'verdict').value;
     this.pageIndex = params.pageIndex;
@@ -90,6 +90,8 @@ export class SubmissionListComponent implements OnInit {
         pageIndex: this.pageIndex
       }
     });
-    this.loadSubmissions();
+    if (!isInit) {
+      this.loadSubmissions();
+    }
   }
 }

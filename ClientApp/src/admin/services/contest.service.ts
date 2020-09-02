@@ -1,19 +1,17 @@
 ﻿import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import * as moment from 'moment';
 
 import { PaginatedList } from '../../app/interfaces/pagination.interfaces';
 import { ContestEditDto, ContestInfoDto } from '../../app/interfaces/contest.interfaces';
+import { RegistrationInfoDto } from '../../app/interfaces/registration.interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdminContestService {
-  private cachedId: number;
-  private cachedData: Observable<ContestEditDto>;
-
   constructor(private http: HttpClient) {
   }
 
@@ -44,6 +42,27 @@ export class AdminContestService {
 
   public deleteSingle(contestId: number): Observable<any> {
     return this.http.delete('/admin/contest/' + contestId.toString());
+  }
+
+  public getRegistrations(contestId: number): Observable<RegistrationInfoDto[]> {
+    return this.http.get<RegistrationInfoDto[]>('/admin/contest/' + contestId.toString() + '/registrations');
+  }
+
+  public addRegistrations(contestId: number, userIds: string[]): Observable<RegistrationInfoDto[]> {
+    return this.http.post<RegistrationInfoDto[]>('/admin/contest/' + contestId.toString() + '/registrations', userIds);
+  }
+
+  public removeRegistrations(contestId: number, userIds: string[]): Observable<any> {
+    return this.http.delete('/admin/contest/' + contestId.toString() + '/registrations', {
+      headers: new HttpHeaders().append('Content-Type', 'application/json'),
+      params: new HttpParams().append('userIds', userIds.toString())
+    });
+  }
+
+  public copyRegistrations(contestId: number, fromId: number): Observable<RegistrationInfoDto[]> {
+    return this.http.post<RegistrationInfoDto[]>('/admin/contest/' + contestId.toString() + '/registrations/copy', {}, {
+      params: new HttpParams().append('contestId', fromId.toString())
+    });
   }
 }
 

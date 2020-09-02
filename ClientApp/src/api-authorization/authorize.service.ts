@@ -41,7 +41,7 @@ const mapUserData = (user: User): IUser => {
     sub: user.profile.sub,
     cid: user.profile['id'],
     name: user.profile.name,
-    roles: user.profile['role'] ? user.profile['role'].split(' ') : []
+    roles: user.profile['role'] ? user.profile['role'] : []
   } as IUser;
 };
 

@@ -68,7 +68,10 @@ export class ContestService {
           const registration = data[i];
           for (let j = 0; j < registration.statistics.length; ++j) {
             const statistic = registration.statistics[j];
-            statistic.acceptedAt = moment.utc(statistic.acceptedAt).local();
+            if (statistic.acceptedAt) {
+              // Do not map acceptedAt to moment if value is null.
+              statistic.acceptedAt = moment.utc(statistic.acceptedAt).local();
+            }
           }
         }
         return data;

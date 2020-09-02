@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using System.Threading.Tasks;
 using Judge1.Exceptions;
@@ -26,7 +27,6 @@ namespace Judge1.Controllers.Api.v1.Admin
         }
 
         [HttpGet]
-        [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PaginatedList<ContestInfoDto>>> ListContests(int? pageIndex)
@@ -35,7 +35,6 @@ namespace Judge1.Controllers.Api.v1.Admin
         }
 
         [HttpGet("{id:int}")]
-        [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -90,7 +89,6 @@ namespace Judge1.Controllers.Api.v1.Admin
         }
 
         [HttpDelete("{id:int}")]
-        [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -104,6 +102,78 @@ namespace Judge1.Controllers.Api.v1.Admin
             catch (NotFoundException e)
             {
                 return NotFound(e.Message);
+            }
+        }
+
+        [HttpGet("{id:int}/registrations")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<RegistrationInfoDto>>> ListRegistrations(int id)
+        {
+            try
+            {
+                return Ok(await _service.GetRegistrationsAsync(id));
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+        }
+
+        [HttpPost("{id:int}/registrations")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<RegistrationInfoDto>>> AddRegistrations(int id, List<string> userIds)
+        {
+            try
+            {
+                return Ok(await _service.AddRegistrationsAsync(id, userIds));
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+        }
+
+        [HttpDelete("{id:int}/registrations")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> RemoveRegistrations(int id, [FromQuery(Name = "userId")] List<string> userIds)
+        {
+            try
+            {
+                await _service.RemoveRegistrationsAsync(id, userIds);
+                return NoContent();
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+        }
+        
+        [HttpPost("{id:int}/registrations/copy")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<List<RegistrationInfoDto>>> CopyRegistrations
+            (int id, [FromQuery(Name = "contestId")] int contestId)
+        {
+            try
+            {
+                return Ok(await _service.CopyRegistrationsAsync(id, contestId));
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (ValidationException e)
+            {
+                return BadRequest(e.Message);
             }
         }
     }

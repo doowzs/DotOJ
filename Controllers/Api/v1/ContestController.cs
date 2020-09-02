@@ -28,7 +28,6 @@ namespace Judge1.Controllers.Api.v1
 
         [AllowAnonymous]
         [HttpGet("current")]
-        [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<ContestInfoDto>>> ListCurrentContests()
@@ -37,7 +36,6 @@ namespace Judge1.Controllers.Api.v1
         }
 
         [HttpGet]
-        [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PaginatedList<ContestInfoDto>>> ListContests(int? pageIndex)
@@ -46,7 +44,6 @@ namespace Judge1.Controllers.Api.v1
         }
 
         [HttpGet("{id:int}")]
-        [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -68,7 +65,6 @@ namespace Judge1.Controllers.Api.v1
         }
         
         [HttpGet("{id:int}/registrations")]
-        [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]

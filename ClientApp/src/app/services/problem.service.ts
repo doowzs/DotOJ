@@ -23,6 +23,11 @@ export class ProblemService {
       this.cachedData = null;
       return this.cachedData = this.http.get<ProblemViewDto>('/problem/' + problemId.toString())
         .pipe(map(data => {
+          for (let i = 0; i < data.sampleCases.length; ++i) {
+            const sampleCase = data.sampleCases[i];
+            sampleCase.input = atob(sampleCase.input);
+            sampleCase.output = atob(sampleCase.output);
+          }
           return data;
         }));
     }

@@ -167,7 +167,7 @@ namespace Judge1.Models
         [Required] public string Description { get; set; }
         [Required] public string InputFormat { get; set; }
         [Required] public string OutputFormat { get; set; }
-        [Required] public string FootNote { get; set; }
+        public string FootNote { get; set; }
 
         [Required, Range(100.0, 60000.0)] public double? TimeLimit { get; set; }
         [Required, Range(1024.0, 2097152.0)] public double? MemoryLimit { get; set; }

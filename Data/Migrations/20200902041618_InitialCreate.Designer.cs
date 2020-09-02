@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Judge1.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200827121734_InitialCreate")]
+    [Migration("20200902041618_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -429,11 +429,17 @@ namespace Judge1.Data.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("FailedOn")
+                    b.Property<int?>("FailedOn")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("JudgedAt")
+                    b.Property<DateTime?>("JudgedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<int?>("Memory")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("ProblemId")
                         .HasColumnType("int");
@@ -443,7 +449,10 @@ namespace Judge1.Data.Migrations
                         .HasColumnName("program")
                         .HasColumnType("text");
 
-                    b.Property<int>("Score")
+                    b.Property<int?>("Score")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Time")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedAt")

@@ -4,14 +4,12 @@ import { Observable } from 'rxjs';
 
 import { ProblemEditDto, ProblemInfoDto, TestCase } from '../../app/interfaces/problem.interfaces';
 import { PaginatedList } from '../../app/interfaces/pagination.interfaces';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AdminProblemService {
-  public cachedId: number;
-  public cachedData: Observable<ProblemEditDto>;
-
   constructor(private http: HttpClient) {
   }
 
@@ -22,14 +20,32 @@ export class AdminProblemService {
   }
 
   public getSingle(problemId: number): Observable<ProblemEditDto> {
-    return this.http.get<ProblemEditDto>('/admin/problem/' + problemId.toString());
+    return this.http.get<ProblemEditDto>('/admin/problem/' + problemId.toString())
+      .pipe(map(data => {
+        for (let i = 0; i < data.sampleCases.length; ++i) {
+          const sampleCase = data.sampleCases[i];
+          sampleCase.input = atob(sampleCase.input);
+          sampleCase.output = atob(sampleCase.output);
+        }
+        return data;
+      }));
   }
 
   public createSingle(problem: ProblemEditDto): Observable<any> {
+    for (let i = 0; i < problem.sampleCases.length; ++i) {
+      const sampleCase = problem.sampleCases[i];
+      sampleCase.input = btoa(sampleCase.input);
+      sampleCase.output = btoa(sampleCase.output);
+    }
     return this.http.post('/admin/problem', problem);
   }
 
   public updateSingle(problem: ProblemEditDto): Observable<ProblemEditDto> {
+    for (let i = 0; i < problem.sampleCases.length; ++i) {
+      const sampleCase = problem.sampleCases[i];
+      sampleCase.input = btoa(sampleCase.input);
+      sampleCase.output = btoa(sampleCase.output);
+    }
     return this.http.put<ProblemEditDto>('/admin/problem/' + problem.id.toString(), problem);
   }
 

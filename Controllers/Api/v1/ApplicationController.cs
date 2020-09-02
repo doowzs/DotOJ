@@ -20,7 +20,6 @@ namespace Judge1.Controllers.Api.v1
 
         [AllowAnonymous]
         [HttpGet("config")]
-        [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public ActionResult<ApplicationConfigDto> GetConfig()

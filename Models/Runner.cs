@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.IO;
 using System.Text;
 using Newtonsoft.Json;
 
@@ -58,36 +59,39 @@ namespace Judge1.Models
             {
                 throw new NullReferenceException("Problem of submission is not loaded.");
             }
-            
+
             SourceCode = submission.Program.Code;
-            SourceCode = Convert.ToBase64String(Encoding.UTF8.GetBytes(submission.Program.Code));
             LanguageId = RunnerLanguageOptions
                 .CompilerOptionsDict[submission.Program.Language.GetValueOrDefault()].languageId;
             CompilerOptions = RunnerLanguageOptions
                 .CompilerOptionsDict[submission.Program.Language.GetValueOrDefault()].compilerOptions;
-            Stdin = Convert.ToBase64String(Encoding.UTF8.GetBytes(input));
-            ExpectedOutput = Convert.ToBase64String(Encoding.UTF8.GetBytes(output));
+            Stdin = input;
+            ExpectedOutput = output;
             CpuTimeLimit = (float) submission.Problem.TimeLimit / 1000;
             MemoryLimit = (float) submission.Problem.MemoryLimit;
         }
     }
 
     [NotMapped]
-    public class RunnerResponse
+    public class RunnerToken
     {
-        public class RunnerResponseStatus
-        {
-            [JsonProperty("id")] public Verdict Id { get; set; }
-            [JsonProperty("description")] public string Description { get; set; }
-        }
+        [JsonProperty("token")] public string Token { get; set; }
+    }
 
+    [NotMapped]
+    public class RunnerStatus
+    {
         [JsonProperty("token")] public string Token { get; set; }
         [JsonProperty("compile_output")] public string CompileOutput { get; set; }
-        [JsonProperty("stdout")] public string Stdout { get; set; }
-        [JsonProperty("stderr")] public string Stderr { get; set; }
         [JsonProperty("time")] public string Time { get; set; }
         [JsonProperty("memory")] public float? Memory { get; set; }
         [JsonProperty("message")] public string Message { get; set; }
-        [JsonProperty("status")] public RunnerResponseStatus Status { get; set; }
+        [JsonProperty("status_id")] public Verdict Verdict { get; set; }
+    }
+
+    [NotMapped]
+    public class RunnerResponse
+    {
+        [JsonProperty("submissions")] public List<RunnerStatus> Statuses { get; set; }
     }
 }

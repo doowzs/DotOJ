@@ -22,9 +22,11 @@ namespace Judge1.Models
 
     public enum Verdict
     {
+        Voided = -2,
         Failed = -1,
         Pending = 0,
-        InQueue = 1,
+        InQueue = 1, // this value is only used for Judge0 backend
+        Submitted = 1,
         Running = 2,
         Accepted = 3,
         WrongAnswer = 4,
@@ -44,6 +46,6 @@ namespace Judge1.Models
     public class Program
     {
         [Required] public Language? Language { get; set; }
-        [Required] public string Code { get; set; }
+        [Required, MaxLength(30720)] public string Code { get; set; }
     }
 }

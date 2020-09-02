@@ -15,8 +15,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Hangfire;
 using Hangfire.SqlServer;
-using Judge1.Runners;
+using Judge1.Notifications;
 using Judge1.Services.Admin;
+using Judge1.Services.Judge;
 using Microsoft.Extensions.Logging;
 
 namespace Judge1
@@ -83,43 +84,40 @@ namespace Judge1
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("ManageUsers",
-                    policy =>
-                    {
-                        policy.RequireRole(ApplicationRoles.Administrator, ApplicationRoles.UserManager);
-                    });
+                    policy => { policy.RequireRole(ApplicationRoles.Administrator, ApplicationRoles.UserManager); });
                 options.AddPolicy("ManageContests",
-                    policy =>
-                    {
-                        policy.RequireRole(ApplicationRoles.Administrator, ApplicationRoles.ContestManager);
-                    });
+                    policy => { policy.RequireRole(ApplicationRoles.Administrator, ApplicationRoles.ContestManager); });
                 options.AddPolicy("ManageProblems",
+                    policy => { policy.RequireRole(ApplicationRoles.Administrator, ApplicationRoles.ContestManager); });
+                options.AddPolicy("ManageSubmissions",
                     policy =>
                     {
-                        policy.RequireRole(ApplicationRoles.Administrator, ApplicationRoles.ContestManager);
-                    });
-                options.AddPolicy("ManageJudgeResults",
-                    policy =>
-                    {
-                        policy.RequireRole(ApplicationRoles.Administrator, ApplicationRoles.JudgeResultManager);
+                        policy.RequireRole(ApplicationRoles.Administrator, ApplicationRoles.SubmissionManager);
                     });
             });
             services.AddControllersWithViews().AddNewtonsoftJson();
             services.AddRazorPages();
-            
+
             services.AddOptions();
             services.Configure<ApplicationConfig>(Configuration.GetSection("Application"));
             services.Configure<JudgingConfig>(Configuration.GetSection("Judging"));
+            services.Configure<NotificationConfig>(Configuration.GetSection("Notification"));
 
             services.AddHttpClient(); // IHttpClientFactory
 
             services.AddScoped<IContestService, ContestService>();
             services.AddScoped<IProblemService, ProblemService>();
             services.AddScoped<ISubmissionService, SubmissionService>();
-            
+
+            services.AddScoped<IAdminUserService, AdminUserService>();
             services.AddScoped<IAdminContestService, AdminContestService>();
             services.AddScoped<IAdminProblemService, AdminProblemService>();
+            services.AddScoped<IAdminSubmissionService, AdminSubmissionService>();
 
-            services.AddScoped<ISubmissionRunner, SubmissionRunner>();
+            services.AddScoped<IContestJudgeService, ContestJudgeService>();
+
+            services.AddScoped<IDingTalkNotification, DingTalkNotification>();
+            services.AddScoped<INotificationBroadcaster, NotificationBroadcaster>();
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/dist"; });

@@ -1,22 +1,21 @@
-﻿import { Component, OnInit } from '@angular/core';
+﻿import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { ProblemService } from '../../../services/problem.service';
 import { ProblemViewDto } from '../../../interfaces/problem.interfaces';
-import { ContestViewDto } from '../../../interfaces/contest.interfaces';
-import { ContestService } from '../../../services/contest.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-problem-detail',
   templateUrl: './detail.component.html',
   styleUrls: ['./detail.component.css']
 })
-export class ProblemDetailComponent implements OnInit {
-  public contestId: number;
-  public contest: ContestViewDto;
-
+export class ProblemDetailComponent implements OnInit, OnDestroy {
   public problemId: number;
   public problem: ProblemViewDto;
+
+  public destroy$ = new Subject();
 
   copyToClipboard = (content: string): void => {
     navigator.clipboard.writeText(content);
@@ -24,17 +23,26 @@ export class ProblemDetailComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private problemService: ProblemService,
-    private contestService: ContestService
+    private service: ProblemService,
   ) {
-    this.contestId = this.route.snapshot.parent.params.contestId;
-    this.problemId = this.route.snapshot.params.problemId;
+    this.route.params
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(params => {
+        this.problemId = params.problemId;
+        this.loadProblem();
+      });
   }
 
   ngOnInit() {
-    this.contestService.getSingle(this.contestId)
-      .subscribe(contest => this.contest = contest);
-    this.problemService.getSingle(this.problemId)
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  public loadProblem() {
+    this.service.getSingle(this.problemId)
       .subscribe(problem => this.problem = problem);
   }
 }

@@ -1,0 +1,49 @@
+﻿<form nz-form [formGroup]="form" (ngSubmit)="submitForm(form.value)">
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="id">ID</nz-form-label>
+    <nz-form-control>
+      <input nz-input formControlName="id" id="id" readonly [disabled]="true"/>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="email">Email</nz-form-label>
+    <nz-form-control>
+      <input nz-input formControlName="email" id="email" readonly [disabled]="true"/>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="username">Username</nz-form-label>
+    <nz-form-control>
+      <input nz-input formControlName="userName" id="username" readonly [disabled]="true"/>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="contestant-id">Contestant ID</nz-form-label>
+    <nz-form-control>
+      <input nz-input formControlName="contestantId" id="contestant-id"/>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="contestant-name">Contestant Name</nz-form-label>
+    <nz-form-control>
+      <input nz-input formControlName="contestantName" id="contestant-name"/>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="roles">Roles</nz-form-label>
+    <nz-form-control>
+      <label nz-checkbox formControlName="isAdministrator">Administrator</label>
+      <label nz-checkbox formControlName="isUserManager">User Manager</label>
+      <label nz-checkbox formControlName="isContestManager">Contest Manager</label>
+      <label nz-checkbox formControlName="isSubmissionManager">Submission Manager</label>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-divider></nz-divider>
+  <div nz-row>
+    <div nz-col nzSpan="24">
+      <button nz-button nzType="primary" [disabled]="!form.valid" type="submit" style="width: 100%;">
+        <i nz-icon nzType="check"></i><span>Submit</span>
+      </button>
+    </div>
+  </div>
+</form>
