@@ -65,6 +65,7 @@ namespace Judge1.Services.Judge.Submission
                 await client.PostAsync(Instance.Endpoint + "/submissions?base64_encoded=true", stringContent);
             if (!response.IsSuccessStatusCode)
             {
+                await LogError($"CreateRun FAIL Submission={submission.Id} Index={index} Status={response.StatusCode}");
                 throw new Exception($"Create API call failed with code {response.StatusCode}.");
             }
 
@@ -172,6 +173,7 @@ namespace Judge1.Services.Judge.Submission
                                                            "&fields=token,time,memory,compile_output,message,status_id");
                 if (!response.IsSuccessStatusCode)
                 {
+                    await LogError($"PollRuns FAIL Tokens={string.Join(",", tokens)} Status={response.StatusCode}");
                     throw new Exception($"Polling API call failed with code {response.StatusCode}.");
                 }
 

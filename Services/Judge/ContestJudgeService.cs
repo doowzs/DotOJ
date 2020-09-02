@@ -72,6 +72,8 @@ namespace Judge1.Services.Judge
 
             try
             {
+                await LogInformation($"JudgeSubmission Start Id={submission.Id} Problem={submission.ProblemId}");
+
                 var user = await Manager.FindByIdAsync(submission.UserId);
                 var problem = await Context.Problems.FindAsync(submission.ProblemId);
                 var contest = await Context.Contests.FindAsync(problem.ContestId);
@@ -115,6 +117,9 @@ namespace Judge1.Services.Judge
                 await Context.SaveChangesAsync();
 
                 #endregion
+
+                await LogInformation($"JudgeSubmission Complete Id={submissionId} Problem={submission.ProblemId} " +
+                                     $"Verdict={submission.Verdict} Score={submission.Score} CreatedAt={submission.CreatedAt} JudgedAt={submission.JudgedAt}");
             }
             catch (Exception e)
             {
@@ -124,7 +129,7 @@ namespace Judge1.Services.Judge
                 submission.JudgedAt = DateTime.Now.ToUniversalTime();
                 Context.Submissions.Update(submission);
                 await Context.SaveChangesAsync();
-                await LogError($"JudgeSubmissionError Id={submissionId} Error={e.Message}");
+                await LogError($"JudgeSubmission Error Id={submissionId} Error={e.Message}");
             }
         }
     }
