@@ -67,6 +67,8 @@ export class SubmissionTimelineComponent implements OnInit, OnDestroy {
         const updated = updatedSubmissions[i];
         const submission = this.submissions.find(s => s.id === updated.id);
         submission.verdict = updated.verdict;
+        submission.time = updated.time;
+        submission.memory = updated.memory;
         submission.failedOn = updated.failedOn;
         submission.score = updated.score;
         submission.judgedAt = updated.judgedAt;
@@ -76,5 +78,23 @@ export class SubmissionTimelineComponent implements OnInit, OnDestroy {
 
   public failedOnSample(submission: SubmissionInfoDto): boolean {
     return (submission.verdict as VerdictInfo).stage === VerdictStage.REJECTED && submission.failedOn === 0;
+  }
+
+  public getSubmissionStats(submission: SubmissionInfoDto): string {
+    const verdict = submission.verdict as VerdictInfo;
+    if (verdict.stage === VerdictStage.ACCEPTED) {
+      return submission.time + 'ms, ' + submission.memory + 'KiB';
+    } else if (verdict.stage === VerdictStage.REJECTED) {
+      if (submission.failedOn === 0) {
+        return 'SAMPLE FAILED';
+      }
+      if (submission.time && submission.memory) {
+        return submission.time + 'ms, ' + submission.memory + 'KiB, ' + submission.score + '% passed';
+      } else {
+        return submission.score + '% passed';
+      }
+    } else {
+      return '';
+    }
   }
 }

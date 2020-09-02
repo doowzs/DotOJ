@@ -6,13 +6,14 @@
     <ng-template #submissionTimeLineItem let-submission="submission">
       <nz-timeline-item [nzColor]="submission.verdict.color">
         <nz-tag>#{{ submission.id }}</nz-tag>
-        <nz-tag [nzColor]="submission.verdict.color">
+        <nz-tag [nzColor]="submission.verdict.color"
+                nz-tooltip [nzTooltipTitle]="submission.verdict.explain">
           {{ submission.verdict.name }}
           <span *ngIf="failedOnSample(submission)">*</span>
         </nz-tag>
         <span style="float: right;">
-          <nz-tag>{{ submission.language.name }}</nz-tag>
-          <nz-tag>{{ submission.codeBytes }} bytes</nz-tag>
+          <nz-tag *ngIf="getSubmissionStats(submission) as stats">{{ stats }}</nz-tag>
+          <nz-tag>{{ submission.language.name }} {{ submission.codeBytes }} bytes</nz-tag>
           <nz-tag>{{ submission.createdAt.format('YYYY-MM-DD HH:mm') }}</nz-tag>
         </span>
       </nz-timeline-item>

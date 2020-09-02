@@ -37,6 +37,7 @@ export class SubmissionService {
     fixSubmissionREVerdictCode(data);
     data.verdict = Verdicts.find(v => v.code === data.verdict);
     data.program.language = Languages.find(l => l.code === data.program.language);
+    data.message = atob(data.message);
     data.createdAt = moment.utc(data.createdAt).local();
     data.judgedAt = moment.utc(data.judgedAt).local();
     return data;
