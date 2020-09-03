@@ -30,6 +30,7 @@ export class SubmissionCreatorComponent implements OnInit {
   }
 
   public selectLanguage(value: number) {
+    this.language = value;
     localStorage.setItem(this.languageStorageKey, JSON.stringify(value));
   }
 
