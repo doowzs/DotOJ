@@ -46,8 +46,9 @@ services:
     build:
       context: ./web
     volumes:
-      - ./web/identity.pfx:/app/identity.pfx
-      - ./web/appsettings.json:/app/appsettings.json
+      - ./web/identity.pfx:/app/identity.pfx:ro
+      - ./web/appsettings.json:/app/appsettings.json:ro
+      - ${DATA_PATH_HOST}/judge-data:/var/www/judge-data
     networks:
       - backend
     
