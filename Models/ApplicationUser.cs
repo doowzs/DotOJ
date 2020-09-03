@@ -32,8 +32,6 @@ namespace Judge1.Models
         [Required] public string ContestantName { get; set; }
 
         public List<Submission> Submissions { get; set; }
-        public List<Hack> Hacks { get; set; }
-        public List<Test> Tests { get; set; }
     }
 
     public class CustomUserValidator : IUserValidator<ApplicationUser>

@@ -42,65 +42,11 @@ namespace Judge1.Models
         public int? Memory { get; set; }
         public int? FailedOn { get; set; }
         public int? Score { get; set; }
+        public int? Progress { get; set; }
         public string Message { get; set; }
         public DateTime? JudgedAt { get; set; }
 
         #endregion
-    }
-
-    public class Hack : ModelWithTimestamps
-    {
-        public int Id { get; set; }
-
-        #region Relationships
-
-        [Required] public string UserId { get; set; }
-        public ApplicationUser User { get; set; }
-
-        public int SubmissionId { get; set; }
-        public Submission Submission { get; set; }
-
-        #endregion
-
-        #region Hacking Content and Verdict
-
-        [Required, Column(TypeName = "text")] public string Input { get; set; }
-
-        public bool? IsValid { get; set; }
-        public DateTime ValidatedAt { get; set; }
-
-        public bool? IsSuccessful { get; set; }
-        public DateTime JudgedAt { get; set; }
-
-        #endregion
-    }
-
-    public class Test : ModelWithTimestamps
-    {
-        public int Id { get; set; }
-
-        [Required] public string UserId { get; set; }
-        public ApplicationUser User { get; set; }
-
-        public int ProblemId { get; set; }
-        public Problem Problem { get; set; }
-
-        [NotMapped] public Program Program { get; set; }
-
-        [Required, Column("program", TypeName = "text")]
-        public string ProgramSerialized
-        {
-            get => JsonConvert.ToString(Program);
-            set => Program = string.IsNullOrEmpty(value)
-                ? null
-                : JsonConvert.DeserializeObject<Program>(value);
-        }
-
-        [Required, Column(TypeName = "text")] public string Input { get; set; }
-        [Column(TypeName = "text")] public string Output { get; set; }
-
-        public Verdict Verdict { get; set; }
-        public DateTime JudgedAt { get; set; }
     }
 
     [NotMapped]
@@ -118,6 +64,7 @@ namespace Judge1.Models
         public int? Memory { get; }
         public int? FailedOn { get; }
         public int? Score { get; }
+        public int? Progress { get; }
         public DateTime? JudgedAt { get; }
 
         public SubmissionInfoDto(Submission submission) : base(submission)
@@ -134,6 +81,7 @@ namespace Judge1.Models
             Memory = submission.Memory;
             FailedOn = submission.FailedOn;
             Score = submission.Score;
+            Progress = submission.Progress;
             JudgedAt = submission.JudgedAt;
         }
     }
@@ -152,6 +100,7 @@ namespace Judge1.Models
         public int? Memory { get; }
         public int? FailedOn { get; }
         public int? Score { get; }
+        public int? Progress { get; }
         public string Message { get; }
         public DateTime? JudgedAt { get; }
 
@@ -168,6 +117,7 @@ namespace Judge1.Models
             Memory = submission.Memory;
             FailedOn = submission.FailedOn;
             Score = submission.Score;
+            Progress = submission.Progress;
             Message = submission.Message;
             JudgedAt = submission.JudgedAt;
         }
