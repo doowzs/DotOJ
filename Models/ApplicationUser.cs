@@ -1,7 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Judge1.Models
 {
@@ -24,12 +28,32 @@ namespace Judge1.Models
 
     public class ApplicationUser : IdentityUser
     {
-        [Required] public string ContestantId { get; set; }
+        [Required, ProtectedPersonalData] public string ContestantId { get; set; }
         [Required] public string ContestantName { get; set; }
 
         public List<Submission> Submissions { get; set; }
         public List<Hack> Hacks { get; set; }
         public List<Test> Tests { get; set; }
+    }
+
+    public class CustomUserValidator : IUserValidator<ApplicationUser>
+    {
+        public async Task<IdentityResult> ValidateAsync(UserManager<ApplicationUser> manager, ApplicationUser user)
+        {
+            if (await manager.Users.AnyAsync(u => u.ContestantId == user.ContestantId))
+            {
+                return IdentityResult.Failed(new[]
+                {
+                    new IdentityError
+                    {
+                        Code = "DuplicateContestantId",
+                        Description = "Contestant ID already taken."
+                    }
+                });
+            }
+
+            return IdentityResult.Success;
+        }
     }
 
     [NotMapped]

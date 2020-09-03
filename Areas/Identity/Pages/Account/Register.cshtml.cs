@@ -52,12 +52,12 @@ namespace Judge1.Areas.Identity.Pages.Account
 
             [Required]
             [DataType(DataType.Text)]
-            [Display(Name = "Contestant ID")]
+            [Display(Name = "Contestant ID (NJUID)")]
             public string ContestantId { get; set; }
 
             [Required]
             [DataType(DataType.Text)]
-            [Display(Name = "Contestant Name")]
+            [Display(Name = "Contestant Name (Nickname)")]
             public string ContestantName { get; set; }
 
             [Required]
