@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.IO;
-using System.Text;
 using Newtonsoft.Json;
 
 namespace Judge1.Models
@@ -51,7 +49,10 @@ namespace Judge1.Models
         [JsonProperty("stdin")] public string Stdin { get; set; }
         [JsonProperty("expected_output")] public string ExpectedOutput { get; set; }
         [JsonProperty("cpu_time_limit")] public float CpuTimeLimit { get; set; }
+        [JsonProperty("cpu_extra_time")] public float CpuExtraTime => 1.0f;
+        [JsonProperty("wall_time_limit")] public float WallTimeLimit => CpuTimeLimit * 2.0f;
         [JsonProperty("memory_limit")] public float MemoryLimit { get; set; }
+        [JsonProperty("stack_limit")] public float StackLimit => 64 * 1024.0f;
 
         public RunnerOptions(Submission submission, string input, string output)
         {
@@ -84,6 +85,7 @@ namespace Judge1.Models
         [JsonProperty("token")] public string Token { get; set; }
         [JsonProperty("compile_output")] public string CompileOutput { get; set; }
         [JsonProperty("time")] public string Time { get; set; }
+        [JsonProperty("wall_time")] public string WallTime { get; set; }
         [JsonProperty("memory")] public float? Memory { get; set; }
         [JsonProperty("message")] public string Message { get; set; }
         [JsonProperty("status_id")] public Verdict Verdict { get; set; }

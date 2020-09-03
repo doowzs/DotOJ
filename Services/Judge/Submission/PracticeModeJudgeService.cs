@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
+using Hangfire;
 using IdentityServer4.Extensions;
 using Judge1.Models;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,7 +30,8 @@ namespace Judge1.Services.Judge.Submission
             Instance = Options.Value.Instances[0];
         }
 
-        private async Task<RunInfo> CreateRun(Models.Submission submission, int index, TestCase testCase, bool inline)
+        private async Task<RunInfo> CreateRun
+            (HttpClient client, Models.Submission submission, int index, TestCase testCase, bool inline)
         {
             RunnerOptions options;
             if (inline)
@@ -55,10 +58,6 @@ namespace Judge1.Services.Judge.Submission
                 }
             }
 
-            using var client = Factory.CreateClient();
-            client.DefaultRequestHeaders.Add("X-Auth-User", Instance.AuthUser);
-            client.DefaultRequestHeaders.Add("X-Auth-Token", Instance.AuthToken);
-
             using var stringContent = new StringContent(JsonConvert.SerializeObject(options),
                 Encoding.UTF8, MediaTypeNames.Application.Json);
             using var response =
@@ -77,20 +76,25 @@ namespace Judge1.Services.Judge.Submission
                 Verdict = Verdict.Running
             };
         }
-
+        
+        [DisableConcurrentExecution(300)]
         private async Task<List<RunInfo>> CreateRuns(Models.Submission submission, Problem problem)
         {
             var runInfos = new List<RunInfo>();
 
+            using var client = Factory.CreateClient();
+            client.DefaultRequestHeaders.Add("X-Auth-User", Instance.AuthUser);
+            client.DefaultRequestHeaders.Add("X-Auth-Token", Instance.AuthToken);
+
             foreach (var testCase in problem.SampleCases)
             {
-                runInfos.Add(await CreateRun(submission, 0, testCase, true));
+                runInfos.Add(await CreateRun(client, submission, 0, testCase, true));
             }
 
             int index = 0;
             foreach (var testCase in problem.TestCases)
             {
-                runInfos.Add(await CreateRun(submission, ++index, testCase, false));
+                runInfos.Add(await CreateRun(client, submission, ++index, testCase, false));
             }
 
             return runInfos;
@@ -146,6 +150,11 @@ namespace Judge1.Services.Judge.Submission
                         time = Math.Max(time, runInfo.Time.Value);
                     }
 
+                    if (runInfo.WallTime.HasValue)
+                    {
+                        time = Math.Max(time, runInfo.WallTime.Value);
+                    }
+
                     if (runInfo.Memory.HasValue)
                     {
                         memory = Math.Max(memory, runInfo.Memory.Value);
@@ -170,7 +179,7 @@ namespace Judge1.Services.Judge.Submission
 
                 using var response = await client.GetAsync(Instance.Endpoint + "/submissions/batch" +
                                                            "?base64_encoded=true&tokens=" + string.Join(",", tokens) +
-                                                           "&fields=token,time,memory,compile_output,message,status_id");
+                                                           "&fields=token,time,wall_time,memory,compile_output,message,status_id");
                 if (!response.IsSuccessStatusCode)
                 {
                     await LogError($"PollRuns FAIL Tokens={string.Join(",", tokens)} Status={response.StatusCode}");
@@ -191,6 +200,9 @@ namespace Judge1.Services.Judge.Submission
                     {
                         runInfo.Verdict = status.Verdict;
                         runInfo.Time = string.IsNullOrEmpty(status.Time) ? (float?) null : float.Parse(status.Time);
+                        runInfo.WallTime = string.IsNullOrEmpty(status.WallTime)
+                            ? (float?) null
+                            : float.Parse(status.WallTime);
                         runInfo.Memory = status.Memory;
                         runInfo.Message = status.Verdict == Verdict.InternalError
                             ? status.Message
@@ -204,13 +216,37 @@ namespace Judge1.Services.Judge.Submission
 
         public async Task<JudgeResult> Judge(Models.Submission submission, Problem problem)
         {
+            submission.Verdict = Verdict.InQueue;
+            submission.FailedOn = -1;
+            Context.Submissions.Update(submission);
+            await Context.SaveChangesAsync();
+
             var runInfos = await CreateRuns(submission, problem);
+            if (runInfos.IsNullOrEmpty())
+            {
+                return new JudgeResult
+                {
+                    Verdict = Verdict.Failed,
+                    FailedOn = -1, Score = 0,
+                    Message = "No test cases available."
+                };
+            }
+
             for (int i = 0; i < JudgeTimeLimit; ++i)
             {
                 await Task.Delay(1000);
+
+                submission.Verdict = Verdict.Running;
+                submission.Score = runInfos.Count(info => info.Verdict > Verdict.Running) * 100 / runInfos.Count;
+                Context.Update(submission);
+                await Context.SaveChangesAsync();
+
                 var result = await PollRuns(runInfos);
                 if (result != null)
                 {
+                    // Fix time and memory to be no larger than limit.
+                    result.Time = Math.Min(result.Time, problem.TimeLimit);
+                    result.Memory = Math.Min(result.Memory, problem.MemoryLimit);
                     return result;
                 }
             }

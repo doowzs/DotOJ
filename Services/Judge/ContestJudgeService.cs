@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using System.Transactions;
+using Hangfire;
 using Judge1.Models;
 using Judge1.Notifications;
 using Judge1.Services.Judge.Submission;
@@ -72,6 +73,7 @@ namespace Judge1.Services.Judge
             }
         }
 
+        [AutomaticRetry(Attempts = 0)]
         public async Task JudgeSubmission(int submissionId)
         {
             var submission = await Context.Submissions.FindAsync(submissionId);
@@ -88,11 +90,6 @@ namespace Judge1.Services.Judge
                 var problem = await Context.Problems.FindAsync(submission.ProblemId);
                 var contest = await Context.Contests.FindAsync(problem.ContestId);
                 await EnsureUserCanSubmit(user, contest);
-
-                submission.Verdict = Verdict.Running;
-                submission.FailedOn = -1;
-                Context.Submissions.Update(submission);
-                await Context.SaveChangesAsync();
 
                 ISubmissionJudgeService judgeService;
                 switch (contest.Mode)

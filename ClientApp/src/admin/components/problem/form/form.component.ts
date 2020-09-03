@@ -25,8 +25,8 @@ export class AdminProblemFormComponent implements OnInit, OnChanges {
       inputFormat: [null, [Validators.required, Validators.maxLength(10000)]],
       outputFormat: [null, [Validators.required, Validators.maxLength(10000)]],
       footNote: [null, [Validators.maxLength(10000)]],
-      timeLimit: [null, [Validators.required, Validators.min(100), Validators.max(60000)]],
-      memoryLimit: [null, [Validators.required, Validators.min(1024), Validators.max(2 * 1024 * 1024)]],
+      timeLimit: [null, [Validators.required, Validators.min(100), Validators.max(30000)]],
+      memoryLimit: [null, [Validators.required, Validators.min(1000), Validators.max(512000)]],
     });
   }
 

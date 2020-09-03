@@ -1,5 +1,5 @@
 ﻿import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
-import { forkJoin, interval, Observable, Subject } from 'rxjs';
+import { interval, Observable, Subject } from 'rxjs';
 import { map, take, takeUntil } from 'rxjs/operators';
 
 import { VerdictInfo, VerdictStage } from '../../../consts/verdicts.consts';
@@ -84,21 +84,25 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
     return (submission.verdict as VerdictInfo).stage === VerdictStage.REJECTED && submission.failedOn === 0;
   }
 
+  public getSubmissionPct(submission: SubmissionInfoDto): number {
+    const verdict = submission.verdict as VerdictInfo;
+    if (submission.failedOn !== 0 && verdict.showCase) {
+      if (verdict.stage === VerdictStage.REJECTED) {
+        return 100 - submission.score;
+      } else {
+        return submission.score;
+      }
+    }
+    return null;
+  }
+
   public getSubmissionStats(submission: SubmissionInfoDto): string {
     const verdict = submission.verdict as VerdictInfo;
-    if (verdict.stage === VerdictStage.ACCEPTED) {
-      return submission.time + 'ms, ' + submission.memory + 'KiB';
-    } else if (verdict.stage === VerdictStage.REJECTED) {
-      if (submission.failedOn === 0) {
-        return 'SAMPLE FAILED';
-      }
+    if (verdict.stage === VerdictStage.ACCEPTED || verdict.stage === VerdictStage.REJECTED) {
       if (submission.time && submission.memory) {
-        return submission.time + 'ms, ' + submission.memory + 'KiB, ' + submission.score + '% passed';
-      } else {
-        return submission.score + '% passed';
+        return submission.time + 'ms, ' + submission.memory + 'KiB';
       }
-    } else {
-      return '';
     }
+    return null;
   }
 }

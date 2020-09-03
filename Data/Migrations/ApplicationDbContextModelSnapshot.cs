@@ -333,8 +333,8 @@ namespace Judge1.Data.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<double>("MemoryLimit")
-                        .HasColumnType("double");
+                    b.Property<int>("MemoryLimit")
+                        .HasColumnType("int");
 
                     b.Property<string>("OutputFormat")
                         .IsRequired()
@@ -358,8 +358,8 @@ namespace Judge1.Data.Migrations
                         .HasColumnName("TestCases")
                         .HasColumnType("text");
 
-                    b.Property<double>("TimeLimit")
-                        .HasColumnType("double");
+                    b.Property<int>("TimeLimit")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .IsRequired()

@@ -9,6 +9,7 @@
         <nz-tag [nzColor]="submission.verdict.color"
                 nz-tooltip [nzTooltipTitle]="submission.verdict.explain">
           {{ submission.verdict.name }}
+          <span *ngIf="getSubmissionPct(submission) as pct"> {{ pct }}%</span>
           <span *ngIf="failedOnSample(submission)">*</span>
         </nz-tag>
         <span style="float: right;">
