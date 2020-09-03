@@ -1,4 +1,4 @@
-﻿<nz-layout>
+﻿<nz-layout *ngIf="user">
   <nz-header>
     <span class="header-title">Administration</span>
     <div class="header-extra">
@@ -6,7 +6,7 @@
         <i nz-icon nzType="logout"></i><span>Exit</span>
       </button>
       <button nz-button nzType="text" class="header-content">
-        <i nz-icon nzType="user"></i><span>{{ username | async }}</span>
+        <i nz-icon nzType="user"></i><span>{{ user.name }}</span>
       </button>
     </div>
   </nz-header>
@@ -19,7 +19,8 @@
               [routerLinkActiveOptions]="{exact: true}">
             Dashboard
           </li>
-          <li nz-submenu nzTitle="Users" nzOpen>
+          <li *ngIf="hasAnyRole(['Administrator', 'UserManager'])"
+              nz-submenu nzTitle="Users" nzOpen>
             <ul>
               <li nz-menu-item routerLink="/admin/user"
                   [routerLinkActive]="['ant-menu-item-selected']"
@@ -28,7 +29,8 @@
               </li>
             </ul>
           </li>
-          <li nz-submenu nzTitle="Contests" nzOpen>
+          <li *ngIf="hasAnyRole(['Administrator', 'ContestManager'])"
+              nz-submenu nzTitle="Contests" nzOpen>
             <ul>
               <li nz-menu-item routerLink="/admin/contest"
                   [routerLinkActive]="['ant-menu-item-selected']"
@@ -41,7 +43,8 @@
               </li>
             </ul>
           </li>
-          <li nz-submenu nzTitle="Problems" nzOpen>
+          <li *ngIf="hasAnyRole(['Administrator', 'ContestManager'])"
+              nz-submenu nzTitle="Problems" nzOpen>
             <ul>
               <li nz-menu-item routerLink="/admin/problem"
                   [routerLinkActive]="['ant-menu-item-selected']"
@@ -54,7 +57,8 @@
               </li>
             </ul>
           </li>
-          <li nz-submenu nzTitle="Submissions" nzOpen>
+          <li *ngIf="hasAnyRole(['Administrator', 'SubmissionManager'])"
+              nz-submenu nzTitle="Submissions" nzOpen>
             <ul>
               <li nz-menu-item routerLink="/admin/submission"
                   [routerLinkActive]="['ant-menu-item-selected']"
