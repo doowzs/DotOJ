@@ -8,6 +8,9 @@ stages:
 
 build:image:
   stage: build
+  only:
+    refs:
+      - master
   image: docker:stable
   variables: 
     DOCKER_HOST: tcp://docker:2375
