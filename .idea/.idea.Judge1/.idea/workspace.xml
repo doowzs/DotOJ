@@ -24,17 +24,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3264e410-2e54-4a07-b7a6-e065f9c1dc35" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Notification/Notification.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Judge1/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Judge1/.idea/contentModel.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Judge1/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Judge1/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Judge1.sln" beforeDir="false" afterPath="$PROJECT_DIR$/Judge1.sln" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Notifications/DingTalkNotification.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Notification/Providers/DingTalk.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Notifications/NotificationBase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Notification/Providers/ProviderBase.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Notifications/NotificationBroadcaster.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Notification/NotificationBroadcaster.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Services/LoggableService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Generics/LoggableService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Startup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Startup.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/WebApp.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/WebApp.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Worker/Judge/ContestJudgeService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Worker/Judge/ContestJudgeService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Worker/Judge/Submission/PracticeModeJudgeService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Worker/Judge/Submission/PracticeModeJudgeService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Worker/Runners/Modes/IModeSubmissionRunner.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Worker/Runners/Modes/ModeSubmissionRunnerBase.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Worker/Runners/Modes/PracticeModeSubmissionRunner.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Worker/Runners/Modes/PracticeModeSubmissionRunner.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,21 +43,12 @@
     <setting file="mock://D:/Workspace/Judge1/WebApp/Services/SubmissionService.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://D:/Workspace/Judge1/WebApp/Services/Admin/AdminSubmissionService.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://D:/Workspace/Judge1/Worker/Judge/ContestJudgeService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Workspace/Judge1/Worker/Judge/ContestJudgeService.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/WebApp/obj/Debug/netcoreapp3.1/Razor/Pages/Error.cshtml.g.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/WebApp/Notifications/NotificationBase.cs" />
-        <option value="$PROJECT_DIR$/WebApp/Pages/Shared/_LoginPartial.cshtml" />
-        <option value="$PROJECT_DIR$/WebApp/Services/Judge/Submission/ISubmissionJudgeService.cs" />
-        <option value="$PROJECT_DIR$/WebApp/Services/Judge/Submission/PracticeModeJudgeService.cs" />
-        <option value="$PROJECT_DIR$/WebApp/Services/Judge/ContestJudgeService.cs" />
-        <option value="$PROJECT_DIR$/WebApp/Services/LoggableService.cs" />
-        <option value="$PROJECT_DIR$/WebApp/Services/Admin/AdminContestService.cs" />
-        <option value="$PROJECT_DIR$/WebApp/Services/Admin/AdminProblemService.cs" />
-        <option value="$PROJECT_DIR$/WebApp/Services/ContestService.cs" />
-        <option value="$PROJECT_DIR$/WebApp/Services/ProblemService.cs" />
         <option value="$PROJECT_DIR$/WebApp/Services/ProfileService.cs" />
         <option value="$PROJECT_DIR$/Data/Configs/ApplicationConfig.cs" />
         <option value="$PROJECT_DIR$/Data/Configs/JudgingConfig.cs" />
@@ -98,7 +82,6 @@
         <option value="$PROJECT_DIR$/WebApp/appsettings.json.example" />
         <option value="$PROJECT_DIR$/Worker/appsettings.json" />
         <option value="$PROJECT_DIR$/WebApp/Services/Admin/AdminSubmissionService.cs" />
-        <option value="$PROJECT_DIR$/Worker/Judge/Submission/ISubmissionJudgeService.cs" />
         <option value="$PROJECT_DIR$/Data/Generics/LoggableService.cs" />
         <option value="$PROJECT_DIR$/WebApp/Services/SubmissionService.cs" />
         <option value="$PROJECT_DIR$/Notification/Class1.cs" />
@@ -106,6 +89,17 @@
         <option value="$PROJECT_DIR$/Notification/Providers/DingTalk.cs" />
         <option value="$PROJECT_DIR$/Notification/NotificationBroadcaster.cs" />
         <option value="$PROJECT_DIR$/WebApp/Startup.cs" />
+        <option value="$PROJECT_DIR$/Worker/Judge/ContestJudgeService.cs" />
+        <option value="$PROJECT_DIR$/Worker/Models/JudgeResult.cs" />
+        <option value="$PROJECT_DIR$/Worker/Models/RunInfo.cs" />
+        <option value="$PROJECT_DIR$/Worker/Models/Result.cs" />
+        <option value="$PROJECT_DIR$/Worker/Judge/Submission/ISubmissionJudgeService.cs" />
+        <option value="$PROJECT_DIR$/Worker/Services/Submission/ISubmissionJudgeService.cs" />
+        <option value="$PROJECT_DIR$/Worker/Runners/Modes/IModeSubmissionRunner.cs" />
+        <option value="$PROJECT_DIR$/Worker/Runners/Modes/PracticeModeJudgeService.cs" />
+        <option value="$PROJECT_DIR$/Worker/Runners/SubmissionRunner.cs" />
+        <option value="$PROJECT_DIR$/Worker/Runners/Modes/PracticeModeSubmissionRunner.cs" />
+        <option value="$PROJECT_DIR$/Worker/Runners/Modes/ModeSubmissionRunnerBase.cs" />
       </list>
     </option>
   </component>
@@ -169,7 +163,7 @@
       <updated>1599143925688</updated>
       <workItem from="1599143931348" duration="400000" />
       <workItem from="1599144340054" duration="344000" />
-      <workItem from="1599149864228" duration="1914000" />
+      <workItem from="1599149864228" duration="2941000" />
     </task>
     <task id="LOCAL-00001" summary="update to multi-project structure">
       <created>1599144491876</created>
@@ -227,7 +221,28 @@
       <option name="project" value="LOCAL" />
       <updated>1599151449470</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="separate Notification to a standalone library">
+      <created>1599151796789</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1599151796789</updated>
+    </task>
+    <task id="LOCAL-00010" summary="fix Worker dependencies">
+      <created>1599151843865</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1599151843865</updated>
+    </task>
+    <task id="LOCAL-00011" summary="WIP on fix worker class names">
+      <created>1599152418891</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1599152418891</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -258,7 +273,9 @@
     <MESSAGE value="update appsettings.json.example" />
     <MESSAGE value="remove judge services to Worker" />
     <MESSAGE value="separate Notification to a standalone library" />
-    <option name="LAST_COMMIT_MESSAGE" value="separate Notification to a standalone library" />
+    <MESSAGE value="fix Worker dependencies" />
+    <MESSAGE value="WIP on fix worker class names" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP on fix worker class names" />
   </component>
   <component name="WindowStateProjectService">
     <state x="194" y="274" width="1092" height="766" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1599144348941">
@@ -293,10 +310,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="461" y="164" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1599149463085" />
-    <state x="92" y="92" width="1736" height="856" key="VCS.FileHistoryDialog" timestamp="1599147748759">
+    <state x="92" y="92" width="1736" height="856" key="VCS.FileHistoryDialog" timestamp="1599152417236">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="92" y="92" width="1736" height="856" key="VCS.FileHistoryDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1599147748759" />
+    <state x="92" y="92" width="1736" height="856" key="VCS.FileHistoryDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1599152417236" />
     <state x="552" y="252" key="Vcs.Push.Dialog.v2" timestamp="1599144552145">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

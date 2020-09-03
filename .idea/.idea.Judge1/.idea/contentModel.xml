@@ -535,12 +535,9 @@
         <e p="appsettings.json" t="Include" />
         <e p="appsettings.json.example" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
-        <e p="Judge" t="Include">
-          <e p="ContestJudgeService.cs" t="Include" />
-          <e p="Submission" t="Include">
-            <e p="ISubmissionJudgeService.cs" t="Include" />
-            <e p="PracticeModeJudgeService.cs" t="Include" />
-          </e>
+        <e p="Models" t="Include">
+          <e p="Result.cs" t="Include" />
+          <e p="Run.cs" t="Include" />
         </e>
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
@@ -552,6 +549,13 @@
         <e p="Program.cs" t="Include" />
         <e p="Properties" t="Include">
           <e p="launchSettings.json" t="Include" />
+        </e>
+        <e p="Runners" t="Include">
+          <e p="Modes" t="Include">
+            <e p="ModeSubmissionRunnerBase.cs" t="Include" />
+            <e p="PracticeModeSubmissionRunner.cs" t="Include" />
+          </e>
+          <e p="SubmissionRunner.cs" t="Include" />
         </e>
         <e p="Worker.cs" t="Include" />
         <e p="Worker.csproj" t="IncludeRecursive" />
