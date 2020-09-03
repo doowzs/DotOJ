@@ -10,6 +10,7 @@ namespace Judge1.Services.Judge.Submission
 
         public Verdict Verdict { get; set; }
         public float? Time { get; set; }
+        public float? WallTime { get; set; }
         public float? Memory { set; get; }
         public string Message { set; get; }
     }

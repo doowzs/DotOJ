@@ -147,6 +147,11 @@ namespace Judge1.Services.Judge.Submission
                         time = Math.Max(time, runInfo.Time.Value);
                     }
 
+                    if (runInfo.WallTime.HasValue)
+                    {
+                        time = Math.Max(time, runInfo.WallTime.Value);
+                    }
+
                     if (runInfo.Memory.HasValue)
                     {
                         memory = Math.Max(memory, runInfo.Memory.Value);
@@ -171,7 +176,7 @@ namespace Judge1.Services.Judge.Submission
 
                 using var response = await client.GetAsync(Instance.Endpoint + "/submissions/batch" +
                                                            "?base64_encoded=true&tokens=" + string.Join(",", tokens) +
-                                                           "&fields=token,time,memory,compile_output,message,status_id");
+                                                           "&fields=token,time,wall_time,memory,compile_output,message,status_id");
                 if (!response.IsSuccessStatusCode)
                 {
                     await LogError($"PollRuns FAIL Tokens={string.Join(",", tokens)} Status={response.StatusCode}");
@@ -192,6 +197,9 @@ namespace Judge1.Services.Judge.Submission
                     {
                         runInfo.Verdict = status.Verdict;
                         runInfo.Time = string.IsNullOrEmpty(status.Time) ? (float?) null : float.Parse(status.Time);
+                        runInfo.WallTime = string.IsNullOrEmpty(status.WallTime)
+                            ? (float?) null
+                            : float.Parse(status.WallTime);
                         runInfo.Memory = status.Memory;
                         runInfo.Message = status.Verdict == Verdict.InternalError
                             ? status.Message
@@ -209,7 +217,7 @@ namespace Judge1.Services.Judge.Submission
             submission.FailedOn = -1;
             Context.Submissions.Update(submission);
             await Context.SaveChangesAsync();
-            
+
             var runInfos = await CreateRuns(submission, problem);
             for (int i = 0; i < JudgeTimeLimit; ++i)
             {
@@ -219,10 +227,13 @@ namespace Judge1.Services.Judge.Submission
                 submission.Score = runInfos.IsNullOrEmpty() ? 0 : (progress * 100 / runInfos.Count);
                 Context.Update(submission);
                 await Context.SaveChangesAsync();
-                
+
                 var result = await PollRuns(runInfos);
                 if (result != null)
                 {
+                    // Fix time and memory to be no larger than limit.
+                    result.Time = Math.Min(result.Time, problem.TimeLimit);
+                    result.Memory = Math.Min(result.Memory, problem.MemoryLimit);
                     return result;
                 }
             }
