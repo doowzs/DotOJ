@@ -11,6 +11,7 @@ build:image:
   image: docker:stable
   variables: 
     DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ''
   services:
     - docker:dind
   script:
