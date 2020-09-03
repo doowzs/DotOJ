@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace WebApp.Models
+namespace Data.Models
 {
     [NotMapped]
     public class ApplicationRoles

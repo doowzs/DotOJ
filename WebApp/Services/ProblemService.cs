@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Data.Models;
 using IdentityServer4.Extensions;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Exceptions;
-using WebApp.Models;
 
 namespace WebApp.Services
 {

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Net.Mime;
 using System.Threading.Tasks;
+using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using WebApp.Exceptions;
-using WebApp.Models;
 using WebApp.Services;
 
 namespace WebApp.Controllers.Api.v1

@@ -1,9 +1,9 @@
 using System.Net.Mime;
+using Data.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using WebApp.Models;
 
 namespace WebApp.Controllers.Api.v1
 {

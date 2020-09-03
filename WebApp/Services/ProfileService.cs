@@ -1,11 +1,11 @@
 ﻿using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Data.Models;
 using IdentityModel;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
 using Microsoft.AspNetCore.Identity;
-using WebApp.Models;
 
 namespace WebApp.Services
 {

@@ -2,13 +2,13 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Data.Models;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using WebApp.Models;
 
-namespace WebApp.Data
+namespace Data
 {
     public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>
     {
@@ -25,12 +25,12 @@ namespace WebApp.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            
+
             // Setup unique index for ApplicationUser.
             builder.Entity<ApplicationUser>()
                 .HasIndex(u => u.ContestantId)
                 .IsUnique();
-            
+
             // Setup composite key for Registration.
             builder.Entity<Registration>()
                 .HasKey(ar => new {ar.UserId, ar.ContestId});
@@ -53,7 +53,7 @@ namespace WebApp.Data
         {
             var now = DateTime.Now.ToUniversalTime();
             var entries = ChangeTracker.Entries()
-                .Where(e => e.Entity is ModelWithTimestamps 
+                .Where(e => e.Entity is ModelWithTimestamps
                             && (e.State == EntityState.Added || e.State == EntityState.Modified));
             foreach (var entry in entries)
             {
@@ -61,6 +61,7 @@ namespace WebApp.Data
                 {
                     ((ModelWithTimestamps) entry.Entity).CreatedAt = now;
                 }
+
                 ((ModelWithTimestamps) entry.Entity).UpdatedAt = now;
             }
         }

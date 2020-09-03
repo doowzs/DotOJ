@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Data;
+using Data.Models;
 using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using WebApp.Data;
-using WebApp.Models;
 
 namespace WebApp.Services
 {

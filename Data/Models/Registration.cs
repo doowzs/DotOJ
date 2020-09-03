@@ -6,9 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
-using WebApp.Data;
 
-namespace WebApp.Models
+namespace Data.Models
 {
     [NotMapped]
     public class ProblemStatistics

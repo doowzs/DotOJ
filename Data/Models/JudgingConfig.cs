@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace WebApp.Models
+namespace Data.Models
 {
     [NotMapped]
     public class JudgeInstance

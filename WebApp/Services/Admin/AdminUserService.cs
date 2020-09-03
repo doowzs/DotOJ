@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using Data.Models;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Exceptions;
-using WebApp.Models;
 
 namespace WebApp.Services.Admin
 {

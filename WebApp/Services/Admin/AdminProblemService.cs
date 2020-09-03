@@ -4,12 +4,12 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.IO.Compression;
 using System.Threading.Tasks;
+using Data.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using WebApp.Exceptions;
-using WebApp.Models;
 
 namespace WebApp.Services.Admin
 {

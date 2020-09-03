@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using WebApp.Models;
+using Data.Models;
 
 namespace WebApp.Services.Judge.Submission
 {
@@ -27,6 +27,6 @@ namespace WebApp.Services.Judge.Submission
 
     public interface ISubmissionJudgeService
     {
-        public Task<JudgeResult> Judge(WebApp.Models.Submission submission, Problem problem);
+        public Task<JudgeResult> Judge(Data.Models.Submission submission, Problem problem);
     }
 }

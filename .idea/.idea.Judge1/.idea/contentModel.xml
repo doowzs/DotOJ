@@ -7,6 +7,37 @@
     <e p="C:\Users\Tianyun\AppData\Roaming\JetBrains\Rider2020.2\extensions" t="IncludeRecursive" />
     <e p="C:\Users\Tianyun\AppData\Roaming\JetBrains\Rider2020.2\scratches" t="IncludeRecursive" />
     <e p="D:\Workspace\Judge1" t="IncludeFlat">
+      <e p="Data" t="IncludeRecursive">
+        <e p="ApplicationDbContext.cs" t="Include" />
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="Data.csproj" t="IncludeRecursive" />
+        <e p="Migrations" t="Include">
+          <e p="20200903120347_InitialCreate.cs" t="Include" />
+          <e p="20200903120347_InitialCreate.Designer.cs" t="Include" />
+          <e p="ApplicationDbContextModelSnapshot.cs" t="Include" />
+        </e>
+        <e p="Models" t="Include">
+          <e p="ApplicationConfig.cs" t="Include" />
+          <e p="ApplicationUser.cs" t="Include" />
+          <e p="Contest.cs" t="Include" />
+          <e p="JudgingConfig.cs" t="Include" />
+          <e p="NotificationConfig.cs" t="Include" />
+          <e p="Pagination.cs" t="Include" />
+          <e p="Problem.cs" t="Include" />
+          <e p="Program.cs" t="Include" />
+          <e p="Registration.cs" t="Include" />
+          <e p="Runner.cs" t="Include" />
+          <e p="Submission.cs" t="Include" />
+          <e p="Timestamps.cs" t="Include" />
+        </e>
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netcoreapp3.1" t="Include">
+              <e p="Data.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+      </e>
       <e p="Judge1.sln" t="IncludeFlat" />
       <e p="packages" t="ExcludeRecursive" />
       <e p="WebApp" t="IncludeRecursive">
@@ -24,7 +55,6 @@
                 <e p="_ViewImports.cshtml" t="Include" />
                 <e p="Login.cshtml" t="Include" />
                 <e p="Login.cshtml.cs" t="Include" />
-                <e p="Manage" t="Include" />
                 <e p="Register.cshtml" t="Include" />
                 <e p="Register.cshtml.cs" t="Include" />
               </e>
@@ -424,14 +454,6 @@
           </e>
           <e p="OidcConfigurationController.cs" t="Include" />
         </e>
-        <e p="Data" t="Include">
-          <e p="ApplicationDbContext.cs" t="Include" />
-          <e p="Migrations" t="Include">
-            <e p="20200903120347_InitialCreate.cs" t="Include" />
-            <e p="20200903120347_InitialCreate.Designer.cs" t="Include" />
-            <e p="ApplicationDbContextModelSnapshot.cs" t="Include" />
-          </e>
-        </e>
         <e p="Dockerfile" t="Include" />
         <e p="Exceptions" t="Include">
           <e p="NotFoundException.cs" t="Include" />
@@ -439,20 +461,6 @@
         </e>
         <e p="Folder.DotSettings" t="Include" />
         <e p="identity.pfx" t="Include" />
-        <e p="Models" t="Include">
-          <e p="ApplicationConfig.cs" t="Include" />
-          <e p="ApplicationUser.cs" t="Include" />
-          <e p="Contest.cs" t="Include" />
-          <e p="JudgingConfig.cs" t="Include" />
-          <e p="NotificationConfig.cs" t="Include" />
-          <e p="Pagination.cs" t="Include" />
-          <e p="Problem.cs" t="Include" />
-          <e p="Program.cs" t="Include" />
-          <e p="Registration.cs" t="Include" />
-          <e p="Runner.cs" t="Include" />
-          <e p="Submission.cs" t="Include" />
-          <e p="Timestamps.cs" t="Include" />
-        </e>
         <e p="Notifications" t="Include">
           <e p="DingTalkNotification.cs" t="Include" />
           <e p="NotificationBase.cs" t="Include" />
