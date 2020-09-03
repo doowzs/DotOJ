@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.CodeAnalysis;
 using Newtonsoft.Json;
 
-namespace Judge1.Models
+namespace WebApp.Models
 {
     [NotMapped]
     public class RunnerLanguageOptions

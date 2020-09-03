@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace Judge1.Models
+namespace WebApp.Models
 {
     public class PaginatedList<T>
     {

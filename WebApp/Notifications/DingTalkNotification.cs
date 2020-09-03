@@ -7,10 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 
-namespace Judge1.Notifications
+namespace WebApp.Notifications
 {
     public class DingTalkMarkdown
     {

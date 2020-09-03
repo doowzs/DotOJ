@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using System.Threading.Tasks;
-using Judge1.Exceptions;
-using Judge1.Models;
-using Judge1.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using WebApp.Exceptions;
+using WebApp.Models;
+using WebApp.Services;
 
-namespace Judge1.Controllers.Api.v1
+namespace WebApp.Controllers.Api.v1
 {
     [Authorize]
     [ApiController]

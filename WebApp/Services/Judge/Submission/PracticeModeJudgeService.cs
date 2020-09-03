@@ -7,12 +7,12 @@ using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 using IdentityServer4.Extensions;
-using Judge1.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using WebApp.Models;
 
-namespace Judge1.Services.Judge.Submission
+namespace WebApp.Services.Judge.Submission
 {
     public class PracticeModeJudgeService : LoggableService<PracticeModeJudgeService>, ISubmissionJudgeService
     {
@@ -30,7 +30,7 @@ namespace Judge1.Services.Judge.Submission
         }
 
         private async Task<RunInfo> CreateRun
-            (HttpClient client, Models.Submission submission, int index, TestCase testCase, bool inline)
+            (HttpClient client, WebApp.Models.Submission submission, int index, TestCase testCase, bool inline)
         {
             RunnerOptions options;
             if (inline)
@@ -76,7 +76,7 @@ namespace Judge1.Services.Judge.Submission
             };
         }
 
-        private async Task<List<RunInfo>> CreateRuns(Models.Submission submission, Problem problem)
+        private async Task<List<RunInfo>> CreateRuns(WebApp.Models.Submission submission, Problem problem)
         {
             var runInfos = new List<RunInfo>();
 
@@ -98,7 +98,7 @@ namespace Judge1.Services.Judge.Submission
             return runInfos;
         }
 
-        private async Task<JudgeResult> PollRuns(Models.Submission submission, List<RunInfo> runInfos)
+        private async Task<JudgeResult> PollRuns(WebApp.Models.Submission submission, List<RunInfo> runInfos)
         {
             var tokens = new List<string>();
             foreach (var runInfo in runInfos)
@@ -239,7 +239,7 @@ namespace Judge1.Services.Judge.Submission
             }
         }
 
-        public async Task<JudgeResult> Judge(Models.Submission submission, Problem problem)
+        public async Task<JudgeResult> Judge(WebApp.Models.Submission submission, Problem problem)
         {
             submission.Verdict = Verdict.InQueue;
             submission.FailedOn = null;

@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Judge1.Exceptions;
-using Judge1.Models;
-using Judge1.Services.Judge;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using WebApp.Exceptions;
+using WebApp.Models;
+using WebApp.Services.Judge;
 
-namespace Judge1.Services.Admin
+namespace WebApp.Services.Admin
 {
     public interface IAdminSubmissionService
     {

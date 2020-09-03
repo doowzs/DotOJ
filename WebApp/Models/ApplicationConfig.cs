@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Judge1.Models
+namespace WebApp.Models
 {
     [NotMapped]
     public class ApplicationConfig

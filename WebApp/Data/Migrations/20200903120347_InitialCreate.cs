@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Judge1.Data.Migrations
+namespace WebApp.Data.Migrations
 {
     public partial class InitialCreate : Migration
     {

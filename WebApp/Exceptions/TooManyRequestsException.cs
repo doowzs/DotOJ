@@ -1,6 +1,6 @@
 using System;
 
-namespace Judge1.Exceptions
+namespace WebApp.Exceptions
 {
     public class TooManyRequestsException : Exception
     {

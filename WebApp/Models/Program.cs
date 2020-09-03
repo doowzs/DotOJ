@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Judge1.Models
+namespace WebApp.Models
 {
     public enum Language
     {

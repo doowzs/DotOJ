@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using Newtonsoft.Json;
 
-namespace Judge1.Models
+namespace WebApp.Models
 {
     public class Submission : ModelWithTimestamps
     {
@@ -22,15 +22,15 @@ namespace Judge1.Models
 
         #region Submission Content
 
-        [NotMapped] public Program Program { get; set; }
+        [NotMapped] public WebApp.Models.Program Program { get; set; }
 
         [Required, Column("program", TypeName = "text")]
         public string ProgramSerialized
         {
             get => JsonConvert.SerializeObject(Program);
             set => Program = string.IsNullOrEmpty(value)
-                ? new Program()
-                : JsonConvert.DeserializeObject<Program>(value);
+                ? new WebApp.Models.Program()
+                : JsonConvert.DeserializeObject<WebApp.Models.Program>(value);
         }
 
         #endregion
@@ -94,7 +94,7 @@ namespace Judge1.Models
         public string ContestantId { get; }
         public string ContestantName { get; }
         public int ProblemId { get; }
-        public Program Program { get; }
+        public WebApp.Models.Program Program { get; }
         public Verdict? Verdict { get; }
         public int? Time { get; }
         public int? Memory { get; }
@@ -128,7 +128,7 @@ namespace Judge1.Models
     {
         // UserID comes from UserManager.
         [Required] public int? ProblemId { get; set; }
-        [Required] public Program Program { get; set; }
+        [Required] public WebApp.Models.Program Program { get; set; }
 
         public SubmissionCreateDto()
         {
@@ -143,7 +143,7 @@ namespace Judge1.Models
         public string ContestantId { get; }
         public string ContestantName { get; }
         public int ProblemId { get; }
-        public Program Program { get; }
+        public WebApp.Models.Program Program { get; }
         [Required] public Verdict? Verdict { get; set; }
         public int? Time { get; }
         public int? Memory { get; }

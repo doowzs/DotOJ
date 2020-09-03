@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
-using Judge1.Exceptions;
-using Judge1.Models;
 using Microsoft.EntityFrameworkCore;
+using WebApp.Exceptions;
+using WebApp.Models;
 
-namespace Judge1.Services.Admin
+namespace WebApp.Services.Admin
 {
     public interface IAdminUserService
     {

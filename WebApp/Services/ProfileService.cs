@@ -4,10 +4,10 @@ using System.Threading.Tasks;
 using IdentityModel;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
-using Judge1.Models;
 using Microsoft.AspNetCore.Identity;
+using WebApp.Models;
 
-namespace Judge1.Services
+namespace WebApp.Services
 {
     public class ProfileService : IProfileService
     {

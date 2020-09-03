@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Judge1.Notifications
+namespace WebApp.Notifications
 {
     public interface INotificationBroadcaster
     {

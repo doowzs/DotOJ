@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Judge1.Models;
+using WebApp.Models;
 
-namespace Judge1.Services.Judge.Submission
+namespace WebApp.Services.Judge.Submission
 {
     public class RunInfo
     {
@@ -27,6 +27,6 @@ namespace Judge1.Services.Judge.Submission
 
     public interface ISubmissionJudgeService
     {
-        public Task<JudgeResult> Judge(Models.Submission submission, Problem problem);
+        public Task<JudgeResult> Judge(WebApp.Models.Submission submission, Problem problem);
     }
 }

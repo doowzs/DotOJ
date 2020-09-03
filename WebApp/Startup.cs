@@ -7,18 +7,18 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
-using Judge1.Data;
-using Judge1.Models;
-using Judge1.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Judge1.Notifications;
-using Judge1.Services.Admin;
-using Judge1.Services.Judge;
 using Microsoft.Extensions.Logging;
+using WebApp.Data;
+using WebApp.Models;
+using WebApp.Notifications;
+using WebApp.Services;
+using WebApp.Services.Admin;
+using WebApp.Services.Judge;
 
-namespace Judge1
+namespace WebApp
 {
     public class Startup
     {

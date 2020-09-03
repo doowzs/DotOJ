@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace Judge1.Controllers
+namespace WebApp.Controllers
 {
     public class OidcConfigurationController : Controller
     {

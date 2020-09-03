@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Judge1.Models
+namespace WebApp.Models
 {
     public class DingTalkConfig
     {

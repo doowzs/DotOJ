@@ -4,14 +4,14 @@ using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.IO.Compression;
 using System.Threading.Tasks;
-using Judge1.Exceptions;
-using Judge1.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using WebApp.Exceptions;
+using WebApp.Models;
 
-namespace Judge1.Services.Admin
+namespace WebApp.Services.Admin
 {
     public interface IAdminProblemService
     {

@@ -4,11 +4,11 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
-using Judge1.Data;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using WebApp.Data;
 
-namespace Judge1.Models
+namespace WebApp.Models
 {
     [NotMapped]
     public class ProblemStatistics

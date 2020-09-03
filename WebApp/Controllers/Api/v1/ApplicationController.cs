@@ -1,11 +1,11 @@
 using System.Net.Mime;
-using Judge1.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using WebApp.Models;
 
-namespace Judge1.Controllers.Api.v1
+namespace WebApp.Controllers.Api.v1
 {
     [ApiController]
     [Route("api/v1/application")]

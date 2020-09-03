@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using System.Transactions;
-using Judge1.Models;
-using Judge1.Notifications;
-using Judge1.Services.Judge.Submission;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using WebApp.Models;
+using WebApp.Notifications;
+using WebApp.Services.Judge.Submission;
 
-namespace Judge1.Services.Judge
+namespace WebApp.Services.Judge
 {
     public interface IContestJudgeService
     {

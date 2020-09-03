@@ -1,6 +1,4 @@
 using System;
-using Judge1.Data;
-using Judge1.Models;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;

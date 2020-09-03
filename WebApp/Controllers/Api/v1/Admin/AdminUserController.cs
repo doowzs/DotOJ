@@ -2,15 +2,15 @@
 using System.Net.Mime;
 using System.Threading.Tasks;
 using IdentityServer4.Extensions;
-using Judge1.Exceptions;
-using Judge1.Models;
-using Judge1.Services.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using WebApp.Exceptions;
+using WebApp.Models;
+using WebApp.Services.Admin;
 
-namespace Judge1.Controllers.Api.v1.Admin
+namespace WebApp.Controllers.Api.v1.Admin
 {
     [Authorize(Policy = "ManageUsers")]
     [ApiController]

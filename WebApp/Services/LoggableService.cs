@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Threading.Tasks;
 using IdentityServer4.Extensions;
-using Judge1.Data;
-using Judge1.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using WebApp.Data;
+using WebApp.Models;
 
-namespace Judge1.Services
+namespace WebApp.Services
 {
     public class LoggableService<T> where T : class
     {
