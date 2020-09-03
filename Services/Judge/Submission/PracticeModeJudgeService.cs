@@ -76,7 +76,7 @@ namespace Judge1.Services.Judge.Submission
                 Verdict = Verdict.Running
             };
         }
-        
+
         [DisableConcurrentExecution(300)]
         private async Task<List<RunInfo>> CreateRuns(Models.Submission submission, Problem problem)
         {
@@ -245,7 +245,9 @@ namespace Judge1.Services.Judge.Submission
                 if (result != null)
                 {
                     // Fix time and memory to be no larger than limit.
-                    result.Time = Math.Min(result.Time, problem.TimeLimit);
+                    var timeFactor = RunnerLanguageOptions
+                        .LanguageOptionsDict[submission.Program.Language.GetValueOrDefault()].timeFactor;
+                    result.Time = Math.Min(result.Time, (int) (problem.TimeLimit * timeFactor));
                     result.Memory = Math.Min(result.Memory, problem.MemoryLimit);
                     return result;
                 }
