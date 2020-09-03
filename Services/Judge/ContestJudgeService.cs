@@ -89,11 +89,6 @@ namespace Judge1.Services.Judge
                 var contest = await Context.Contests.FindAsync(problem.ContestId);
                 await EnsureUserCanSubmit(user, contest);
 
-                submission.Verdict = Verdict.Running;
-                submission.FailedOn = -1;
-                Context.Submissions.Update(submission);
-                await Context.SaveChangesAsync();
-
                 ISubmissionJudgeService judgeService;
                 switch (contest.Mode)
                 {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Mime;
 using System.Text;
@@ -204,10 +205,21 @@ namespace Judge1.Services.Judge.Submission
 
         public async Task<JudgeResult> Judge(Models.Submission submission, Problem problem)
         {
+            submission.Verdict = Verdict.InQueue;
+            submission.FailedOn = -1;
+            Context.Submissions.Update(submission);
+            await Context.SaveChangesAsync();
+            
             var runInfos = await CreateRuns(submission, problem);
             for (int i = 0; i < JudgeTimeLimit; ++i)
             {
                 await Task.Delay(1000);
+
+                var progress = runInfos.Count(info => info.Verdict > Verdict.Running);
+                submission.Score = runInfos.IsNullOrEmpty() ? 0 : (progress * 100 / runInfos.Count);
+                Context.Update(submission);
+                await Context.SaveChangesAsync();
+                
                 var result = await PollRuns(runInfos);
                 if (result != null)
                 {
