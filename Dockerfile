@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build-env
+FROM ccr.ccs.tencentyun.com/doowzs/dotnet-core-sdk:3.1 AS build-env
 WORKDIR /app
 
 # Change source of APT for a smoother installation
@@ -28,7 +28,7 @@ COPY . ./
 RUN dotnet publish -c Release -o out
 
 # Build runtime image
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
+FROM ccr.ccs.tencentyun.com/doowzs/dotnet-core-aspnet:3.1
 WORKDIR /app
 COPY --from=build-env /app/out .
 ENTRYPOINT ["dotnet", "Judge1.dll"]
