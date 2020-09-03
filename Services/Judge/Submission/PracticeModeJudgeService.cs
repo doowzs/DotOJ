@@ -219,12 +219,22 @@ namespace Judge1.Services.Judge.Submission
             await Context.SaveChangesAsync();
 
             var runInfos = await CreateRuns(submission, problem);
+            if (runInfos.IsNullOrEmpty())
+            {
+                return new JudgeResult
+                {
+                    Verdict = Verdict.Failed,
+                    FailedOn = -1, Score = 0,
+                    Message = "No test cases available."
+                };
+            }
+
             for (int i = 0; i < JudgeTimeLimit; ++i)
             {
                 await Task.Delay(1000);
 
-                var progress = runInfos.Count(info => info.Verdict > Verdict.Running);
-                submission.Score = runInfos.IsNullOrEmpty() ? 0 : (progress * 100 / runInfos.Count);
+                submission.Verdict = Verdict.Running;
+                submission.Score = runInfos.Count(info => info.Verdict > Verdict.Running) * 100 / runInfos.Count;
                 Context.Update(submission);
                 await Context.SaveChangesAsync();
 
