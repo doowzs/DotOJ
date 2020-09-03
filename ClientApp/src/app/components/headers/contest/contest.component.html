@@ -1,9 +1,9 @@
-﻿<nz-page-header>
+﻿<nz-page-header nzBackIcon (nzBack)="leaveContest()">
   <nz-page-header-title>
     <span *ngIf="contest">{{ contest.title }}</span>
   </nz-page-header-title>
   <nz-page-header-extra>
-    <button nz-button nzType="link" nzDanger routerLink="/">
+    <button nz-button nzType="link" nzDanger (click)="leaveContest()">
       <i nz-icon nzType="logout"></i><span>Exit</span>
     </button>
     <button nz-button nzType="text">

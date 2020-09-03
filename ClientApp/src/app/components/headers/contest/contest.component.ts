@@ -1,5 +1,5 @@
 ﻿import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -19,6 +19,7 @@ export class ContestHeaderComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private auth: AuthorizeService,
     private service: ContestService
   ) {
@@ -29,5 +30,9 @@ export class ContestHeaderComponent implements OnInit {
   ngOnInit() {
     this.service.getSingle(this.contestId)
       .subscribe(contest => this.contest = contest);
+  }
+
+  public leaveContest() {
+    this.router.navigate(['/']);
   }
 }

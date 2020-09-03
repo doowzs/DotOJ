@@ -23,7 +23,13 @@
             {{ contest.beginTime.format('MM-DD HH:mm') }} - {{ contest.endTime.format('MM-DD HH:mm') }}
           </div>
           <ng-template #contestCardTitle>
-            #{{ contest.id }}: {{ contest.title }}
+            <a *ngIf="canEnterContest(contest); else cannotEnterCardTitle"
+                    [routerLink]="['/contest', contest.id]">
+              #{{ contest.id }}: {{ contest.title }}
+            </a>
+            <ng-template #cannotEnterCardTitle>
+              #{{ contest.id }}: {{ contest.title }}
+            </ng-template>
           </ng-template>
           <ng-template #contestCardExtra>
             <nz-tag nzColor="volcano" *ngIf="now > contest.beginTime">Running</nz-tag>
