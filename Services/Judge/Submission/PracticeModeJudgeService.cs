@@ -259,16 +259,6 @@ namespace Judge1.Services.Judge.Submission
             {
                 await Task.Delay(1000);
 
-                // If the inner function has not changed verdict, update judging progress.
-                // Otherwise submission will be rejected, stop updating progress and wait for result.
-                if (submission.Verdict <= Verdict.Running)
-                {
-                    submission.Verdict = Verdict.Running;
-                    submission.Score = runInfos.Count(info => info.Verdict > Verdict.Running) * 100 / runInfos.Count;
-                    Context.Update(submission);
-                    await Context.SaveChangesAsync();
-                }
-
                 var result = await PollRuns(submission, runInfos);
                 if (result != null)
                 {
