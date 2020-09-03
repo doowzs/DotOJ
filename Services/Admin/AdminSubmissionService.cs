@@ -167,6 +167,7 @@ namespace Judge1.Services.Admin
                 submission.Verdict = Verdict.Pending;
                 submission.Time = submission.Memory = null;
                 submission.FailedOn = submission.FailedOn = null;
+                submission.Score = submission.Progress = null;
                 submission.Message = null;
                 submission.JudgedAt = null;
             }
