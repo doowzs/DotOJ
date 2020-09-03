@@ -33,7 +33,6 @@ namespace Judge1.Models
         #region Relationships
 
         public List<Problem> Problems { get; set; }
-        public List<Clarification> Clarifications { get; set; }
         public List<Registration> Registrations { get; set; }
 
         #endregion

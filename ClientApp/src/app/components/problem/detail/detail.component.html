@@ -1,10 +1,19 @@
 ﻿<ng-container *ngIf="problem">
   <h2>{{ problem.title }}</h2>
-  <p>Time Limit: {{ problem.timeLimit }} ms</p>
-  <p>Memory Limit: {{ problem.memoryLimit / 1024 }} MiB</p>
+  <p>
+    Time Limit: {{ problem.timeLimit }} ms
+    <ng-container *ngIf="language">
+      <i nz-icon nzType="arrow-right"></i>
+      ({{ language.factor | number: "1.1-1" | noComma }}x)
+      {{ problem.timeLimit * language.factor | number: "1.0-0" | noComma }} ms
+    </ng-container>
+  </p>
+  <p>Memory Limit: {{ problem.memoryLimit / 1024 | number: "1.0-0" | noComma }} MiB</p>
 
   <nz-divider nzText="Submissions" nzOrientation="left"></nz-divider>
-  <app-submission-creator [problemId]="problemId"></app-submission-creator>
+  <app-submission-creator [problemId]="problemId"
+                          (languageChanged)="onLanguageChanged($event)"
+  ></app-submission-creator>
   <app-submission-timeline [problemId]="problemId"></app-submission-timeline>
 
   <nz-divider nzText="Description" nzOrientation="left"></nz-divider>

@@ -205,10 +205,10 @@ namespace Judge1
                 }
             }
 
-            if ((await userManager.FindByEmailAsync(Configuration["Application:AdminUser:Email"].ToUpper())) == null)
+            if (await userManager.FindByEmailAsync(Configuration["Application:AdminUser:Email"].ToUpper()) == null)
             {
                 logger.LogInformation("Creating admin user.");
-                var adminUser = new ApplicationUser()
+                var adminUser = new ApplicationUser
                 {
                     Email = Configuration["Application:AdminUser:Email"],
                     UserName = Configuration["Application:AdminUser:Email"],

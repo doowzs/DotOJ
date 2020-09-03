@@ -28,7 +28,10 @@
     <td>{{ submission.contestantId }}</td>
     <td>{{ getProblemLabel(submission.problemId) }}</td>
     <td>
-      <nz-tag [nzColor]="submission.verdict.color">{{ submission.verdict.name }}</nz-tag>
+      <nz-tag [nzColor]="submission.verdict.color">
+        {{ submission.verdict.name }}
+        <span *ngIf="notAnValidAttempt(submission)">*</span>
+      </nz-tag>
     </td>
     <td>{{ submission.time }}</td>
     <td>{{ submission.memory }}</td>

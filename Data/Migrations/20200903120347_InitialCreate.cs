@@ -274,46 +274,6 @@ namespace Judge1.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Clarifications",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    UpdatedAt = table.Column<DateTime>(nullable: false),
-                    ContestId = table.Column<int>(nullable: false),
-                    ProblemId = table.Column<int>(nullable: true),
-                    UserId = table.Column<string>(nullable: false),
-                    content = table.Column<string>(type: "text", nullable: false),
-                    Reply = table.Column<string>(type: "text", nullable: true),
-                    IsPublic = table.Column<bool>(nullable: false),
-                    RepliedAt = table.Column<DateTime>(nullable: false),
-                    RepliedBy = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Clarifications", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Clarifications_Contests_ContestId",
-                        column: x => x.ContestId,
-                        principalTable: "Contests",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Clarifications_Problems_ProblemId",
-                        column: x => x.ProblemId,
-                        principalTable: "Problems",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Clarifications_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Submissions",
                 columns: table => new
                 {
@@ -329,6 +289,7 @@ namespace Judge1.Data.Migrations
                     Memory = table.Column<int>(nullable: true),
                     FailedOn = table.Column<int>(nullable: true),
                     Score = table.Column<int>(nullable: true),
+                    Progress = table.Column<int>(nullable: true),
                     Message = table.Column<string>(nullable: true),
                     JudgedAt = table.Column<DateTime>(nullable: true)
                 },
@@ -347,70 +308,6 @@ namespace Judge1.Data.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Tests",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    UpdatedAt = table.Column<DateTime>(nullable: false),
-                    UserId = table.Column<string>(nullable: false),
-                    ProblemId = table.Column<int>(nullable: false),
-                    program = table.Column<string>(type: "text", nullable: false),
-                    Input = table.Column<string>(type: "text", nullable: false),
-                    Output = table.Column<string>(type: "text", nullable: true),
-                    Verdict = table.Column<int>(nullable: false),
-                    JudgedAt = table.Column<DateTime>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Tests", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Tests_Problems_ProblemId",
-                        column: x => x.ProblemId,
-                        principalTable: "Problems",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Tests_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Hacks",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    UpdatedAt = table.Column<DateTime>(nullable: false),
-                    UserId = table.Column<string>(nullable: false),
-                    SubmissionId = table.Column<int>(nullable: false),
-                    Input = table.Column<string>(type: "text", nullable: false),
-                    IsValid = table.Column<bool>(nullable: true),
-                    ValidatedAt = table.Column<DateTime>(nullable: false),
-                    IsSuccessful = table.Column<bool>(nullable: true),
-                    JudgedAt = table.Column<DateTime>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Hacks", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Hacks_Submissions_SubmissionId",
-                        column: x => x.SubmissionId,
-                        principalTable: "Submissions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Hacks_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -457,21 +354,6 @@ namespace Judge1.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Clarifications_ContestId",
-                table: "Clarifications",
-                column: "ContestId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Clarifications_ProblemId",
-                table: "Clarifications",
-                column: "ProblemId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Clarifications_UserId",
-                table: "Clarifications",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_DeviceCodes_DeviceCode",
                 table: "DeviceCodes",
                 column: "DeviceCode",
@@ -481,16 +363,6 @@ namespace Judge1.Data.Migrations
                 name: "IX_DeviceCodes_Expiration",
                 table: "DeviceCodes",
                 column: "Expiration");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Hacks_SubmissionId",
-                table: "Hacks",
-                column: "SubmissionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Hacks_UserId",
-                table: "Hacks",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PersistedGrants_Expiration",
@@ -521,16 +393,6 @@ namespace Judge1.Data.Migrations
                 name: "IX_Submissions_UserId",
                 table: "Submissions",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tests_ProblemId",
-                table: "Tests",
-                column: "ProblemId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Tests_UserId",
-                table: "Tests",
-                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -551,13 +413,7 @@ namespace Judge1.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Clarifications");
-
-            migrationBuilder.DropTable(
                 name: "DeviceCodes");
-
-            migrationBuilder.DropTable(
-                name: "Hacks");
 
             migrationBuilder.DropTable(
                 name: "PersistedGrants");
@@ -566,13 +422,10 @@ namespace Judge1.Data.Migrations
                 name: "Registrations");
 
             migrationBuilder.DropTable(
-                name: "Tests");
+                name: "Submissions");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
-
-            migrationBuilder.DropTable(
-                name: "Submissions");
 
             migrationBuilder.DropTable(
                 name: "Problems");

@@ -20,6 +20,7 @@ export interface SubmissionInfoDto {
   memory: number;
   failedOn: number;
   score: number;
+  progress: number;
   judgedAt: moment.Moment | string;
   createdAt: moment.Moment | string;
 }
@@ -36,6 +37,7 @@ export interface SubmissionViewDto {
   memory: number;
   failedOn: number;
   score: number;
+  progress: number;
   message: string;
   judgedAt: moment.Moment | string;
   createdAt: moment.Moment | string;

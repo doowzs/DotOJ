@@ -37,10 +37,10 @@
   },
   "Logging": {
     "LogLevel": {
-      "Default": "Information",
+      "Default": "Warning",
       "Microsoft": "Warning",
       "Microsoft.Hosting.Lifetime": "Information",
-      "Hangfire": "Information"
+      "Hangfire": "Warning"
     }
   },
   "IdentityServer": {

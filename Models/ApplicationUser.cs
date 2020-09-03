@@ -32,15 +32,13 @@ namespace Judge1.Models
         [Required] public string ContestantName { get; set; }
 
         public List<Submission> Submissions { get; set; }
-        public List<Hack> Hacks { get; set; }
-        public List<Test> Tests { get; set; }
     }
 
     public class CustomUserValidator : IUserValidator<ApplicationUser>
     {
         public async Task<IdentityResult> ValidateAsync(UserManager<ApplicationUser> manager, ApplicationUser user)
         {
-            if (await manager.Users.AnyAsync(u => u.ContestantId == user.ContestantId))
+            if (await manager.Users.AnyAsync(u => u.Id != user.Id && u.ContestantId == user.ContestantId))
             {
                 return IdentityResult.Failed(new[]
                 {

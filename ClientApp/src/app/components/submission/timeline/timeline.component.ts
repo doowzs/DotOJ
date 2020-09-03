@@ -2,7 +2,7 @@
 import { interval, Observable, Subject } from 'rxjs';
 import { map, take, takeUntil } from 'rxjs/operators';
 
-import { VerdictInfo, VerdictStage } from '../../../consts/verdicts.consts';
+import { notAnValidAttempt, VerdictInfo, VerdictStage } from '../../../consts/verdicts.consts';
 import { SubmissionService } from '../../../services/submission.service';
 import { PaginatedList } from '../../../interfaces/pagination.interfaces';
 import { SubmissionInfoDto } from '../../../interfaces/submission.interfaces';
@@ -14,10 +14,11 @@ import { AuthorizeService } from '../../../../api-authorization/authorize.servic
   styleUrls: ['./timeline.component.css']
 })
 export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy {
+  notAnValidAttempt = notAnValidAttempt;
+
   @Input() public problemId: number;
 
   private destroy$ = new Subject();
-
   public userId: Observable<string>;
   public list: PaginatedList<SubmissionInfoDto>;
   public submissions: SubmissionInfoDto[];
@@ -33,7 +34,10 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
     interval(2000)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
-        if (this.submissions.filter(s => (s.verdict as VerdictInfo).stage === VerdictStage.RUNNING).length > 0) {
+        if (this.submissions.filter(s => {
+          const verdict = s.verdict as VerdictInfo;
+          return verdict.stage === VerdictStage.RUNNING || (verdict.stage === VerdictStage.REJECTED && s.score == null);
+        }).length > 0) {
           this.updatePendingSubmissions();
         }
       });
@@ -64,7 +68,10 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
   }
 
   private updatePendingSubmissions(): void {
-    const submissionIds = this.submissions.filter(s => (s.verdict as VerdictInfo).stage === VerdictStage.RUNNING).map(s => s.id);
+    const submissionIds = this.submissions.filter(s => {
+      const verdict = s.verdict as VerdictInfo;
+      return verdict.stage === VerdictStage.RUNNING || (verdict.stage === VerdictStage.REJECTED && s.score == null);
+    }).map(s => s.id);
     this.service.getBatchInfos(submissionIds)
       .subscribe(updatedSubmissions => {
         for (let i = 0; i < updatedSubmissions.length; ++i) {
@@ -80,27 +87,17 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
       });
   }
 
-  public failedOnSample(submission: SubmissionInfoDto): boolean {
-    return (submission.verdict as VerdictInfo).stage === VerdictStage.REJECTED && submission.failedOn === 0;
-  }
-
-  public getSubmissionPct(submission: SubmissionInfoDto): number {
+  public getSubmissionPct(submission: SubmissionInfoDto): string {
     const verdict = submission.verdict as VerdictInfo;
-    if (submission.failedOn !== 0 && verdict.showCase) {
+    if (verdict.stage === VerdictStage.RUNNING && submission.progress) {
+      return submission.progress + '%';
+    } else if (verdict.stage === VerdictStage.REJECTED && submission.score == null && submission.progress) {
+      return '(Running ' + submission.progress + '%)';
+    } else if (submission.failedOn > 0 && submission.score >= 0 && verdict.showCase) {
       if (verdict.stage === VerdictStage.REJECTED) {
-        return 100 - submission.score;
+        return (100 - submission.score) + '%';
       } else {
-        return submission.score;
-      }
-    }
-    return null;
-  }
-
-  public getSubmissionStats(submission: SubmissionInfoDto): string {
-    const verdict = submission.verdict as VerdictInfo;
-    if (verdict.stage === VerdictStage.ACCEPTED || verdict.stage === VerdictStage.REJECTED) {
-      if (submission.time && submission.memory) {
-        return submission.time + 'ms, ' + submission.memory + 'KiB';
+        return submission.score + '%';
       }
     }
     return null;

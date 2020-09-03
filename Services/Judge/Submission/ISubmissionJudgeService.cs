@@ -21,7 +21,7 @@ namespace Judge1.Services.Judge.Submission
         public int Time { get; set; }
         public int Memory { set; get; }
         public string Message { set; get; }
-        public int FailedOn { get; set; }
+        public int? FailedOn { get; set; }
         public int Score { get; set; }
     }
 

@@ -126,7 +126,6 @@ namespace Judge1.Services
             }
 
             await Context.Entry(contest).Collection(c => c.Problems).LoadAsync();
-            await Context.Entry(contest).Collection(c => c.Clarifications).LoadAsync();
 
             IList<ProblemInfoDto> problemInfos;
             if (Accessor.HttpContext.User.IsAuthenticated())

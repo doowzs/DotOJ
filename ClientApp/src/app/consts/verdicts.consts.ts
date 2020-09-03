@@ -66,6 +66,11 @@ export const Verdicts: VerdictInfo[] = [
   }
 ];
 
+export const notAnValidAttempt = (submission: SubmissionInfoDto): boolean => {
+  const verdict = submission.verdict as VerdictInfo;
+  return verdict.stage === VerdictStage.ERROR || (verdict.stage === VerdictStage.REJECTED && submission.failedOn === 0);
+};
+
 export const fixSubmissionREVerdictCode = (submission: SubmissionInfoDto | SubmissionViewDto | SubmissionEditDto) => {
   if (submission.verdict >= 8 && submission.verdict <= 12) {
     submission.verdict = 7;
