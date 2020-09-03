@@ -1,20 +1,34 @@
-default:
-  image: alpine:latest
+variables: 
+  CI_REGISTRY: ccr.ccs.tencentyun.com
+  CI_REGISTRY_IMAGE: ${CI_REGISTRY}/doowzs/judge1
+  CI_IMAGE_TAG: development-${CI_COMMIT_BRANCH}-${CI_COMMIT_SHA}
 
 stages:
-  - package
+  - build
 
-before_script:
-  - sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
-  - apk add bash zip
+build:image:
+  stage: build
+  image: docker:stable
+  variables: 
+    DOCKER_HOST: tcp://docker:2375
+  services:
+    - docker:dind
+  script:
+    - echo "${CI_REGISTRY_PASS}" | docker login -u "${CI_REGISTRY_USER}" --password-stdin ${CI_REGISTRY}
+    - docker image build --force-rm --no-cache -t judge1:${CI_IMAGE_TAG} .
+    - docker image push ${CI_REGISTRY_IMAGE}:${CI_IMAGE_TAG}
 
-package:
-  stage: package
+build:package:
+  stage: build
   only:
     refs:
       - master
+  image: alpine:latest
+  before_script:
+    - sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+    - apk add bash zip
+  script:
+    - bash ./release.sh
   artifacts:
     paths:
       - dockerize.zip
-  script:
-    - bash ./release.sh
