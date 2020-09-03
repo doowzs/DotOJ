@@ -24,42 +24,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3264e410-2e54-4a07-b7a6-e065f9c1dc35" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Data/DTOs/ApplicationUser.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/DTOs/Contest.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/DTOs/Problem.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/DTOs/Registration.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/DTOs/Submission.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Judge1/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Judge1/.idea/contentModel.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/ApplicationDbContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/ApplicationDbContext.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Models/ApplicationConfig.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Configs/ApplicationConfig.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Models/ApplicationUser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Models/ApplicationUser.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Models/Contest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Models/Contest.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Models/JudgingConfig.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Configs/JudgingConfig.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Models/NotificationConfig.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Configs/NotificationConfig.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Models/Pagination.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Generics/Pagination.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Models/Problem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Models/Problem.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Models/Registration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Models/Registration.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Models/Submission.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Models/Submission.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Models/Timestamps.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Generics/Timestamps.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/Admin/AdminContestController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/Admin/AdminContestController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/Admin/AdminProblemController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/Admin/AdminProblemController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/Admin/AdminSubmissionController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/Admin/AdminSubmissionController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/Admin/AdminUserController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/Admin/AdminUserController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/ApplicationController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/ApplicationController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/ContestController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/ContestController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/ProblemController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/ProblemController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/SubmissionController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/SubmissionController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Notifications/NotificationBase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Notifications/NotificationBase.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Services/Admin/AdminContestService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Services/Admin/AdminContestService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Services/Admin/AdminProblemService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Services/Admin/AdminProblemService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebApp/Services/Admin/AdminSubmissionService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Services/Admin/AdminSubmissionService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Services/Admin/AdminUserService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Services/Admin/AdminUserService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Services/ContestService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Services/ContestService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Services/Judge/ContestJudgeService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Services/Judge/ContestJudgeService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Services/Judge/Submission/PracticeModeJudgeService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Services/Judge/Submission/PracticeModeJudgeService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Services/ProblemService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Services/ProblemService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebApp/Services/Judge/ContestJudgeService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Worker/Judge/ContestJudgeService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebApp/Services/Judge/Submission/ISubmissionJudgeService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Worker/Judge/Submission/ISubmissionJudgeService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebApp/Services/Judge/Submission/PracticeModeJudgeService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Worker/Judge/Submission/PracticeModeJudgeService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebApp/Services/SubmissionService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Services/SubmissionService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebApp/Startup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Startup.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Worker/Worker.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Worker/Worker.csproj" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,16 +44,13 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/WebApp/obj/Debug/netcoreapp3.1/Razor/Areas/Identity/Pages/Account/Login.cshtml.g.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://D:/Workspace/Judge1/WebApp/Controllers/Api/v1/Admin/AdminContestController.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Workspace/Judge1/WebApp/Services/SubmissionService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Workspace/Judge1/WebApp/Services/Admin/AdminSubmissionService.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/WebApp/obj/Debug/netcoreapp3.1/Razor/Pages/Error.cshtml.g.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/Data/Migrations/20200903120347_InitialCreate.cs" />
-        <option value="$PROJECT_DIR$/Data/Models/ApplicationConfig.cs" />
-        <option value="$PROJECT_DIR$/Data/Models/JudgingConfig.cs" />
-        <option value="$PROJECT_DIR$/Data/Models/NotificationConfig.cs" />
-        <option value="$PROJECT_DIR$/Data/Models/Pagination.cs" />
         <option value="$PROJECT_DIR$/Data/Models/Program.cs" />
         <option value="$PROJECT_DIR$/Data/Models/Timestamps.cs" />
         <option value="$PROJECT_DIR$/Data/ApplicationDbContext.cs" />
@@ -98,7 +67,6 @@
         <option value="$PROJECT_DIR$/WebApp/Services/ContestService.cs" />
         <option value="$PROJECT_DIR$/WebApp/Services/ProblemService.cs" />
         <option value="$PROJECT_DIR$/WebApp/Services/ProfileService.cs" />
-        <option value="$PROJECT_DIR$/WebApp/Startup.cs" />
         <option value="$PROJECT_DIR$/Data/Configs/ApplicationConfig.cs" />
         <option value="$PROJECT_DIR$/Data/Configs/JudgingConfig.cs" />
         <option value="$PROJECT_DIR$/Data/Configs/NotificationConfig.cs" />
@@ -119,15 +87,21 @@
         <option value="$PROJECT_DIR$/Data/DTOs/Submission.cs" />
         <option value="$PROJECT_DIR$/WebApp/Controllers/Api/v1/Admin/AdminSubmissionController.cs" />
         <option value="$PROJECT_DIR$/WebApp/Controllers/Api/v1/Admin/AdminProblemController.cs" />
-        <option value="$PROJECT_DIR$/WebApp/Services/Admin/AdminSubmissionService.cs" />
         <option value="$PROJECT_DIR$/WebApp/Services/Admin/AdminUserService.cs" />
-        <option value="$PROJECT_DIR$/WebApp/Services/SubmissionService.cs" />
         <option value="$PROJECT_DIR$/WebApp/Controllers/Api/v1/SubmissionController.cs" />
         <option value="$PROJECT_DIR$/WebApp/Controllers/Api/v1/ContestController.cs" />
         <option value="$PROJECT_DIR$/WebApp/Controllers/Api/v1/ProblemController.cs" />
         <option value="$PROJECT_DIR$/WebApp/Controllers/Api/v1/ApplicationController.cs" />
         <option value="$PROJECT_DIR$/WebApp/Controllers/Api/v1/Admin/AdminUserController.cs" />
         <option value="$PROJECT_DIR$/WebApp/Controllers/Api/v1/Admin/AdminContestController.cs" />
+        <option value="$PROJECT_DIR$/Worker/appsettings.json.example" />
+        <option value="$PROJECT_DIR$/WebApp/appsettings.json" />
+        <option value="$PROJECT_DIR$/WebApp/appsettings.json.example" />
+        <option value="$PROJECT_DIR$/Worker/appsettings.json" />
+        <option value="$PROJECT_DIR$/WebApp/Services/SubmissionService.cs" />
+        <option value="$PROJECT_DIR$/WebApp/Startup.cs" />
+        <option value="$PROJECT_DIR$/WebApp/Services/Admin/AdminSubmissionService.cs" />
+        <option value="$PROJECT_DIR$/Worker/Judge/Submission/ISubmissionJudgeService.cs" />
       </list>
     </option>
   </component>
@@ -191,7 +165,7 @@
       <updated>1599143925688</updated>
       <workItem from="1599143931348" duration="400000" />
       <workItem from="1599144340054" duration="344000" />
-      <workItem from="1599149864228" duration="1271000" />
+      <workItem from="1599149864228" duration="1569000" />
     </task>
     <task id="LOCAL-00001" summary="update to multi-project structure">
       <created>1599144491876</created>
@@ -228,7 +202,21 @@
       <option name="project" value="LOCAL" />
       <updated>1599150651474</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="separate generic types, DTO and Config classes">
+      <created>1599151148231</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1599151148231</updated>
+    </task>
+    <task id="LOCAL-00007" summary="update appsettings.json.example">
+      <created>1599151241298</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1599151241298</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -256,7 +244,9 @@
     <MESSAGE value="separate models and migrations to be a standalone library" />
     <MESSAGE value="move models and migrations to a standalone library" />
     <MESSAGE value="separate generic types, DTO and Config classes" />
-    <option name="LAST_COMMIT_MESSAGE" value="separate generic types, DTO and Config classes" />
+    <MESSAGE value="update appsettings.json.example" />
+    <MESSAGE value="remove judge services to Worker" />
+    <option name="LAST_COMMIT_MESSAGE" value="remove judge services to Worker" />
   </component>
   <component name="WindowStateProjectService">
     <state x="194" y="274" width="1092" height="766" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1599144348941">

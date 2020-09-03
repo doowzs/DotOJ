@@ -9,7 +9,7 @@ using System.Web;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 
-namespace WebApp.Notifications
+namespace Notification.Providers
 {
     public class DingTalkMarkdown
     {
@@ -48,7 +48,7 @@ namespace WebApp.Notifications
             (IList<string> atMobiles, bool isAtAll, string title, string message, params object[] args);
     }
 
-    public sealed class DingTalkNotification : NotificationBase<DingTalkNotification>, IDingTalkNotification
+    public sealed class DingTalkNotification : ProviderBase<DingTalkNotification>, IDingTalkNotification
     {
         private const string BaseUrl = "https://oapi.dingtalk.com/robot/send?access_token=";
         private bool Enabled => Options.Value.DingTalk.Enabled;

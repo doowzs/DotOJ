@@ -2,26 +2,25 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using Data.Configs;
-using Data.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace WebApp.Notifications
+namespace Notification.Providers
 {
-    public interface INotificationBase
+    public interface IProvider
     {
         public bool IsEnabled();
         public Task SendNotification(bool atAdmins, string title, string message, params object[] args);
     }
 
-    public abstract class NotificationBase<TL> : INotificationBase where TL : class
+    public abstract class ProviderBase<TL> : IProvider where TL : class
     {
         protected IHttpClientFactory Factory;
         protected IOptions<NotificationConfig> Options;
         protected ILogger<TL> Logger;
 
-        public NotificationBase(IServiceProvider provider)
+        public ProviderBase(IServiceProvider provider)
         {
             Factory = provider.GetRequiredService<IHttpClientFactory>();
             Options = provider.GetRequiredService<IOptions<NotificationConfig>>();

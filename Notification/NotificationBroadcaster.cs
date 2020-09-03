@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using Notification.Providers;
 
-namespace WebApp.Notifications
+namespace Notification
 {
     public interface INotificationBroadcaster
     {
@@ -12,17 +13,17 @@ namespace WebApp.Notifications
 
     public class NotificationBroadcaster : INotificationBroadcaster
     {
-        protected readonly IList<INotificationBase> Notifiers;
+        protected readonly IList<IProvider> Providers;
 
         public NotificationBroadcaster(IServiceProvider provider)
         {
-            Notifiers = new List<INotificationBase>();
-            Notifiers.Add((INotificationBase) provider.GetRequiredService<IDingTalkNotification>());
+            Providers = new List<IProvider>();
+            Providers.Add((IProvider) provider.GetRequiredService<IDingTalkNotification>());
         }
 
         public async Task SendNotification(bool atAdmins, string title, string message, params object[] args)
         {
-            foreach (var notifier in Notifiers)
+            foreach (var notifier in Providers)
             {
                 if (notifier.IsEnabled())
                 {

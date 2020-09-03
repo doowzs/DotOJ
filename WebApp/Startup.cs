@@ -14,7 +14,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using WebApp.Notifications;
+using Notification;
+using Notification.Providers;
 using WebApp.Services;
 using WebApp.Services.Admin;
 

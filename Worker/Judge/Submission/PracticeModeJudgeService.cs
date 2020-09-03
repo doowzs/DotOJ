@@ -7,6 +7,7 @@ using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 using Data.Configs;
+using Data.Generics;
 using Data.Models;
 using IdentityServer4.Extensions;
 using Microsoft.Extensions.DependencyInjection;

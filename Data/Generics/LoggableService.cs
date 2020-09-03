@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Data;
 using Data.Models;
 using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Http;
@@ -8,7 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace WebApp.Services
+namespace Data.Generics
 {
     public class LoggableService<T> where T : class
     {
@@ -52,7 +51,9 @@ namespace WebApp.Services
             if (_noUser)
             {
                 Logger.LogDebug($"{message}", args);
-            } else {
+            }
+            else
+            {
                 Logger.LogDebug($"{message} User={_user?.Email}", args);
             }
         }
@@ -63,7 +64,9 @@ namespace WebApp.Services
             if (_noUser)
             {
                 Logger.LogInformation($"{message}", args);
-            } else {
+            }
+            else
+            {
                 Logger.LogInformation($"{message} User={_user?.Email}", args);
             }
         }
@@ -74,7 +77,9 @@ namespace WebApp.Services
             if (_noUser)
             {
                 Logger.LogError($"{message}", args);
-            } else {
+            }
+            else
+            {
                 Logger.LogError($"{message} User={_user?.Email}", args);
             }
         }
@@ -85,7 +90,9 @@ namespace WebApp.Services
             if (_noUser)
             {
                 Logger.LogCritical($"{message}", args);
-            } else {
+            }
+            else
+            {
                 Logger.LogCritical($"{message} User={_user?.Email}", args);
             }
         }
