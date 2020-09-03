@@ -7,9 +7,7 @@ using Data.DTOs;
 using Data.Generics;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using WebApp.Exceptions;
-using WebApp.Services.Judge;
 
 namespace WebApp.Services.Admin
 {
@@ -28,11 +26,8 @@ namespace WebApp.Services.Admin
     {
         private const int PageSize = 50;
 
-        protected readonly IContestJudgeService JudgeService;
-
         public AdminSubmissionService(IServiceProvider provider) : base(provider)
         {
-            JudgeService = provider.GetRequiredService<IContestJudgeService>();
         }
 
         private async Task EnsureSubmissionExists(int id)

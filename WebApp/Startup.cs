@@ -17,7 +17,6 @@ using Microsoft.Extensions.Logging;
 using WebApp.Notifications;
 using WebApp.Services;
 using WebApp.Services.Admin;
-using WebApp.Services.Judge;
 
 namespace WebApp
 {
@@ -98,8 +97,6 @@ namespace WebApp
             services.AddScoped<IAdminContestService, AdminContestService>();
             services.AddScoped<IAdminProblemService, AdminProblemService>();
             services.AddScoped<IAdminSubmissionService, AdminSubmissionService>();
-
-            services.AddScoped<IContestJudgeService, ContestJudgeService>();
 
             services.AddScoped<IDingTalkNotification, DingTalkNotification>();
             services.AddScoped<INotificationBroadcaster, NotificationBroadcaster>();

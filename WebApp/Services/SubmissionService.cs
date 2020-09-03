@@ -11,7 +11,6 @@ using IdentityServer4.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using WebApp.Exceptions;
-using WebApp.Services.Judge;
 
 namespace WebApp.Services
 {
@@ -30,11 +29,8 @@ namespace WebApp.Services
     {
         private const int PageSize = 50;
 
-        protected readonly IContestJudgeService JudgeService;
-
         public SubmissionService(IServiceProvider provider) : base(provider)
         {
-            JudgeService = provider.GetRequiredService<IContestJudgeService>();
         }
 
         private async Task EnsureUserCanViewSubmissionAsync(Submission submission)

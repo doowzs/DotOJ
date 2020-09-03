@@ -508,13 +508,6 @@
             <e p="AdminUserService.cs" t="Include" />
           </e>
           <e p="ContestService.cs" t="Include" />
-          <e p="Judge" t="Include">
-            <e p="ContestJudgeService.cs" t="Include" />
-            <e p="Submission" t="Include">
-              <e p="ISubmissionJudgeService.cs" t="Include" />
-              <e p="PracticeModeJudgeService.cs" t="Include" />
-            </e>
-          </e>
           <e p="LoggableService.cs" t="Include" />
           <e p="ProblemService.cs" t="Include" />
           <e p="ProfileService.cs" t="Include" />
@@ -529,7 +522,15 @@
       <e p="Worker" t="IncludeRecursive">
         <e p="appsettings.Development.json" t="Include" />
         <e p="appsettings.json" t="Include" />
+        <e p="appsettings.json.example" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
+        <e p="Judge" t="Include">
+          <e p="ContestJudgeService.cs" t="Include" />
+          <e p="Submission" t="Include">
+            <e p="ISubmissionJudgeService.cs" t="Include" />
+            <e p="PracticeModeJudgeService.cs" t="Include" />
+          </e>
+        </e>
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
             <e p="netcoreapp3.1" t="Include">
