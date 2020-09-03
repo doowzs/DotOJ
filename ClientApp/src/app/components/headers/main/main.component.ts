@@ -14,6 +14,7 @@ export class MainHeaderComponent {
   public title: string;
   public username: Observable<string>;
   public isAuthenticated: Observable<boolean>;
+  public canViewAdminPages: Observable<boolean>;
 
   constructor(
     private auth: AuthorizeService,
@@ -22,5 +23,6 @@ export class MainHeaderComponent {
     this.title = config.title;
     this.username = this.auth.getUser().pipe(map(u => u && u.name));
     this.isAuthenticated = this.auth.isAuthenticated();
+    this.canViewAdminPages = this.auth.getUser().pipe(map(u => u && u.roles.length > 0));
   }
 }

@@ -28,7 +28,7 @@
       </button>
       <nz-dropdown-menu #userMenu>
         <ul nz-menu>
-          <li nz-menu-item routerLink="/admin">
+          <li *ngIf="canViewAdminPages | async" nz-menu-item routerLink="/admin">
             <i nz-icon nzType="setting"></i><span>Administration</span>
           </li>
           <li nz-menu-item routerLink="/authentication/logout" [state]="{ local: true }">
