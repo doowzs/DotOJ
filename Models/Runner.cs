@@ -49,8 +49,8 @@ namespace Judge1.Models
         [JsonProperty("stdin")] public string Stdin { get; set; }
         [JsonProperty("expected_output")] public string ExpectedOutput { get; set; }
         [JsonProperty("cpu_time_limit")] public float CpuTimeLimit { get; set; }
-        [JsonProperty("cpu_extra_time")] public float CpuExtraTime => 0.1f;
-        [JsonProperty("wall_time_limit")] public float WallTimeLimit => CpuTimeLimit;
+        [JsonProperty("cpu_extra_time")] public float CpuExtraTime => 1.0f;
+        [JsonProperty("wall_time_limit")] public float WallTimeLimit => CpuTimeLimit * 2.0f;
         [JsonProperty("memory_limit")] public float MemoryLimit { get; set; }
         [JsonProperty("stack_limit")] public float StackLimit => 64 * 1024.0f;
 
