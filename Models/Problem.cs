@@ -35,8 +35,8 @@ namespace Judge1.Models
 
         #region Judgement Protocol
 
-        [Range(0.0, Double.PositiveInfinity)] public double TimeLimit { get; set; }
-        [Range(0.0, Double.PositiveInfinity)] public double MemoryLimit { get; set; }
+        [Range(100, 30000)] public int TimeLimit { get; set; }
+        [Range(1000, 512000)] public int MemoryLimit { get; set; }
 
         public bool HasSpecialJudge { get; set; }
         [NotMapped] public Program SpecialJudgeProgram { get; set; }
@@ -169,8 +169,8 @@ namespace Judge1.Models
         [Required] public string OutputFormat { get; set; }
         public string FootNote { get; set; }
 
-        [Required, Range(100.0, 60000.0)] public double? TimeLimit { get; set; }
-        [Required, Range(1024.0, 2097152.0)] public double? MemoryLimit { get; set; }
+        [Required, Range(100, 30000)] public int? TimeLimit { get; set; }
+        [Required, Range(1000, 512000)] public int? MemoryLimit { get; set; }
 
         [Required] public bool HasSpecialJudge { get; set; }
         public string SpecialJudgeProgram { get; set; }
