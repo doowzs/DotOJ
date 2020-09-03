@@ -98,8 +98,8 @@
         <option value="$PROJECT_DIR$/Worker/Runners/Modes/IModeSubmissionRunner.cs" />
         <option value="$PROJECT_DIR$/Worker/Runners/Modes/PracticeModeJudgeService.cs" />
         <option value="$PROJECT_DIR$/Worker/Runners/SubmissionRunner.cs" />
-        <option value="$PROJECT_DIR$/Worker/Runners/Modes/PracticeModeSubmissionRunner.cs" />
         <option value="$PROJECT_DIR$/Worker/Runners/Modes/ModeSubmissionRunnerBase.cs" />
+        <option value="$PROJECT_DIR$/Worker/Runners/Modes/PracticeModeSubmissionRunner.cs" />
       </list>
     </option>
   </component>
@@ -163,7 +163,7 @@
       <updated>1599143925688</updated>
       <workItem from="1599143931348" duration="400000" />
       <workItem from="1599144340054" duration="344000" />
-      <workItem from="1599149864228" duration="2941000" />
+      <workItem from="1599149864228" duration="3306000" />
     </task>
     <task id="LOCAL-00001" summary="update to multi-project structure">
       <created>1599144491876</created>
@@ -275,7 +275,8 @@
     <MESSAGE value="separate Notification to a standalone library" />
     <MESSAGE value="fix Worker dependencies" />
     <MESSAGE value="WIP on fix worker class names" />
-    <option name="LAST_COMMIT_MESSAGE" value="WIP on fix worker class names" />
+    <MESSAGE value="WIP on submission runner rewriting" />
+    <option name="LAST_COMMIT_MESSAGE" value="WIP on submission runner rewriting" />
   </component>
   <component name="WindowStateProjectService">
     <state x="194" y="274" width="1092" height="766" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1599144348941">
