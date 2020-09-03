@@ -14,9 +14,15 @@ build:image:
     DOCKER_TLS_CERTDIR: ''
   services:
     - docker:dind
+  cache:
+    key:
+      files:
+        - ClientApp/package.json
+    paths:
+      - ClientApp/node_modules/
   script:
     - echo "${CI_REGISTRY_PASS}" | docker login -u "${CI_REGISTRY_USER}" --password-stdin ${CI_REGISTRY}
-    - docker image build --force-rm --no-cache -t judge1:${CI_IMAGE_TAG} .
+    - docker image build --force-rm --no-cache -t ${CI_REGISTRY_IMAGE}:${CI_IMAGE_TAG} .
     - docker image push ${CI_REGISTRY_IMAGE}:${CI_IMAGE_TAG}
 
 build:package:
