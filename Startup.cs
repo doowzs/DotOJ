@@ -53,6 +53,7 @@ namespace Judge1
                 })
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddTransient<IUserValidator<ApplicationUser>, CustomUserValidator>();
 
             services.AddIdentityServer(options => { options.PublicOrigin = Configuration["Application:Host"]; })
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>()
