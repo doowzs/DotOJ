@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Net.Mime;
 using System.Threading.Tasks;
-using Data.Models;
+using Data.DTOs;
+using Data.Generics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -63,7 +64,7 @@ namespace WebApp.Controllers.Api.v1
                 return Unauthorized(e.Message);
             }
         }
-        
+
         [HttpGet("{id:int}/registrations")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]

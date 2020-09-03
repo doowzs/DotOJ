@@ -10,25 +10,33 @@
       <e p="Data" t="IncludeRecursive">
         <e p="ApplicationDbContext.cs" t="Include" />
         <e p="bin" t="ExcludeRecursive" />
+        <e p="Configs" t="Include">
+          <e p="ApplicationConfig.cs" t="Include" />
+          <e p="JudgingConfig.cs" t="Include" />
+          <e p="NotificationConfig.cs" t="Include" />
+        </e>
         <e p="Data.csproj" t="IncludeRecursive" />
+        <e p="DTOs" t="Include">
+          <e p="ApplicationUser.cs" t="Include" />
+          <e p="Contest.cs" t="Include" />
+        </e>
+        <e p="Generics" t="Include">
+          <e p="Pagination.cs" t="Include" />
+          <e p="Timestamps.cs" t="Include" />
+        </e>
         <e p="Migrations" t="Include">
           <e p="20200903120347_InitialCreate.cs" t="Include" />
           <e p="20200903120347_InitialCreate.Designer.cs" t="Include" />
           <e p="ApplicationDbContextModelSnapshot.cs" t="Include" />
         </e>
         <e p="Models" t="Include">
-          <e p="ApplicationConfig.cs" t="Include" />
           <e p="ApplicationUser.cs" t="Include" />
           <e p="Contest.cs" t="Include" />
-          <e p="JudgingConfig.cs" t="Include" />
-          <e p="NotificationConfig.cs" t="Include" />
-          <e p="Pagination.cs" t="Include" />
           <e p="Problem.cs" t="Include" />
           <e p="Program.cs" t="Include" />
           <e p="Registration.cs" t="Include" />
           <e p="Runner.cs" t="Include" />
           <e p="Submission.cs" t="Include" />
-          <e p="Timestamps.cs" t="Include" />
         </e>
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">

@@ -1,5 +1,5 @@
 using System.Net.Mime;
-using Data.Models;
+using Data.Configs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

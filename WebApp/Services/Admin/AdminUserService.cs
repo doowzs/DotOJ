@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using Data.DTOs;
+using Data.Generics;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Exceptions;

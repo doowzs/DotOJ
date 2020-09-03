@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Data.DTOs;
+using Data.Generics;
 using Data.Models;
 using IdentityServer4.Extensions;
 using Microsoft.EntityFrameworkCore;

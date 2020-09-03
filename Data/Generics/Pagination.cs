@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace Data.Models
+namespace Data.Generics
 {
     public class PaginatedList<T>
     {

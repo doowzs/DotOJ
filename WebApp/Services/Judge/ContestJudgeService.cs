@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using System.Transactions;
+using Data.Configs;
 using Data.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;

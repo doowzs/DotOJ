@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Data.Models
+namespace Data.Generics
 {
     public abstract class ModelWithTimestamps
     {
