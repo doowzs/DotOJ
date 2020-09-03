@@ -9,21 +9,21 @@ using Data.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Notification;
-using WebApp.Services.Judge.Submission;
+using Worker.Runners.Modes;
 
-namespace WebApp.Services.Judge
+namespace Worker.Runners
 {
-    public interface IContestJudgeService
+    public interface ISubmissionRunner
     {
-        public Task JudgeSubmission(int submissionId);
+        public Task RunSubmission(int submissionId);
     }
 
-    public class ContestJudgeService : LoggableService<ContestJudgeService>, IContestJudgeService
+    public class SubmissionRunner : LoggableService<SubmissionRunner>, ISubmissionRunner
     {
         protected readonly INotificationBroadcaster Broadcaster;
         protected readonly IOptions<ApplicationConfig> AppOptions;
 
-        public ContestJudgeService(IServiceProvider provider) : base(provider, true)
+        public SubmissionRunner(IServiceProvider provider) : base(provider, true)
         {
             Broadcaster = provider.GetRequiredService<INotificationBroadcaster>();
             AppOptions = provider.GetRequiredService<IOptions<ApplicationConfig>>();
@@ -74,7 +74,7 @@ namespace WebApp.Services.Judge
             }
         }
 
-        public async Task JudgeSubmission(int submissionId)
+        public async Task RunSubmission(int submissionId)
         {
             var submission = await Context.Submissions.FindAsync(submissionId);
             if (submission == null)
@@ -91,11 +91,11 @@ namespace WebApp.Services.Judge
                 var contest = await Context.Contests.FindAsync(problem.ContestId);
                 await EnsureUserCanSubmit(user, contest);
 
-                ISubmissionJudgeService judgeService;
+                IModeSubmissionRunner submissionRunner;
                 switch (contest.Mode)
                 {
                     case ContestMode.Practice:
-                        judgeService = new PracticeModeJudgeService(Provider);
+                        submissionRunner = new PracticeModeSubmissionRunner(Provider);
                         break;
                     default:
                         throw new NotImplementedException();
@@ -103,7 +103,7 @@ namespace WebApp.Services.Judge
 
                 #region Update judge result of submission
 
-                var result = await judgeService.Judge(submission, problem);
+                var result = await submissionRunner.Run(submission, problem);
                 submission.Verdict = result.Verdict;
                 submission.Time = result.Time;
                 submission.Memory = result.Memory;
@@ -137,9 +137,9 @@ namespace WebApp.Services.Judge
                 submission.JudgedAt = DateTime.Now.ToUniversalTime();
                 Context.Submissions.Update(submission);
                 await Context.SaveChangesAsync();
-                await LogError($"JudgeSubmission Error Id={submissionId} Error={e.Message}");
-                await Broadcaster.SendNotification(true, $"Judge Service Failed on Submission #{submissionId}",
-                    $"Contest judge service failed on [submission #{submissionId}]" +
+                await LogError($"RunSubmission Error Id={submissionId} Error={e.Message}");
+                await Broadcaster.SendNotification(true, $"Runner failed on Submission #{submissionId}",
+                    $"Submission runner failed on [submission #{submissionId}]" +
                     $"({AppOptions.Value.Host}/admin/submission/{submissionId}) " +
                     $"with error message **\"{e.Message}\"**.");
             }

@@ -13,10 +13,11 @@ using IdentityServer4.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Worker.Models;
 
-namespace WebApp.Services.Judge.Submission
+namespace Worker.Runners.Modes
 {
-    public class PracticeModeJudgeService : LoggableService<PracticeModeJudgeService>, ISubmissionJudgeService
+    public class PracticeModeSubmissionRunner : LoggableService<PracticeModeSubmissionRunner>, IModeSubmissionRunner
     {
         private const int JudgeTimeLimit = 300;
 
@@ -24,14 +25,14 @@ namespace WebApp.Services.Judge.Submission
         protected readonly IOptions<JudgingConfig> Options;
         protected readonly JudgeInstance Instance;
 
-        public PracticeModeJudgeService(IServiceProvider provider) : base(provider, true)
+        public PracticeModeSubmissionRunner(IServiceProvider provider) : base(provider, true)
         {
             Factory = provider.GetRequiredService<IHttpClientFactory>();
             Options = provider.GetRequiredService<IOptions<JudgingConfig>>();
             Instance = Options.Value.Instances[0];
         }
 
-        private async Task<RunInfo> CreateRun
+        private async Task<Run> CreateRun
             (HttpClient client, Data.Models.Submission submission, int index, TestCase testCase, bool inline)
         {
             RunnerOptions options;
@@ -70,7 +71,7 @@ namespace WebApp.Services.Judge.Submission
             }
 
             var token = JsonConvert.DeserializeObject<RunnerToken>(await response.Content.ReadAsStringAsync());
-            return new RunInfo
+            return new Run
             {
                 Index = index,
                 Token = token.Token,
@@ -78,9 +79,9 @@ namespace WebApp.Services.Judge.Submission
             };
         }
 
-        private async Task<List<RunInfo>> CreateRuns(Data.Models.Submission submission, Problem problem)
+        private async Task<List<Run>> CreateRuns(Data.Models.Submission submission, Problem problem)
         {
-            var runInfos = new List<RunInfo>();
+            var runInfos = new List<Run>();
 
             using var client = Factory.CreateClient();
             client.DefaultRequestHeaders.Add("X-Auth-User", Instance.AuthUser);
@@ -100,7 +101,7 @@ namespace WebApp.Services.Judge.Submission
             return runInfos;
         }
 
-        private async Task<JudgeResult> PollRuns(Data.Models.Submission submission, List<RunInfo> runInfos)
+        private async Task<Result> PollRuns(Data.Models.Submission submission, List<Run> runInfos)
         {
             var tokens = new List<string>();
             foreach (var runInfo in runInfos)
@@ -134,14 +135,14 @@ namespace WebApp.Services.Judge.Submission
                     var runInfo = runInfos.Find(r => r.Token == status.Token);
                     if (runInfo == null)
                     {
-                        throw new Exception("RunInfo not found in runInfos.");
+                        throw new Exception("Run not found in runInfos.");
                     }
 
                     if (status.Verdict == Verdict.CompilationError || status.Verdict == Verdict.InternalError)
                     {
                         // Immediate failure on compilation error or internal error.
                         // There is no need to wait for other responses at all.
-                        return new JudgeResult
+                        return new Result
                         {
                             Verdict = status.Verdict,
                             Score = 0, FailedOn = 0,
@@ -181,6 +182,7 @@ namespace WebApp.Services.Judge.Submission
                 {
                     submission.Verdict = Verdict.Running;
                 }
+
                 submission.Progress = runInfos.Count(ri => ri.Verdict > Verdict.Running) * 100 / runInfos.Count;
                 Context.Update(submission);
                 await Context.SaveChangesAsync();
@@ -228,7 +230,7 @@ namespace WebApp.Services.Judge.Submission
                     }
                 }
 
-                return new JudgeResult
+                return new Result
                 {
                     // Do not update verdict again if the submission has already failed before.
                     Verdict = submission.Verdict == Verdict.Running ? verdict : submission.Verdict,
@@ -241,7 +243,7 @@ namespace WebApp.Services.Judge.Submission
             }
         }
 
-        public async Task<JudgeResult> Judge(Data.Models.Submission submission, Problem problem)
+        public async Task<Result> Run(Data.Models.Submission submission, Problem problem)
         {
             submission.Verdict = Verdict.InQueue;
             submission.FailedOn = null;
@@ -251,7 +253,7 @@ namespace WebApp.Services.Judge.Submission
             var runInfos = await CreateRuns(submission, problem);
             if (runInfos.IsNullOrEmpty())
             {
-                return new JudgeResult
+                return new Result
                 {
                     Verdict = Verdict.Failed,
                     FailedOn = null, Score = 0,
@@ -275,7 +277,7 @@ namespace WebApp.Services.Judge.Submission
                 }
             }
 
-            return new JudgeResult
+            return new Result
             {
                 Verdict = Verdict.Failed,
                 FailedOn = null, Score = 0,
