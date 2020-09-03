@@ -1,5 +1,6 @@
-import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import { Languages } from '../../../consts/languages.consts';
+import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+
+import { LanguageInfo, Languages } from '../../../consts/languages.consts';
 import { SubmissionService } from '../../../services/submission.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 
@@ -14,6 +15,7 @@ export class SubmissionCreatorComponent implements OnInit {
 
   @Input() public problemId: number;
   @ViewChild('sourceFileInput') sourceFileInput: ElementRef;
+  @Output() public languageChanged = new EventEmitter<LanguageInfo>();
 
   public language: number;
   public filename: string;
@@ -26,12 +28,15 @@ export class SubmissionCreatorComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.language = JSON.parse(localStorage.getItem(this.languageStorageKey));
+    if (localStorage.getItem(this.languageStorageKey)) {
+      this.selectLanguage(JSON.parse(localStorage.getItem(this.languageStorageKey)));
+    }
   }
 
   public selectLanguage(value: number) {
     this.language = value;
     localStorage.setItem(this.languageStorageKey, JSON.stringify(value));
+    this.languageChanged.emit(Languages.find(l => l.code === value));
   }
 
   public selectSourceFile(event: any) {

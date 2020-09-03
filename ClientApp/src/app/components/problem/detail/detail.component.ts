@@ -1,10 +1,11 @@
 ﻿import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 
 import { ProblemService } from '../../../services/problem.service';
 import { ProblemViewDto } from '../../../interfaces/problem.interfaces';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { LanguageInfo } from '../../../consts/languages.consts';
 
 @Component({
   selector: 'app-problem-detail',
@@ -14,6 +15,7 @@ import { takeUntil } from 'rxjs/operators';
 export class ProblemDetailComponent implements OnInit, OnDestroy {
   public problemId: number;
   public problem: ProblemViewDto;
+  public language: LanguageInfo;
 
   public destroy$ = new Subject();
 
@@ -44,6 +46,10 @@ export class ProblemDetailComponent implements OnInit, OnDestroy {
   public loadProblem() {
     this.service.getSingle(this.problemId)
       .subscribe(problem => this.problem = problem);
+  }
+
+  public onLanguageChanged(language: LanguageInfo) {
+    this.language = language;
   }
 }
 

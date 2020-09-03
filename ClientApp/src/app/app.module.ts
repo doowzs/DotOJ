@@ -8,10 +8,12 @@ import { RouterModule } from '@angular/router';
 import { AuthorizeGuard } from 'src/api-authorization/authorize.guard';
 import { AuthorizeInterceptor } from 'src/api-authorization/authorize.interceptor';
 import { ApiAuthorizationModule } from 'src/api-authorization/api-authorization.module';
+import { AdminModule } from 'src/admin/admin.module';
 
-import { AppComponent } from 'src/app/app.component';
-import { ApplicationConfigService } from 'src/app/services/config.service';
-import { ApplicationApiInterceptor } from 'src/app/services/api.interceptor';
+import { NoCommaPipe } from './pipes/no-comma.pipe';
+import { AppComponent } from './app.component';
+import { ApplicationConfigService } from './services/config.service';
+import { ApplicationApiInterceptor } from './services/api.interceptor';
 import { MainHeaderComponent } from './components/headers/main/main.component';
 import { ContestHeaderComponent } from './components/headers/contest/contest.component';
 import { MainFooterComponent } from './components/footers/main/main.component';
@@ -47,7 +49,6 @@ import { NzNotificationModule } from 'ng-zorro-antd/notification';
 import { NzTimelineModule } from 'ng-zorro-antd/timeline';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
-import { AdminModule } from '../admin/admin.module';
 
 const loadApplicationConfig = (service: ApplicationConfigService) => {
   return () => service.loadApplicationConfig();
@@ -55,6 +56,7 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
 
 @NgModule({
   declarations: [
+    NoCommaPipe,
     AppComponent,
     MainHeaderComponent,
     ContestHeaderComponent,
@@ -77,9 +79,10 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     HttpClientModule,
     RouterModule.forRoot([
       { path: '', pathMatch: 'full', component: WelcomeComponent },
-      { path: 'contests', component: ContestListComponent },
+      { path: 'contests', component: ContestListComponent, canActivate: [AuthorizeGuard] },
       {
-        path: 'contest/:contestId', component: ContestViewComponent, children: [
+        path: 'contest/:contestId', component: ContestViewComponent, canActivate: [AuthorizeGuard],
+        children: [
           { path: '', pathMatch: 'full', component: ContestDescriptionComponent },
           { path: 'problem/:problemId', component: ProblemDetailComponent },
           { path: 'submissions', component: SubmissionListComponent },
