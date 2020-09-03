@@ -177,6 +177,10 @@ namespace Judge1.Services.Judge.Submission
                     }
                 }
 
+                if (submission.Verdict <= Verdict.Running)
+                {
+                    submission.Verdict = Verdict.Running;
+                }
                 submission.Progress = runInfos.Count(ri => ri.Verdict > Verdict.Running) * 100 / runInfos.Count;
                 Context.Update(submission);
                 await Context.SaveChangesAsync();
