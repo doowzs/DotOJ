@@ -95,6 +95,7 @@ namespace Judge1.Controllers.Api.v1
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
         public async Task<ActionResult<SubmissionInfoDto>> CreateSubmission(SubmissionCreateDto dto)
         {
             try
@@ -108,6 +109,13 @@ namespace Judge1.Controllers.Api.v1
             catch (UnauthorizedAccessException e)
             {
                 return Unauthorized(e.Message);
+            }
+            catch (TooManyRequestsException e)
+            {
+                return new ObjectResult(e.Message)
+                {
+                    StatusCode = StatusCodes.Status429TooManyRequests
+                };
             }
         }
     }

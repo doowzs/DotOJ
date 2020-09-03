@@ -159,7 +159,14 @@ namespace Judge1.Services
         public async Task<SubmissionInfoDto> CreateSubmissionAsync(SubmissionCreateDto dto)
         {
             await ValidateSubmissionCreateDtoAsync(dto);
-            var submission = new Submission()
+
+            var lastSubmission = await Context.Submissions.OrderByDescending(s => s.Id).FirstOrDefaultAsync();
+            if (lastSubmission != null && (DateTime.Now.ToUniversalTime() - lastSubmission.CreatedAt).TotalSeconds < 15)
+            {
+                throw new TooManyRequestsException("Cannot submit twice between 15 seconds.");
+            }
+
+            var submission = new Submission
             {
                 UserId = Accessor.HttpContext.User.GetSubjectId(),
                 ProblemId = dto.ProblemId.GetValueOrDefault(),
