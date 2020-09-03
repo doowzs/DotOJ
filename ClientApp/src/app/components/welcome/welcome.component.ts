@@ -29,4 +29,8 @@ export class WelcomeComponent implements OnInit {
         this.contests = contests;
       });
   }
+
+  public canEnterContest(contest: ContestInfoDto): boolean {
+    return (contest.isPublic || contest.registered) && moment().isAfter(contest.beginTime);
+  }
 }
