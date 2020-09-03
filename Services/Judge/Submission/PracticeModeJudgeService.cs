@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
+using Hangfire;
 using IdentityServer4.Extensions;
 using Judge1.Models;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,7 +30,8 @@ namespace Judge1.Services.Judge.Submission
             Instance = Options.Value.Instances[0];
         }
 
-        private async Task<RunInfo> CreateRun(Models.Submission submission, int index, TestCase testCase, bool inline)
+        private async Task<RunInfo> CreateRun
+            (HttpClient client, Models.Submission submission, int index, TestCase testCase, bool inline)
         {
             RunnerOptions options;
             if (inline)
@@ -56,10 +58,6 @@ namespace Judge1.Services.Judge.Submission
                 }
             }
 
-            using var client = Factory.CreateClient();
-            client.DefaultRequestHeaders.Add("X-Auth-User", Instance.AuthUser);
-            client.DefaultRequestHeaders.Add("X-Auth-Token", Instance.AuthToken);
-
             using var stringContent = new StringContent(JsonConvert.SerializeObject(options),
                 Encoding.UTF8, MediaTypeNames.Application.Json);
             using var response =
@@ -78,20 +76,25 @@ namespace Judge1.Services.Judge.Submission
                 Verdict = Verdict.Running
             };
         }
-
+        
+        [DisableConcurrentExecution(300)]
         private async Task<List<RunInfo>> CreateRuns(Models.Submission submission, Problem problem)
         {
             var runInfos = new List<RunInfo>();
 
+            using var client = Factory.CreateClient();
+            client.DefaultRequestHeaders.Add("X-Auth-User", Instance.AuthUser);
+            client.DefaultRequestHeaders.Add("X-Auth-Token", Instance.AuthToken);
+
             foreach (var testCase in problem.SampleCases)
             {
-                runInfos.Add(await CreateRun(submission, 0, testCase, true));
+                runInfos.Add(await CreateRun(client, submission, 0, testCase, true));
             }
 
             int index = 0;
             foreach (var testCase in problem.TestCases)
             {
-                runInfos.Add(await CreateRun(submission, ++index, testCase, false));
+                runInfos.Add(await CreateRun(client, submission, ++index, testCase, false));
             }
 
             return runInfos;
