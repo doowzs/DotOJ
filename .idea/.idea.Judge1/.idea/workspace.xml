@@ -23,59 +23,7 @@
     <select />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3264e410-2e54-4a07-b7a6-e065f9c1dc35" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Judge1/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Judge1/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Areas/Identity/IdentityHostingStartup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Areas/Identity/IdentityHostingStartup.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Areas/Identity/Pages/Account/Login.cshtml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Areas/Identity/Pages/Account/Login.cshtml.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Areas/Identity/Pages/Account/Register.cshtml.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Areas/Identity/Pages/Account/Register.cshtml.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Areas/Identity/Pages/_ViewImports.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Areas/Identity/Pages/_ViewImports.cshtml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/Admin/AdminContestController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/Admin/AdminContestController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/Admin/AdminProblemController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/Admin/AdminProblemController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/Admin/AdminSubmissionController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/Admin/AdminSubmissionController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/Admin/AdminUserController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/Admin/AdminUserController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/ApplicationController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/ApplicationController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/ContestController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/ContestController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/ProblemController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/ProblemController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/SubmissionController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Controllers/Api/v1/SubmissionController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Controllers/OidcConfigurationController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Controllers/OidcConfigurationController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Data/ApplicationDbContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Data/ApplicationDbContext.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Data/Migrations/20200903120347_InitialCreate.Designer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Data/Migrations/20200903120347_InitialCreate.Designer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Data/Migrations/20200903120347_InitialCreate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Data/Migrations/20200903120347_InitialCreate.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Data/Migrations/ApplicationDbContextModelSnapshot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Data/Migrations/ApplicationDbContextModelSnapshot.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Exceptions/NotFoundException.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Exceptions/NotFoundException.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Exceptions/TooManyRequestsException.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Exceptions/TooManyRequestsException.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Models/ApplicationConfig.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Models/ApplicationConfig.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Models/ApplicationUser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Models/ApplicationUser.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Models/Contest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Models/Contest.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Models/JudgingConfig.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Models/JudgingConfig.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Models/NotificationConfig.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Models/NotificationConfig.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Models/Pagination.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Models/Pagination.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Models/Problem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Models/Problem.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Models/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Models/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Models/Registration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Models/Registration.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Models/Runner.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Models/Runner.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Models/Submission.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Models/Submission.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Models/Timestamps.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Models/Timestamps.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Notifications/DingTalkNotification.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Notifications/DingTalkNotification.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Notifications/NotificationBase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Notifications/NotificationBase.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Notifications/NotificationBroadcaster.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Notifications/NotificationBroadcaster.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Pages/Shared/_LoginPartial.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Pages/Shared/_LoginPartial.cshtml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Pages/_ViewImports.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Pages/_ViewImports.cshtml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Services/Admin/AdminContestService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Services/Admin/AdminContestService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Services/Admin/AdminProblemService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Services/Admin/AdminProblemService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Services/Admin/AdminSubmissionService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Services/Admin/AdminSubmissionService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Services/Admin/AdminUserService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Services/Admin/AdminUserService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Services/ContestService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Services/ContestService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Services/Judge/ContestJudgeService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Services/Judge/ContestJudgeService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Services/Judge/Submission/ISubmissionJudgeService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Services/Judge/Submission/ISubmissionJudgeService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Services/Judge/Submission/PracticeModeJudgeService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Services/Judge/Submission/PracticeModeJudgeService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Services/LoggableService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Services/LoggableService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Services/ProblemService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Services/ProblemService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Services/ProfileService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Services/ProfileService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Services/SubmissionService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Services/SubmissionService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Startup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Startup.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/WebApp.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/WebApp.csproj" afterDir="false" />
-    </list>
+    <list default="true" id="3264e410-2e54-4a07-b7a6-e065f9c1dc35" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -85,6 +33,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="mock://D:/Workspace/Judge1/WebApp/Data/Migrations/20200903120347_InitialCreate.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://D:/Workspace/Judge1/WebApp/Data/Migrations/20200903120347_InitialCreate.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
@@ -125,6 +74,19 @@
         <option value="$PROJECT_DIR$/WebApp/Notifications/NotificationBroadcaster.cs" />
         <option value="$PROJECT_DIR$/WebApp/Notifications/NotificationBase.cs" />
         <option value="$PROJECT_DIR$/WebApp/Pages/_ViewImports.cshtml" />
+        <option value="$PROJECT_DIR$/WebApp/Services/Admin/AdminContestService.cs" />
+        <option value="$PROJECT_DIR$/WebApp/Services/Admin/AdminProblemService.cs" />
+        <option value="$PROJECT_DIR$/WebApp/Services/Admin/AdminSubmissionService.cs" />
+        <option value="$PROJECT_DIR$/WebApp/Services/Admin/AdminUserService.cs" />
+        <option value="$PROJECT_DIR$/WebApp/Services/Judge/Submission/ISubmissionJudgeService.cs" />
+        <option value="$PROJECT_DIR$/WebApp/Services/Judge/ContestJudgeService.cs" />
+        <option value="$PROJECT_DIR$/WebApp/Services/ContestService.cs" />
+        <option value="$PROJECT_DIR$/WebApp/Services/LoggableService.cs" />
+        <option value="$PROJECT_DIR$/WebApp/Services/ProblemService.cs" />
+        <option value="$PROJECT_DIR$/WebApp/Services/ProfileService.cs" />
+        <option value="$PROJECT_DIR$/WebApp/Services/SubmissionService.cs" />
+        <option value="$PROJECT_DIR$/WebApp/Startup.cs" />
+        <option value="$PROJECT_DIR$/WebApp/Program.cs" />
       </list>
     </option>
   </component>
@@ -199,7 +161,14 @@
       <option name="project" value="LOCAL" />
       <updated>1599144550444</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="move to WebApp namespace">
+      <created>1599148152404</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1599148152404</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -222,7 +191,8 @@
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="update to multi-project structure" />
-    <option name="LAST_COMMIT_MESSAGE" value="update to multi-project structure" />
+    <MESSAGE value="move to WebApp namespace" />
+    <option name="LAST_COMMIT_MESSAGE" value="move to WebApp namespace" />
   </component>
   <component name="WindowStateProjectService">
     <state x="194" y="274" width="1092" height="766" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1599144348941">
@@ -257,5 +227,9 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="552" y="252" key="Vcs.Push.Dialog.v2/0.0.1920.1040@0.0.1920.1040" timestamp="1599144552145" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1599148118334">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040@0.0.1920.1040" timestamp="1599148118334" />
   </component>
 </project>
