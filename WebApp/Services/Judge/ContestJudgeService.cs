@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using System.Transactions;
-using Hangfire;
 using Judge1.Models;
 using Judge1.Notifications;
 using Judge1.Services.Judge.Submission;
@@ -73,7 +72,6 @@ namespace Judge1.Services.Judge
             }
         }
 
-        [AutomaticRetry(Attempts = 0)]
         public async Task JudgeSubmission(int submissionId)
         {
             var submission = await Context.Submissions.FindAsync(submissionId);

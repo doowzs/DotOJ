@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using Hangfire;
 using Judge1.Exceptions;
 using Judge1.Models;
 using Judge1.Services.Judge;
@@ -181,7 +180,6 @@ namespace Judge1.Services.Admin
             foreach (var submission in submissions)
             {
                 infos.Add(new SubmissionInfoDto(submission));
-                BackgroundJob.Enqueue(() => JudgeService.JudgeSubmission(submission.Id));
             }
 
             return infos;

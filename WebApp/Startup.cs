@@ -1,7 +1,6 @@
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
-using System.Transactions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,8 +13,6 @@ using Judge1.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Hangfire;
-using Hangfire.MySql;
 using Judge1.Notifications;
 using Judge1.Services.Admin;
 using Judge1.Services.Judge;
@@ -58,26 +55,6 @@ namespace Judge1
             services.AddIdentityServer(options => { options.PublicOrigin = Configuration["Application:Host"]; })
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>()
                 .AddProfileService<ProfileService>();
-
-            services.AddHangfire(configuration => configuration
-                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
-                .UseSimpleAssemblyNameTypeSerializer()
-                .UseRecommendedSerializerSettings()
-                .UseStorage(new MySqlStorage(Configuration.GetConnectionString("HangfireConnection"),
-                    new MySqlStorageOptions
-                    {
-                        TransactionIsolationLevel = IsolationLevel.ReadCommitted,
-                        QueuePollInterval = TimeSpan.FromSeconds(15),
-                        JobExpirationCheckInterval = TimeSpan.FromHours(1),
-                        CountersAggregateInterval = TimeSpan.FromMinutes(5),
-                        PrepareSchemaIfNecessary = true,
-                        DashboardJobListLimit = 50000,
-                        TransactionTimeout = TimeSpan.FromMinutes(1),
-                        TablesPrefix = "Hangfire"
-                    })
-                )
-            );
-            services.AddHangfireServer();
 
             // See https://stackoverflow.com/questions/52526186/net-core-identity
             // and https://stackoverflow.com/questions/60184703/net-core-3-1-403.
@@ -165,9 +142,6 @@ namespace Judge1
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
-                // TODO: add authorization and allow remote access, see link below for instructions
-                // https://docs.hangfire.io/en/latest/configuration/using-dashboard.html#configuring-authorization
-                endpoints.MapHangfireDashboard();
             });
 
             app.UseSpa(spa =>

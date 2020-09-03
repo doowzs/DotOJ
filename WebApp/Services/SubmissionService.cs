@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Hangfire;
 using IdentityServer4.Extensions;
 using Judge1.Exceptions;
 using Judge1.Models;
@@ -174,8 +173,6 @@ namespace Judge1.Services
             };
             await Context.Submissions.AddAsync(submission);
             await Context.SaveChangesAsync();
-
-            BackgroundJob.Enqueue(() => JudgeService.JudgeSubmission(submission.Id));
 
             await Context.Entry(submission).Reference(s => s.User).LoadAsync();
             var result = new SubmissionInfoDto(submission);

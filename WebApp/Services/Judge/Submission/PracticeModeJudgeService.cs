@@ -6,7 +6,6 @@ using System.Net.Http;
 using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
-using Hangfire;
 using IdentityServer4.Extensions;
 using Judge1.Models;
 using Microsoft.Extensions.DependencyInjection;
@@ -77,7 +76,6 @@ namespace Judge1.Services.Judge.Submission
             };
         }
 
-        [DisableConcurrentExecution(300)]
         private async Task<List<RunInfo>> CreateRuns(Models.Submission submission, Problem problem)
         {
             var runInfos = new List<RunInfo>();
