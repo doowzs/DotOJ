@@ -43,12 +43,21 @@ export class SubmissionCreatorComponent implements OnInit {
     if (!event.target.files.length) {
       this.code = this.filename = null;
     } else {
+      const file = event.target.files[0] as File;
       const reader = new FileReader();
       reader.onload = () => {
         this.code = reader.result.toString();
-        this.filename = event.target.files[0].name;
+        this.filename = file.name;
       };
-      reader.readAsText(event.target.files[0]);
+      // Base64 encoding 30720 bytes -> 40960 bytes (4/3)
+      if (file.type !== '') {
+        alert('File ' + file.name + ' has unsupported file type ' + file.type + '.');
+      } else if (file.size > 30720) {
+        alert('File ' + file.name + 'is too large. Maximum size is 30KiB.');
+      } else {
+        reader.readAsText(event.target.files[0]);
+        console.log(event.target.files[0]);
+      }
     }
   }
 

@@ -45,6 +45,6 @@ namespace Judge1.Models
     public class Program
     {
         [Required] public Language? Language { get; set; }
-        [Required, MaxLength(30720)] public string Code { get; set; }
+        [Required, MaxLength(40960)] public string Code { get; set; }
     }
 }
