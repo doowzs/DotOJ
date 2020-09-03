@@ -156,6 +156,7 @@ namespace Judge1.Services
 
             return await Context.Registrations
                 .Where(r => r.ContestId == id)
+                .Include(r => r.User)
                 .Select(r => new RegistrationInfoDto(r))
                 .ToListAsync();
         }

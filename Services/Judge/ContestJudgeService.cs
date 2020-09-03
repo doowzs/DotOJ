@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
+using System.Transactions;
 using Judge1.Models;
 using Judge1.Notifications;
 using Judge1.Services.Judge.Submission;
@@ -46,10 +47,11 @@ namespace Judge1.Services.Judge
             }
 
             // Otherwise, only registered user can submit to a running contest.
-            bool registered = await Context.Registrations.FindAsync(user.Id, contest.Id) != null;
             if (contest.IsPublic)
             {
-                if (!registered)
+                using var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled);
+                var registration = await Context.Registrations.FindAsync(user.Id, contest.Id);
+                if (registration == null)
                 {
                     await Context.Registrations.AddAsync(new Registration
                     {
@@ -63,7 +65,7 @@ namespace Judge1.Services.Judge
             }
             else
             {
-                if (!registered)
+                if (await Context.Registrations.FindAsync(user.Id, contest.Id) == null)
                 {
                     throw new UnauthorizedAccessException("Not registered to a private running contest.");
                 }
