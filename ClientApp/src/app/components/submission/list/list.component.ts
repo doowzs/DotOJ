@@ -7,7 +7,7 @@ import { PaginatedList } from '../../../interfaces/pagination.interfaces';
 import { SubmissionInfoDto } from '../../../interfaces/submission.interfaces';
 import { ContestService } from '../../../services/contest.service';
 import { ContestViewDto } from '../../../interfaces/contest.interfaces';
-import { Verdicts } from '../../../consts/verdicts.consts';
+import { notAnValidAttempt, Verdicts } from '../../../consts/verdicts.consts';
 
 @Component({
   selector: 'app-submission-list',
@@ -16,6 +16,7 @@ import { Verdicts } from '../../../consts/verdicts.consts';
 })
 export class SubmissionListComponent implements OnInit {
   Verdicts = Verdicts;
+  notAnValidAttempt = notAnValidAttempt;
 
   public contestId: number | null = null;
   public contest: ContestViewDto;
