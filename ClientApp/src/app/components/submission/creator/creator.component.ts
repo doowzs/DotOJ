@@ -55,7 +55,8 @@ export class SubmissionCreatorComponent implements OnInit {
           this.code = this.filename = null;
           this.sourceFileInput.nativeElement.value = '';
         }, error => {
-          this.notification.create('error', 'Error', 'Submitting failed.');
+          console.log(error);
+          this.notification.create('error', 'Error', 'Submitting failed: ' + error.error);
         });
     }
   }
