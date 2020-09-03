@@ -1,8 +1,6 @@
 {
   "ConnectionStrings": {
-    "SqliteConnection": "DataSource=app.db;",
     "MySqlConnection": "Server=mariadb;Uid=judge1;Pwd=judge1;Database=judge1;",
-    "HangfireConnection": "Server=mariadb;Uid=hangfire;Pwd=hangfire;Database=hangfire;"
   },
   "Application": {
     "Host": "https://judge1",
@@ -17,15 +15,7 @@
     }
   },
   "Judging": {
-    "DataPath": "/var/www/judge-data",
-    "Instances": [
-      {
-        "Name": "local",
-        "Endpoint": "http://judge0",
-        "AuthUser": "judge1",
-        "AuthToken": "judge1"
-      }
-    ]
+    "DataPath": "/var/www/judge-data"
   },
   "Notification": {
     "DingTalk": {
@@ -39,8 +29,7 @@
     "LogLevel": {
       "Default": "Warning",
       "Microsoft": "Warning",
-      "Microsoft.Hosting.Lifetime": "Information",
-      "Hangfire": "Warning"
+      "Microsoft.Hosting.Lifetime": "Information"
     }
   },
   "IdentityServer": {

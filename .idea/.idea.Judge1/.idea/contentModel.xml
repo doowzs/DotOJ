@@ -19,6 +19,9 @@
         <e p="DTOs" t="Include">
           <e p="ApplicationUser.cs" t="Include" />
           <e p="Contest.cs" t="Include" />
+          <e p="Problem.cs" t="Include" />
+          <e p="Registration.cs" t="Include" />
+          <e p="Submission.cs" t="Include" />
         </e>
         <e p="Generics" t="Include">
           <e p="Pagination.cs" t="Include" />
