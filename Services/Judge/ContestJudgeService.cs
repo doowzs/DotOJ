@@ -109,6 +109,7 @@ namespace Judge1.Services.Judge
                 submission.Memory = result.Memory;
                 submission.FailedOn = result.FailedOn;
                 submission.Score = result.Score;
+                submission.Progress = 100;
                 submission.Message = result.Message;
                 submission.JudgedAt = DateTime.Now.ToUniversalTime();
                 Context.Submissions.Update(submission);
@@ -131,7 +132,7 @@ namespace Judge1.Services.Judge
             catch (Exception e)
             {
                 submission.Verdict = Verdict.Failed;
-                submission.FailedOn = -1;
+                submission.FailedOn = null;
                 submission.Score = 0;
                 submission.JudgedAt = DateTime.Now.ToUniversalTime();
                 Context.Submissions.Update(submission);

@@ -100,7 +100,7 @@ namespace Judge1.Services.Judge.Submission
             return runInfos;
         }
 
-        private async Task<JudgeResult> PollRuns(List<RunInfo> runInfos)
+        private async Task<JudgeResult> PollRuns(Models.Submission submission, List<RunInfo> runInfos)
         {
             var tokens = new List<string>();
             foreach (var runInfo in runInfos)
@@ -111,24 +111,87 @@ namespace Judge1.Services.Judge.Submission
                 }
             }
 
-            if (tokens.IsNullOrEmpty())
+            if (!tokens.IsNullOrEmpty())
+            {
+                using var client = Factory.CreateClient();
+                client.DefaultRequestHeaders.Add("X-Auth-User", Instance.AuthUser);
+                client.DefaultRequestHeaders.Add("X-Auth-Token", Instance.AuthToken);
+
+                var uri = Instance.Endpoint + "/submissions/batch" +
+                          "?base64_encoded=true&tokens=" + string.Join(",", tokens) +
+                          "&fields=token,time,wall_time,memory,compile_output,message,status_id";
+                using var response = await client.GetAsync(uri);
+                if (!response.IsSuccessStatusCode)
+                {
+                    await LogError($"PollRuns FAIL Tokens={string.Join(",", tokens)} Status={response.StatusCode}");
+                    throw new Exception($"Polling API call failed with code {response.StatusCode}.");
+                }
+
+                var runnerResponse =
+                    JsonConvert.DeserializeObject<RunnerResponse>(await response.Content.ReadAsStringAsync());
+                foreach (var status in runnerResponse.Statuses)
+                {
+                    var runInfo = runInfos.Find(r => r.Token == status.Token);
+                    if (runInfo == null)
+                    {
+                        throw new Exception("RunInfo not found in runInfos.");
+                    }
+
+                    if (status.Verdict == Verdict.CompilationError || status.Verdict == Verdict.InternalError)
+                    {
+                        // Immediate failure on compilation error or internal error.
+                        // There is no need to wait for other responses at all.
+                        return new JudgeResult
+                        {
+                            Verdict = status.Verdict,
+                            Score = 0, FailedOn = 0,
+                            Message = status.Message
+                        };
+                    }
+                    else if (status.Verdict > Verdict.Running)
+                    {
+                        runInfo.Verdict = status.Verdict;
+                        runInfo.Time = string.IsNullOrEmpty(status.Time) ? (float?) null : float.Parse(status.Time);
+                        runInfo.WallTime = string.IsNullOrEmpty(status.WallTime)
+                            ? (float?) null
+                            : float.Parse(status.WallTime);
+                        runInfo.Memory = status.Memory;
+                        runInfo.Message = status.Verdict == Verdict.InternalError
+                            ? status.Message
+                            : status.CompileOutput;
+
+                        if (status.Verdict != Verdict.Accepted && submission.Verdict == Verdict.Running)
+                        {
+                            // Submission failed on some case, set result for immediate response.
+                            // Negative score indicates that service is still judging on other cases.
+                            submission.Verdict = status.Verdict;
+                            if (!submission.FailedOn.HasValue)
+                            {
+                                submission.FailedOn = runInfo.Index;
+                            }
+                            else
+                            {
+                                submission.FailedOn = Math.Min(submission.FailedOn.Value, runInfo.Index);
+                            }
+                        }
+                    }
+                }
+
+                submission.Progress = runInfos.Count(ri => ri.Verdict > Verdict.Running) * 100 / runInfos.Count;
+                Context.Update(submission);
+                await Context.SaveChangesAsync();
+
+                return null; // Still has other cases to judge, let caller poll again.
+            }
+            else
             {
                 var verdict = Verdict.Accepted;
-                int failedOn = -1, count = 0, total = 0;
+                int? failedOn = null;
+                int count = 0, total = 0;
                 float time = 0.0f, memory = 0.0f;
 
                 foreach (var runInfo in runInfos)
                 {
-                    if (runInfo.Verdict == Verdict.CompilationError || runInfo.Verdict == Verdict.InternalError)
-                    {
-                        return new JudgeResult
-                        {
-                            Verdict = runInfo.Verdict,
-                            FailedOn = 0, Score = 0,
-                            Message = runInfo.Message
-                        };
-                    }
-
                     if (runInfo.Index > 0)
                     {
                         if (runInfo.Verdict == Verdict.Accepted)
@@ -139,7 +202,7 @@ namespace Judge1.Services.Judge.Submission
                         ++total;
                     }
 
-                    if (runInfo.Verdict != Verdict.Accepted && failedOn == -1)
+                    if (runInfo.Verdict != Verdict.Accepted && !failedOn.HasValue)
                     {
                         verdict = runInfo.Verdict;
                         failedOn = runInfo.Index;
@@ -163,7 +226,8 @@ namespace Judge1.Services.Judge.Submission
 
                 return new JudgeResult
                 {
-                    Verdict = verdict,
+                    // Do not update verdict again if the submission has already failed before.
+                    Verdict = submission.Verdict == Verdict.Running ? verdict : submission.Verdict,
                     Time = (int) (time * 1000),
                     Memory = (int) memory,
                     Message = "",
@@ -171,53 +235,12 @@ namespace Judge1.Services.Judge.Submission
                     Score = total == 0 ? (verdict == Verdict.Accepted ? 100 : 0) : count * 100 / total
                 };
             }
-            else
-            {
-                using var client = Factory.CreateClient();
-                client.DefaultRequestHeaders.Add("X-Auth-User", Instance.AuthUser);
-                client.DefaultRequestHeaders.Add("X-Auth-Token", Instance.AuthToken);
-
-                using var response = await client.GetAsync(Instance.Endpoint + "/submissions/batch" +
-                                                           "?base64_encoded=true&tokens=" + string.Join(",", tokens) +
-                                                           "&fields=token,time,wall_time,memory,compile_output,message,status_id");
-                if (!response.IsSuccessStatusCode)
-                {
-                    await LogError($"PollRuns FAIL Tokens={string.Join(",", tokens)} Status={response.StatusCode}");
-                    throw new Exception($"Polling API call failed with code {response.StatusCode}.");
-                }
-
-                var runnerResponse =
-                    JsonConvert.DeserializeObject<RunnerResponse>(await response.Content.ReadAsStringAsync());
-                foreach (var status in runnerResponse.Statuses)
-                {
-                    var runInfo = runInfos.Find(r => r.Token == status.Token);
-                    if (runInfo == null)
-                    {
-                        throw new Exception("RunInfo not found in runInfos.");
-                    }
-
-                    if (status.Verdict > Verdict.Running)
-                    {
-                        runInfo.Verdict = status.Verdict;
-                        runInfo.Time = string.IsNullOrEmpty(status.Time) ? (float?) null : float.Parse(status.Time);
-                        runInfo.WallTime = string.IsNullOrEmpty(status.WallTime)
-                            ? (float?) null
-                            : float.Parse(status.WallTime);
-                        runInfo.Memory = status.Memory;
-                        runInfo.Message = status.Verdict == Verdict.InternalError
-                            ? status.Message
-                            : status.CompileOutput;
-                    }
-                }
-
-                return null;
-            }
         }
 
         public async Task<JudgeResult> Judge(Models.Submission submission, Problem problem)
         {
             submission.Verdict = Verdict.InQueue;
-            submission.FailedOn = -1;
+            submission.FailedOn = null;
             Context.Submissions.Update(submission);
             await Context.SaveChangesAsync();
 
@@ -227,7 +250,7 @@ namespace Judge1.Services.Judge.Submission
                 return new JudgeResult
                 {
                     Verdict = Verdict.Failed,
-                    FailedOn = -1, Score = 0,
+                    FailedOn = null, Score = 0,
                     Message = "No test cases available."
                 };
             }
@@ -236,12 +259,17 @@ namespace Judge1.Services.Judge.Submission
             {
                 await Task.Delay(1000);
 
-                submission.Verdict = Verdict.Running;
-                submission.Score = runInfos.Count(info => info.Verdict > Verdict.Running) * 100 / runInfos.Count;
-                Context.Update(submission);
-                await Context.SaveChangesAsync();
+                // If the inner function has not changed verdict, update judging progress.
+                // Otherwise submission will be rejected, stop updating progress and wait for result.
+                if (submission.Verdict <= Verdict.Running)
+                {
+                    submission.Verdict = Verdict.Running;
+                    submission.Score = runInfos.Count(info => info.Verdict > Verdict.Running) * 100 / runInfos.Count;
+                    Context.Update(submission);
+                    await Context.SaveChangesAsync();
+                }
 
-                var result = await PollRuns(runInfos);
+                var result = await PollRuns(submission, runInfos);
                 if (result != null)
                 {
                     // Fix time and memory to be no larger than limit.
@@ -256,7 +284,7 @@ namespace Judge1.Services.Judge.Submission
             return new JudgeResult
             {
                 Verdict = Verdict.Failed,
-                FailedOn = 0, Score = 0,
+                FailedOn = null, Score = 0,
                 Message = "Judge timeout."
             };
         }
