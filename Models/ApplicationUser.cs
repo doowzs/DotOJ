@@ -38,7 +38,7 @@ namespace Judge1.Models
     {
         public async Task<IdentityResult> ValidateAsync(UserManager<ApplicationUser> manager, ApplicationUser user)
         {
-            if (await manager.Users.AnyAsync(u => u.ContestantId == user.ContestantId))
+            if (await manager.Users.AnyAsync(u => u.Id != user.Id && u.ContestantId == user.ContestantId))
             {
                 return IdentityResult.Failed(new[]
                 {
