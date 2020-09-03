@@ -24,6 +24,7 @@
           <e p="Submission.cs" t="Include" />
         </e>
         <e p="Generics" t="Include">
+          <e p="LoggableService.cs" t="Include" />
           <e p="Pagination.cs" t="Include" />
           <e p="Timestamps.cs" t="Include" />
         </e>
@@ -50,6 +51,22 @@
         </e>
       </e>
       <e p="Judge1.sln" t="IncludeFlat" />
+      <e p="Notification" t="IncludeRecursive">
+        <e p="bin" t="ExcludeRecursive" />
+        <e p="Notification.csproj" t="IncludeRecursive" />
+        <e p="NotificationBroadcaster.cs" t="Include" />
+        <e p="obj" t="ExcludeRecursive">
+          <e p="Debug" t="Include">
+            <e p="netcoreapp3.1" t="Include">
+              <e p="Notification.AssemblyInfo.cs" t="Include" />
+            </e>
+          </e>
+        </e>
+        <e p="Providers" t="Include">
+          <e p="DingTalk.cs" t="Include" />
+          <e p="ProviderBase.cs" t="Include" />
+        </e>
+      </e>
       <e p="packages" t="ExcludeRecursive" />
       <e p="WebApp" t="IncludeRecursive">
         <e p=".dockerignore" t="Include" />
@@ -472,11 +489,6 @@
         </e>
         <e p="Folder.DotSettings" t="Include" />
         <e p="identity.pfx" t="Include" />
-        <e p="Notifications" t="Include">
-          <e p="DingTalkNotification.cs" t="Include" />
-          <e p="NotificationBase.cs" t="Include" />
-          <e p="NotificationBroadcaster.cs" t="Include" />
-        </e>
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
             <e p="netcoreapp3.1" t="Include">
@@ -508,7 +520,6 @@
             <e p="AdminUserService.cs" t="Include" />
           </e>
           <e p="ContestService.cs" t="Include" />
-          <e p="LoggableService.cs" t="Include" />
           <e p="ProblemService.cs" t="Include" />
           <e p="ProfileService.cs" t="Include" />
           <e p="SubmissionService.cs" t="Include" />

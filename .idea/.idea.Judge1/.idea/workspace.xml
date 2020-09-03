@@ -24,14 +24,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3264e410-2e54-4a07-b7a6-e065f9c1dc35" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.Judge1/.idea/contentModel.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Judge1/.idea/contentModel.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Services/Admin/AdminSubmissionService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Services/Admin/AdminSubmissionService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Services/Judge/ContestJudgeService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Worker/Judge/ContestJudgeService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Services/Judge/Submission/ISubmissionJudgeService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Worker/Judge/Submission/ISubmissionJudgeService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Services/Judge/Submission/PracticeModeJudgeService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Worker/Judge/Submission/PracticeModeJudgeService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebApp/Services/SubmissionService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Services/SubmissionService.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Notification/Notification.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.Judge1/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Judge1/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Judge1.sln" beforeDir="false" afterPath="$PROJECT_DIR$/Judge1.sln" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebApp/Notifications/DingTalkNotification.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Notification/Providers/DingTalk.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebApp/Notifications/NotificationBase.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Notification/Providers/ProviderBase.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebApp/Notifications/NotificationBroadcaster.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Notification/NotificationBroadcaster.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebApp/Services/LoggableService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Generics/LoggableService.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebApp/Startup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/Startup.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Worker/Worker.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Worker/Worker.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebApp/WebApp.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/WebApp/WebApp.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Worker/Judge/ContestJudgeService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Worker/Judge/ContestJudgeService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Worker/Judge/Submission/PracticeModeJudgeService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Worker/Judge/Submission/PracticeModeJudgeService.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,16 +49,12 @@
     <setting file="mock://D:/Workspace/Judge1/WebApp/Controllers/Api/v1/Admin/AdminContestController.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://D:/Workspace/Judge1/WebApp/Services/SubmissionService.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://D:/Workspace/Judge1/WebApp/Services/Admin/AdminSubmissionService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://D:/Workspace/Judge1/Worker/Judge/ContestJudgeService.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/WebApp/obj/Debug/netcoreapp3.1/Razor/Pages/Error.cshtml.g.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/Data/Models/Program.cs" />
-        <option value="$PROJECT_DIR$/Data/Models/Timestamps.cs" />
-        <option value="$PROJECT_DIR$/Data/ApplicationDbContext.cs" />
-        <option value="$PROJECT_DIR$/WebApp/Areas/Identity/Pages/Account/Login.cshtml.cs" />
-        <option value="$PROJECT_DIR$/WebApp/Areas/Identity/Pages/Account/Register.cshtml.cs" />
         <option value="$PROJECT_DIR$/WebApp/Notifications/NotificationBase.cs" />
         <option value="$PROJECT_DIR$/WebApp/Pages/Shared/_LoginPartial.cshtml" />
         <option value="$PROJECT_DIR$/WebApp/Services/Judge/Submission/ISubmissionJudgeService.cs" />
@@ -98,10 +97,15 @@
         <option value="$PROJECT_DIR$/WebApp/appsettings.json" />
         <option value="$PROJECT_DIR$/WebApp/appsettings.json.example" />
         <option value="$PROJECT_DIR$/Worker/appsettings.json" />
-        <option value="$PROJECT_DIR$/WebApp/Services/SubmissionService.cs" />
-        <option value="$PROJECT_DIR$/WebApp/Startup.cs" />
         <option value="$PROJECT_DIR$/WebApp/Services/Admin/AdminSubmissionService.cs" />
         <option value="$PROJECT_DIR$/Worker/Judge/Submission/ISubmissionJudgeService.cs" />
+        <option value="$PROJECT_DIR$/Data/Generics/LoggableService.cs" />
+        <option value="$PROJECT_DIR$/WebApp/Services/SubmissionService.cs" />
+        <option value="$PROJECT_DIR$/Notification/Class1.cs" />
+        <option value="$PROJECT_DIR$/Notification/Providers/ProviderBase.cs" />
+        <option value="$PROJECT_DIR$/Notification/Providers/DingTalk.cs" />
+        <option value="$PROJECT_DIR$/Notification/NotificationBroadcaster.cs" />
+        <option value="$PROJECT_DIR$/WebApp/Startup.cs" />
       </list>
     </option>
   </component>
@@ -165,7 +169,7 @@
       <updated>1599143925688</updated>
       <workItem from="1599143931348" duration="400000" />
       <workItem from="1599144340054" duration="344000" />
-      <workItem from="1599149864228" duration="1569000" />
+      <workItem from="1599149864228" duration="1914000" />
     </task>
     <task id="LOCAL-00001" summary="update to multi-project structure">
       <created>1599144491876</created>
@@ -216,7 +220,14 @@
       <option name="project" value="LOCAL" />
       <updated>1599151241298</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="remove judge services to Worker">
+      <created>1599151449470</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1599151449470</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -246,33 +257,34 @@
     <MESSAGE value="separate generic types, DTO and Config classes" />
     <MESSAGE value="update appsettings.json.example" />
     <MESSAGE value="remove judge services to Worker" />
-    <option name="LAST_COMMIT_MESSAGE" value="remove judge services to Worker" />
+    <MESSAGE value="separate Notification to a standalone library" />
+    <option name="LAST_COMMIT_MESSAGE" value="separate Notification to a standalone library" />
   </component>
   <component name="WindowStateProjectService">
     <state x="194" y="274" width="1092" height="766" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1599144348941">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="194" y="274" width="1092" height="766" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040@0.0.1920.1040" timestamp="1599144348941" />
-    <state width="1877" height="282" key="GridCell.Tab.0.bottom" timestamp="1599149825118">
+    <state width="1877" height="282" key="GridCell.Tab.0.bottom" timestamp="1599151271640">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1599149825118" />
-    <state width="1877" height="282" key="GridCell.Tab.0.center" timestamp="1599149825117">
+    <state width="1877" height="282" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1599151271640" />
+    <state width="1877" height="282" key="GridCell.Tab.0.center" timestamp="1599151271640">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1599149825117" />
-    <state width="1877" height="282" key="GridCell.Tab.0.left" timestamp="1599149825116">
+    <state width="1877" height="282" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1599151271640" />
+    <state width="1877" height="282" key="GridCell.Tab.0.left" timestamp="1599151271640">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1599149825116" />
-    <state width="1877" height="282" key="GridCell.Tab.0.right" timestamp="1599149825117">
+    <state width="1877" height="282" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1599151271640" />
+    <state width="1877" height="282" key="GridCell.Tab.0.right" timestamp="1599151271640">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="282" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1599149825117" />
-    <state x="552" y="251" key="Rider.ProjectTemplateDialog.Size" timestamp="1599149209568">
+    <state width="1877" height="282" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1599151271640" />
+    <state x="552" y="251" key="Rider.ProjectTemplateDialog.Size" timestamp="1599151564449">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="251" key="Rider.ProjectTemplateDialog.Size/0.0.1920.1040@0.0.1920.1040" timestamp="1599149209568" />
+    <state x="552" y="251" key="Rider.ProjectTemplateDialog.Size/0.0.1920.1040@0.0.1920.1040" timestamp="1599151564449" />
     <state x="739" y="229" key="RollbackChangesDialog" timestamp="1599149167154">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

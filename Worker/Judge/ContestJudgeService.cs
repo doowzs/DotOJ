@@ -4,10 +4,11 @@ using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using System.Transactions;
 using Data.Configs;
+using Data.Generics;
 using Data.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using WebApp.Notifications;
+using Notification;
 using WebApp.Services.Judge.Submission;
 
 namespace WebApp.Services.Judge
