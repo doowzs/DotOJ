@@ -25,8 +25,7 @@ namespace Judge1.Models
         Voided = -2,
         Failed = -1,
         Pending = 0,
-        InQueue = 1, // this value is only used for Judge0 backend
-        Submitted = 1,
+        InQueue = 1,
         Running = 2,
         Accepted = 3,
         WrongAnswer = 4,

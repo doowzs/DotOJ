@@ -29,8 +29,8 @@ export const Verdicts: VerdictInfo[] = [
     color: 'blue', explain: 'Your code is submitted and is waiting to be processed.'
   },
   {
-    code: 1, name: 'Submitted', showCase: false, stage: VerdictStage.RUNNING,
-    color: 'green', explain: 'Your code is submitted and will be processed after contest ends.'
+    code: 1, name: 'In Queue', showCase: false, stage: VerdictStage.RUNNING,
+    color: 'blue', explain: 'Your code is submitted and is waiting to be processed.'
   },
   {
     code: 2, name: 'Running', showCase: true, stage: VerdictStage.RUNNING,
