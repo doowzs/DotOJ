@@ -122,14 +122,14 @@ namespace Worker.Runners.Modes
             return runInfos;
         }
 
-        public async Task PollRunsAsync(List<Run> runInfos)
+        public async Task PollRunsAsync(List<Run> runs)
         {
             var tokens = new List<string>();
-            foreach (var runInfo in runInfos)
+            foreach (var run in runs)
             {
-                if (runInfo.Verdict == Verdict.Running)
+                if (run.Verdict == Verdict.Running)
                 {
-                    tokens.Add(runInfo.Token);
+                    tokens.Add(run.Token);
                 }
             }
 
@@ -153,21 +153,20 @@ namespace Worker.Runners.Modes
                     JsonConvert.DeserializeObject<RunnerResponse>(await response.Content.ReadAsStringAsync());
                 foreach (var status in runnerResponse.Statuses)
                 {
-                    var runInfo = runInfos.Find(r => r.Token == status.Token);
-                    if (runInfo == null)
+                    var run = runs.Find(r => r.Token == status.Token);
+                    if (run == null)
                     {
                         throw new Exception("Run not found in runInfos.");
                     }
 
                     if (status.Verdict > Verdict.Running)
                     {
-                        runInfo.Verdict = status.Verdict;
-                        runInfo.Time = string.IsNullOrEmpty(status.Time) ? (float?) null : float.Parse(status.Time);
-                        runInfo.WallTime = string.IsNullOrEmpty(status.WallTime)
-                            ? (float?) null
-                            : float.Parse(status.WallTime);
-                        runInfo.Memory = status.Memory;
-                        runInfo.Message = status.Verdict == Verdict.InternalError
+                        string time = status.Verdict == Verdict.TimeLimitExceeded ? status.WallTime : status.Time;
+
+                        run.Verdict = status.Verdict;
+                        run.Time = string.IsNullOrEmpty(time) ? (float?) null : float.Parse(time);
+                        run.Memory = status.Memory;
+                        run.Message = status.Verdict == Verdict.InternalError
                             ? status.Message
                             : status.CompileOutput;
                     }

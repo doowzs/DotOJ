@@ -43,11 +43,6 @@ namespace Worker.Runners.Modes
                     time = Math.Max(time, run.Time.Value);
                 }
 
-                if (run.WallTime.HasValue)
-                {
-                    time = Math.Max(time, run.WallTime.Value);
-                }
-
                 if (run.Memory.HasValue)
                 {
                     memory = Math.Max(memory, run.Memory.Value);

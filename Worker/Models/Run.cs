@@ -9,7 +9,6 @@ namespace Worker.Models
 
         public Verdict Verdict { get; set; }
         public float? Time { get; set; }
-        public float? WallTime { get; set; }
         public float? Memory { set; get; }
         public string Message { set; get; }
     }
