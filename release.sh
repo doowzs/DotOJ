@@ -27,6 +27,8 @@ case "$ACTION" in
 "package")
   cd Dockerize
   sed -i '1s/$/:'"$TAG"'/' webapp/Dockerfile worker/Dockerfile
+  cp ../WebApp/appsettings.json.example ./webapp/appsettings.json
+  cp ../Worker/appsettings.json.example ./worker/appsettings.json
   zip "$NAME" -r ./*
   mv "$NAME" ../
   cd -
