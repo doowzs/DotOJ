@@ -2,10 +2,10 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
-using Data;
 using Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Worker.Runners;
 
 namespace Worker.Triggers
@@ -31,18 +31,24 @@ namespace Worker.Triggers
                 .Select(p => p.Id)
                 .ToListAsync();
 
-            Submission submission;
+            // Update all new pending submissions' status.
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                // Update all new pending submissions' status.
                 var pendingSubmissions = await Context.Submissions
                     .Where(s => s.Verdict == Verdict.Pending).ToListAsync();
+                Logger.LogInformation($"{pendingSubmissions.Count} pending");
                 foreach (var pendingSubmission in pendingSubmissions)
                 {
                     pendingSubmission.Verdict = Verdict.InQueue;
                 }
                 Context.UpdateRange(pendingSubmissions);
+                await Context.SaveChangesAsync();
+                scope.Complete();
+            }
 
+            Submission submission;
+            using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+            {
                 // Choose a submission that has not been judged yet.
                 // Submissions of a running contest have a higher priority to be judged.
                 var queryable = Context.Submissions.Where(s => string.IsNullOrEmpty(s.JudgedBy)).AsQueryable();
@@ -63,6 +69,7 @@ namespace Worker.Triggers
                 }
 
                 await Context.SaveChangesAsync();
+                scope.Complete();
             }
 
             if (submission != null)
