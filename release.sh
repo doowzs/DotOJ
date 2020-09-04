@@ -2,22 +2,34 @@
 set -e
 
 function usage() {
-  echo "Usage: ./release.sh [env|webapp|worker|package] [tag]"
+  echo "Usage: ./release.sh [env|webapp|worker|package] name tag1 [tag2]"
+  echo "If tag2 is present, it will be used to tag; otherwise tag1 is used."
 }
 
-case "$1" in
+if [ "$1" != "env" ] && [ "$#" -lt 3 ]; then
+  usage
+  exit 1
+fi
+
+ACTION=$1
+NAME=$2
+if [ "$#" -eq 3 ]; then
+  TAG="$3"
+else
+  TAG="$4"
+fi
+
+case "$ACTION" in
 "env")
   echo "Building judge1-build-env:latest..."
   CHANGE_SOURCE=true docker build --force-rm --no-cache -f Dockerfile.env -t judge1-build-env:latest .
   ;;
 "webapp" | "worker")
-  if [ -z "$2" ]; then
-    usage
-    exit 1
-  fi
-  echo "Building ccr.ccs.tencentyun.com/doowzs/judge1-$1:$2..."
-  CHANGE_SOURCE=true docker build --force-rm --no-cache -f Dockerfile.$1 -t ccr.ccs.tencentyun.com/doowzs/judge1-$1:"$2" .
+  echo "Building $ACTION as $NAME:$TAG..."
+  CHANGE_SOURCE=true docker build --force-rm --no-cache -f "Dockerfile.$ACTION" -t "$NAME:$TAG" .
   ;;
+"package") ;;
+
 "*")
   usage
   exit 1

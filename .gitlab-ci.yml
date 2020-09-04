@@ -1,0 +1,68 @@
+variables:
+  WEBAPP_IMAGE: ccr.ccs.tencentyun.com/doowzs/judge1-webapp
+  WORKER_IMAGE: ccr.ccs.tencentyun.com/doowzs/judge1-worker
+
+.docker_login: &docker-login
+  before_script:
+    - echo "${CI_REGISTRY_PASS}" | docker login -u "${CI_REGISTRY_USER}" --password-stdin ${CI_REGISTRY}
+
+stages:
+  - env
+  - build
+  - release
+
+before_script:
+  - chmod +x ./release.sh
+
+env:docker:
+  only:
+    - tags
+    - master
+  stage: env
+  image: docker:stable
+  script:
+    - ./release.sh env
+
+build:webapp:
+  only:
+    - tags
+    - master
+  stage: build
+  image: docker:stable
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ''
+  services:
+    - docker:dind
+  <<: *docker-login
+  script:
+    - ./release.sh webapp ${WEBAPP_IMAGE} development-${CI_COMMIT_BRANCH}-${CI_COMMIT_SHA} ${CI_COMMIT_TAG}
+
+build:worker:
+  only:
+    - tags
+    - master
+  stage: build
+  image: docker:stable
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ''
+  services:
+    - docker:dind
+  <<: *docker-login
+  script:
+    - ./release.sh worker ${WORKER_IMAGE} development-${CI_COMMIT_BRANCH}-${CI_COMMIT_SHA} ${CI_COMMIT_TAG}
+
+release:package:
+  only:
+    - tags
+    - master
+  stage: release
+  image: alpine:latest
+  before_script:
+    - sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+    - apk add zip
+  script:
+    - ./release.sh package release.zip development-${CI_COMMIT_BRANCH}-${CI_COMMIT_SHA} ${CI_COMMIT_TAG}
+  needs:
+    - ./release.zip
