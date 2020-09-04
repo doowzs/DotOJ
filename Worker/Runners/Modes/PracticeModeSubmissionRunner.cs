@@ -11,10 +11,9 @@ namespace Worker.Runners.Modes
     {
         public PracticeModeSubmissionRunner(IServiceProvider provider) : base(provider)
         {
-            AfterPollingRunsDelegate = AfterPollingRunsDelegateImpl;
         }
 
-        private Task<Result> AfterPollingRunsDelegateImpl(Submission submission, Problem problem, List<Run> runs)
+        public override Task<Result> OnPollingRunsComplete(Submission submission, Problem problem, List<Run> runs)
         {
             var failed = runs.FirstOrDefault(r => r.Verdict > Verdict.Accepted);
             if (failed != null)

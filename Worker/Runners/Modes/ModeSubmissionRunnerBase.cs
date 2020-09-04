@@ -25,6 +25,8 @@ namespace Worker.Runners.Modes
 
         public Task<List<Run>> CreateRunsAsync(Submission submission, Problem problem);
         public Task PollRunsAsync(List<Run> runs);
+        public Task<Result> OnBeforeCreatingRuns(Submission submission, Problem problem);
+        public Task<Result> OnPollingRunsComplete(Submission submission, Problem problem, List<Run> runs);
         public Task<Result> RunSubmissionAsync(Submission submission, Problem problem);
     }
 
@@ -37,9 +39,6 @@ namespace Worker.Runners.Modes
         protected readonly IOptions<JudgingConfig> Options;
         protected readonly JudgeInstance Instance;
         protected readonly ILogger<T> Logger;
-
-        protected Func<Submission, Problem, Task<Result>> BeforeCreateRunsDelegate = null;
-        protected Func<Submission, Problem, List<Run>, Task<Result>> AfterPollingRunsDelegate = null;
 
         public ModeSubmissionRunnerBase(IServiceProvider provider)
         {
@@ -176,15 +175,25 @@ namespace Worker.Runners.Modes
 
         #endregion
 
+        public virtual Task<Result> OnBeforeCreatingRuns(Submission submission, Problem problem)
+        {
+            return Task.FromResult<Result>(null);
+        }
+
+        public virtual Task<Result> OnPollingRunsComplete(Submission submission, Problem problem, List<Run> runs)
+        {
+            return Task.FromResult<Result>(null);
+        }
+
         public async Task<Result> RunSubmissionAsync(Submission submission, Problem problem)
         {
             submission.Verdict = Verdict.Running;
             Context.Submissions.Update(submission);
             await Context.SaveChangesAsync();
-
-            if (BeforeCreateRunsDelegate != null)
+            
             {
-                var result = await BeforeCreateRunsDelegate(submission, problem);
+                // Override this method to prevent creating runs.
+                var result = await OnBeforeCreatingRuns(submission, problem);
                 if (result != null)
                 {
                     return result;
@@ -216,13 +225,11 @@ namespace Worker.Runners.Modes
                     };
                 }
 
-                if (AfterPollingRunsDelegate != null)
+                // Override this method to provide custom data handling.
+                var result = await OnPollingRunsComplete(submission, problem, runs);
+                if (result != null)
                 {
-                    var result = await AfterPollingRunsDelegate(submission, problem, runs);
-                    if (result != null)
-                    {
-                        return result;
-                    }
+                    return result;
                 }
 
                 var total = runs.Count;
