@@ -6,7 +6,6 @@ namespace Data.Configs
     [NotMapped]
     public class JudgeInstance
     {
-        public string Name { get; set; }
         public string Endpoint { get; set; }
         public string AuthUser { get; set; }
         public string AuthToken { get; set; }
@@ -15,6 +14,7 @@ namespace Data.Configs
     [NotMapped]
     public class JudgingConfig
     {
+        public string Name { get; set; }
         public string DataPath { get; set; }
         public JudgeInstance Instance { get; set; }
     }

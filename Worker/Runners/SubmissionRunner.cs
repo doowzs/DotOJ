@@ -21,12 +21,12 @@ namespace Worker.Runners
     public class SubmissionRunner : LoggableService<SubmissionRunner>, ISubmissionRunner
     {
         protected readonly INotificationBroadcaster Broadcaster;
-        protected readonly IOptions<ApplicationConfig> AppOptions;
+        protected readonly IOptions<JudgingConfig> Options;
 
         public SubmissionRunner(IServiceProvider provider) : base(provider, true)
         {
             Broadcaster = provider.GetRequiredService<INotificationBroadcaster>();
-            AppOptions = provider.GetRequiredService<IOptions<ApplicationConfig>>();
+            Options = provider.GetRequiredService<IOptions<JudgingConfig>>();
         }
 
         private async Task EnsureRegistrationExists(ApplicationUser user, Contest contest)
@@ -133,9 +133,8 @@ namespace Worker.Runners
                 await Context.SaveChangesAsync();
                 await LogError($"RunSubmission Error Id={submission.Id} Error={e.Message}");
                 await Broadcaster.SendNotification(true, $"Runner failed on Submission #{submission.Id}",
-                    $"Submission runner failed on [submission #{submission.Id}]" +
-                    $"({AppOptions.Value.Host}/admin/submission/{submission.Id}) " +
-                    $"with error message **\"{e.Message}\"**.");
+                    $"Submission runner \"{Options.Value.Name}\" failed on submission #{submission.Id}" +
+                    $" with error message **\"{e.Message}\"**.");
             }
         }
     }

@@ -57,7 +57,7 @@ namespace Worker.Triggers
 
                 if (submission != null)
                 {
-                    submission.JudgedBy = Options.Value.Instance.Name;
+                    submission.JudgedBy = Options.Value.Name;
                     Context.Update(submission);
                 }
 
