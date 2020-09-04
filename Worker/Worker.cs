@@ -11,16 +11,15 @@ namespace Worker
 {
     public class Worker : BackgroundService
     {
+        private readonly IServiceScopeFactory _factory;
         private readonly ILogger<Worker> _logger;
-        private readonly IList<ITrigger> _triggers;
+        
+        private readonly IList<ITrigger> _triggers = new List<ITrigger>();
 
         public Worker(IServiceProvider provider)
         {
+            _factory = provider.GetRequiredService<IServiceScopeFactory>();
             _logger = provider.GetRequiredService<ILogger<Worker>>();
-            _triggers = new List<ITrigger>
-            {
-                new SubmissionRunnerTrigger(provider)
-            };
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -30,16 +29,24 @@ namespace Worker
                 await Task.Delay(1000, stoppingToken);
 
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                foreach (var trigger in _triggers)
+
+                using (var scope = _factory.CreateScope())
                 {
-                    try
+                    _triggers.Add(new SubmissionRunnerTrigger(scope.ServiceProvider));
+                    
+                    foreach (var trigger in _triggers)
                     {
-                        await trigger.CheckAndRunAsync();
+                        try
+                        {
+                            await trigger.CheckAndRunAsync();
+                        }
+                        catch (Exception e)
+                        {
+                            _logger.LogError($"{nameof(trigger)} error: {e}");
+                        }
                     }
-                    catch (Exception e)
-                    {
-                        _logger.LogError($"{nameof(trigger)} error: {e.ToString()}");
-                    }
+                    
+                    _triggers.Clear();
                 }
             }
         }

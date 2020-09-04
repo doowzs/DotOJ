@@ -12,11 +12,11 @@ namespace Worker.Triggers
 {
     public sealed class SubmissionRunnerTrigger : TriggerBase<SubmissionRunnerTrigger>
     {
-        private readonly SubmissionRunner _runner;
+        private readonly ISubmissionRunner _runner;
 
         public SubmissionRunnerTrigger(IServiceProvider provider) : base(provider)
         {
-            _runner = provider.GetRequiredService<SubmissionRunner>();
+            _runner = provider.GetRequiredService<ISubmissionRunner>();
         }
 
         public override async Task CheckAndRunAsync()

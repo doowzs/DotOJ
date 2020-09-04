@@ -14,7 +14,7 @@ namespace Worker.Runners.Modes
             AfterPollingRunsDelegate = AfterPollingRunsDelegateImpl;
         }
 
-        private async Task<Result> AfterPollingRunsDelegateImpl(Submission submission, Problem problem, List<Run> runs)
+        private Task<Result> AfterPollingRunsDelegateImpl(Submission submission, Problem problem, List<Run> runs)
         {
             var failed = runs.FirstOrDefault(r => r.Verdict > Verdict.Accepted);
             if (failed != null)
@@ -56,7 +56,7 @@ namespace Worker.Runners.Modes
 
             var language = submission.Program.Language ?? Language.C;
             var factor = RunnerLanguageOptions.LanguageOptionsDict[language].timeFactor;
-            return new Result
+            return Task.FromResult(new Result
             {
                 // If there was any failure, submission's verdict will be changed from Running.
                 Verdict = submission.Verdict == Verdict.Running ? Verdict.Accepted : submission.Verdict,
@@ -65,7 +65,7 @@ namespace Worker.Runners.Modes
                 FailedOn = failed?.Index,
                 Score = count / total,
                 Message = ""
-            };
+            });
         }
     }
 }
