@@ -9,20 +9,13 @@ Judge1 depends on multiple open-source projects:
 - [.NET Core](https://dotnet.microsoft.com/)
 - [Ajax.org Cloud9 Editor](https://ace.c9.io/)
 - [Angular 10](https://angular.io/)
-- [Angular Material](https://material.angular.io/)
 - [ASP.NET Core](https://github.com/dotnet/aspnetcore)
 - [Entity Framework Core](https://github.com/dotnet/efcore)
-- [Hangfire](https://www.hangfire.io/)
 - [Identity Server](https://identityserver.io/)
 - [Judge0 API](https://github.com/judge0/api)
 - [Node.js](https://nodejs.org/)
-- [SQL Server](https://www.microsoft.com/en-us/sql-server)
-
-## Requirement
-
-The software requires at least 2GiB of RAM on your host.
-
-There are no extra requirements for now.
+- [Ng-Zorro](https://ng.ant.design/)
+- [MariaDB](https://mariadb.org/)
 
 ## Installation
 
@@ -65,28 +58,13 @@ Clone this repository and open the folder in a shell.
 
 ### 4. Configure Data Source
 
-We are using SQL Server Express as the data source. There are two flavors of database installation.
+We are using MySQL or MariaDB (preferred) as the data source. 
 
-- If you are using Windows or GNU/Linux, you can install SQL server on your host. Visit [the download page](https://www.microsoft.com/en-us/sql-server/sql-server-downloads) and download SQL Server Express installer or find other guides. During the configuration step, choose Developer or Express as the edition of SQL server.
-  
-  For windows users, an extra step of configuration is required. You need to open SQL Server Configuration Manager after installation, then start SQL Server related Windows service and turn on TCP/IP protocol in Internet configuration. Test the setup using an SQL client listed below and connect to `localhost:1443`.
-
-- If you prefer dockerize, refer to [this guide](https://docs.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker) to run SQL server with Docker. The docker container by default provides a Developer edition of SQL server, setting `MSSQL_PID=Express` environment variable will tell the container to start Express edition. See [DockerHub page](https://hub.docker.com/_/microsoft-mssql-server) for more details.
-
-After installing DB, you need to configure the users and create databases. You can use the following common utilities:
-
-- [SSMS (Windows only)](https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-manage-ssms)
-- [Azure Data Studio (Cross Platform)](https://docs.microsoft.com/en-us/sql/azure-data-studio/what-is)
-- [Visual Studio Code](https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-develop-use-vscode)
-- [mssql-cli](https://github.com/dbcli/mssql-cli/blob/master/doc/usage_guide.md)
-
-Rename `appsettings.json.example` to `appsettings.json` and change its contents according to your installation. Execute the T-SQL commands in `initdb.sql` to prepare a database environment. Schemas and pre-defined data will be created during the startup of application automatically.
+Install DB server on your computer and update the connection string in `WebApp/appsettings.json`, then create a user called `judge1` with full access to database `judge1`. Tables will be created on the first run so there is no need for manual migrations.
 
 ### 5. Start Judge0 API
 
-Start Judge0 API locally and make it listen on port 3000.
-
-TODO: Add more detail about this step.
+Start Judge0 API locally and update the backend address in `Worker/appsettings.json`.
 
 ### 6. Run the application
 
@@ -96,11 +74,29 @@ Before we run the application for the first time, it is CRITICAL to install and 
 $ dotnet dev-certs https --trust
 ```
 
-Now everything is done and we are ready to go. Issue `dotnet run` and after the compilation you should see the web application running at port 5001.
+Start `WebApp` and `Worker` with `dotnet run` and you should be able to visit the site at `https://localhost:5001`.
 
 ## Deployment
 
-### X.509 Cerfificate
+### Docker Containers
+
+Docker containers are published in registry and namespace `ccr.ccs.tencentyun.com/judge1`. There are five contianers to build and run services:
+
+- `sdk`: .NET Core SDK.
+- `runtime`: ASP.NET runtime.
+- `env`: build environment.
+- `webapp`: web frontend and server.
+- `worker`: judge service.
+
+For more information on how to deploy with docker, refer to [Dockerize/README.md](Dockerize/README.md).
+
+### Scaling Application
+
+Each worker can only send judge requests to one Judge0 backend service, but one Judge0 backend service can accept requests from multiple workers. The application can be easily scaled by adding or removing workers and backend services.
+
+However, workers needs to share file system with web app in order to keep judge data updated. On the other hand, if judge data can be made read only, then workers can run on separate environments with connection to the same DB context.
+
+### Create X.509 Cerfificate
 
 ```shell
 $ openssl req -x509 -newkey rsa:4096 -sha256 -nodes \

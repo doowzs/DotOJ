@@ -14,6 +14,7 @@ import { NoCommaPipe } from './pipes/no-comma.pipe';
 import { AppComponent } from './app.component';
 import { ApplicationConfigService } from './services/config.service';
 import { ApplicationApiInterceptor } from './services/api.interceptor';
+import { ChangelogComponent } from './components/changelog/changelog.component';
 import { MainHeaderComponent } from './components/headers/main/main.component';
 import { ContestHeaderComponent } from './components/headers/contest/contest.component';
 import { MainFooterComponent } from './components/footers/main/main.component';
@@ -58,6 +59,7 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
   declarations: [
     NoCommaPipe,
     AppComponent,
+    ChangelogComponent,
     MainHeaderComponent,
     ContestHeaderComponent,
     MainFooterComponent,
@@ -79,6 +81,7 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     HttpClientModule,
     RouterModule.forRoot([
       { path: '', pathMatch: 'full', component: WelcomeComponent },
+      { path: 'changelog', component: ChangelogComponent },
       { path: 'contests', component: ContestListComponent, canActivate: [AuthorizeGuard] },
       {
         path: 'contest/:contestId', component: ContestViewComponent, canActivate: [AuthorizeGuard],

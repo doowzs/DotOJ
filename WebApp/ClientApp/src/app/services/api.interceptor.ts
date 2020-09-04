@@ -8,8 +8,11 @@ export class ApplicationApiInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const url = this.baseUrl + 'api/v1';
-    req = req.clone({ url: url + req.url });
+    if (req.url.startsWith('[root]')) {
+      req = req.clone({ url: this.baseUrl + req.url.substr(6) });
+    } else {
+      req = req.clone({ url: this.baseUrl + 'api/v1' + req.url });
+    }
     return next.handle(req);
   }
 }

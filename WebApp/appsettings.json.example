@@ -1,6 +1,6 @@
 {
   "ConnectionStrings": {
-    "MySqlConnection": "Server=mariadb;Uid=judge1;Pwd=judge1;Database=judge1;",
+    "MySqlConnection": "Server=mariadb;Uid=judge1;Pwd=judge1;Database=judge1;"
   },
   "Application": {
     "Host": "https://judge1",

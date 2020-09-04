@@ -10,9 +10,6 @@ stages:
   - build
   - release
 
-before_script:
-  - chmod +x ./release.sh
-
 .docker_login: &docker-login
   before_script:
     - chmod +x ./release.sh
@@ -93,6 +90,7 @@ release:package:
   stage: release
   image: alpine:latest
   before_script:
+    - chmod +x ./release.sh
     - sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
     - apk add zip
   script:
