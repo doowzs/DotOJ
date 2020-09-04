@@ -3,10 +3,6 @@ variables:
   WEBAPP_IMAGE: ccr.ccs.tencentyun.com/doowzs/judge1-webapp
   WORKER_IMAGE: ccr.ccs.tencentyun.com/doowzs/judge1-worker
 
-.docker_login: &docker-login
-  before_script:
-    - echo "${CI_REGISTRY_PASS}" | docker login -u "${CI_REGISTRY_USER}" --password-stdin ${CI_REGISTRY}
-
 stages:
   - env
   - build
@@ -14,6 +10,11 @@ stages:
 
 before_script:
   - chmod +x ./release.sh
+
+.docker_login: &docker-login
+  before_script:
+    - chmod +x ./release.sh
+    - echo "${CI_REGISTRY_PASS}" | docker login -u "${CI_REGISTRY_USER}" --password-stdin ${CI_REGISTRY}
 
 env:docker:
   only:
