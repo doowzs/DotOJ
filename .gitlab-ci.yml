@@ -1,4 +1,5 @@
 variables:
+  CI_REGISTRY: ccr.ccs.tencentyun.com
   WEBAPP_IMAGE: ccr.ccs.tencentyun.com/doowzs/judge1-webapp
   WORKER_IMAGE: ccr.ccs.tencentyun.com/doowzs/judge1-worker
 
