@@ -24,7 +24,8 @@ namespace Worker.Runners.Modes
 
             if (runs.Any(r => r.Verdict <= Verdict.Running))
             {
-                return null; // Not all runs have finished, ask for another loop.
+                // Not all runs have finished, ask for another loop.
+                return Task.FromResult<Result>(null);
             }
 
             int count = 0, total = runs.Count;

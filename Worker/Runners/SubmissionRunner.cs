@@ -94,6 +94,7 @@ namespace Worker.Runners
             var contest = await Context.Contests.FindAsync(problem.ContestId);
             await EnsureRegistrationExists(user, contest);
 
+            try
             {
                 Logger.LogInformation($"JudgeSubmission Start Id={submission.Id} Problem={submission.ProblemId}");
 
@@ -135,7 +136,8 @@ namespace Worker.Runners
                 Logger.LogInformation($"JudgeSubmission Complete Id={submission.Id} Problem={submission.ProblemId} " +
                                       $"Verdict={submission.Verdict} Score={submission.Score} CreatedAt={submission.CreatedAt} JudgedAt={submission.JudgedAt}");
             }
-            /*
+            catch (Exception e)
+            {
                 submission.Verdict = Verdict.Failed;
                 submission.FailedOn = null;
                 submission.Score = 0;
@@ -146,7 +148,7 @@ namespace Worker.Runners
                 await Broadcaster.SendNotification(true, $"Runner failed on Submission #{submission.Id}",
                     $"Submission runner \"{Options.Value.Name}\" failed on submission #{submission.Id}" +
                     $" with error message **\"{e.Message}\"**.");
-            }*/
+            }
         }
     }
 }
