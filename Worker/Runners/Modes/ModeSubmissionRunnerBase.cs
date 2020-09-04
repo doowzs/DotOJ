@@ -92,7 +92,7 @@ namespace Worker.Runners.Modes
             return new Run
             {
                 Index = index,
-                TimeLimit = (int) options.CpuTimeLimit,
+                TimeLimit = (int) options.CpuTimeLimit * 1000,
                 Token = token.Token,
                 Verdict = Verdict.Running
             };
@@ -106,7 +106,7 @@ namespace Worker.Runners.Modes
 
             for (int i = 0; i < JudgePollCount * 3 && run.Verdict == Verdict.Running; ++i)
             {
-                await Task.Delay(run.TimeLimit * 1000 / 3);
+                await Task.Delay(run.TimeLimit / 3);
 
                 var uri = Instance.Endpoint + "/submissions/" + run.Token +
                           "?base64_encoded=true&fields=token,time,wall_time,memory,compile_output,message,status_id";
@@ -198,7 +198,7 @@ namespace Worker.Runners.Modes
                     var run = await CreateRunAsync(submission, inline ? 0 : ++index, testCase, inline);
                     Logger.LogInformation($"CreateRun succeed Submission={submission.Id}" +
                                           (inline ? $" SampleCase={index}" : $" TestCase={index}") +
-                                          " Token={run.Token}");
+                                          $" Token={run.Token}");
                     runs.Add(run);
 
                     await PollRunAsync(run);
