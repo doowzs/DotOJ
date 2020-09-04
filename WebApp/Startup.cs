@@ -86,7 +86,6 @@ namespace WebApp
 
             services.AddOptions();
             services.Configure<ApplicationConfig>(Configuration.GetSection("Application"));
-            services.Configure<JudgingConfig>(Configuration.GetSection("Judging"));
             services.Configure<NotificationConfig>(Configuration.GetSection("Notification"));
 
             services.AddHttpClient(); // IHttpClientFactory
