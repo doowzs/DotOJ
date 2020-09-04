@@ -9,6 +9,7 @@ namespace Data.Configs
         public string Title { get; set; }
         public string Author { get; set; }
         public string MessageOfTheDay { get; set; }
+        public string DataPath { get; set; }
     }
 
     [NotMapped]

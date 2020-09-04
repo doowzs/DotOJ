@@ -4,14 +4,12 @@
   },
   "Judging": {
     "DataPath": "/var/www/judge-data",
-    "Instances": [
-      {
-        "Name": "local",
-        "Endpoint": "http://judge0",
-        "AuthUser": "judge1",
-        "AuthToken": "judge1"
-      }
-    ]
+    "Instance": {
+      "Name": "local",
+      "Endpoint": "http://judge0",
+      "AuthUser": "judge1",
+      "AuthToken": "judge1"
+    }
   },
   "Notification": {
     "DingTalk": {

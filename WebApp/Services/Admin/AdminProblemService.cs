@@ -31,11 +31,11 @@ namespace WebApp.Services.Admin
     {
         private const int PageSize = 20;
 
-        protected readonly IOptions<JudgingConfig> Options;
+        protected readonly IOptions<ApplicationConfig> Options;
 
         public AdminProblemService(IServiceProvider provider) : base(provider)
         {
-            Options = provider.GetRequiredService<IOptions<JudgingConfig>>();
+            Options = provider.GetRequiredService<IOptions<ApplicationConfig>>();
         }
 
         private async Task EnsureProblemExists(int id)

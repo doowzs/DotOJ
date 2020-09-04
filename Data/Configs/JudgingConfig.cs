@@ -16,6 +16,6 @@ namespace Data.Configs
     public class JudgingConfig
     {
         public string DataPath { get; set; }
-        public List<JudgeInstance> Instances { get; set; }
+        public JudgeInstance Instance { get; set; }
     }
 }
