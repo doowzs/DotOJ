@@ -165,6 +165,7 @@ namespace WebApp.Services.Admin
                 submission.FailedOn = submission.FailedOn = null;
                 submission.Score = submission.Progress = null;
                 submission.Message = null;
+                submission.JudgedBy = null;
                 submission.JudgedAt = null;
             }
 
