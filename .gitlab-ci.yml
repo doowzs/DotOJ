@@ -1,5 +1,6 @@
 variables:
   CI_REGISTRY: ccr.ccs.tencentyun.com
+  ENV_IMAGE: ccr.ccs.tencentyun.com/doowzs/judge1-env
   WEBAPP_IMAGE: ccr.ccs.tencentyun.com/doowzs/judge1-webapp
   WORKER_IMAGE: ccr.ccs.tencentyun.com/doowzs/judge1-worker
 
@@ -27,8 +28,9 @@ env:docker:
     DOCKER_TLS_CERTDIR: ''
   services:
     - docker:dind
+  <<: *docker-login
   script:
-    - ./release.sh env
+    - ./release.sh env ${ENV_IMAGE} latest
 
 build:webapp:
   only:

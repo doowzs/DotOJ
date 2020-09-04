@@ -19,13 +19,10 @@ else
 fi
 
 case "$ACTION" in
-"env")
-  echo "Building judge1-build-env:latest..."
-  CHANGE_SOURCE=true docker build --force-rm --no-cache -f Dockerfile.env -t judge1-build-env:latest .
-  ;;
-"webapp" | "worker")
+"env" | "webapp" | "worker")
   echo "Building $ACTION as $NAME:$TAG..."
   CHANGE_SOURCE=true docker build --force-rm --no-cache -f "Dockerfile.$ACTION" -t "$NAME:$TAG" .
+  docker image push "$NAME:$TAG"
   ;;
 "package")
   cd Dockerize

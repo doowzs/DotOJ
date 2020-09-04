@@ -1,4 +1,4 @@
-FROM judge1-build-env AS build-env
+FROM ccr.ccs.tencentyun.com/doowzs/judge1-env AS build-env
 WORKDIR /src
 
 COPY . ./
