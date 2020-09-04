@@ -1,18 +1,17 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 set -e
 
-function usage() {
-  echo "Usage: ./release.sh [env|webapp|worker|package] name tag1 [tag2]"
-  echo "If tag2 is present, it will be used to tag; otherwise tag1 is used."
-}
+# Usage: ./release.sh [env|webapp|worker|package] name tag1 [tag2]
+# If tag2 is present, it will be used to tag; otherwise tag1 is used.
 
 if [ "$1" != "env" ] && [ "$#" -lt 3 ]; then
-  usage
-  exit 1
+  ACTION="FATAL"
+else
+  ACTION=$1
 fi
 
-ACTION=$1
 NAME=$2
+
 if [ "$#" -eq 3 ]; then
   TAG="$3"
 else
@@ -36,7 +35,6 @@ case "$ACTION" in
   cd -
   ;;
 "*")
-  usage
   exit 1
   ;;
 esac
