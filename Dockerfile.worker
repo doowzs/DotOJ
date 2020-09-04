@@ -1,10 +1,10 @@
-FROM judge1-build-env AS build-env
+FROM ccr.ccs.tencentyun.com/judge1/env AS build-env
 WORKDIR /src
 
 COPY . ./
 RUN dotnet publish Worker -c Release -o /app/out
 
-FROM ccr.ccs.tencentyun.com/doowzs/dotnet-core-aspnet:3.1
+FROM ccr.ccs.tencentyun.com/judge1/runtime:3.1
 WORKDIR /app
 COPY --from=build-env /app/out .
 ENTRYPOINT ["dotnet", "Worker.dll"]
