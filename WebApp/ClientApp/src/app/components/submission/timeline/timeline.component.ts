@@ -82,6 +82,7 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
           submission.memory = updated.memory;
           submission.failedOn = updated.failedOn;
           submission.score = updated.score;
+          submission.progress = updated.progress;
           submission.judgedAt = updated.judgedAt;
         }
       });
