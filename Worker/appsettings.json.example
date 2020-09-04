@@ -6,7 +6,7 @@
     "Name": "local",
     "DataPath": "/var/www/judge-data",
     "Instance": {
-      "Endpoint": "http://judge0",
+      "Endpoint": "http://backend-server",
       "AuthUser": "judge1",
       "AuthToken": "judge1"
     }
