@@ -129,6 +129,11 @@ namespace Worker.Runners
                         Context.Submissions.Update(submission);
                         await Context.SaveChangesAsync();
                     }
+                    else
+                    {
+                        // If the row is touched, revert all changes.
+                        await Context.Entry(submission).ReloadAsync();
+                    }
 
                     scope.Complete();
                 }
