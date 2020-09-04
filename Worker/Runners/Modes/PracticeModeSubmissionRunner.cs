@@ -11,11 +11,11 @@ namespace Worker.Runners.Modes
         {
         }
 
-        public override async Task<Result> OnRunFailed(Submission submission, Problem problem, Run run)
+        public override Task<Result> OnRunFailed(Submission submission, Problem problem, Run run)
         {
             if (run.Index == 0 || run.Verdict == Verdict.CompilationError || run.Verdict == Verdict.InternalError)
             {
-                return new Result
+                return Task.FromResult(new Result
                 {
                     Verdict = run.Verdict,
                     Time = run.Time.HasValue ? (int) Math.Min(run.Time.Value * 1000, run.TimeLimit) : (int?) null,
@@ -23,7 +23,7 @@ namespace Worker.Runners.Modes
                     FailedOn = run.Index,
                     Score = (run.Index - 1) / problem.TestCases.Count,
                     Message = run.Message
-                };
+                });
             }
 
             return null;
