@@ -2,13 +2,14 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Judge1.Models;
+using Data.Generics;
+using Data.Models;
 using IdentityServer4.EntityFramework.Options;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace Judge1.Data
+namespace Data
 {
     public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>
     {
@@ -25,12 +26,12 @@ namespace Judge1.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
-            
+
             // Setup unique index for ApplicationUser.
             builder.Entity<ApplicationUser>()
                 .HasIndex(u => u.ContestantId)
                 .IsUnique();
-            
+
             // Setup composite key for Registration.
             builder.Entity<Registration>()
                 .HasKey(ar => new {ar.UserId, ar.ContestId});
@@ -53,7 +54,7 @@ namespace Judge1.Data
         {
             var now = DateTime.Now.ToUniversalTime();
             var entries = ChangeTracker.Entries()
-                .Where(e => e.Entity is ModelWithTimestamps 
+                .Where(e => e.Entity is ModelWithTimestamps
                             && (e.State == EntityState.Added || e.State == EntityState.Modified));
             foreach (var entry in entries)
             {
@@ -61,6 +62,7 @@ namespace Judge1.Data
                 {
                     ((ModelWithTimestamps) entry.Entity).CreatedAt = now;
                 }
+
                 ((ModelWithTimestamps) entry.Entity).UpdatedAt = now;
             }
         }

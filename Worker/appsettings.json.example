@@ -1,0 +1,29 @@
+{
+  "ConnectionStrings": {
+    "MySqlConnection": "Server=mariadb;Uid=judge1;Pwd=judge1;Database=judge1;",
+  },
+  "Judging": {
+    "Name": "local",
+    "DataPath": "/var/www/judge-data",
+    "Instance": {
+      "Endpoint": "http://judge0",
+      "AuthUser": "judge1",
+      "AuthToken": "judge1"
+    }
+  },
+  "Notification": {
+    "DingTalk": {
+      "Enabled": false,
+      "Token": "",
+      "Secret": "",
+      "Admins": []
+    }
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Warning",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  }
+}
