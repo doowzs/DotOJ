@@ -20,52 +20,8 @@ namespace Worker.Runners.Modes
 {
     public class PracticeModeSubmissionRunner : ModeSubmissionRunnerBase<PracticeModeSubmissionRunner>
     {
-        private const int JudgeTimeLimit = 300;
-
         public PracticeModeSubmissionRunner(IServiceProvider provider) : base(provider)
         {
-        }
-
-        public override async Task<Result> RunAsync(Submission submission, Problem problem)
-        {
-            submission.Verdict = Verdict.InQueue;
-            submission.FailedOn = null;
-            Context.Submissions.Update(submission);
-            await Context.SaveChangesAsync();
-
-            var runInfos = await CreateRuns(submission, problem);
-            if (runInfos.IsNullOrEmpty())
-            {
-                return new Result
-                {
-                    Verdict = Verdict.Failed,
-                    FailedOn = null, Score = 0,
-                    Message = "No test cases available."
-                };
-            }
-
-            for (int i = 0; i < JudgeTimeLimit; ++i)
-            {
-                await Task.Delay(1000);
-
-                var result = await PollRuns(submission, runInfos);
-                if (result != null)
-                {
-                    // Fix time and memory to be no larger than limit.
-                    var timeFactor = RunnerLanguageOptions
-                        .LanguageOptionsDict[submission.Program.Language.GetValueOrDefault()].timeFactor;
-                    result.Time = Math.Min(result.Time, (int) (problem.TimeLimit * timeFactor));
-                    result.Memory = Math.Min(result.Memory, problem.MemoryLimit);
-                    return result;
-                }
-            }
-
-            return new Result
-            {
-                Verdict = Verdict.Failed,
-                FailedOn = null, Score = 0,
-                Message = "Judge timeout."
-            };
         }
     }
 }

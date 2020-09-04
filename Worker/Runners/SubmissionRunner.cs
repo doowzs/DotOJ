@@ -97,7 +97,7 @@ namespace Worker.Runners
 
                 #region Update judge result of submission
 
-                var result = await submissionRunner.RunAsync(submission, problem);
+                var result = await submissionRunner.RunSubmissionAsync(submission, problem);
                 submission.Verdict = result.Verdict;
                 submission.Time = result.Time;
                 submission.Memory = result.Memory;

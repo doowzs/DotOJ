@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Mime;
 using System.Text;
@@ -20,19 +19,26 @@ namespace Worker.Runners.Modes
 {
     public interface IModeSubmissionRunner
     {
-        public Task<Run> CreateRun(HttpClient client, Submission submission, int index, TestCase testCase, bool inline);
-        public Task<List<Run>> CreateRuns(Submission submission, Problem problem);
-        public Task<Result> PollRuns(Submission submission, List<Run> runInfos);
-        public Task<Result> RunAsync(Submission submission, Problem problem);
+        public Task<Run> CreateRunAsync
+            (HttpClient client, Submission submission, int index, TestCase testCase, bool inline);
+
+        public Task<List<Run>> CreateRunsAsync(Submission submission, Problem problem);
+        public Task PollRunsAsync(List<Run> runs);
+        public Task<Result> RunSubmissionAsync(Submission submission, Problem problem);
     }
 
     public abstract class ModeSubmissionRunnerBase<T> : IModeSubmissionRunner where T : class
     {
+        private const int JudgeTimeLimit = 300;
+
         protected readonly ApplicationDbContext Context;
         protected readonly IHttpClientFactory Factory;
         protected readonly IOptions<JudgingConfig> Options;
         protected readonly JudgeInstance Instance;
         protected readonly ILogger<T> Logger;
+
+        protected readonly Func<Submission, Problem, Result> BeforeCreateRunsDelegate = null;
+        protected readonly Func<Submission, Problem, List<Run>, Result> AfterPollingRunsDelegate = null;
 
         public ModeSubmissionRunnerBase(IServiceProvider provider)
         {
@@ -43,7 +49,9 @@ namespace Worker.Runners.Modes
             Instance = Options.Value.Instance;
         }
 
-        public async Task<Run> CreateRun
+        # region Create and Poll Runs
+
+        public async Task<Run> CreateRunAsync
             (HttpClient client, Submission submission, int index, TestCase testCase, bool inline)
         {
             RunnerOptions options;
@@ -91,7 +99,7 @@ namespace Worker.Runners.Modes
             };
         }
 
-        public async Task<List<Run>> CreateRuns(Submission submission, Problem problem)
+        public async Task<List<Run>> CreateRunsAsync(Submission submission, Problem problem)
         {
             var runInfos = new List<Run>();
 
@@ -101,19 +109,19 @@ namespace Worker.Runners.Modes
 
             foreach (var testCase in problem.SampleCases)
             {
-                runInfos.Add(await CreateRun(client, submission, 0, testCase, true));
+                runInfos.Add(await CreateRunAsync(client, submission, 0, testCase, true));
             }
 
             int index = 0;
             foreach (var testCase in problem.TestCases)
             {
-                runInfos.Add(await CreateRun(client, submission, ++index, testCase, false));
+                runInfos.Add(await CreateRunAsync(client, submission, ++index, testCase, false));
             }
 
             return runInfos;
         }
 
-        public async Task<Result> PollRuns(Submission submission, List<Run> runInfos)
+        public async Task PollRunsAsync(List<Run> runInfos)
         {
             var tokens = new List<string>();
             foreach (var runInfo in runInfos)
@@ -150,18 +158,7 @@ namespace Worker.Runners.Modes
                         throw new Exception("Run not found in runInfos.");
                     }
 
-                    if (status.Verdict == Verdict.CompilationError || status.Verdict == Verdict.InternalError)
-                    {
-                        // Immediate failure on compilation error or internal error.
-                        // There is no need to wait for other responses at all.
-                        return new Result
-                        {
-                            Verdict = status.Verdict,
-                            Score = 0, FailedOn = 0,
-                            Message = status.Message
-                        };
-                    }
-                    else if (status.Verdict > Verdict.Running)
+                    if (status.Verdict > Verdict.Running)
                     {
                         runInfo.Verdict = status.Verdict;
                         runInfo.Time = string.IsNullOrEmpty(status.Time) ? (float?) null : float.Parse(status.Time);
@@ -172,92 +169,47 @@ namespace Worker.Runners.Modes
                         runInfo.Message = status.Verdict == Verdict.InternalError
                             ? status.Message
                             : status.CompileOutput;
-
-                        if (status.Verdict != Verdict.Accepted && submission.Verdict == Verdict.Running)
-                        {
-                            // Submission failed on some case, set result for immediate response.
-                            // Negative score indicates that service is still judging on other cases.
-                            submission.Verdict = status.Verdict;
-                            if (!submission.FailedOn.HasValue)
-                            {
-                                submission.FailedOn = runInfo.Index;
-                            }
-                            else
-                            {
-                                submission.FailedOn = Math.Min(submission.FailedOn.Value, runInfo.Index);
-                            }
-                        }
                     }
                 }
-
-                if (submission.Verdict <= Verdict.Running)
-                {
-                    submission.Verdict = Verdict.Running;
-                }
-
-                submission.Progress = runInfos.Count(ri => ri.Verdict > Verdict.Running) * 100 / runInfos.Count;
-                Context.Update(submission);
-                await Context.SaveChangesAsync();
-
-                return null; // Still has other cases to judge, let caller poll again.
-            }
-            else
-            {
-                var verdict = Verdict.Accepted;
-                int? failedOn = null;
-                int count = 0, total = 0;
-                float time = 0.0f, memory = 0.0f;
-
-                foreach (var runInfo in runInfos)
-                {
-                    if (runInfo.Index > 0)
-                    {
-                        if (runInfo.Verdict == Verdict.Accepted)
-                        {
-                            ++count;
-                        }
-
-                        ++total;
-                    }
-
-                    if (runInfo.Verdict != Verdict.Accepted && !failedOn.HasValue)
-                    {
-                        verdict = runInfo.Verdict;
-                        failedOn = runInfo.Index;
-                    }
-
-                    if (runInfo.Time.HasValue)
-                    {
-                        time = Math.Max(time, runInfo.Time.Value);
-                    }
-
-                    if (runInfo.WallTime.HasValue)
-                    {
-                        time = Math.Max(time, runInfo.WallTime.Value);
-                    }
-
-                    if (runInfo.Memory.HasValue)
-                    {
-                        memory = Math.Max(memory, runInfo.Memory.Value);
-                    }
-                }
-
-                return new Result
-                {
-                    // Do not update verdict again if the submission has already failed before.
-                    Verdict = submission.Verdict == Verdict.Running ? verdict : submission.Verdict,
-                    Time = (int) (time * 1000),
-                    Memory = (int) memory,
-                    Message = "",
-                    FailedOn = failedOn,
-                    Score = total == 0 ? (verdict == Verdict.Accepted ? 100 : 0) : count * 100 / total
-                };
             }
         }
 
-        public virtual Task<Result> RunAsync(Submission submission, Problem problem)
+        #endregion
+
+        public async Task<Result> RunSubmissionAsync(Submission submission, Problem problem)
         {
-            return new Task<Result>(() => new Result());
+            submission.Verdict = Verdict.InQueue;
+            submission.FailedOn = null;
+            Context.Submissions.Update(submission);
+            await Context.SaveChangesAsync();
+
+            if (BeforeCreateRunsDelegate != null)
+            {
+                var result = BeforeCreateRunsDelegate(submission, problem);
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+
+            var runs = await CreateRunsAsync(submission, problem);
+            if (runs.IsNullOrEmpty())
+            {
+                return Result.NoTestCaseFailure;
+            }
+
+            for (int i = 0; i < JudgeTimeLimit; ++i)
+            {
+                await Task.Delay(1000);
+                await PollRunsAsync(runs);
+                var result = AfterPollingRunsDelegate?.Invoke(submission, problem, runs);
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+
+            return Result.TimeoutFailure;
         }
     }
 }
