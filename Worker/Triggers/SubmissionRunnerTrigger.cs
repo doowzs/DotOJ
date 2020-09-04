@@ -36,7 +36,6 @@ namespace Worker.Triggers
             {
                 var pendingSubmissions = await Context.Submissions
                     .Where(s => s.Verdict == Verdict.Pending).ToListAsync();
-                Logger.LogInformation($"{pendingSubmissions.Count} pending");
                 foreach (var pendingSubmission in pendingSubmissions)
                 {
                     pendingSubmission.Verdict = Verdict.InQueue;
