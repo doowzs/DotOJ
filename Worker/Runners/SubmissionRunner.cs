@@ -15,7 +15,7 @@ namespace Worker.Runners
 {
     public interface ISubmissionRunner
     {
-        public Task RunSubmission(int submissionId);
+        public Task RunSubmissionAsync(Submission submission);
     }
 
     public class SubmissionRunner : LoggableService<SubmissionRunner>, ISubmissionRunner
@@ -29,7 +29,7 @@ namespace Worker.Runners
             AppOptions = provider.GetRequiredService<IOptions<ApplicationConfig>>();
         }
 
-        private async Task EnsureUserCanSubmit(ApplicationUser user, Contest contest)
+        private async Task EnsureRegistrationExists(ApplicationUser user, Contest contest)
         {
             var begun = DateTime.Now.ToUniversalTime() > contest.BeginTime;
             var ended = DateTime.Now.ToUniversalTime() > contest.EndTime;
@@ -74,22 +74,16 @@ namespace Worker.Runners
             }
         }
 
-        public async Task RunSubmission(int submissionId)
+        public async Task RunSubmissionAsync(Submission submission)
         {
-            var submission = await Context.Submissions.FindAsync(submissionId);
-            if (submission == null)
-            {
-                throw new ValidationException("Invalid submission ID.");
-            }
+            var user = await Manager.FindByIdAsync(submission.UserId);
+            var problem = await Context.Problems.FindAsync(submission.ProblemId);
+            var contest = await Context.Contests.FindAsync(problem.ContestId);
+            await EnsureRegistrationExists(user, contest);
 
             try
             {
                 await LogInformation($"JudgeSubmission Start Id={submission.Id} Problem={submission.ProblemId}");
-
-                var user = await Manager.FindByIdAsync(submission.UserId);
-                var problem = await Context.Problems.FindAsync(submission.ProblemId);
-                var contest = await Context.Contests.FindAsync(problem.ContestId);
-                await EnsureUserCanSubmit(user, contest);
 
                 IModeSubmissionRunner submissionRunner;
                 switch (contest.Mode)
@@ -103,7 +97,7 @@ namespace Worker.Runners
 
                 #region Update judge result of submission
 
-                var result = await submissionRunner.Run(submission, problem);
+                var result = await submissionRunner.RunAsync(submission, problem);
                 submission.Verdict = result.Verdict;
                 submission.Time = result.Time;
                 submission.Memory = result.Memory;
@@ -126,7 +120,7 @@ namespace Worker.Runners
 
                 #endregion
 
-                await LogInformation($"JudgeSubmission Complete Id={submissionId} Problem={submission.ProblemId} " +
+                await LogInformation($"JudgeSubmission Complete Id={submission.Id} Problem={submission.ProblemId} " +
                                      $"Verdict={submission.Verdict} Score={submission.Score} CreatedAt={submission.CreatedAt} JudgedAt={submission.JudgedAt}");
             }
             catch (Exception e)
@@ -137,10 +131,10 @@ namespace Worker.Runners
                 submission.JudgedAt = DateTime.Now.ToUniversalTime();
                 Context.Submissions.Update(submission);
                 await Context.SaveChangesAsync();
-                await LogError($"RunSubmission Error Id={submissionId} Error={e.Message}");
-                await Broadcaster.SendNotification(true, $"Runner failed on Submission #{submissionId}",
-                    $"Submission runner failed on [submission #{submissionId}]" +
-                    $"({AppOptions.Value.Host}/admin/submission/{submissionId}) " +
+                await LogError($"RunSubmission Error Id={submission.Id} Error={e.Message}");
+                await Broadcaster.SendNotification(true, $"Runner failed on Submission #{submission.Id}",
+                    $"Submission runner failed on [submission #{submission.Id}]" +
+                    $"({AppOptions.Value.Host}/admin/submission/{submission.Id}) " +
                     $"with error message **\"{e.Message}\"**.");
             }
         }

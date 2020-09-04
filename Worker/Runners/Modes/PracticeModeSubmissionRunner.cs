@@ -26,7 +26,7 @@ namespace Worker.Runners.Modes
         {
         }
 
-        public override async Task<Result> Run(Data.Models.Submission submission, Problem problem)
+        public override async Task<Result> RunAsync(Submission submission, Problem problem)
         {
             submission.Verdict = Verdict.InQueue;
             submission.FailedOn = null;

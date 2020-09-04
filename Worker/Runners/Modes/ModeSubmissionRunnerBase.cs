@@ -23,7 +23,7 @@ namespace Worker.Runners.Modes
         public Task<Run> CreateRun(HttpClient client, Submission submission, int index, TestCase testCase, bool inline);
         public Task<List<Run>> CreateRuns(Submission submission, Problem problem);
         public Task<Result> PollRuns(Submission submission, List<Run> runInfos);
-        public Task<Result> Run(Submission submission, Problem problem);
+        public Task<Result> RunAsync(Submission submission, Problem problem);
     }
 
     public abstract class ModeSubmissionRunnerBase<T> : IModeSubmissionRunner where T : class
@@ -40,7 +40,7 @@ namespace Worker.Runners.Modes
             Factory = provider.GetRequiredService<IHttpClientFactory>();
             Options = provider.GetRequiredService<IOptions<JudgingConfig>>();
             Logger = provider.GetRequiredService<ILogger<T>>();
-            Instance = Options.Value.Instances[0];
+            Instance = Options.Value.Instance;
         }
 
         public async Task<Run> CreateRun
@@ -255,7 +255,7 @@ namespace Worker.Runners.Modes
             }
         }
 
-        public virtual Task<Result> Run(Submission submission, Problem problem)
+        public virtual Task<Result> RunAsync(Submission submission, Problem problem)
         {
             return new Task<Result>(() => new Result());
         }
