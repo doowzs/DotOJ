@@ -28,8 +28,13 @@ case "$ACTION" in
   echo "Building $ACTION as $NAME:$TAG..."
   CHANGE_SOURCE=true docker build --force-rm --no-cache -f "Dockerfile.$ACTION" -t "$NAME:$TAG" .
   ;;
-"package") ;;
-
+"package")
+  cd Dockerize
+  sed -i '1s/$/:'"$TAG"'/' webapp/Dockerfile worker/Dockerfile
+  zip "$NAME" -r ./*
+  mv "$NAME" ../
+  cd -
+  ;;
 "*")
   usage
   exit 1

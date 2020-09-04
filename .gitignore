@@ -1,6 +1,8 @@
 # Created by https://www.toptal.com/developers/gitignore/api/dotnetcore,aspnetcore,angular,jetbrains,code
 # Edit at https://www.toptal.com/developers/gitignore?templates=dotnetcore,aspnetcore,angular,jetbrains,code
 
+release.zip
+
 ### Angular ###
 ## Angular ##
 # compiled output
