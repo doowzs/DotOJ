@@ -82,7 +82,7 @@ namespace Data.Models
     }
 
     [NotMapped]
-    public class RunnerStatus
+    public class RunnerResponse
     {
         [JsonProperty("token")] public string Token { get; set; }
         [JsonProperty("compile_output")] public string CompileOutput { get; set; }
@@ -91,11 +91,5 @@ namespace Data.Models
         [JsonProperty("memory")] public float? Memory { get; set; }
         [JsonProperty("message")] public string Message { get; set; }
         [JsonProperty("status_id")] public Verdict Verdict { get; set; }
-    }
-
-    [NotMapped]
-    public class RunnerResponse
-    {
-        [JsonProperty("submissions")] public List<RunnerStatus> Statuses { get; set; }
     }
 }

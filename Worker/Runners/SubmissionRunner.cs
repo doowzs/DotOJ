@@ -123,7 +123,6 @@ namespace Worker.Runners
                 using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                 {
                     // Validate that the submission is not touched by others since picking up.
-                    // If a rejudge is triggered, judgedBy is null at this moment and the result is discarded.
                     var judgedBy = (await Context.Submissions.FindAsync(submission.Id)).JudgedBy;
                     if (judgedBy == Options.Value.Name)
                     {

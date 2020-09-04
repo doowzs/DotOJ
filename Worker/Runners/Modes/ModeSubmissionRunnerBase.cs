@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using Data;
 using Data.Configs;
 using Data.Models;
-using IdentityServer4.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -20,19 +19,17 @@ namespace Worker.Runners.Modes
 {
     public interface IModeSubmissionRunner
     {
-        public Task<Run> CreateRunAsync
-            (HttpClient client, Submission submission, int index, TestCase testCase, bool inline);
-
-        public Task<List<Run>> CreateRunsAsync(Submission submission, Problem problem);
-        public Task PollRunsAsync(List<Run> runs);
-        public Task<Result> OnBeforeCreatingRuns(Submission submission, Problem problem);
-        public Task<Result> OnPollingRunsComplete(Submission submission, Problem problem, List<Run> runs);
+        public Task<Run> CreateRunAsync(Submission submission, int index, TestCase testCase, bool inline);
+        public Task PollRunAsync(Run run);
+        public Task DeleteRunsAsync(List<Run> runs);
+        public Task<Result> BeforeRunning(Submission submission, Problem problem);
+        public Task<Result> OnRunFailed(Submission submission, Problem problem, Run run);
         public Task<Result> RunSubmissionAsync(Submission submission, Problem problem);
     }
 
     public abstract class ModeSubmissionRunnerBase<T> : IModeSubmissionRunner where T : class
     {
-        private const int JudgeTimeLimit = 300;
+        private const int JudgePollCount = 100;
 
         protected readonly ApplicationDbContext Context;
         protected readonly IHttpClientFactory Factory;
@@ -49,11 +46,12 @@ namespace Worker.Runners.Modes
             Instance = Options.Value.Instance;
         }
 
-        # region Create and Poll Runs
-
-        public async Task<Run> CreateRunAsync
-            (HttpClient client, Submission submission, int index, TestCase testCase, bool inline)
+        public async Task<Run> CreateRunAsync(Submission submission, int index, TestCase testCase, bool inline)
         {
+            using var client = Factory.CreateClient();
+            client.DefaultRequestHeaders.Add("X-Auth-User", Instance.AuthUser);
+            client.DefaultRequestHeaders.Add("X-Auth-Token", Instance.AuthToken);
+
             RunnerOptions options;
             if (inline)
             {
@@ -94,93 +92,71 @@ namespace Worker.Runners.Modes
             return new Run
             {
                 Index = index,
+                TimeLimit = (int) options.CpuTimeLimit,
                 Token = token.Token,
                 Verdict = Verdict.Running
             };
         }
 
-        public async Task<List<Run>> CreateRunsAsync(Submission submission, Problem problem)
+        public async Task PollRunAsync(Run run)
         {
-            var runInfos = new List<Run>();
-
             using var client = Factory.CreateClient();
             client.DefaultRequestHeaders.Add("X-Auth-User", Instance.AuthUser);
             client.DefaultRequestHeaders.Add("X-Auth-Token", Instance.AuthToken);
 
-            foreach (var testCase in problem.SampleCases)
+            for (int i = 0; i < JudgePollCount * 3 && run.Verdict == Verdict.Running; ++i)
             {
-                runInfos.Add(await CreateRunAsync(client, submission, 0, testCase, true));
+                await Task.Delay(run.TimeLimit * 1000 / 3);
+
+                var uri = Instance.Endpoint + "/submissions/" + run.Token +
+                          "?base64_encoded=true&fields=token,time,wall_time,memory,compile_output,message,status_id";
+                using var message = await client.GetAsync(uri);
+                if (!message.IsSuccessStatusCode)
+                {
+                    Logger.LogError($"PollRun FAIL Token={run.Token} Status={message.StatusCode}");
+                    throw new Exception($"Polling API call failed with code {message.StatusCode}.");
+                }
+
+                var response = JsonConvert.DeserializeObject<RunnerResponse>(await message.Content.ReadAsStringAsync());
+                if (response.Verdict > Verdict.Running)
+                {
+                    string time = response.Verdict == Verdict.TimeLimitExceeded ? response.WallTime : response.Time;
+
+                    run.Verdict = response.Verdict;
+                    run.Time = string.IsNullOrEmpty(time) ? (float?) null : float.Parse(time);
+                    run.Memory = response.Memory;
+                    run.Message = response.Verdict == Verdict.InternalError
+                        ? response.Message
+                        : response.CompileOutput;
+                    return;
+                }
             }
 
-            int index = 0;
-            foreach (var testCase in problem.TestCases)
-            {
-                runInfos.Add(await CreateRunAsync(client, submission, ++index, testCase, false));
-            }
-
-            return runInfos;
+            throw new TimeoutException("PollRun timeout.");
         }
 
-        public async Task PollRunsAsync(List<Run> runs)
+        public async Task DeleteRunsAsync(List<Run> runs)
         {
-            var tokens = new List<string>();
+            using var client = Factory.CreateClient();
+            client.DefaultRequestHeaders.Add("X-Auth-User", Instance.AuthUser);
+            client.DefaultRequestHeaders.Add("X-Auth-Token", Instance.AuthToken);
             foreach (var run in runs)
             {
-                if (run.Verdict == Verdict.Running)
-                {
-                    tokens.Add(run.Token);
-                }
-            }
-
-            if (!tokens.IsNullOrEmpty())
-            {
-                using var client = Factory.CreateClient();
-                client.DefaultRequestHeaders.Add("X-Auth-User", Instance.AuthUser);
-                client.DefaultRequestHeaders.Add("X-Auth-Token", Instance.AuthToken);
-
-                var uri = Instance.Endpoint + "/submissions/batch" +
-                          "?base64_encoded=true&tokens=" + string.Join(",", tokens) +
-                          "&fields=token,time,wall_time,memory,compile_output,message,status_id";
-                using var response = await client.GetAsync(uri);
+                var uri = Instance.Endpoint + "/submissions/" + run.Token + "?fields=token";
+                var response = await client.DeleteAsync(uri);
                 if (!response.IsSuccessStatusCode)
                 {
-                    Logger.LogError($"PollRuns FAIL Tokens={string.Join(",", tokens)} Status={response.StatusCode}");
-                    throw new Exception($"Polling API call failed with code {response.StatusCode}.");
-                }
-
-                var runnerResponse =
-                    JsonConvert.DeserializeObject<RunnerResponse>(await response.Content.ReadAsStringAsync());
-                foreach (var status in runnerResponse.Statuses)
-                {
-                    var run = runs.Find(r => r.Token == status.Token);
-                    if (run == null)
-                    {
-                        throw new Exception("Run not found in runInfos.");
-                    }
-
-                    if (status.Verdict > Verdict.Running)
-                    {
-                        string time = status.Verdict == Verdict.TimeLimitExceeded ? status.WallTime : status.Time;
-
-                        run.Verdict = status.Verdict;
-                        run.Time = string.IsNullOrEmpty(time) ? (float?) null : float.Parse(time);
-                        run.Memory = status.Memory;
-                        run.Message = status.Verdict == Verdict.InternalError
-                            ? status.Message
-                            : status.CompileOutput;
-                    }
+                    Logger.LogError($"DeleteRun failed Token={run.Token} Status={response.StatusCode}");
                 }
             }
         }
 
-        #endregion
-
-        public virtual Task<Result> OnBeforeCreatingRuns(Submission submission, Problem problem)
+        public virtual Task<Result> BeforeRunning(Submission submission, Problem problem)
         {
             return Task.FromResult<Result>(null);
         }
 
-        public virtual Task<Result> OnPollingRunsComplete(Submission submission, Problem problem, List<Run> runs)
+        public virtual Task<Result> OnRunFailed(Submission submission, Problem problem, Run run)
         {
             return Task.FromResult<Result>(null);
         }
@@ -190,55 +166,94 @@ namespace Worker.Runners.Modes
             submission.Verdict = Verdict.Running;
             Context.Submissions.Update(submission);
             await Context.SaveChangesAsync();
-            
+
+            // Override this method to prevent creating runs.
+            Result result = await BeforeRunning(submission, problem);
+            if (result != null)
             {
-                // Override this method to prevent creating runs.
-                var result = await OnBeforeCreatingRuns(submission, problem);
-                if (result != null)
-                {
-                    return result;
-                }
+                return result;
             }
 
-            var runs = await CreateRunsAsync(submission, problem);
-            if (runs.IsNullOrEmpty())
+            if (problem.TestCases.Count <= 0)
             {
                 return Result.NoTestCaseFailure;
             }
 
-            for (int i = 0; i < JudgeTimeLimit; ++i)
+            var runs = new List<Run>();
+            var testCasesPairList = new List<KeyValuePair<List<TestCase>, bool>>
             {
-                await Task.Delay(1000);
-                await PollRunsAsync(runs);
-
-                // Sudden death of Compilation Error and Internal Error.
-                var fatal = runs.FirstOrDefault(r =>
-                    r.Verdict == Verdict.CompilationError || r.Verdict == Verdict.InternalError);
-                if (fatal != null)
+                new KeyValuePair<List<TestCase>, bool>(problem.SampleCases, true),
+                new KeyValuePair<List<TestCase>, bool>(problem.TestCases, false)
+            };
+            foreach (var pair in testCasesPairList)
+            {
+                int index = 0;
+                var testCases = pair.Key;
+                var inline = pair.Value;
+                foreach (var testCase in testCases)
                 {
-                    return new Result
+                    var run = await CreateRunAsync(submission, inline ? 0 : ++index, testCase, inline);
+                    Logger.LogInformation($"CreateRun succeed Submission={submission.Id}" +
+                                          $" TestCase={inline}-{index} Token={run.Token}");
+                    runs.Add(run);
+
+                    await PollRunAsync(run);
+                    if (run.Verdict > Verdict.Accepted)
                     {
-                        Verdict = fatal.Verdict,
-                        Time = null, Memory = null,
-                        FailedOn = 0, Score = 0,
-                        Message = fatal.Message
-                    };
+                        submission.Verdict = run.Verdict;
+                        submission.FailedOn = run.Index;
+                        Context.Submissions.Update(submission);
+                        await Context.SaveChangesAsync();
+
+                        result = await OnRunFailed(submission, problem, run);
+                        if (result != null)
+                        {
+                            break;
+                        }
+                    }
                 }
 
-                // Override this method to provide custom data handling.
-                var result = await OnPollingRunsComplete(submission, problem, runs);
                 if (result != null)
                 {
-                    return result;
+                    break;
                 }
-
-                var total = runs.Count;
-                var finished = runs.Count(r => r.Verdict > Verdict.Running);
-                submission.Progress = finished * 100 / total;
-                await Context.SaveChangesAsync();
             }
 
-            return Result.TimeoutFailure;
+            // After running, delete all runs in backend.
+            await DeleteRunsAsync(runs);
+
+            int count = 0, total = problem.TestCases.Count;
+            float time = 0, memory = 0;
+            var failed = runs.FirstOrDefault(r => r.Verdict > Verdict.Accepted);
+
+            foreach (var run in runs)
+            {
+                if (run.Index > 0 && run.Verdict == Verdict.Accepted)
+                {
+                    ++count;
+                }
+
+                if (run.Time.HasValue)
+                {
+                    time = Math.Max(time, run.Time.Value);
+                }
+
+                if (run.Memory.HasValue)
+                {
+                    memory = Math.Max(memory, run.Memory.Value);
+                }
+            }
+
+            return new Result
+            {
+                // If there was any failure, submission's verdict will be changed from Running.
+                Verdict = submission.Verdict == Verdict.Running ? Verdict.Accepted : submission.Verdict,
+                Time = (int) Math.Min(time * 1000, runs[0].TimeLimit),
+                Memory = (int) Math.Min(memory, problem.MemoryLimit),
+                FailedOn = failed?.Index,
+                Score = count * 100 / total,
+                Message = ""
+            };
         }
     }
 }

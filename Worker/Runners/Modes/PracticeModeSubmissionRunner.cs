@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Data.Models;
 using Worker.Models;
@@ -13,54 +11,22 @@ namespace Worker.Runners.Modes
         {
         }
 
-        public override Task<Result> OnPollingRunsComplete(Submission submission, Problem problem, List<Run> runs)
+        public override async Task<Result> OnRunFailed(Submission submission, Problem problem, Run run)
         {
-            var failed = runs.FirstOrDefault(r => r.Verdict > Verdict.Accepted);
-            if (failed != null)
+            if (run.Index == 0 || run.Verdict == Verdict.CompilationError || run.Verdict == Verdict.InternalError)
             {
-                submission.Verdict = submission.Verdict == Verdict.Running ? failed.Verdict : submission.Verdict;
-                // No need to save changes here, will be saved by delegate caller before next loop.
+                return new Result
+                {
+                    Verdict = run.Verdict,
+                    Time = run.Time.HasValue ? (int) Math.Min(run.Time.Value * 1000, run.TimeLimit) : (int?) null,
+                    Memory = run.Memory.HasValue ? (int) Math.Min(run.Memory.Value, problem.MemoryLimit) : (int?) null,
+                    FailedOn = run.Index,
+                    Score = (run.Index - 1) / problem.TestCases.Count,
+                    Message = run.Message
+                };
             }
 
-            if (runs.Any(r => r.Verdict <= Verdict.Running))
-            {
-                // Not all runs have finished, ask for another loop.
-                return Task.FromResult<Result>(null);
-            }
-
-            int count = 0, total = runs.Count;
-            float time = 0, memory = 0;
-
-            foreach (var run in runs)
-            {
-                if (run.Index > 0 && run.Verdict == Verdict.Accepted)
-                {
-                    ++count;
-                }
-
-                if (run.Time.HasValue)
-                {
-                    time = Math.Max(time, run.Time.Value);
-                }
-
-                if (run.Memory.HasValue)
-                {
-                    memory = Math.Max(memory, run.Memory.Value);
-                }
-            }
-
-            var language = submission.Program.Language ?? Language.C;
-            var factor = RunnerLanguageOptions.LanguageOptionsDict[language].timeFactor;
-            return Task.FromResult(new Result
-            {
-                // If there was any failure, submission's verdict will be changed from Running.
-                Verdict = submission.Verdict == Verdict.Running ? Verdict.Accepted : submission.Verdict,
-                Time = (int) Math.Min(time * 1000, problem.TimeLimit * factor),
-                Memory = (int) Math.Min(memory, problem.MemoryLimit),
-                FailedOn = failed?.Index,
-                Score = count / total,
-                Message = ""
-            });
+            return null;
         }
     }
 }
