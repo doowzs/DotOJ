@@ -31,4 +31,4 @@ RUN dotnet publish -c Release -o out
 FROM ccr.ccs.tencentyun.com/doowzs/dotnet-core-aspnet:3.1
 WORKDIR /app
 COPY --from=build-env /app/out .
-ENTRYPOINT ["dotnet", "Judge1.dll"]
+ENTRYPOINT ["dotnet", "WebApp.dll"]
