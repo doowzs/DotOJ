@@ -8,17 +8,6 @@ RUN if [ ${CHANGE_SOURCE} = true ]; then \
   sed -i 's/security.debian.org/mirrors.aliyun.com/' /etc/apt/sources.list \
 ;fi
 
-# Install node for building SPA
-ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
-RUN apt-get update -yqq
-RUN apt-get install curl gnupg -yqq
-RUN apt-get install build-essential -yqq
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
-RUN apt-get install -y nodejs
-RUN if [ ${CHANGE_SOURCE} = true ]; then \
-  npm config set registry https://registry.npm.taobao.org \
-;fi
-
 # Copy csproj and restore as distinct layers
 COPY *.csproj ./
 RUN dotnet restore
