@@ -13,7 +13,7 @@ namespace Worker.Triggers
     public sealed class SubmissionRunnerTrigger : TriggerBase<SubmissionRunnerTrigger>
     {
         private readonly SubmissionRunner _runner;
-        
+
         public SubmissionRunnerTrigger(IServiceProvider provider) : base(provider)
         {
             _runner = provider.GetRequiredService<SubmissionRunner>();
@@ -34,6 +34,15 @@ namespace Worker.Triggers
             Submission submission;
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
+                // Update all new pending submissions' status.
+                var pendingSubmissions = await Context.Submissions
+                    .Where(s => s.Verdict == Verdict.Pending).ToListAsync();
+                foreach (var pendingSubmission in pendingSubmissions)
+                {
+                    pendingSubmission.Verdict = Verdict.InQueue;
+                }
+
+                // Choose a submission that has not been judged yet.
                 // Submissions of a running contest have a higher priority to be judged.
                 var queryable = Context.Submissions.Where(s => string.IsNullOrEmpty(s.JudgedBy)).AsQueryable();
                 if (await queryable.AnyAsync(s => problemIds.Contains(s.Id)))
@@ -50,8 +59,9 @@ namespace Worker.Triggers
                 {
                     submission.JudgedBy = Options.Value.Instance.Name;
                     Context.Update(submission);
-                    await Context.SaveChangesAsync();
                 }
+
+                await Context.SaveChangesAsync();
             }
 
             if (submission != null)

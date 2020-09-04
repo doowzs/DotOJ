@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Mime;
 using System.Text;
@@ -37,8 +38,8 @@ namespace Worker.Runners.Modes
         protected readonly JudgeInstance Instance;
         protected readonly ILogger<T> Logger;
 
-        protected readonly Func<Submission, Problem, Result> BeforeCreateRunsDelegate = null;
-        protected readonly Func<Submission, Problem, List<Run>, Result> AfterPollingRunsDelegate = null;
+        protected Func<Submission, Problem, Task<Result>> BeforeCreateRunsDelegate = null;
+        protected Func<Submission, Problem, List<Run>, Task<Result>> AfterPollingRunsDelegate = null;
 
         public ModeSubmissionRunnerBase(IServiceProvider provider)
         {
@@ -178,14 +179,13 @@ namespace Worker.Runners.Modes
 
         public async Task<Result> RunSubmissionAsync(Submission submission, Problem problem)
         {
-            submission.Verdict = Verdict.InQueue;
-            submission.FailedOn = null;
+            submission.Verdict = Verdict.Running;
             Context.Submissions.Update(submission);
             await Context.SaveChangesAsync();
 
             if (BeforeCreateRunsDelegate != null)
             {
-                var result = BeforeCreateRunsDelegate(submission, problem);
+                var result = await BeforeCreateRunsDelegate(submission, problem);
                 if (result != null)
                 {
                     return result;
@@ -202,11 +202,34 @@ namespace Worker.Runners.Modes
             {
                 await Task.Delay(1000);
                 await PollRunsAsync(runs);
-                var result = AfterPollingRunsDelegate?.Invoke(submission, problem, runs);
-                if (result != null)
+
+                // Sudden death of Compilation Error and Internal Error.
+                var fatal = runs.FirstOrDefault(r =>
+                    r.Verdict == Verdict.CompilationError || r.Verdict == Verdict.InternalError);
+                if (fatal != null)
                 {
-                    return result;
+                    return new Result
+                    {
+                        Verdict = fatal.Verdict,
+                        Time = null, Memory = null,
+                        FailedOn = 0, Score = 0,
+                        Message = fatal.Message
+                    };
                 }
+
+                if (AfterPollingRunsDelegate != null)
+                {
+                    var result = await AfterPollingRunsDelegate(submission, problem, runs);
+                    if (result != null)
+                    {
+                        return result;
+                    }
+                }
+
+                var total = runs.Count;
+                var finished = runs.Count(r => r.Verdict > Verdict.Running);
+                submission.Progress = finished * 100 / total;
+                await Context.SaveChangesAsync();
             }
 
             return Result.TimeoutFailure;

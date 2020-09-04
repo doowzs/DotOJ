@@ -1,19 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net.Http;
-using System.Net.Mime;
-using System.Text;
 using System.Threading.Tasks;
-using Data.Configs;
-using Data.Generics;
 using Data.Models;
-using IdentityServer4.Extensions;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using Worker.Models;
 
 namespace Worker.Runners.Modes
@@ -22,6 +11,61 @@ namespace Worker.Runners.Modes
     {
         public PracticeModeSubmissionRunner(IServiceProvider provider) : base(provider)
         {
+            AfterPollingRunsDelegate = AfterPollingRunsDelegateImpl;
+        }
+
+        private async Task<Result> AfterPollingRunsDelegateImpl(Submission submission, Problem problem, List<Run> runs)
+        {
+            var failed = runs.FirstOrDefault(r => r.Verdict > Verdict.Accepted);
+            if (failed != null)
+            {
+                submission.Verdict = submission.Verdict == Verdict.Running ? failed.Verdict : submission.Verdict;
+                // No need to save changes here, will be saved by delegate caller before next loop.
+            }
+
+            if (runs.Any(r => r.Verdict <= Verdict.Running))
+            {
+                return null; // Not all runs have finished, ask for another loop.
+            }
+
+            int count = 0, total = runs.Count;
+            float time = 0, memory = 0;
+
+            foreach (var run in runs)
+            {
+                if (run.Index > 0 && run.Verdict == Verdict.Accepted)
+                {
+                    ++count;
+                }
+
+                if (run.Time.HasValue)
+                {
+                    time = Math.Max(time, run.Time.Value);
+                }
+
+                if (run.WallTime.HasValue)
+                {
+                    time = Math.Max(time, run.WallTime.Value);
+                }
+
+                if (run.Memory.HasValue)
+                {
+                    memory = Math.Max(memory, run.Memory.Value);
+                }
+            }
+
+            var language = submission.Program.Language ?? Language.C;
+            var factor = RunnerLanguageOptions.LanguageOptionsDict[language].timeFactor;
+            return new Result
+            {
+                // If there was any failure, submission's verdict will be changed from Running.
+                Verdict = submission.Verdict == Verdict.Running ? Verdict.Accepted : submission.Verdict,
+                Time = (int) Math.Min(time * 1000, problem.TimeLimit * factor),
+                Memory = (int) Math.Min(memory, problem.MemoryLimit),
+                FailedOn = failed?.Index,
+                Score = count / total,
+                Message = ""
+            };
         }
     }
 }
