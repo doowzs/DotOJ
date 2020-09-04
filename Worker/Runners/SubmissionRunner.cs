@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Transactions;
+using Data;
 using Data.Configs;
-using Data.Generics;
 using Data.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Notification;
 using Worker.Runners.Modes;
@@ -17,23 +20,34 @@ namespace Worker.Runners
         public Task RunSubmissionAsync(Submission submission);
     }
 
-    public class SubmissionRunner : LoggableService<SubmissionRunner>, ISubmissionRunner
+    public class SubmissionRunner : ISubmissionRunner
     {
+        protected readonly ApplicationDbContext Context;
         protected readonly INotificationBroadcaster Broadcaster;
         protected readonly IOptions<JudgingConfig> Options;
+        protected readonly ILogger<SubmissionRunner> Logger;
+        protected readonly IServiceProvider Provider;
 
-        public SubmissionRunner(IServiceProvider provider) : base(provider, true)
+        public SubmissionRunner(IServiceProvider provider)
         {
+            Context = provider.GetRequiredService<ApplicationDbContext>();
             Broadcaster = provider.GetRequiredService<INotificationBroadcaster>();
             Options = provider.GetRequiredService<IOptions<JudgingConfig>>();
+            Logger = provider.GetRequiredService<ILogger<SubmissionRunner>>();
+            Provider = provider;
         }
 
         private async Task EnsureRegistrationExists(ApplicationUser user, Contest contest)
         {
             var begun = DateTime.Now.ToUniversalTime() > contest.BeginTime;
             var ended = DateTime.Now.ToUniversalTime() > contest.EndTime;
-            var privileged = await Manager.IsInRoleAsync(user, ApplicationRoles.Administrator) ||
-                             await Manager.IsInRoleAsync(user, ApplicationRoles.ContestManager);
+
+            var roleIds = await Context.Roles.Where(r =>
+                    r.Name == ApplicationRoles.Administrator || r.Name == ApplicationRoles.ContestManager)
+                .Select(r => r.Id)
+                .ToListAsync();
+            var privileged = await Context.UserRoles
+                .AnyAsync(ur => ur.UserId == user.Id && roleIds.Contains(ur.RoleId));
 
             // Only administrators can submit before contest begins.
             if (!begun && !privileged)
@@ -75,14 +89,14 @@ namespace Worker.Runners
 
         public async Task RunSubmissionAsync(Submission submission)
         {
-            var user = await Manager.FindByIdAsync(submission.UserId);
+            var user = await Context.Users.FindAsync(submission.UserId);
             var problem = await Context.Problems.FindAsync(submission.ProblemId);
             var contest = await Context.Contests.FindAsync(problem.ContestId);
             await EnsureRegistrationExists(user, contest);
 
             try
             {
-                await LogInformation($"JudgeSubmission Start Id={submission.Id} Problem={submission.ProblemId}");
+                Logger.LogInformation($"JudgeSubmission Start Id={submission.Id} Problem={submission.ProblemId}");
 
                 IModeSubmissionRunner submissionRunner;
                 switch (contest.Mode)
@@ -119,8 +133,8 @@ namespace Worker.Runners
 
                 #endregion
 
-                await LogInformation($"JudgeSubmission Complete Id={submission.Id} Problem={submission.ProblemId} " +
-                                     $"Verdict={submission.Verdict} Score={submission.Score} CreatedAt={submission.CreatedAt} JudgedAt={submission.JudgedAt}");
+                Logger.LogInformation($"JudgeSubmission Complete Id={submission.Id} Problem={submission.ProblemId} " +
+                                      $"Verdict={submission.Verdict} Score={submission.Score} CreatedAt={submission.CreatedAt} JudgedAt={submission.JudgedAt}");
             }
             catch (Exception e)
             {
@@ -130,7 +144,7 @@ namespace Worker.Runners
                 submission.JudgedAt = DateTime.Now.ToUniversalTime();
                 Context.Submissions.Update(submission);
                 await Context.SaveChangesAsync();
-                await LogError($"RunSubmission Error Id={submission.Id} Error={e.Message}");
+                Logger.LogError($"RunSubmission Error Id={submission.Id} Error={e.Message}");
                 await Broadcaster.SendNotification(true, $"Runner failed on Submission #{submission.Id}",
                     $"Submission runner \"{Options.Value.Name}\" failed on submission #{submission.Id}" +
                     $" with error message **\"{e.Message}\"**.");
