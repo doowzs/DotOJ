@@ -44,6 +44,7 @@ namespace Data.Models
         public int? Score { get; set; }
         public int? Progress { get; set; }
         public string Message { get; set; }
+        public string JudgedBy { get; set; }
         public DateTime? JudgedAt { get; set; }
 
         #endregion

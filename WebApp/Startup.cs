@@ -39,7 +39,8 @@ namespace WebApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseMySql(Configuration.GetConnectionString("MySqlConnection")));
+                options.UseMySql(Configuration.GetConnectionString("MySqlConnection"),
+                    builder => { builder.MigrationsAssembly("WebApp"); }));
 
             services.AddDefaultIdentity<ApplicationUser>(options =>
                 {

@@ -21,7 +21,6 @@ namespace Data.DTOs
         public int? FailedOn { get; }
         public int? Score { get; }
         public int? Progress { get; }
-        public DateTime? JudgedAt { get; }
 
         public SubmissionInfoDto(Submission submission) : base(submission)
         {
@@ -38,7 +37,6 @@ namespace Data.DTOs
             FailedOn = submission.FailedOn;
             Score = submission.Score;
             Progress = submission.Progress;
-            JudgedAt = submission.JudgedAt;
         }
     }
 
@@ -57,6 +55,7 @@ namespace Data.DTOs
         public int? Score { get; }
         public int? Progress { get; }
         public string Message { get; }
+        public string JudgedBy { get; }
         public DateTime? JudgedAt { get; }
 
         public SubmissionViewDto(Submission submission) : base(submission)
@@ -74,6 +73,7 @@ namespace Data.DTOs
             Score = submission.Score;
             Progress = submission.Progress;
             Message = submission.Message;
+            JudgedBy = submission.JudgedBy;
             JudgedAt = submission.JudgedAt;
         }
     }
@@ -103,6 +103,7 @@ namespace Data.DTOs
         public int? FailedOn { get; }
         public int? Score { get; }
         [Required] public string Message { get; set; }
+        public string JudgedBy { get; }
         public DateTime? JudgedAt { get; }
         public DateTime CreatedAt { get; }
 
@@ -124,6 +125,7 @@ namespace Data.DTOs
             FailedOn = submission.FailedOn;
             Score = submission.Score;
             Message = submission.Message;
+            JudgedBy = submission.JudgedBy;
             JudgedAt = submission.JudgedAt;
             CreatedAt = submission.CreatedAt;
         }

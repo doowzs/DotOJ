@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Data.Migrations
+namespace WebApp.Migrations
 {
     public partial class InitialCreate : Migration
     {
@@ -291,6 +291,7 @@ namespace Data.Migrations
                     Score = table.Column<int>(nullable: true),
                     Progress = table.Column<int>(nullable: true),
                     Message = table.Column<string>(nullable: true),
+                    JudgedBy = table.Column<string>(nullable: true),
                     JudgedAt = table.Column<DateTime>(nullable: true)
                 },
                 constraints: table =>
