@@ -128,6 +128,8 @@ namespace Worker.Runners.Modes
                     run.Message = response.Verdict == Verdict.InternalError
                         ? response.Message
                         : response.CompileOutput;
+                    Logger.LogInformation($"PollRun succeed Token={run.Token} Verdict={run.Verdict}" +
+                                          $" Time={run.Time} Memory={run.Memory}");
                     return;
                 }
             }
@@ -185,6 +187,7 @@ namespace Worker.Runners.Modes
                 new KeyValuePair<List<TestCase>, bool>(problem.SampleCases, true),
                 new KeyValuePair<List<TestCase>, bool>(problem.TestCases, false)
             };
+            int count = 0, total = problem.SampleCases.Count + problem.TestCases.Count;
             foreach (var pair in testCasesPairList)
             {
                 int index = 0;
@@ -194,7 +197,8 @@ namespace Worker.Runners.Modes
                 {
                     var run = await CreateRunAsync(submission, inline ? 0 : ++index, testCase, inline);
                     Logger.LogInformation($"CreateRun succeed Submission={submission.Id}" +
-                                          $" TestCase={inline}-{index} Token={run.Token}");
+                                          (inline ? $" SampleCase={index}" : $" TestCase={index}") +
+                                          " Token={run.Token}");
                     runs.Add(run);
 
                     await PollRunAsync(run);
@@ -203,7 +207,6 @@ namespace Worker.Runners.Modes
                         submission.Verdict = run.Verdict;
                         submission.FailedOn = run.Index;
                         Context.Submissions.Update(submission);
-                        await Context.SaveChangesAsync();
 
                         result = await OnRunFailed(submission, problem, run);
                         if (result != null)
@@ -211,6 +214,9 @@ namespace Worker.Runners.Modes
                             break;
                         }
                     }
+
+                    submission.Progress = ++count * 100 / total;
+                    await Context.SaveChangesAsync();
                 }
 
                 if (result != null)
@@ -219,20 +225,13 @@ namespace Worker.Runners.Modes
                 }
             }
 
-            // After running, delete all runs in backend.
-            await DeleteRunsAsync(runs);
-
-            int count = 0, total = problem.TestCases.Count;
+            count = runs.Count(r => r.Index > 0 && r.Verdict == Verdict.Accepted);
+            total = problem.TestCases.Count;
             float time = 0, memory = 0;
             var failed = runs.FirstOrDefault(r => r.Verdict > Verdict.Accepted);
 
             foreach (var run in runs)
             {
-                if (run.Index > 0 && run.Verdict == Verdict.Accepted)
-                {
-                    ++count;
-                }
-
                 if (run.Time.HasValue)
                 {
                     time = Math.Max(time, run.Time.Value);
@@ -244,6 +243,7 @@ namespace Worker.Runners.Modes
                 }
             }
 
+            await DeleteRunsAsync(runs);
             return new Result
             {
                 // If there was any failure, submission's verdict will be changed from Running.
