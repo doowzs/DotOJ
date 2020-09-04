@@ -41,6 +41,7 @@ namespace Worker.Triggers
                 {
                     pendingSubmission.Verdict = Verdict.InQueue;
                 }
+                Context.UpdateRange(pendingSubmissions);
 
                 // Choose a submission that has not been judged yet.
                 // Submissions of a running contest have a higher priority to be judged.
