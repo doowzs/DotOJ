@@ -33,6 +33,7 @@ test:build:
     - apt-get install build-essential -yqq
     - curl -sL https://deb.nodesource.com/setup_14.x | bash -
     - sed -i 's|deb.nodesource.com/node|mirrors.tuna.tsinghua.edu.cn/nodesource/deb|' /etc/apt/sources.list.d/nodesource.list
+    - apt-get update -yqq
     - apt-get install -y nodejs npm
     - npm config set registry https://registry.npm.taobao.org
   script:
