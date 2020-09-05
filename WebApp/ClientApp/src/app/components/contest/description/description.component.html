@@ -5,21 +5,24 @@
   <nz-divider nzText="Rules" nzOrientation="left"></nz-divider>
   <app-contest-rule [mode]="contest.mode"></app-contest-rule>
   <nz-divider [nzText]="'Problems (' + contest.problems.length.toString() + ')'" nzOrientation="left"></nz-divider>
-  <nz-list>
-    <nz-list-item *ngFor="let problem of contest.problems">
-      <nz-list-item-meta>
-        <nz-list-item-meta-title>
-          <nz-tag [nzColor]="problem.solved ? 'green' : null">{{ problem.label }}</nz-tag>
-          {{ problem.title }}
-        </nz-list-item-meta-title>
-      </nz-list-item-meta>
-      <nz-tag *ngIf="problem.solved" nzColor="green">Solved</nz-tag>
-      <nz-list-item-extra>
-        <button nz-button nzType="default"
-                [routerLink]="['/contest', contestId, 'problem', problem.id]">
-          View
-        </button>
-      </nz-list-item-extra>
-    </nz-list-item>
-  </nz-list>
+  <nz-empty *ngIf="contest.problems.length === 0; else contestProblems"></nz-empty>
+  <ng-template #contestProblems>
+    <nz-list>
+      <nz-list-item *ngFor="let problem of contest.problems">
+        <nz-list-item-meta>
+          <nz-list-item-meta-title>
+            <nz-tag [nzColor]="problem.solved ? 'green' : null">{{ problem.label }}</nz-tag>
+            {{ problem.title }}
+          </nz-list-item-meta-title>
+        </nz-list-item-meta>
+        <nz-tag *ngIf="problem.solved" nzColor="green">Solved</nz-tag>
+        <nz-list-item-extra>
+          <button nz-button nzType="default"
+                  [routerLink]="['/contest', contestId, 'problem', problem.id]">
+            View
+          </button>
+        </nz-list-item-extra>
+      </nz-list-item>
+    </nz-list>
+  </ng-template>
 </div>
