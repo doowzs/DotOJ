@@ -10,12 +10,16 @@ namespace Data.DTOs
         public int Id { get; }
         public int Weight { get; }
         public string Content { get; }
+        public DateTime? PublishAt { get; set; }
+        public DateTime? ExpireAt { get; set; }
 
         public BulletinInfoDto(Bulletin bulletin) : base(bulletin)
         {
             Id = bulletin.Id;
             Weight = bulletin.Weight;
             Content = bulletin.Content;
+            PublishAt = bulletin.PublishAt;
+            ExpireAt = bulletin.ExpireAt;
         }
     }
 
