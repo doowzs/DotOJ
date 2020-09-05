@@ -8,7 +8,7 @@ import { VerdictInfo, VerdictStage } from '../../../consts/verdicts.consts';
   styleUrls: ['./verdict.component.css']
 })
 export class SubmissionVerdictComponent {
-  @Input() submission: SubmissionInfoDto | SubmissionViewDto | SubmissionEditDto;
+  @Input() submission: SubmissionInfoDto | SubmissionViewDto;
 
   constructor() {
   }
