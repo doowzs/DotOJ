@@ -22,6 +22,9 @@ export class AdminProblemService {
   public getSingle(problemId: number): Observable<ProblemEditDto> {
     return this.http.get<ProblemEditDto>('/admin/problem/' + problemId.toString())
       .pipe(map(data => {
+        if (data.specialJudgeProgram) {
+          data.specialJudgeProgram.code = atob(data.specialJudgeProgram.code);
+        }
         for (let i = 0; i < data.sampleCases.length; ++i) {
           const sampleCase = data.sampleCases[i];
           sampleCase.input = atob(sampleCase.input);

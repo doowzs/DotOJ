@@ -50,6 +50,21 @@
       </nz-input-group>
     </nz-form-control>
   </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="hasSpecialJudge">Special Judge</nz-form-label>
+    <nz-form-control>
+      <nz-radio-group formControlName="hasSpecialJudge">
+        <label nz-radio nzValue="false">No</label>
+        <label nz-radio nzValue="true">Yes (C++17 with <code>testlib.h</code>)</label>
+      </nz-radio-group>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item *ngIf="form.get('hasSpecialJudge').value === 'true'">
+    <nz-form-label nzRequired nzFor="specialJudgeCode">SPJ Code</nz-form-label>
+    <nz-form-control>
+      <textarea nz-input formControlName="specialJudgeCode" id="specialJudgeCode" rows="10"></textarea>
+    </nz-form-control>
+  </nz-form-item>
   <nz-divider></nz-divider>
   <ng-container *ngFor="let control of sampleCaseControls; index as index">
     <div nz-row>

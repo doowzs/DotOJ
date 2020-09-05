@@ -87,6 +87,7 @@ export class AdminSubmissionFormComponent implements OnInit, OnChanges {
       problemId: null,
       program: null,
       verdict: data.verdict,
+      verdictInfo: null,
       time: null,
       memory: null,
       failedOn: null,

@@ -48,6 +48,7 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { MarkdownModule } from 'ngx-markdown';
 
 @NgModule({
@@ -58,7 +59,10 @@ import { MarkdownModule } from 'ngx-markdown';
     ReactiveFormsModule,
     RouterModule.forChild([
       {
-        path: 'admin', component: AdminComponent, canActivate: [AuthorizeGuard, AdminGuard], data: { roles: ['*'] },
+        path: 'admin',
+        component: AdminComponent,
+        canActivate: [AuthorizeGuard, AdminGuard],
+        data: { roles: ['*'] },
         children: [
           { path: '', pathMatch: 'full', component: AdminDashboardComponent },
           {
@@ -77,7 +81,9 @@ import { MarkdownModule } from 'ngx-markdown';
             ]
           },
           {
-            path: 'contest', canActivate: [AdminGuard], data: { roles: ['Administrator', 'ContestManager'] },
+            path: 'contest',
+            canActivate: [AdminGuard],
+            data: { roles: ['Administrator', 'ContestManager'] },
             children: [
               { path: '', pathMatch: 'full', component: AdminContestListComponent },
               { path: 'new', component: AdminContestCreatorComponent },
@@ -90,7 +96,9 @@ import { MarkdownModule } from 'ngx-markdown';
             ]
           },
           {
-            path: 'problem', canActivate: [AdminGuard], data: { roles: ['Administrator', 'ContestManager'] },
+            path: 'problem',
+            canActivate: [AdminGuard],
+            data: { roles: ['Administrator', 'ContestManager'] },
             children: [
               { path: '', pathMatch: 'full', component: AdminProblemListComponent },
               { path: 'new', component: AdminProblemCreatorComponent },
@@ -103,7 +111,9 @@ import { MarkdownModule } from 'ngx-markdown';
             ]
           },
           {
-            path: 'submission', canActivate: [AdminGuard], data: { roles: ['Administrator', 'SubmissionManager'] },
+            path: 'submission',
+            canActivate: [AdminGuard],
+            data: { roles: ['Administrator', 'SubmissionManager'] },
             children: [
               { path: '', pathMatch: 'full', component: AdminSubmissionListComponent },
               { path: 'rejudge', component: AdminSubmissionRejudgeComponent },
@@ -129,6 +139,7 @@ import { MarkdownModule } from 'ngx-markdown';
     NzPopconfirmModule,
     NzDividerModule,
     NzTagModule,
+    NzRadioModule,
     MarkdownModule,
   ],
   declarations: [

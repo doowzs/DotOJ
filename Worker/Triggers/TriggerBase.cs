@@ -5,6 +5,7 @@ using Data.Configs;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Notification;
 
 namespace Worker.Triggers
 {
@@ -18,12 +19,14 @@ namespace Worker.Triggers
         protected readonly ApplicationDbContext Context;
         protected readonly IOptions<JudgingConfig> Options;
         protected readonly ILogger<T> Logger;
+        protected readonly INotificationBroadcaster Broadcaster;
 
         public TriggerBase(IServiceProvider provider)
         {
             Context = provider.GetRequiredService<ApplicationDbContext>();
             Options = provider.GetRequiredService<IOptions<JudgingConfig>>();
             Logger = provider.GetRequiredService<ILogger<T>>();
+            Broadcaster = provider.GetRequiredService<INotificationBroadcaster>();
         }
 
         public virtual Task CheckAndRunAsync()

@@ -69,7 +69,12 @@ namespace WebApp.Services.Admin
                 throw new ValidationException("Invalid problem input or output format.");
             }
 
-            if (dto.HasSpecialJudge || dto.HasHacking)
+            if (dto.HasSpecialJudge && dto.SpecialJudgeProgram == null)
+            {
+                throw new ValidationException("Special judge program cannot be null.");
+            }
+
+            if (dto.HasHacking)
             {
                 throw new NotImplementedException("Hacking and Special Judge is not implemented.");
             }
@@ -104,7 +109,8 @@ namespace WebApp.Services.Admin
                 FootNote = dto.FootNote,
                 TimeLimit = dto.TimeLimit.GetValueOrDefault(),
                 MemoryLimit = dto.MemoryLimit.GetValueOrDefault(),
-                HasSpecialJudge = false,
+                HasSpecialJudge = dto.HasSpecialJudge,
+                SpecialJudgeProgram = dto.HasSpecialJudge ? dto.SpecialJudgeProgram : null,
                 HasHacking = false,
                 SampleCases = dto.SampleCases,
                 TestCases = new List<TestCase>()
@@ -130,7 +136,8 @@ namespace WebApp.Services.Admin
             problem.FootNote = dto.FootNote;
             problem.TimeLimit = dto.TimeLimit.GetValueOrDefault();
             problem.MemoryLimit = dto.MemoryLimit.GetValueOrDefault();
-            problem.HasSpecialJudge = false;
+            problem.HasSpecialJudge = dto.HasSpecialJudge;
+            problem.SpecialJudgeProgram = dto.HasSpecialJudge ? dto.SpecialJudgeProgram : null;
             problem.HasHacking = false;
             problem.SampleCases = dto.SampleCases;
             Context.Problems.Update(problem);

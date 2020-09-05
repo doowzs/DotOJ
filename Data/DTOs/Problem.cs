@@ -74,11 +74,11 @@ namespace Data.DTOs
         [Required, Range(1000, 512000)] public int? MemoryLimit { get; set; }
 
         [Required] public bool HasSpecialJudge { get; set; }
-        public string SpecialJudgeProgram { get; set; }
+        public Program SpecialJudgeProgram { get; set; }
 
         [Required] public bool HasHacking { get; set; }
-        public string StandardProgram { get; set; }
-        public string ValidatorProgram { get; set; }
+        public Program StandardProgram { get; set; }
+        public Program ValidatorProgram { get; set; }
 
         [Required] public List<TestCase> SampleCases { get; set; }
 
@@ -98,10 +98,10 @@ namespace Data.DTOs
             TimeLimit = problem.TimeLimit;
             MemoryLimit = problem.MemoryLimit;
             HasSpecialJudge = problem.HasSpecialJudge;
-            SpecialJudgeProgram = problem.SpecialJudgeProgramSerialized;
+            SpecialJudgeProgram = problem.SpecialJudgeProgram;
             HasHacking = problem.HasHacking;
-            StandardProgram = problem.StandardProgramSerialized;
-            ValidatorProgram = problem.ValidatorProgramSerialized;
+            StandardProgram = problem.StandardProgram;
+            ValidatorProgram = problem.ValidatorProgram;
             SampleCases = problem.SampleCases;
         }
     }

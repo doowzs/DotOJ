@@ -1,7 +1,8 @@
 ﻿import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 
 import { ProblemEditDto, TestCase } from '../../../../app/interfaces/problem.interfaces';
+import { Languages } from '../../../../app/consts/languages.consts';
 
 @Component({
   selector: 'app-admin-problem-form',
@@ -27,6 +28,17 @@ export class AdminProblemFormComponent implements OnInit, OnChanges {
       footNote: [null, [Validators.maxLength(10000)]],
       timeLimit: [null, [Validators.required, Validators.min(100), Validators.max(30000)]],
       memoryLimit: [null, [Validators.required, Validators.min(1000), Validators.max(512000)]],
+      hasSpecialJudge: [null, [Validators.required]],
+      specialJudgeCode: [null, [Validators.maxLength(30720)]]
+    }, {
+      validators: [
+        (control: FormGroup): ValidationErrors | null => {
+          if (control.value.hasSpecialJudge === 'true' && !control.value.specialJudgeCode) {
+            return { specialJudgeCode: true };
+          }
+          return null;
+        }
+      ]
     });
   }
 
@@ -42,6 +54,8 @@ export class AdminProblemFormComponent implements OnInit, OnChanges {
         footNote: this.problem.footNote,
         timeLimit: this.problem.timeLimit,
         memoryLimit: this.problem.memoryLimit,
+        hasSpecialJudge: this.problem.hasSpecialJudge.toString(),
+        specialJudgeCode: this.problem.specialJudgeProgram?.code ?? ''
       });
       for (let i = 0; i < this.problem.sampleCases.length; ++i) {
         this.addSampleCase(this.problem.sampleCases[i].input, this.problem.sampleCases[i].output);
@@ -97,7 +111,11 @@ export class AdminProblemFormComponent implements OnInit, OnChanges {
       footNote: data.footNote,
       timeLimit: data.timeLimit,
       memoryLimit: data.memoryLimit,
-      hasSpecialJudge: false,
+      hasSpecialJudge: data.hasSpecialJudge === 'true',
+      specialJudgeProgram: data.hasSpecialJudge ? {
+        language: Languages.find(l => l.name === 'C++').code,
+        code: btoa(data.specialJudgeCode)
+      } : null,
       hasHacking: false,
       sampleCases: sampleCases
     });

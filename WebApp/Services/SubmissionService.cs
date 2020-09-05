@@ -64,23 +64,33 @@ namespace WebApp.Services
                 throw new ValidationException("Invalid problem ID.");
             }
 
+            var userId = Accessor.HttpContext.User.GetSubjectId();
             var contest = await Context.Contests.FindAsync(problem.ContestId);
-            if (contest.IsPublic)
+            var registered = await Context.Registrations
+                .AnyAsync(r => r.ContestId == contest.Id && r.UserId == userId);
+            if (DateTime.Now.ToUniversalTime() < contest.BeginTime)
             {
-                if (DateTime.Now.ToUniversalTime() < contest.BeginTime)
-                {
-                    throw new UnauthorizedAccessException("Cannot submit until contest has begun.");
-                }
+                throw new UnauthorizedAccessException("Cannot submit until contest has begun.");
             }
-            else
+            else if (DateTime.Now.ToUniversalTime() < contest.EndTime && !registered)
             {
-                var userId = Accessor.HttpContext.User.GetSubjectId();
-                var registered = await Context.Registrations
-                    .AnyAsync(r => r.ContestId == contest.Id && r.UserId == userId);
-                if (DateTime.Now.ToUniversalTime() < contest.BeginTime ||
-                    (!registered && DateTime.Now.ToUniversalTime() < contest.EndTime))
+                if (contest.IsPublic)
                 {
-                    throw new UnauthorizedAccessException("Cannot submit until contest has begun.");
+                    // Automatically register for user if it is submitting during contest.
+                    var registration = new Registration
+                    {
+                        UserId = userId,
+                        ContestId = contest.Id,
+                        IsParticipant = true,
+                        IsContestManager = false,
+                        Statistics = new List<ProblemStatistics>()
+                    };
+                    await Context.Registrations.AddAsync(registration);
+                    await Context.SaveChangesAsync();
+                }
+                else
+                {
+                    throw new UnauthorizedAccessException("Unregistered user cannot submit until contest has ended.");
                 }
             }
 
