@@ -95,7 +95,7 @@ namespace Worker.Runners.ProblemTypes
 
                 foreach (var testCase in testCases)
                 {
-                    var run = await CreateRunAsync(inline ? 0 : ++index, testCase, inline);
+                    var run = await CreateRunAsync(inline, ++index, testCase);
                     await PollRunAsync(run);
                     await DeleteRunAsync(run);
 
@@ -159,12 +159,13 @@ namespace Worker.Runners.ProblemTypes
 
         #region Backend manipulation methods
 
-        private async Task<Run> CreateRunAsync(int index, TestCase testCase, bool inline)
+        private async Task<Run> CreateRunAsync(bool inline, int index, TestCase testCase)
         {
-            RunnerOptions options;
+            string input, output;
             if (inline)
             {
-                options = new RunnerOptions(Submission, testCase.Input, testCase.Output);
+                input = testCase.Input;
+                output = testCase.Output;
             }
             else
             {
@@ -180,12 +181,12 @@ namespace Worker.Runners.ProblemTypes
                 {
                     await inputFileStream.CopyToAsync(inputMemoryStream);
                     await outputFileStream.CopyToAsync(outputMemoryStream);
-                    var input = Convert.ToBase64String(inputMemoryStream.GetBuffer());
-                    var output = Convert.ToBase64String(outputMemoryStream.GetBuffer());
-                    options = new RunnerOptions(Submission, input, output);
+                    input = Convert.ToBase64String(inputMemoryStream.GetBuffer());
+                    output = Convert.ToBase64String(outputMemoryStream.GetBuffer());
                 }
             }
 
+            var options = new RunnerOptions(Problem, Submission, input, output);
             var uri = Options.Value.Instance.Endpoint + "/submissions?base64_encoded=true";
             using var stringContent = new StringContent(JsonConvert.SerializeObject(options),
                 Encoding.UTF8, MediaTypeNames.Application.Json);
@@ -202,6 +203,7 @@ namespace Worker.Runners.ProblemTypes
                                   (inline ? $" SampleCase={index}" : $" TestCase={index}") + $" Token={token}");
             return new Run
             {
+                Inline = inline,
                 Index = index,
                 TimeLimit = (int) options.CpuTimeLimit * 1000,
                 Token = token.Token,
@@ -230,6 +232,7 @@ namespace Worker.Runners.ProblemTypes
                 {
                     string time = response.Verdict == Verdict.TimeLimitExceeded ? response.WallTime : response.Time;
 
+                    run.Stdout = response.Stdout;
                     run.Verdict = response.Verdict;
                     run.Time = string.IsNullOrEmpty(time)
                         ? (int?) null

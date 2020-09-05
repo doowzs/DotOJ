@@ -4,6 +4,7 @@ namespace Worker.Models
 {
     public class Run
     {
+        public bool Inline { get; set; }
         public int Index { get; set; }
         public int TimeLimit { get; set; }
         public string Token { get; set; }
