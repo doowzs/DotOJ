@@ -79,49 +79,49 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     SubmissionCreatorComponent,
     SubmissionTimelineComponent
   ],
-    imports: [
-        BrowserAnimationsModule,
-        BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
-        FormsModule,
-        HttpClientModule,
-        RouterModule.forRoot([
-            { path: '', pathMatch: 'full', component: WelcomePageComponent },
-            { path: 'changelog', component: ChangelogComponent },
-            { path: 'contests', component: ContestListComponent, canActivate: [AuthorizeGuard] },
-            {
-                path: 'contest/:contestId', component: ContestViewComponent, canActivate: [AuthorizeGuard],
-                children: [
-                    { path: '', pathMatch: 'full', component: ContestDescriptionComponent },
-                    { path: 'problem/:problemId', component: ProblemDetailComponent },
-                    { path: 'submissions', component: SubmissionListComponent },
-                    { path: 'standings', component: ContestStandingsComponent }
-                ]
-            }
-        ]),
-        AdminModule,
-        ApiAuthorizationModule,
-        MarkdownModule.forRoot(),
-        NzLayoutModule,
-        NzPageHeaderModule,
-        NzGridModule,
-        NzCardModule,
-        NzTagModule,
-        NzStatisticModule,
-        NzButtonModule,
-        NzDropDownModule,
-        NzListModule,
-        NzPaginationModule,
-        NzDividerModule,
-        NzDescriptionsModule,
-        NzIconModule,
-        NzSelectModule,
-        NzToolTipModule,
-        NzNotificationModule,
-        NzTimelineModule,
-        NzTableModule,
-        NzEmptyModule,
-        NzSkeletonModule
-    ],
+  imports: [
+    BrowserAnimationsModule,
+    BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
+    FormsModule,
+    HttpClientModule,
+    RouterModule.forRoot([
+      { path: '', pathMatch: 'full', component: WelcomePageComponent },
+      { path: 'changelog', component: ChangelogComponent },
+      { path: 'contests', component: ContestListComponent, canActivate: [AuthorizeGuard] },
+      {
+        path: 'contest/:contestId', component: ContestViewComponent, canActivate: [AuthorizeGuard],
+        children: [
+          { path: '', pathMatch: 'full', component: ContestDescriptionComponent },
+          { path: 'problem/:problemId', component: ProblemDetailComponent },
+          { path: 'submissions', component: SubmissionListComponent },
+          { path: 'standings', component: ContestStandingsComponent }
+        ]
+      }
+    ]),
+    AdminModule,
+    ApiAuthorizationModule,
+    MarkdownModule.forRoot(),
+    NzLayoutModule,
+    NzPageHeaderModule,
+    NzGridModule,
+    NzCardModule,
+    NzTagModule,
+    NzStatisticModule,
+    NzButtonModule,
+    NzDropDownModule,
+    NzListModule,
+    NzPaginationModule,
+    NzDividerModule,
+    NzDescriptionsModule,
+    NzIconModule,
+    NzSelectModule,
+    NzToolTipModule,
+    NzNotificationModule,
+    NzTimelineModule,
+    NzTableModule,
+    NzEmptyModule,
+    NzSkeletonModule
+  ],
   providers: [
     ApplicationConfigService,
     { provide: APP_INITIALIZER, useFactory: loadApplicationConfig, multi: true, deps: [ApplicationConfigService] },
