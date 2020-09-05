@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { SubmissionEditDto, SubmissionInfoDto, SubmissionViewDto } from '../../../interfaces/submission.interfaces';
+import { Component, Input, OnChanges, SimpleChanges } from '@angular/core';
+import { SubmissionInfoDto, SubmissionViewDto } from '../../../interfaces/submission.interfaces';
 import { VerdictInfo, VerdictStage } from '../../../consts/verdicts.consts';
 
 @Component({
@@ -7,30 +7,35 @@ import { VerdictInfo, VerdictStage } from '../../../consts/verdicts.consts';
   templateUrl: './verdict.component.html',
   styleUrls: ['./verdict.component.css']
 })
-export class SubmissionVerdictComponent {
+export class SubmissionVerdictComponent implements OnChanges {
   @Input() submission: SubmissionInfoDto | SubmissionViewDto;
+  public verdict: VerdictInfo;
 
   constructor() {
   }
 
-  public getSubmissionPct(submission: SubmissionInfoDto | SubmissionViewDto): string {
-    const verdict = submission.verdict as VerdictInfo;
-    if (verdict.stage === VerdictStage.RUNNING && submission.progress) {
-      return submission.progress + '%';
-    } else if (verdict.stage === VerdictStage.REJECTED && submission.score == null && submission.progress) {
-      return '(Running ' + submission.progress + '%)';
-    } else if (submission.failedOn > 0 && submission.score >= 0 && verdict.showCase) {
-      if (verdict.stage === VerdictStage.REJECTED) {
-        return (100 - submission.score) + '%';
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes.submission) {
+      this.verdict = changes.submission.currentValue.verdict as VerdictInfo;
+    }
+  }
+
+  public getSubmissionPct(): string {
+    if (this.verdict.stage === VerdictStage.RUNNING && this.submission.progress) {
+      return this.submission.progress + '%';
+    } else if (this.verdict.stage === VerdictStage.REJECTED && this.submission.score == null && this.submission.progress) {
+      return '(Running ' + this.submission.progress + '%)';
+    } else if (this.submission.failedOn > 0 && this.submission.score >= 0 && this.verdict.showCase) {
+      if (this.verdict.stage === VerdictStage.REJECTED) {
+        return (100 - this.submission.score) + '%';
       } else {
-        return submission.score + '%';
+        return this.submission.score + '%';
       }
     }
     return null;
   }
 
-  public notAnValidAttempt = (submission: SubmissionInfoDto | SubmissionViewDto): boolean => {
-    const verdict = submission.verdict as VerdictInfo;
-    return verdict.stage === VerdictStage.ERROR || (verdict.stage === VerdictStage.REJECTED && submission.failedOn === 0);
+  public notAnValidAttempt = (): boolean => {
+    return this.verdict.stage === VerdictStage.ERROR || (this.verdict.stage === VerdictStage.REJECTED && this.submission.failedOn === 0);
   };
 }
