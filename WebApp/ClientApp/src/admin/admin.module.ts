@@ -11,6 +11,10 @@ import { ApiAuthorizationModule } from '../api-authorization/api-authorization.m
 import { AdminGuard } from './admin.guard';
 import { AdminComponent } from './admin.component';
 import { AdminDashboardComponent } from './components/dashboard/dashboard.component';
+import { AdminBulletinListComponent } from './components/bulletin/list/list.component';
+import { AdminBulletinFormComponent } from './components/bulletin/form/form.component';
+import { AdminBulletinCreatorComponent } from './components/bulletin/creator/creator.component';
+import { AdminBulletinEditorComponent } from './components/bulletin/editor/editor.component';
 import { AdminUserListComponent } from './components/user/list/list.component';
 import { AdminUserFormComponent } from './components/user/form/form.component';
 import { AdminUserEditorComponent } from './components/user/editor/editor.component';
@@ -44,6 +48,7 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzTagModule } from 'ng-zorro-antd/tag';
+import { MarkdownModule } from 'ngx-markdown';
 
 @NgModule({
   imports: [
@@ -56,6 +61,14 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
         path: 'admin', component: AdminComponent, canActivate: [AuthorizeGuard, AdminGuard], data: { roles: ['*'] },
         children: [
           { path: '', pathMatch: 'full', component: AdminDashboardComponent },
+          {
+            path: 'bulletin', canActivate: [AdminGuard], data: { roles: ['Administrator'] },
+            children: [
+              { path: '', pathMatch: 'full', component: AdminBulletinListComponent },
+              { path: 'new', component: AdminBulletinCreatorComponent },
+              { path: ':bulletinId', component: AdminBulletinEditorComponent },
+            ]
+          },
           {
             path: 'user', canActivate: [AdminGuard], data: { roles: ['Administrator', 'UserManager'] },
             children: [
@@ -116,10 +129,15 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
     NzPopconfirmModule,
     NzDividerModule,
     NzTagModule,
+    MarkdownModule,
   ],
   declarations: [
     AdminComponent,
     AdminDashboardComponent,
+    AdminBulletinListComponent,
+    AdminBulletinFormComponent,
+    AdminBulletinCreatorComponent,
+    AdminBulletinEditorComponent,
     AdminUserListComponent,
     AdminUserFormComponent,
     AdminUserEditorComponent,
