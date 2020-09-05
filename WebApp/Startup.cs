@@ -90,11 +90,13 @@ namespace WebApp
 
             services.AddHttpClient(); // IHttpClientFactory
 
+            services.AddScoped<IBulletinService, BulletinService>();
             services.AddScoped<IContestService, ContestService>();
             services.AddScoped<IProblemService, ProblemService>();
             services.AddScoped<ISubmissionService, SubmissionService>();
 
             services.AddScoped<IAdminUserService, AdminUserService>();
+            services.AddScoped<IAdminBulletinService, AdminBulletinService>();
             services.AddScoped<IAdminContestService, AdminContestService>();
             services.AddScoped<IAdminProblemService, AdminProblemService>();
             services.AddScoped<IAdminSubmissionService, AdminSubmissionService>();

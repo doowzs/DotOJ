@@ -50,6 +50,24 @@ namespace WebApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Bulletins",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    CreatedAt = table.Column<DateTime>(nullable: false),
+                    UpdatedAt = table.Column<DateTime>(nullable: false),
+                    Weight = table.Column<int>(nullable: false),
+                    Content = table.Column<string>(type: "text", nullable: false),
+                    PublishAt = table.Column<DateTime>(nullable: true),
+                    ExpireAt = table.Column<DateTime>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bulletins", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Contests",
                 columns: table => new
                 {
@@ -412,6 +430,9 @@ namespace WebApp.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Bulletins");
 
             migrationBuilder.DropTable(
                 name: "DeviceCodes");

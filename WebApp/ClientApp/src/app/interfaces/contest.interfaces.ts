@@ -36,6 +36,6 @@ export interface ContestEditDto {
   description: string;
   isPublic: boolean;
   mode: ContestMode;
-  beginTime: string;
-  endTime: string;
+  beginTime: string | moment.Moment;
+  endTime: string | moment.Moment;
 }

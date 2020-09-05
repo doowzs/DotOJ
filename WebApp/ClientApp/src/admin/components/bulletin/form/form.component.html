@@ -1,0 +1,38 @@
+﻿<form nz-form [formGroup]="form" (ngSubmit)="submitForm(form.value)">
+  <nz-form-item>
+    <nz-form-label nzFor="weight">Weight</nz-form-label>
+    <nz-form-control>
+      <input nz-input formControlName="weight" id="weight"/>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzRequired nzFor="content">Content</nz-form-label>
+    <nz-form-control>
+      <textarea nz-input formControlName="content" id="content" rows="10"></textarea>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzFor="publishAt">Publish At</nz-form-label>
+    <nz-form-control>
+      <nz-date-picker nzFormat="yyyy-MM-dd HH:mm" [nzShowTime]="{ nzFormat: 'HH:mm' }"
+                      formControlName="publishAt" id="publishAt"
+      ></nz-date-picker>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label nzFor="expireAt">Expire At</nz-form-label>
+    <nz-form-control>
+      <nz-date-picker nzFormat="yyyy-MM-dd HH:mm" [nzShowTime]="{ nzFormat: 'HH:mm' }"
+                      formControlName="expireAt" id="expireAt"
+      ></nz-date-picker>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-divider></nz-divider>
+  <div nz-row>
+    <div nz-col nzSpan="24">
+      <button nz-button nzType="primary" [disabled]="!form.valid" type="submit" style="width: 100%;">
+        <i nz-icon nzType="check"></i><span>Submit</span>
+      </button>
+    </div>
+  </div>
+</form>

@@ -18,7 +18,9 @@ import { ChangelogComponent } from './components/changelog/changelog.component';
 import { MainHeaderComponent } from './components/headers/main/main.component';
 import { ContestHeaderComponent } from './components/headers/contest/contest.component';
 import { MainFooterComponent } from './components/footers/main/main.component';
-import { WelcomeComponent } from './components/welcome/welcome.component';
+import { WelcomePageComponent } from './components/welcome/page/page.component';
+import { WelcomeBulletinsComponent } from './components/welcome/bulletins/bulletins.component';
+import { WelcomeContestsComponent } from './components/welcome/contests/contests.component';
 import { ContestListComponent } from './components/contest/list/list.component';
 import { ContestViewComponent } from './components/contest/view/view.component';
 import { ContestRuleComponent } from './components/contest/rule/rule.component';
@@ -68,7 +70,9 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     MainHeaderComponent,
     ContestHeaderComponent,
     MainFooterComponent,
-    WelcomeComponent,
+    WelcomePageComponent,
+    WelcomeBulletinsComponent,
+    WelcomeContestsComponent,
     ContestListComponent,
     ContestViewComponent,
     ContestRuleComponent,
@@ -87,7 +91,7 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     FormsModule,
     HttpClientModule,
     RouterModule.forRoot([
-      { path: '', pathMatch: 'full', component: WelcomeComponent },
+      { path: '', pathMatch: 'full', component: WelcomePageComponent },
       { path: 'changelog', component: ChangelogComponent },
       { path: 'contests', component: ContestListComponent, canActivate: [AuthorizeGuard] },
       {

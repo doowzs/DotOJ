@@ -6,7 +6,6 @@
     "Host": "https://judge1",
     "Title": "Judge1",
     "Author": "Judge1 Developers",
-    "MessageOfTheDay": "Hello, world!",
     "DataPath": "/var/www/judge-data",
     "AdminUser": {
       "Email": "admin@judge1.local",

@@ -19,6 +19,21 @@
               [routerLinkActiveOptions]="{exact: true}">
             Dashboard
           </li>
+          <li *ngIf="hasAnyRole(['Administrator'])"
+              nz-submenu nzTitle="Bulletins" nzOpen>
+            <ul>
+              <li nz-menu-item routerLink="/admin/bulletin"
+                  [routerLinkActive]="['ant-menu-item-selected']"
+                  [routerLinkActiveOptions]="{exact: true}">
+                List
+              </li>
+              <li nz-menu-item routerLink="/admin/bulletin/new"
+                  [routerLinkActive]="['ant-menu-item-selected']"
+                  [routerLinkActiveOptions]="{exact: true}">
+                Create
+              </li>
+            </ul>
+          </li>
           <li *ngIf="hasAnyRole(['Administrator', 'UserManager'])"
               nz-submenu nzTitle="Users" nzOpen>
             <ul>

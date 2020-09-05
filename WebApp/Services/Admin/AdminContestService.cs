@@ -63,11 +63,9 @@ namespace WebApp.Services.Admin
 
         public async Task<PaginatedList<ContestInfoDto>> GetPaginatedContestInfosAsync(int? pageIndex)
         {
-            var contests = await Context.Contests
+            return await Context.Contests
                 .OrderByDescending(c => c.Id)
-                .PaginateAsync(pageIndex ?? 1, PageSize);
-            var infos = contests.Items.Select(c => new ContestInfoDto(c, false)).ToList();
-            return new PaginatedList<ContestInfoDto>(contests.TotalItems, pageIndex ?? 1, PageSize, infos);
+                .PaginateAsync(c => new ContestInfoDto(c, false), pageIndex ?? 1, PageSize);
         }
 
         public async Task<ContestEditDto> GetContestEditAsync(int id)
