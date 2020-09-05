@@ -1,3 +1,5 @@
+import { Program } from './submission.interfaces';
+
 export interface TestCase {
   input: string;
   output: string;
@@ -37,6 +39,7 @@ export interface ProblemEditDto {
   timeLimit: number;
   memoryLimit: number;
   hasSpecialJudge: boolean;
+  specialJudgeProgram: Program;
   hasHacking: boolean;
   sampleCases: TestCase[];
 }

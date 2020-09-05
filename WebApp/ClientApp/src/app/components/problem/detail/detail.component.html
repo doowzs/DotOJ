@@ -1,5 +1,6 @@
 ﻿<ng-container *ngIf="problem">
   <h2>{{ problem.title }}</h2>
+  <p *ngIf="problem.hasSpecialJudge">Special Judge</p>
   <p>
     Time Limit: {{ problem.timeLimit }} ms
     <ng-container *ngIf="language">

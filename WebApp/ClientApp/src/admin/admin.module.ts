@@ -44,6 +44,8 @@ import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzSwitchModule } from 'ng-zorro-antd/switch';
+import { NzRadioModule } from 'ng-zorro-antd/radio';
 
 @NgModule({
   imports: [
@@ -53,7 +55,10 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
     ReactiveFormsModule,
     RouterModule.forChild([
       {
-        path: 'admin', component: AdminComponent, canActivate: [AuthorizeGuard, AdminGuard], data: { roles: ['*'] },
+        path: 'admin',
+        component: AdminComponent,
+        canActivate: [AuthorizeGuard, AdminGuard],
+        data: { roles: ['*'] },
         children: [
           { path: '', pathMatch: 'full', component: AdminDashboardComponent },
           {
@@ -64,7 +69,9 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
             ]
           },
           {
-            path: 'contest', canActivate: [AdminGuard], data: { roles: ['Administrator', 'ContestManager'] },
+            path: 'contest',
+            canActivate: [AdminGuard],
+            data: { roles: ['Administrator', 'ContestManager'] },
             children: [
               { path: '', pathMatch: 'full', component: AdminContestListComponent },
               { path: 'new', component: AdminContestCreatorComponent },
@@ -77,7 +84,9 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
             ]
           },
           {
-            path: 'problem', canActivate: [AdminGuard], data: { roles: ['Administrator', 'ContestManager'] },
+            path: 'problem',
+            canActivate: [AdminGuard],
+            data: { roles: ['Administrator', 'ContestManager'] },
             children: [
               { path: '', pathMatch: 'full', component: AdminProblemListComponent },
               { path: 'new', component: AdminProblemCreatorComponent },
@@ -90,7 +99,9 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
             ]
           },
           {
-            path: 'submission', canActivate: [AdminGuard], data: { roles: ['Administrator', 'SubmissionManager'] },
+            path: 'submission',
+            canActivate: [AdminGuard],
+            data: { roles: ['Administrator', 'SubmissionManager'] },
             children: [
               { path: '', pathMatch: 'full', component: AdminSubmissionListComponent },
               { path: 'rejudge', component: AdminSubmissionRejudgeComponent },
@@ -116,6 +127,8 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
     NzPopconfirmModule,
     NzDividerModule,
     NzTagModule,
+    NzSwitchModule,
+    NzRadioModule,
   ],
   declarations: [
     AdminComponent,

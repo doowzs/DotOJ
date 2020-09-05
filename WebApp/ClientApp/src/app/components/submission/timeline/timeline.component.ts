@@ -80,6 +80,7 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
           const updated = updatedSubmissions[i];
           const submission = this.submissions.find(s => s.id === updated.id);
           submission.verdict = updated.verdict;
+          submission.verdictInfo = updated.verdictInfo;
           submission.time = updated.time;
           submission.memory = updated.memory;
           submission.failedOn = updated.failedOn;

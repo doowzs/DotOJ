@@ -32,8 +32,10 @@ namespace Worker.Runners.ProblemTypes
 
         public Func<Contest, Problem, Submission, Task<JudgeResult>> BeforeStartDelegate = null;
         public Func<Contest, Problem, Submission, bool, Task<JudgeResult>> BeforeTestGroupDelegate = null;
-        protected Func<Contest, Problem, Submission, Run, Task> OnRunCompleteDelegate = null;
+        protected Func<Run, Task> OnRunCompleteDelegate = null;
+        protected Func<Run, Task> InnerOnRunFailedDelegate = null;
         public Func<Contest, Problem, Submission, Run, Task<JudgeResult>> OnRunFailedDelegate = null;
+        protected Func<List<Run>, Task> OnAllRunsCompleteDelegate = null;
 
         public PlainRunner(Contest contest, Problem problem, Submission submission, IServiceProvider provider)
         {
@@ -96,12 +98,12 @@ namespace Worker.Runners.ProblemTypes
                 foreach (var testCase in testCases)
                 {
                     var run = await CreateRunAsync(inline, ++index, testCase);
-                    await PollRunAsync(run);
+                    await PollRunAsync(run, Problem.HasSpecialJudge);
                     await DeleteRunAsync(run);
 
                     if (OnRunCompleteDelegate != null)
                     {
-                        await OnRunCompleteDelegate.Invoke(Contest, Problem, Submission, run);
+                        await OnRunCompleteDelegate.Invoke(run);
                     }
 
                     runs.Add(run);
@@ -110,6 +112,11 @@ namespace Worker.Runners.ProblemTypes
                         Submission.Verdict = run.Verdict;
                         Submission.FailedOn = run.Index;
                         Context.Submissions.Update(Submission);
+
+                        if (InnerOnRunFailedDelegate != null)
+                        {
+                            await InnerOnRunFailedDelegate.Invoke(run);
+                        }
 
                         if (OnRunFailedDelegate != null)
                         {
@@ -125,6 +132,11 @@ namespace Worker.Runners.ProblemTypes
                         return result;
                     }
                 }
+            }
+
+            if (OnAllRunsCompleteDelegate != null)
+            {
+                await OnAllRunsCompleteDelegate.Invoke(runs);
             }
 
             count = runs.Count(r => r.Index > 0 && r.Verdict == Verdict.Accepted);
@@ -199,8 +211,8 @@ namespace Worker.Runners.ProblemTypes
             }
 
             var token = JsonConvert.DeserializeObject<TokenResponse>(await response.Content.ReadAsStringAsync());
-            Logger.LogInformation($"CreateRun succeed Submission={Submission.Id}" +
-                                  (inline ? $" SampleCase={index}" : $" TestCase={index}") + $" Token={token}");
+            Logger.LogInformation($"CreateRun succeed Submission={Submission.Id} " +
+                                  (inline ? $"SampleCase" : $"TestCase") + $"={index} Token={token.Token}");
             return new Run
             {
                 Inline = inline,

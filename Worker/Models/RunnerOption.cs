@@ -33,7 +33,7 @@ namespace Worker.Models
             LanguageId = LanguageOptions.LanguageOptionsDict[Language].LanguageId;
             CompilerOptions = LanguageOptions.LanguageOptionsDict[Language].CompilerOptions;
             Stdin = input;
-            ExpectedOutput = output;
+            ExpectedOutput = problem.HasSpecialJudge ? null : output;
         }
 
         public RunnerOptions(Problem problem, Submission submission, string additionalFiles)
