@@ -19,34 +19,19 @@
 
     <ItemGroup>
       <None Remove="Files\testlib.h" />
-      <Resource Include="Files\testlib.h">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Resource>
+      <None Include="Resources\testlib.h">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
     <ItemGroup>
       <None Remove="Files\compile" />
-      <Resource Include="Files\compile">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Resource>
+      <None Include="Resources\compile">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
       <None Remove="Files\run" />
-      <Resource Include="Files\run">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Resource>
-    </ItemGroup>
-
-    <ItemGroup>
-      <EmbeddedResource Update="Resources.resx">
-        <Generator>ResXFileCodeGenerator</Generator>
-        <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      </EmbeddedResource>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Update="Resources.Designer.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>Files.resx</DependentUpon>
-      </Compile>
+      <None Include="Resources\run">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 </Project>

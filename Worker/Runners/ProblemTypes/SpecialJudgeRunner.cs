@@ -44,11 +44,11 @@ namespace Worker.Runners.ProblemTypes
             {
                 var files = new List<string>
                 {
-                    Resources.testlib
+                    "testlib.h", "compile", "run"
                 };
                 foreach (var file in files)
                 {
-                    await using var srcStream = new FileStream(Path.Combine(".", file), FileMode.Open);
+                    await using var srcStream = new FileStream(Path.Combine("Resources", file), FileMode.Open);
                     await using var destStream = new FileStream(Path.Combine(path, file), FileMode.Create);
                     await srcStream.CopyToAsync(destStream);
                 }
