@@ -44,17 +44,26 @@ namespace Worker.Runners
 
         public async Task<Result> RunSubmissionAsync()
         {
-            ISubmissionRunner contestModeRunner;
+            ContestRunnerBase runner;
             switch (_contest.Mode)
             {
                 case ContestMode.Practice:
-                    contestModeRunner = new PracticeRunner(_contest, _problem, _submission, _provider);
+                    runner = new PracticeRunner(_contest, _problem, _submission, _provider);
+                    break;
+                case ContestMode.UntilFail:
+                    runner = new UntilFailRunner(_contest, _problem, _submission, _provider);
+                    break;
+                case ContestMode.OneShot:
+                    runner = new OneShotRunner(_contest, _problem, _submission, _provider);
+                    break;
+                case ContestMode.SampleOnly:
+                    runner = new SampleOnlyRunner(_contest, _problem, _submission, _provider);
                     break;
                 default:
-                    throw new NotImplementedException();
+                    throw new Exception($"Unknown contest mode ${_contest.Mode}");
             }
 
-            return await contestModeRunner.RunSubmissionAsync();
+            return await runner.RunSubmissionAsync();
         }
     }
 }

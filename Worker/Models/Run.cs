@@ -9,8 +9,8 @@ namespace Worker.Models
         public string Token { get; set; }
 
         public Verdict Verdict { get; set; }
-        public float? Time { get; set; }
-        public float? Memory { set; get; }
+        public int? Time { get; set; }
+        public int? Memory { set; get; }
         public string Message { set; get; }
     }
 }
