@@ -31,6 +31,7 @@ export class AdminSubmissionFormComponent implements OnInit, OnChanges {
       failedOn: [null],
       score: [null],
       message: [null, [Validators.required, Validators.maxLength(3000)]],
+      judgedBy: [null],
       judgedAt: [null],
       createdAt: [null]
     });
@@ -52,6 +53,7 @@ export class AdminSubmissionFormComponent implements OnInit, OnChanges {
         failedOn: changes.submission.currentValue.failedOn,
         score: changes.submission.currentValue.score,
         message: changes.submission.currentValue.message,
+        judgedBy: changes.submission.currentValue.judgedBy,
         judgedAt: changes.submission.currentValue.judgedAt,
         createdAt: changes.submission.currentValue.createdAt
       });
@@ -70,6 +72,7 @@ export class AdminSubmissionFormComponent implements OnInit, OnChanges {
       this.form.get('memory').disable();
       this.form.get('failedOn').disable();
       this.form.get('score').disable();
+      this.form.get('judgedBy').disable();
       this.form.get('judgedAt').disable();
       this.form.get('createdAt').disable();
     }
@@ -89,6 +92,7 @@ export class AdminSubmissionFormComponent implements OnInit, OnChanges {
       failedOn: null,
       score: null,
       message: data.message,
+      judgedBy: null,
       judgedAt: null,
       createdAt: null
     });

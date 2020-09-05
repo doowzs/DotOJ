@@ -42,10 +42,14 @@ namespace WebApp.Services
                 return;
             }
 
-            var accessible = submission.UserId == user.Id
-                             || await Context.Submissions.AnyAsync(s => s.Id == submission.Id
-                                                                        && s.UserId == user.Id
-                                                                        && s.Verdict == Verdict.Accepted);
+            var problem = await Context.Problems.FindAsync(submission.ProblemId);
+            var contest = await Context.Contests.FindAsync(problem.ContestId);
+            var ended = DateTime.Now.ToUniversalTime() > contest.EndTime;
+
+            var accessible = ended || submission.UserId == user.Id ||
+                             await Context.Submissions.AnyAsync(s => s.Id == submission.Id
+                                                                     && s.UserId == user.Id
+                                                                     && s.Verdict == Verdict.Accepted);
             if (!accessible)
             {
                 throw new UnauthorizedAccessException("Not allowed to view this submission.");

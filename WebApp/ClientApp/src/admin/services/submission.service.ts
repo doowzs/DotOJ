@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { SubmissionEditDto, SubmissionInfoDto } from '../../app/interfaces/submission.interfaces';
 import { PaginatedList } from '../../app/interfaces/pagination.interfaces';
 import { map } from 'rxjs/operators';
-import { mapSubmissionEditDtoFields, mapSubmissionInfoDtoFields } from '../../app/consts/verdicts.consts';
+import { mapSubmissionEditDtoFields, mapSubmissionInfoDtoFields } from '../../app/interfaces/submission.interfaces';
 
 @Injectable({
   providedIn: 'root'

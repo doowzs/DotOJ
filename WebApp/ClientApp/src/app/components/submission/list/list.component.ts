@@ -1,13 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzTableFilterList, NzTableQueryParams } from 'ng-zorro-antd/table';
+import { NzDrawerRef, NzDrawerService } from 'ng-zorro-antd/drawer';
+import * as moment from 'moment';
 
 import { SubmissionService } from '../../../services/submission.service';
 import { PaginatedList } from '../../../interfaces/pagination.interfaces';
 import { SubmissionInfoDto } from '../../../interfaces/submission.interfaces';
 import { ContestService } from '../../../services/contest.service';
 import { ContestViewDto } from '../../../interfaces/contest.interfaces';
-import { notAnValidAttempt, Verdicts } from '../../../consts/verdicts.consts';
+import { Verdicts } from '../../../consts/verdicts.consts';
+import { SubmissionDetailComponent } from '../detail/detail.component';
+import { AuthorizeService, IUser } from '../../../../api-authorization/authorize.service';
 
 @Component({
   selector: 'app-submission-list',
@@ -16,8 +20,8 @@ import { notAnValidAttempt, Verdicts } from '../../../consts/verdicts.consts';
 })
 export class SubmissionListComponent implements OnInit {
   Verdicts = Verdicts;
-  notAnValidAttempt = notAnValidAttempt;
 
+  public user: IUser;
   public contestId: number | null = null;
   public contest: ContestViewDto;
   public problemFilterList: NzTableFilterList;
@@ -28,12 +32,15 @@ export class SubmissionListComponent implements OnInit {
   public verdict: number | null = null;
   public pageIndex: number;
   public list: PaginatedList<SubmissionInfoDto>;
+  public submissionDrawer: NzDrawerRef;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private service: SubmissionService,
-    private contestService: ContestService
+    private contestService: ContestService,
+    private drawer: NzDrawerService,
+    private auth: AuthorizeService
   ) {
     this.contestId = this.route.snapshot.parent.params.contestId;
     this.problemId = this.route.snapshot.queryParams.problemId;
@@ -53,6 +60,7 @@ export class SubmissionListComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.auth.getUser().subscribe(user => this.user = user);
     this.contestService.getSingle(this.contestId)
       .subscribe(contest => {
         this.contest = contest;
@@ -94,5 +102,21 @@ export class SubmissionListComponent implements OnInit {
     if (!isInit) {
       this.loadSubmissions();
     }
+  }
+
+  public canViewSubmission(submission: SubmissionInfoDto): boolean {
+    const problem = this.contest.problems.find(p => p.id === submission.problemId);
+    return (moment().isAfter(this.contest.endTime)) || (this.user && submission.userId === this.user.sub) || (problem && problem.solved);
+  }
+
+  public viewSubmissionDetail(submission: SubmissionInfoDto) {
+    this.submissionDrawer = this.drawer.create<SubmissionDetailComponent>({
+      nzWidth: '50vw',
+      nzTitle: 'Submission #' + submission.id.toString(),
+      nzContent: SubmissionDetailComponent,
+      nzContentParams: {
+        submissionId: submission.id
+      }
+    });
   }
 }

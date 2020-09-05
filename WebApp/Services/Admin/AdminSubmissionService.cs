@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Data.DTOs;
 using Data.Generics;
 using Data.Models;
+using IdentityServer4.Extensions;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Exceptions;
 
@@ -94,12 +95,15 @@ namespace WebApp.Services.Admin
         {
             await EnsureSubmissionExists(id);
             await ValidateSubmissionEditDto(dto);
+
+            var user = await Manager.FindByIdAsync(Accessor.HttpContext.User.GetSubjectId());
             var submission = await Context.Submissions.FindAsync(id);
             submission.Verdict = dto.Verdict.GetValueOrDefault();
             submission.Time = submission.Memory = null;
             submission.FailedOn = -1;
             submission.Score = submission.Verdict == Verdict.Accepted ? 100 : 0;
             submission.Message = dto.Message;
+            submission.JudgedBy = "[manual] " + user.ContestantId;
             submission.JudgedAt = DateTime.Now.ToUniversalTime();
             Context.Update(submission);
             await Context.SaveChangesAsync();
