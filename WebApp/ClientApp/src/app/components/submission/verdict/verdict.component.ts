@@ -13,7 +13,7 @@ export class SubmissionVerdictComponent {
   constructor() {
   }
 
-  public getSubmissionPct(submission: SubmissionInfoDto | SubmissionViewDto | SubmissionEditDto): string {
+  public getSubmissionPct(submission: SubmissionInfoDto | SubmissionViewDto): string {
     const verdict = submission.verdict as VerdictInfo;
     if (verdict.stage === VerdictStage.RUNNING && submission.progress) {
       return submission.progress + '%';
@@ -29,7 +29,7 @@ export class SubmissionVerdictComponent {
     return null;
   }
 
-  public notAnValidAttempt = (submission: SubmissionInfoDto | SubmissionViewDto | SubmissionEditDto): boolean => {
+  public notAnValidAttempt = (submission: SubmissionInfoDto | SubmissionViewDto): boolean => {
     const verdict = submission.verdict as VerdictInfo;
     return verdict.stage === VerdictStage.ERROR || (verdict.stage === VerdictStage.REJECTED && submission.failedOn === 0);
   };

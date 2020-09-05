@@ -57,7 +57,6 @@ export interface SubmissionEditDto {
   memory: number;
   failedOn: number;
   score: number;
-  progress: number;
   message: string;
   judgedBy: string;
   judgedAt: moment.Moment | string;
