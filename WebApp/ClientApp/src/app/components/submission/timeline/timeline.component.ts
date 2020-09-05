@@ -1,12 +1,14 @@
-﻿import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+﻿import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewContainerRef } from '@angular/core';
 import { interval, Observable, Subject } from 'rxjs';
 import { map, take, takeUntil } from 'rxjs/operators';
 
-import { notAnValidAttempt, VerdictInfo, VerdictStage } from '../../../consts/verdicts.consts';
+import { VerdictInfo, VerdictStage } from '../../../consts/verdicts.consts';
 import { SubmissionService } from '../../../services/submission.service';
 import { PaginatedList } from '../../../interfaces/pagination.interfaces';
 import { SubmissionInfoDto } from '../../../interfaces/submission.interfaces';
 import { AuthorizeService } from '../../../../api-authorization/authorize.service';
+import { SubmissionDetailComponent } from '../detail/detail.component';
+import { NzDrawerRef, NzDrawerService } from 'ng-zorro-antd/drawer';
 
 @Component({
   selector: 'app-submission-timeline',
@@ -14,18 +16,18 @@ import { AuthorizeService } from '../../../../api-authorization/authorize.servic
   styleUrls: ['./timeline.component.css']
 })
 export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy {
-  notAnValidAttempt = notAnValidAttempt;
-
   @Input() public problemId: number;
 
   private destroy$ = new Subject();
   public userId: Observable<string>;
   public list: PaginatedList<SubmissionInfoDto>;
   public submissions: SubmissionInfoDto[];
+  public submissionDrawer: NzDrawerRef;
 
   constructor(
     private auth: AuthorizeService,
-    private service: SubmissionService
+    private service: SubmissionService,
+    private drawer: NzDrawerService
   ) {
     this.userId = this.auth.getUser().pipe(map(u => u && u.sub));
   }
@@ -88,19 +90,14 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
       });
   }
 
-  public getSubmissionPct(submission: SubmissionInfoDto): string {
-    const verdict = submission.verdict as VerdictInfo;
-    if (verdict.stage === VerdictStage.RUNNING && submission.progress) {
-      return submission.progress + '%';
-    } else if (verdict.stage === VerdictStage.REJECTED && submission.score == null && submission.progress) {
-      return '(Running ' + submission.progress + '%)';
-    } else if (submission.failedOn > 0 && submission.score >= 0 && verdict.showCase) {
-      if (verdict.stage === VerdictStage.REJECTED) {
-        return (100 - submission.score) + '%';
-      } else {
-        return submission.score + '%';
+  public viewSubmissionDetail(submission: SubmissionInfoDto) {
+    this.submissionDrawer = this.drawer.create<SubmissionDetailComponent>({
+      nzWidth: '50vw',
+      nzTitle: 'Submission #' + submission.id.toString(),
+      nzContent: SubmissionDetailComponent,
+      nzContentParams: {
+        submissionId: submission.id
       }
-    }
-    return null;
+    });
   }
 }

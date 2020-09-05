@@ -7,7 +7,9 @@ import { PaginatedList } from '../../../interfaces/pagination.interfaces';
 import { SubmissionInfoDto } from '../../../interfaces/submission.interfaces';
 import { ContestService } from '../../../services/contest.service';
 import { ContestViewDto } from '../../../interfaces/contest.interfaces';
-import { notAnValidAttempt, Verdicts } from '../../../consts/verdicts.consts';
+import { Verdicts } from '../../../consts/verdicts.consts';
+import { SubmissionDetailComponent } from '../detail/detail.component';
+import { NzDrawerRef, NzDrawerService } from 'ng-zorro-antd/drawer';
 
 @Component({
   selector: 'app-submission-list',
@@ -16,7 +18,6 @@ import { notAnValidAttempt, Verdicts } from '../../../consts/verdicts.consts';
 })
 export class SubmissionListComponent implements OnInit {
   Verdicts = Verdicts;
-  notAnValidAttempt = notAnValidAttempt;
 
   public contestId: number | null = null;
   public contest: ContestViewDto;
@@ -28,12 +29,14 @@ export class SubmissionListComponent implements OnInit {
   public verdict: number | null = null;
   public pageIndex: number;
   public list: PaginatedList<SubmissionInfoDto>;
+  public submissionDrawer: NzDrawerRef;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private service: SubmissionService,
-    private contestService: ContestService
+    private contestService: ContestService,
+    private drawer: NzDrawerService
   ) {
     this.contestId = this.route.snapshot.parent.params.contestId;
     this.problemId = this.route.snapshot.queryParams.problemId;
@@ -94,5 +97,16 @@ export class SubmissionListComponent implements OnInit {
     if (!isInit) {
       this.loadSubmissions();
     }
+  }
+
+  public viewSubmissionDetail(submission: SubmissionInfoDto) {
+    this.submissionDrawer = this.drawer.create<SubmissionDetailComponent>({
+      nzWidth: '50vw',
+      nzTitle: 'Submission #' + submission.id.toString(),
+      nzContent: SubmissionDetailComponent,
+      nzContentParams: {
+        submissionId: submission.id
+      }
+    });
   }
 }

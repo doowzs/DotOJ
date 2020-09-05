@@ -1,0 +1,3 @@
+<span>{{ submission.verdict.name }}</span>
+<span *ngIf="getSubmissionPct(submission) as pct">{{ pct }}</span>
+<span *ngIf="notAnValidAttempt(submission)">*</span>

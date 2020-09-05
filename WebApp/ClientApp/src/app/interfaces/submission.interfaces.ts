@@ -1,6 +1,6 @@
 import * as moment from 'moment';
-import { VerdictInfo } from '../consts/verdicts.consts';
-import { LanguageInfo } from '../consts/languages.consts';
+import { fixSubmissionREVerdictCode, VerdictInfo, Verdicts } from '../consts/verdicts.consts';
+import { LanguageInfo, Languages } from '../consts/languages.consts';
 
 export interface Program {
   language: LanguageInfo | number;
@@ -32,6 +32,7 @@ export interface SubmissionViewDto {
   contestantName: string;
   problemId: number;
   program: Program;
+  codeBytes: number;
   verdict: VerdictInfo | number;
   time: number;
   memory: number;
@@ -39,6 +40,7 @@ export interface SubmissionViewDto {
   score: number;
   progress: number;
   message: string;
+  judgedBy: string;
   judgedAt: moment.Moment | string;
   createdAt: moment.Moment | string;
 }
@@ -55,7 +57,45 @@ export interface SubmissionEditDto {
   memory: number;
   failedOn: number;
   score: number;
+  progress: number;
   message: string;
+  judgedBy: string;
   judgedAt: moment.Moment | string;
   createdAt: moment.Moment | string;
 }
+
+export const mapSubmissionInfoDtoFields = (submission: SubmissionInfoDto): SubmissionInfoDto => {
+  fixSubmissionREVerdictCode(submission);
+  submission.verdict = Verdicts.find(v => v.code === submission.verdict);
+  submission.language = Languages.find(l => l.code === submission.language);
+  submission.createdAt = moment.utc(submission.createdAt).local();
+  submission.judgedAt = moment.utc(submission.judgedAt).local();
+  return submission;
+};
+
+export const mapSubmissionViewDtoFields = (submission: SubmissionViewDto): SubmissionViewDto => {
+  fixSubmissionREVerdictCode(submission);
+  submission.verdict = Verdicts.find(v => v.code === submission.verdict);
+  submission.program.language = Languages.find(l => l.code === submission.program.language);
+  submission.program.code = atob(submission.program.code);
+  submission.codeBytes = new Blob([submission.program.code]).size;
+  submission.message = atob(submission.message);
+  submission.createdAt = moment.utc(submission.createdAt).local();
+  if (submission.judgedAt) {
+    submission.judgedAt = moment.utc(submission.judgedAt).local();
+  }
+  return submission;
+};
+
+export const mapSubmissionEditDtoFields = (submission: SubmissionEditDto): SubmissionEditDto => {
+  fixSubmissionREVerdictCode(submission);
+  submission.verdict = Verdicts.find(v => v.code === submission.verdict);
+  submission.program.language = Languages.find(l => l.code === submission.program.language);
+  submission.program.code = atob(submission.program.code);
+  submission.message = atob(submission.message);
+  submission.createdAt = moment.utc(submission.createdAt).local();
+  if (submission.judgedAt) {
+    submission.judgedAt = moment.utc(submission.judgedAt).local();
+  }
+  return submission;
+};

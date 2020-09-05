@@ -18,8 +18,9 @@
     <th nzColumnKey="time">Time</th>
     <th nzColumnKey="memory">Memory</th>
     <th nzColumnKey="language">Language</th>
-    <th nzColumnKey="codeBytes">Length</th>
+    <th nzColumnKey="codeBytes">Bytes</th>
     <th nzColumnKey="createdAt">Created At</th>
+    <th nzColumnKey="action">Action</th>
   </tr>
   </thead>
   <tbody>
@@ -29,15 +30,15 @@
     <td>{{ getProblemLabel(submission.problemId) }}</td>
     <td>
       <nz-tag [nzColor]="submission.verdict.color">
-        {{ submission.verdict.name }}
-        <span *ngIf="notAnValidAttempt(submission)">*</span>
+        <app-submission-verdict [submission]="submission"></app-submission-verdict>
       </nz-tag>
     </td>
     <td>{{ submission.time }}</td>
     <td>{{ submission.memory }}</td>
     <td>{{ submission.language.name }}</td>
-    <td>{{ submission.codeBytes }} bytes</td>
+    <td>{{ submission.codeBytes }}</td>
     <td>{{ submission.createdAt.format('YYYY-MM-DD HH:mm') }}</td>
+    <td><button nz-button nzType="link" nzSize="small" (click)="viewSubmissionDetail(submission)">View</button></td>
   </tr>
   </tbody>
 </nz-table>

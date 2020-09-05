@@ -1,0 +1,20 @@
+<nz-skeleton *ngIf="!submission"></nz-skeleton>
+<ng-container *ngIf="submission">
+  <nz-descriptions>
+    <nz-descriptions-item nzTitle="Contestant">{{ submission.contestantName }}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Language">{{ submission.program.language.name }}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Length">{{ submission.codeBytes }} bytes</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Verdict">
+      <nz-badge [nzColor]="submission.verdict.color"></nz-badge>
+      <app-submission-verdict [submission]="submission"></app-submission-verdict>
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Created At">
+      {{ submission.createdAt.format('YYYY-MM-DD HH:mm') }}
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Judged At" *ngIf="submission.judgedAt">
+      {{ submission.judgedAt.format('YYYY-MM-DD HH:mm') }} by {{ submission.judgedBy }}
+    </nz-descriptions-item>
+  </nz-descriptions>
+  <nz-divider></nz-divider>
+  <pre [attr.lang]="submission.program.language.name">{{ submission.program.code }}</pre>
+</ng-container>

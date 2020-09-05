@@ -102,6 +102,7 @@ namespace Data.DTOs
         public int? Memory { get; }
         public int? FailedOn { get; }
         public int? Score { get; }
+        public int? Progress { get; }
         [Required] public string Message { get; set; }
         public string JudgedBy { get; }
         public DateTime? JudgedAt { get; }
@@ -124,6 +125,7 @@ namespace Data.DTOs
             Memory = submission.Memory;
             FailedOn = submission.FailedOn;
             Score = submission.Score;
+            Progress = submission.Progress;
             Message = submission.Message;
             JudgedBy = submission.JudgedBy;
             JudgedAt = submission.JudgedAt;
