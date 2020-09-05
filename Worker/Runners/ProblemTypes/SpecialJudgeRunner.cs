@@ -40,6 +40,11 @@ namespace Worker.Runners.ProblemTypes
                 Directory.CreateDirectory(path);
             }
 
+            if (File.Exists(zip))
+            {
+                File.Delete(zip);
+            }
+
             // Prepare testlib.h and backend configuration files.
             {
                 var files = new List<string>
@@ -57,7 +62,8 @@ namespace Worker.Runners.ProblemTypes
             // Prepare spj.cc, input, output and answer files.
             {
                 await using var spjStream = new FileStream(Path.Combine(path, "spj.cpp"), FileMode.Create);
-                await spjStream.WriteAsync(Encoding.UTF8.GetBytes(Problem.SpecialJudgeProgram.Code));
+                var spjCodeBytes = Convert.FromBase64String(Problem.SpecialJudgeProgram.Code);
+                await spjStream.WriteAsync(spjCodeBytes);
             }
             {
                 await using var inputStream = new FileStream(Path.Combine(path, "input"), FileMode.Create);

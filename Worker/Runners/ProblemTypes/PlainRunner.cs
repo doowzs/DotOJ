@@ -252,9 +252,9 @@ namespace Worker.Runners.ProblemTypes
                     run.Memory = response.Memory.HasValue
                         ? (int) Math.Ceiling(response.Memory.Value)
                         : Problem.MemoryLimit;
-                    run.Message = response.Verdict == Verdict.InternalError
-                        ? response.Message
-                        : response.CompileOutput;
+                    run.Message = response.Verdict == Verdict.CompilationError
+                        ? response.CompileOutput
+                        : response.Message;
                     Logger.LogInformation($"PollRun succeed Token={run.Token} Verdict={run.Verdict}" +
                                           $" Time={run.Time} Memory={run.Memory}");
                     return;
