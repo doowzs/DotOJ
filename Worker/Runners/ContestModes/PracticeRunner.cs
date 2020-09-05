@@ -13,11 +13,11 @@ namespace Worker.Runners.ContestModes
             OnRunFailedDelegate = OnRunFailedImpl;
         }
 
-        public static Task<Result> OnRunFailedImpl(Contest contest, Problem problem, Submission submission, Run run)
+        public static Task<JudgeResult> OnRunFailedImpl(Contest contest, Problem problem, Submission submission, Run run)
         {
             if (run.Index == 0 || run.Verdict == Verdict.CompilationError || run.Verdict == Verdict.InternalError)
             {
-                return Task.FromResult(new Result
+                return Task.FromResult(new JudgeResult
                 {
                     Verdict = run.Verdict,
                     Time = null,
@@ -28,7 +28,7 @@ namespace Worker.Runners.ContestModes
                 });
             }
 
-            return Task.FromResult<Result>(null);
+            return Task.FromResult<JudgeResult>(null);
         }
     }
 }

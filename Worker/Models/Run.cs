@@ -8,6 +8,7 @@ namespace Worker.Models
         public int TimeLimit { get; set; }
         public string Token { get; set; }
 
+        public string Stdout { get; set; }
         public Verdict Verdict { get; set; }
         public int? Time { get; set; }
         public int? Memory { set; get; }

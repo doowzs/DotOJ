@@ -19,7 +19,7 @@ namespace Worker.Runners.ProblemTypes
 {
     public class PlainRunner : IDisposable
     {
-        protected const int PollLimit = 100;
+        private const int PollLimit = 100;
 
         protected readonly Contest Contest;
         protected readonly Problem Problem;
@@ -30,10 +30,10 @@ namespace Worker.Runners.ProblemTypes
         protected readonly HttpClient Client;
         protected ILogger Logger;
 
-        public Func<Contest, Problem, Submission, Task<Result>> BeforeStartDelegate = null;
-        public Func<Contest, Problem, Submission, bool, Task<Result>> BeforeTestGroupDelegate = null;
+        public Func<Contest, Problem, Submission, Task<JudgeResult>> BeforeStartDelegate = null;
+        public Func<Contest, Problem, Submission, bool, Task<JudgeResult>> BeforeTestGroupDelegate = null;
         protected Func<Contest, Problem, Submission, Run, Task> OnRunCompleteDelegate = null;
-        public Func<Contest, Problem, Submission, Run, Task<Result>> OnRunFailedDelegate = null;
+        public Func<Contest, Problem, Submission, Run, Task<JudgeResult>> OnRunFailedDelegate = null;
 
         public PlainRunner(Contest contest, Problem problem, Submission submission, IServiceProvider provider)
         {
@@ -50,12 +50,12 @@ namespace Worker.Runners.ProblemTypes
             Client.DefaultRequestHeaders.Add("X-Auth-Token", Options.Value.Instance.AuthToken);
         }
 
-        public async Task<Result> RunSubmissionAsync()
+        public async Task<JudgeResult> RunSubmissionAsync()
         {
-            Result result = null;
+            JudgeResult result = null;
             if (Problem.TestCases.Count <= 0)
             {
-                return Result.NoTestCaseFailure;
+                return JudgeResult.NoTestCaseFailure;
             }
 
             Submission.Verdict = Verdict.Running;
@@ -145,7 +145,7 @@ namespace Worker.Runners.ProblemTypes
                 }
             }
 
-            return new Result
+            return new JudgeResult
             {
                 // If there was any failure, submission's verdict will be changed from Running.
                 Verdict = Submission.Verdict == Verdict.Running ? Verdict.Accepted : Submission.Verdict,
@@ -197,7 +197,7 @@ namespace Worker.Runners.ProblemTypes
                 throw new Exception($"CreateRun API call failed with code {response.StatusCode}.");
             }
 
-            var token = JsonConvert.DeserializeObject<RunnerToken>(await response.Content.ReadAsStringAsync());
+            var token = JsonConvert.DeserializeObject<TokenResponse>(await response.Content.ReadAsStringAsync());
             Logger.LogInformation($"CreateRun succeed Submission={Submission.Id}" +
                                   (inline ? $" SampleCase={index}" : $" TestCase={index}") + $" Token={token}");
             return new Run
@@ -209,14 +209,15 @@ namespace Worker.Runners.ProblemTypes
             };
         }
 
-        private async Task PollRunAsync(Run run)
+        protected async Task PollRunAsync(Run run, bool getStdout = false)
         {
             for (int i = 0; i < PollLimit * 3 && run.Verdict == Verdict.Running; ++i)
             {
                 await Task.Delay(run.TimeLimit / 3);
 
                 var uri = Options.Value.Instance.Endpoint + "/submissions/" + run.Token +
-                          "?base64_encoded=true&fields=token,time,wall_time,memory,compile_output,message,status_id";
+                          "?base64_encoded=true&fields=token,time,wall_time,memory,compile_output,message,status_id" +
+                          (getStdout ? ",stdout" : "");
                 using var message = await Client.GetAsync(uri);
                 if (!message.IsSuccessStatusCode)
                 {
@@ -224,7 +225,7 @@ namespace Worker.Runners.ProblemTypes
                     throw new Exception($"Polling API call failed with code {message.StatusCode}.");
                 }
 
-                var response = JsonConvert.DeserializeObject<RunnerResponse>(await message.Content.ReadAsStringAsync());
+                var response = JsonConvert.DeserializeObject<PollResponse>(await message.Content.ReadAsStringAsync());
                 if (response.Verdict > Verdict.Running)
                 {
                     string time = response.Verdict == Verdict.TimeLimitExceeded ? response.WallTime : response.Time;
@@ -248,7 +249,7 @@ namespace Worker.Runners.ProblemTypes
             throw new TimeoutException("PollRun timeout.");
         }
 
-        private async Task DeleteRunAsync(Run run)
+        protected async Task DeleteRunAsync(Run run)
         {
             var uri = Options.Value.Instance.Endpoint + "/submissions/" + run.Token + "?fields=token";
             var response = await Client.DeleteAsync(uri);

@@ -13,9 +13,9 @@ namespace Worker.Runners.ContestModes
         protected readonly Submission Submission;
         protected readonly IServiceProvider Provider;
 
-        protected Func<Contest, Problem, Submission, Task<Result>> BeforeStartDelegate = null;
-        protected Func<Contest, Problem, Submission, bool, Task<Result>> BeforeTestGroupDelegate = null;
-        protected Func<Contest, Problem, Submission, Run, Task<Result>> OnRunFailedDelegate = null;
+        protected Func<Contest, Problem, Submission, Task<JudgeResult>> BeforeStartDelegate = null;
+        protected Func<Contest, Problem, Submission, bool, Task<JudgeResult>> BeforeTestGroupDelegate = null;
+        protected Func<Contest, Problem, Submission, Run, Task<JudgeResult>> OnRunFailedDelegate = null;
 
         public ContestRunnerBase(Contest contest, Problem problem, Submission submission, IServiceProvider provider)
         {
@@ -25,7 +25,7 @@ namespace Worker.Runners.ContestModes
             Provider = provider;
         }
 
-        public async Task<Result> RunSubmissionAsync()
+        public async Task<JudgeResult> RunSubmissionAsync()
         {
             PlainRunner runner;
             if (Problem.HasSpecialJudge)

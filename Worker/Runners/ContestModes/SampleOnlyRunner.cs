@@ -14,7 +14,7 @@ namespace Worker.Runners.ContestModes
             OnRunFailedDelegate = PracticeRunner.OnRunFailedImpl;
         }
 
-        public static Task<Result> BeforeTestGroupImpl
+        public static Task<JudgeResult> BeforeTestGroupImpl
             (Contest contest, Problem problem, Submission submission, bool inline)
         {
             if (inline == false)
@@ -22,7 +22,7 @@ namespace Worker.Runners.ContestModes
                 return OneShotRunner.BeforeStartImpl(contest, problem, submission);
             }
 
-            return Task.FromResult<Result>(null);
+            return Task.FromResult<JudgeResult>(null);
         }
     }
 }

@@ -13,9 +13,9 @@ namespace Worker.Runners.ContestModes
             OnRunFailedDelegate = OnRunFailedImpl;
         }
 
-        public static Task<Result> OnRunFailedImpl(Contest contest, Problem problem, Submission submission, Run run)
+        public static Task<JudgeResult> OnRunFailedImpl(Contest contest, Problem problem, Submission submission, Run run)
         {
-            return Task.FromResult(new Result
+            return Task.FromResult(new JudgeResult
             {
                 Verdict = run.Verdict,
                 Time = run.Time,

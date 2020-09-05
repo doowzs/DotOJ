@@ -3,7 +3,7 @@ using Data.Models;
 
 namespace Worker.Models
 {
-    public class Result
+    public class JudgeResult
     {
         public Verdict Verdict { get; set; }
         public int? Time { get; set; }
@@ -12,7 +12,7 @@ namespace Worker.Models
         public int Score { get; set; }
         public string Message { set; get; }
         
-        public static readonly Result NoTestCaseFailure = new Result
+        public static readonly JudgeResult NoTestCaseFailure = new JudgeResult
         {
             Verdict = Verdict.Failed,
             Time = null, Memory = null,
@@ -20,7 +20,7 @@ namespace Worker.Models
             Message = "No test case available"
         };
 
-        public static readonly Result TimeoutFailure = new Result
+        public static readonly JudgeResult TimeoutFailure = new JudgeResult
         {
             Verdict = Verdict.Failed,
             Time = null, Memory = null,

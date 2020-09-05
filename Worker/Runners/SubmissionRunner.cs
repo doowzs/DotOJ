@@ -14,7 +14,7 @@ namespace Worker.Runners
 {
     public interface ISubmissionRunner
     {
-        public Task<Result> RunSubmissionAsync();
+        public Task<JudgeResult> RunSubmissionAsync();
     }
 
     public sealed class SubmissionRunner : ISubmissionRunner
@@ -42,7 +42,7 @@ namespace Worker.Runners
             _provider = provider;
         }
 
-        public async Task<Result> RunSubmissionAsync()
+        public async Task<JudgeResult> RunSubmissionAsync()
         {
             ContestRunnerBase runner;
             switch (_contest.Mode)

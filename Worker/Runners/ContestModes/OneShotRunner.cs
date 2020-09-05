@@ -14,11 +14,11 @@ namespace Worker.Runners.ContestModes
             OnRunFailedDelegate = PracticeRunner.OnRunFailedImpl;
         }
 
-        public static Task<Result> BeforeStartImpl(Contest contest, Problem problem, Submission submission)
+        public static Task<JudgeResult> BeforeStartImpl(Contest contest, Problem problem, Submission submission)
         {
             if (DateTime.Now.ToUniversalTime() <= contest.EndTime)
             {
-                return Task.FromResult(new Result
+                return Task.FromResult(new JudgeResult
                 {
                     Verdict = Verdict.Accepted,
                     Time = null,
@@ -29,7 +29,7 @@ namespace Worker.Runners.ContestModes
                 });
             }
 
-            return Task.FromResult<Result>(null);
+            return Task.FromResult<JudgeResult>(null);
         }
     }
 }
