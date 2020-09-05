@@ -38,7 +38,13 @@
     <td>{{ submission.language.name }}</td>
     <td>{{ submission.codeBytes }}</td>
     <td>{{ submission.createdAt.format('YYYY-MM-DD HH:mm') }}</td>
-    <td><button nz-button nzType="link" nzSize="small" (click)="viewSubmissionDetail(submission)">View</button></td>
+    <td>
+      <button nz-button nzType="link" nzSize="small"
+              *ngIf="canViewSubmission(submission)"
+              (click)="viewSubmissionDetail(submission)">
+        View
+      </button>
+    </td>
   </tr>
   </tbody>
 </nz-table>

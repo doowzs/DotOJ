@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { NzTableFilterList, NzTableQueryParams } from 'ng-zorro-antd/table';
+import { NzDrawerRef, NzDrawerService } from 'ng-zorro-antd/drawer';
+import * as moment from 'moment';
 
 import { SubmissionService } from '../../../services/submission.service';
 import { PaginatedList } from '../../../interfaces/pagination.interfaces';
@@ -9,7 +11,7 @@ import { ContestService } from '../../../services/contest.service';
 import { ContestViewDto } from '../../../interfaces/contest.interfaces';
 import { Verdicts } from '../../../consts/verdicts.consts';
 import { SubmissionDetailComponent } from '../detail/detail.component';
-import { NzDrawerRef, NzDrawerService } from 'ng-zorro-antd/drawer';
+import { AuthorizeService, IUser } from '../../../../api-authorization/authorize.service';
 
 @Component({
   selector: 'app-submission-list',
@@ -19,6 +21,7 @@ import { NzDrawerRef, NzDrawerService } from 'ng-zorro-antd/drawer';
 export class SubmissionListComponent implements OnInit {
   Verdicts = Verdicts;
 
+  public user: IUser;
   public contestId: number | null = null;
   public contest: ContestViewDto;
   public problemFilterList: NzTableFilterList;
@@ -36,7 +39,8 @@ export class SubmissionListComponent implements OnInit {
     private router: Router,
     private service: SubmissionService,
     private contestService: ContestService,
-    private drawer: NzDrawerService
+    private drawer: NzDrawerService,
+    private auth: AuthorizeService
   ) {
     this.contestId = this.route.snapshot.parent.params.contestId;
     this.problemId = this.route.snapshot.queryParams.problemId;
@@ -56,6 +60,7 @@ export class SubmissionListComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.auth.getUser().subscribe(user => this.user = user);
     this.contestService.getSingle(this.contestId)
       .subscribe(contest => {
         this.contest = contest;
@@ -97,6 +102,11 @@ export class SubmissionListComponent implements OnInit {
     if (!isInit) {
       this.loadSubmissions();
     }
+  }
+
+  public canViewSubmission(submission: SubmissionInfoDto): boolean {
+    const problem = this.contest.problems.find(p => p.id === submission.problemId);
+    return (moment().isAfter(this.contest.endTime)) || (this.user && submission.userId === this.user.sub) || (problem && problem.solved);
   }
 
   public viewSubmissionDetail(submission: SubmissionInfoDto) {
