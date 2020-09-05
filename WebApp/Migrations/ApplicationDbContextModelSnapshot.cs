@@ -92,6 +92,36 @@ namespace WebApp.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
+            modelBuilder.Entity("Data.Models.Bulletin", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("ExpireAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("PublishAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("Weight")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Bulletins");
+                });
+
             modelBuilder.Entity("Data.Models.Contest", b =>
                 {
                     b.Property<int>("Id")

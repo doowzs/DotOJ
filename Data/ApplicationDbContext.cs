@@ -13,6 +13,7 @@ namespace Data
 {
     public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>
     {
+        public DbSet<Bulletin> Bulletins { get; set; }
         public DbSet<Contest> Contests { get; set; }
         public DbSet<Registration> Registrations { get; set; }
         public DbSet<Problem> Problems { get; set; }

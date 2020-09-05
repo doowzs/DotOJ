@@ -1,0 +1,27 @@
+﻿<h2>List Bulletins</h2>
+<nz-table #bulletinTable *ngIf="list" [nzData]="list.items" [nzFrontPagination]="false"
+          [nzPageIndex]="list.pageIndex" [nzPageSize]="list.pageSize" [nzTotal]="list.totalItems"
+          (nzPageIndexChange)="onPageIndexChange($event)">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Weight</th>
+    <th>Content</th>
+    <th>Publish At</th>
+    <th>Expire At</th>
+    <th>Action</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let bulletin of bulletinTable.data">
+    <td>{{ bulletin.id }}</td>
+    <td>{{ bulletin.weight }}</td>
+    <td>{{ bulletin.content.substr(0, 20) }}...</td>
+    <td>{{ bulletin.publishAt.format('YYYY-MM-DD HH:mm') }}</td>
+    <td>{{ bulletin.expireAt.format('YYYY-MM-DD HH:mm') }}</td>
+    <td>
+      <button nz-button nzType="default" [routerLink]="['/admin/bulletin', bulletin.id]">View</button>
+    </td>
+  </tr>
+  </tbody>
+</nz-table>

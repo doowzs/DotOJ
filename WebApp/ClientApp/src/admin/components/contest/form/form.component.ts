@@ -1,5 +1,6 @@
 ﻿import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import * as moment from 'moment';
 
 import { ContestEditDto } from '../../../../app/interfaces/contest.interfaces';
 
@@ -34,7 +35,10 @@ export class AdminContestFormComponent implements OnInit, OnChanges {
         description: this.contest.description,
         isPublic: this.contest.isPublic.toString(),
         mode: this.contest.mode.toString(),
-        period: [this.contest.beginTime, this.contest.endTime]
+        period: [
+          (this.contest.beginTime as moment.Moment).format('YYYY-MM-DD HH:mm'),
+          (this.contest.endTime as moment.Moment).format('YYYY-MM-DD HH:mm')
+        ]
       });
     }
     if (this.disabled) {

@@ -1,0 +1,14 @@
+<h2>Bulletins</h2>
+<nz-skeleton *ngIf="bulletins == null; else bulletinsLoaded"></nz-skeleton>
+<ng-template #bulletinsLoaded>
+  <ng-template #bulletinsEmpty>
+    <nz-empty></nz-empty>
+  </ng-template>
+  <ng-container *ngIf="bulletins.length > 0; else bulletinsEmpty">
+    <ul>
+      <li *ngFor="let bulletin of bulletins">
+        <markdown [data]="bulletin.content" katex></markdown>
+      </li>
+    </ul>
+  </ng-container>
+</ng-template>
