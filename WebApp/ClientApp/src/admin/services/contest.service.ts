@@ -29,7 +29,12 @@ export class AdminContestService {
   }
 
   public getSingle(contestId: number): Observable<ContestEditDto> {
-    return this.http.get<ContestEditDto>('/admin/contest/' + contestId.toString());
+    return this.http.get<ContestEditDto>('/admin/contest/' + contestId.toString())
+      .pipe(map(data => {
+        data.beginTime = moment.utc(data.beginTime).local();
+        data.endTime = moment.utc(data.endTime).local();
+        return data;
+      }));
   }
 
   public createSingle(contest: ContestEditDto): Observable<any> {
