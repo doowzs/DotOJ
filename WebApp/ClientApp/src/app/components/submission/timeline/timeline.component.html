@@ -8,13 +8,12 @@
         <nz-tag>#{{ submission.id }}</nz-tag>
         <nz-tag [nzColor]="submission.verdict.color"
                 nz-tooltip [nzTooltipTitle]="submission.verdict.explain">
-          {{ submission.verdict.name }}
-          <span *ngIf="getSubmissionPct(submission) as pct">{{ pct }}</span>
-          <span *ngIf="notAnValidAttempt(submission)">*</span>
+          <app-submission-verdict [submission]="submission"></app-submission-verdict>
         </nz-tag>
         <span style="float: right;">
           <nz-tag>{{ submission.language.name }}</nz-tag>
           <nz-tag>{{ submission.createdAt.format('YYYY-MM-DD HH:mm') }}</nz-tag>
+          <button nz-button nzType="link" nzSize="small" (click)="viewSubmissionDetail(submission)">View</button>
         </span>
       </nz-timeline-item>
     </ng-template>

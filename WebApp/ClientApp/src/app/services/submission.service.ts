@@ -8,8 +8,8 @@ import { AuthorizeService } from '../../api-authorization/authorize.service';
 import { PaginatedList } from '../interfaces/pagination.interfaces';
 import {
   mapSubmissionInfoDtoFields,
-  mapSubmissionViewDtoFields,
-} from '../consts/verdicts.consts';
+  mapSubmissionViewDtoFields
+} from '../interfaces/submission.interfaces';
 
 @Injectable({
   providedIn: 'root'

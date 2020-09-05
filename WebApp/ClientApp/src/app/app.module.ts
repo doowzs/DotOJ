@@ -27,7 +27,9 @@ import { ContestStandingsComponent } from './components/contest/standings/standi
 import { ProblemDetailComponent } from './components/problem/detail/detail.component';
 import { SubmissionListComponent } from './components/submission/list/list.component';
 import { SubmissionCreatorComponent } from './components/submission/creator/creator.component';
+import { SubmissionVerdictComponent } from './components/submission/verdict/verdict.component';
 import { SubmissionTimelineComponent } from './components/submission/timeline/timeline.component';
+import { SubmissionDetailComponent } from './components/submission/detail/detail.component';
 
 import { MarkdownModule } from 'ngx-markdown';
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
@@ -50,6 +52,9 @@ import { NzNotificationModule } from 'ng-zorro-antd/notification';
 import { NzTimelineModule } from 'ng-zorro-antd/timeline';
 import { NzTableModule } from 'ng-zorro-antd/table';
 import { NzEmptyModule } from 'ng-zorro-antd/empty';
+import { NzDrawerModule } from 'ng-zorro-antd/drawer';
+import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
+import { NzBadgeModule } from 'ng-zorro-antd/badge';
 
 const loadApplicationConfig = (service: ApplicationConfigService) => {
   return () => service.loadApplicationConfig();
@@ -72,7 +77,9 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     ProblemDetailComponent,
     SubmissionListComponent,
     SubmissionCreatorComponent,
-    SubmissionTimelineComponent
+    SubmissionVerdictComponent,
+    SubmissionTimelineComponent,
+    SubmissionDetailComponent
   ],
   imports: [
     BrowserAnimationsModule,
@@ -114,7 +121,10 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     NzNotificationModule,
     NzTimelineModule,
     NzTableModule,
-    NzEmptyModule
+    NzEmptyModule,
+    NzDrawerModule,
+    NzSkeletonModule,
+    NzBadgeModule
   ],
   providers: [
     ApplicationConfigService,
