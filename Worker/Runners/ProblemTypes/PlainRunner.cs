@@ -139,7 +139,7 @@ namespace Worker.Runners.ProblemTypes
                 await OnAllRunsCompleteDelegate.Invoke(runs);
             }
 
-            count = runs.Count(r => r.Index > 0 && r.Verdict == Verdict.Accepted);
+            count = runs.Count(r => r.Inline == false && r.Verdict == Verdict.Accepted);
             total = Problem.TestCases.Count;
             int time = 0, memory = 0;
             var failed = runs.FirstOrDefault(r => r.Verdict > Verdict.Accepted);
