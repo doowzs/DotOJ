@@ -35,8 +35,6 @@ namespace Worker
                     services.Configure<JudgingConfig>(hostContext.Configuration.GetSection("Judging"));
                     services.Configure<NotificationConfig>(hostContext.Configuration.GetSection("Notification"));
 
-                    services.AddScoped<ISubmissionRunner, SubmissionRunner>();
-
                     services.AddScoped<INotificationBroadcaster, NotificationBroadcaster>();
                     services.AddScoped<IDingTalkNotification, DingTalkNotification>();
                 });

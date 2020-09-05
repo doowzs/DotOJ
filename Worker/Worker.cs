@@ -13,7 +13,7 @@ namespace Worker
     {
         private readonly IServiceScopeFactory _factory;
         private readonly ILogger<Worker> _logger;
-        
+
         private readonly IList<ITrigger> _triggers = new List<ITrigger>();
 
         public Worker(IServiceProvider provider)
@@ -24,29 +24,25 @@ namespace Worker
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            using var scope = _factory.CreateScope();
+            _triggers.Add(new SubmissionRunnerTrigger(scope.ServiceProvider));
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 await Task.Delay(1000, stoppingToken);
 
                 _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
 
-                using (var scope = _factory.CreateScope())
+                foreach (var trigger in _triggers)
                 {
-                    _triggers.Add(new SubmissionRunnerTrigger(scope.ServiceProvider));
-                    
-                    foreach (var trigger in _triggers)
+                    try
                     {
-                        try
-                        {
-                            await trigger.CheckAndRunAsync();
-                        }
-                        catch (Exception e)
-                        {
-                            _logger.LogError($"{nameof(trigger)} error: {e}");
-                        }
+                        await trigger.CheckAndRunAsync();
                     }
-                    
-                    _triggers.Clear();
+                    catch (Exception e)
+                    {
+                        _logger.LogError($"{nameof(trigger)} error: {e}");
+                    }
                 }
             }
         }
