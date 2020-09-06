@@ -217,7 +217,7 @@ namespace Worker.Runners.ProblemTypes
             {
                 Inline = inline,
                 Index = index,
-                TimeLimit = (int) options.CpuTimeLimit * 1000,
+                TimeLimit = (int) (options.CpuTimeLimit * 1000),
                 Token = token.Token,
                 Verdict = Verdict.Running
             };
