@@ -65,6 +65,7 @@ services:
       - ./webapp/appsettings.json:/app/appsettings.json:ro
       - ${DATA_PATH_HOST}/judge-data:/var/www/judge-data
     networks:
+      - frontend
       - backend
 
   frontend-worker:
