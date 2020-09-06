@@ -50,6 +50,7 @@ import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { MarkdownModule } from 'ngx-markdown';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 
 @NgModule({
   imports: [
@@ -62,35 +63,42 @@ import { MarkdownModule } from 'ngx-markdown';
         path: 'admin',
         component: AdminComponent,
         canActivate: [AuthorizeGuard, AdminGuard],
-        data: { roles: ['*'] },
+        data: { roles: ['*'], breadcrumb: 'Admin' },
         children: [
           { path: '', pathMatch: 'full', component: AdminDashboardComponent },
           {
-            path: 'bulletin', canActivate: [AdminGuard], data: { roles: ['Administrator'] },
+            path: 'bulletin', canActivate: [AdminGuard], data: { roles: ['Administrator'], breadcrumb: 'Bulletins' },
             children: [
               { path: '', pathMatch: 'full', component: AdminBulletinListComponent },
-              { path: 'new', component: AdminBulletinCreatorComponent },
-              { path: ':bulletinId', component: AdminBulletinEditorComponent },
+              { path: 'new', component: AdminBulletinCreatorComponent, data: { breadcrumb: 'Create' } },
+              { path: ':bulletinId', component: AdminBulletinEditorComponent, data: { breadcrumb: 'View' } },
             ]
           },
           {
-            path: 'user', canActivate: [AdminGuard], data: { roles: ['Administrator', 'UserManager'] },
+            path: 'user',
+            canActivate: [AdminGuard],
+            data: { roles: ['Administrator', 'UserManager'], breadcrumb: 'Users' },
             children: [
               { path: '', pathMatch: 'full', component: AdminUserListComponent },
-              { path: ':userId', component: AdminUserEditorComponent }
+              { path: ':userId', component: AdminUserEditorComponent, data: { breadcrumb: 'View' } }
             ]
           },
           {
             path: 'contest',
             canActivate: [AdminGuard],
-            data: { roles: ['Administrator', 'ContestManager'] },
+            data: { roles: ['Administrator', 'ContestManager'], breadcrumb: 'Contests' },
             children: [
               { path: '', pathMatch: 'full', component: AdminContestListComponent },
-              { path: 'new', component: AdminContestCreatorComponent },
+              { path: 'new', component: AdminContestCreatorComponent, data: { breadcrumb: 'Create' } },
               {
-                path: ':contestId', children: [
+                path: ':contestId', data: { breadcrumb: 'View' },
+                children: [
                   { path: '', pathMatch: 'full', component: AdminContestEditorComponent },
-                  { path: 'registrations', component: AdminContestRegistrationsComponent }
+                  {
+                    path: 'registrations',
+                    component: AdminContestRegistrationsComponent,
+                    data: { breadcrumb: 'Registrations' }
+                  }
                 ]
               }
             ]
@@ -98,14 +106,15 @@ import { MarkdownModule } from 'ngx-markdown';
           {
             path: 'problem',
             canActivate: [AdminGuard],
-            data: { roles: ['Administrator', 'ContestManager'] },
+            data: { roles: ['Administrator', 'ContestManager'], breadcrumb: 'Problems' },
             children: [
               { path: '', pathMatch: 'full', component: AdminProblemListComponent },
-              { path: 'new', component: AdminProblemCreatorComponent },
+              { path: 'new', component: AdminProblemCreatorComponent, data: { breadcrumb: 'Create' } },
               {
-                path: ':problemId', children: [
+                path: ':problemId', data: { breadcrumb: 'View' },
+                children: [
                   { path: '', pathMatch: 'full', component: AdminProblemEditorComponent },
-                  { path: 'test-cases', component: AdminProblemTestCasesComponent }
+                  { path: 'test-cases', component: AdminProblemTestCasesComponent, data: { breadcrumb: 'Test Cases' } }
                 ]
               }
             ]
@@ -113,11 +122,11 @@ import { MarkdownModule } from 'ngx-markdown';
           {
             path: 'submission',
             canActivate: [AdminGuard],
-            data: { roles: ['Administrator', 'SubmissionManager'] },
+            data: { roles: ['Administrator', 'SubmissionManager'], breadcrumb: 'Submissions' },
             children: [
               { path: '', pathMatch: 'full', component: AdminSubmissionListComponent },
-              { path: 'rejudge', component: AdminSubmissionRejudgeComponent },
-              { path: ':submissionId', component: AdminSubmissionEditorComponent }
+              { path: 'rejudge', component: AdminSubmissionRejudgeComponent, data: { breadcrumb: 'Rejudge' } },
+              { path: ':submissionId', component: AdminSubmissionEditorComponent, data: { breadcrumb: 'View' } }
             ]
           }
         ]
@@ -141,6 +150,7 @@ import { MarkdownModule } from 'ngx-markdown';
     NzTagModule,
     NzRadioModule,
     MarkdownModule,
+    NzBreadCrumbModule,
   ],
   declarations: [
     AdminComponent,

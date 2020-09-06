@@ -89,6 +89,11 @@
         </ul>
       </nz-sider>
       <nz-content class="inner-content">
+        <div nz-row>
+          <div nz-col nzSpan="24" style="padding: 1rem 1rem;">
+            <nz-breadcrumb [nzAutoGenerate]="true"></nz-breadcrumb>
+          </div>
+        </div>
         <nz-card>
           <router-outlet></router-outlet>
         </nz-card>
