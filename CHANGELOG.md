@@ -1,12 +1,13 @@
 # Changelog
 
-## 0.2.3 - 2020-09-07
+## 0.2.4 - 2020-09-07
 
 ### Fixed
 
 - Fixed an issue that forbids submitting code in textarea.
 - Fixed RO permission when worker opens file in judge-data folder.
 - Fixed incorrect integer conversion in backend interaction of worker.
+- Fixed X permission on special judge `compile` and `run` script.
 
 ## 0.2.0 - 2020-09-06
 
