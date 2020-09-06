@@ -6,6 +6,7 @@ import { ContestService } from '../../../services/contest.service';
 import { RegistrationInfoDto } from '../../../interfaces/registration.interfaces';
 import { ContestViewDto } from '../../../interfaces/contest.interfaces';
 import { ProblemInfoDto } from '../../../interfaces/problem.interfaces';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-contest-standings',
@@ -18,6 +19,7 @@ export class ContestStandingsComponent implements OnInit {
   public registrations: RegistrationInfoDto[];
 
   constructor(
+    private title: Title,
     private route: ActivatedRoute,
     private service: ContestService
   ) {
@@ -26,7 +28,10 @@ export class ContestStandingsComponent implements OnInit {
 
   ngOnInit() {
     this.service.getSingle(this.contestId)
-      .subscribe(contest => this.contest = contest);
+      .subscribe(contest => {
+        this.contest = contest;
+        this.title.setTitle(contest.title + ' - Standings');
+      });
     this.service.getRegistrations(this.contestId)
       .subscribe(registrations => this.registrations = registrations.sort((a, b) => {
         const scoreA = this.getTotalScore(a), scoreB = this.getTotalScore(b);
