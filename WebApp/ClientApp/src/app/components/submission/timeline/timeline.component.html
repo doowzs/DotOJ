@@ -1,4 +1,5 @@
-﻿<div id="submission-timeline">
+﻿<nz-skeleton *ngIf="!submissions"></nz-skeleton>
+<div id="submission-timeline" *ngIf="submissions">
   <ng-template #noSubmission>
     <nz-empty nzNotFoundImage="simple"></nz-empty>
   </ng-template>

@@ -47,9 +47,5 @@ export class ProblemDetailComponent implements OnInit, OnDestroy {
     this.service.getSingle(this.problemId)
       .subscribe(problem => this.problem = problem);
   }
-
-  public onLanguageChanged(language: LanguageInfo) {
-    this.language = language;
-  }
 }
 

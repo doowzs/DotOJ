@@ -1,4 +1,4 @@
-﻿import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewContainerRef } from '@angular/core';
+﻿import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { interval, Observable, Subject } from 'rxjs';
 import { map, take, takeUntil } from 'rxjs/operators';
 
@@ -9,6 +9,7 @@ import { SubmissionInfoDto } from '../../../interfaces/submission.interfaces';
 import { AuthorizeService } from '../../../../api-authorization/authorize.service';
 import { SubmissionDetailComponent } from '../detail/detail.component';
 import { NzDrawerRef, NzDrawerService } from 'ng-zorro-antd/drawer';
+import { ProblemViewDto } from '../../../interfaces/problem.interfaces';
 
 @Component({
   selector: 'app-submission-timeline',
@@ -16,7 +17,7 @@ import { NzDrawerRef, NzDrawerService } from 'ng-zorro-antd/drawer';
   styleUrls: ['./timeline.component.css']
 })
 export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() public problemId: number;
+  @Input() public problem: ProblemViewDto;
 
   private destroy$ = new Subject();
   public userId: Observable<string>;
@@ -49,7 +50,10 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    this.loadSubmissions(changes.problemId.currentValue);
+    if (changes.problem) {
+      this.submissions = null;
+      this.loadSubmissions(changes.problem.currentValue);
+    }
   }
 
   ngOnDestroy() {
@@ -57,10 +61,10 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
     this.destroy$.complete();
   }
 
-  private loadSubmissions(problemId: number): void {
+  private loadSubmissions(problem: ProblemViewDto): void {
     this.submissions = [];
     this.userId.pipe(take(1)).subscribe(userId => {
-      this.service.getPaginatedList(null, this.problemId, userId, null, 1)
+      this.service.getPaginatedList(null, problem.id, userId, null, 1)
         .subscribe(list => {
           for (let i = 0; i < list.items.length; ++i) {
             this.submissions.unshift(list.items[i]);
