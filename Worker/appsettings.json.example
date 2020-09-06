@@ -1,12 +1,12 @@
 {
   "ConnectionStrings": {
-    "MySqlConnection": "Server=mariadb;Uid=judge1;Pwd=judge1;Database=judge1;",
+    "MySqlConnection": "Server=mariadb;Uid=judge1;Pwd=judge1;Database=judge1;"
   },
   "Judging": {
     "Name": "local",
     "DataPath": "/var/www/judge-data",
     "Instance": {
-      "Endpoint": "http://backend-server",
+      "Endpoint": "http://backend-server:3000",
       "AuthUser": "judge1",
       "AuthToken": "judge1"
     }
