@@ -14,6 +14,7 @@ import { ContestViewDto } from '../../../interfaces/contest.interfaces';
 })
 export class ContestHeaderComponent implements OnInit {
   public username: Observable<string>;
+  public canViewAdminPages: Observable<boolean>;
   public contestId: number;
   public contest: ContestViewDto;
 
@@ -24,6 +25,7 @@ export class ContestHeaderComponent implements OnInit {
     private service: ContestService
   ) {
     this.username = this.auth.getUser().pipe(map(u => u && u.name));
+    this.canViewAdminPages = this.auth.getUser().pipe(map(u => u && u.roles.length > 0));
     this.contestId = this.route.snapshot.params.contestId;
   }
 
