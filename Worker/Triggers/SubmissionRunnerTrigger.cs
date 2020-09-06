@@ -49,17 +49,17 @@ namespace Worker.Triggers
             Submission submission;
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
-                // Choose a submission that has not been judged yet.
-                // Submissions of a running contest have a higher priority to be judged.
+                // Choose a submission that has not been judged yet, with a favor for contest submissions.
+                // To prevent hunger, only choose contest submission from the oldest 10 submissions if available.
                 var queryable = Context.Submissions.Where(s => string.IsNullOrEmpty(s.JudgedBy)).AsQueryable();
-                if (await queryable.AnyAsync(s => problemIds.Contains(s.Id)))
+                submission = await queryable.OrderBy(s => s.Id).FirstOrDefaultAsync();
+
+                if (submission != null && !problemIds.Contains(submission.ProblemId) &&
+                    await queryable.AnyAsync(s => s.Id < submission.Id + 10 && problemIds.Contains(s.ProblemId)))
                 {
-                    submission = await queryable.Where(s => problemIds.Contains(s.Id))
-                        .OrderBy(s => s.Id).FirstOrDefaultAsync();
-                }
-                else
-                {
-                    submission = await queryable.OrderBy(s => s.Id).FirstOrDefaultAsync();
+                    var idLimit = submission.Id + 10;
+                    submission = await queryable.Where(s => s.Id < idLimit && problemIds.Contains(s.ProblemId))
+                        .OrderBy(s => s.Id).FirstAsync();
                 }
 
                 if (submission != null)
