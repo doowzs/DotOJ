@@ -1,11 +1,12 @@
 # Changelog
 
-## 0.2.1 - 2020-09-06
+## 0.2.1 - 2020-09-07
 
 ### Fixed
 
 - Fixed an issue that forbids submitting code in textarea.
 - Fixed RO permission when worker opens file in judge-data folder.
+- Fixed incorrect integer conversion in backend interaction of worker.
 
 ## 0.2.0 - 2020-09-06
 
