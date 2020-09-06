@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.2.0 - 2020-09-06
+
+### Added
+
+- Special judge and contest modes support.
+- View submission detail, judge worker name and timestamp.
+- Add bulletin model/service and show bulletins on homepage.
+- Add user account manage pages and admin reset password page.
+
+### Changed
+
+- Rewrite judge worker classes to make them pluggable and configurable.
+- Update UX design for navigation bar, submission creator and admin pages.
+
+### Fixed
+
+- Fixed submission timeline updating logic and verdict display.
+- Fixed using UTC timestamp in creating and modifying contests.
+- Fixed hunger in submission triggers caused by wrong picking logic.
+
 ## 0.1.0 - 2020-09-05
 
 ### Added
