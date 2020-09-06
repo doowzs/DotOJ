@@ -27,6 +27,7 @@ namespace Data.DTOs
         public string Id { get; }
         public string Email { get; set; }
         public string UserName { get; }
+        public string Password { get; set; }
         [Required] public string ContestantId { get; set; }
         [Required] public string ContestantName { get; set; }
         [Required] public bool? IsAdministrator { get; set; }
@@ -43,6 +44,7 @@ namespace Data.DTOs
             Id = user.Id;
             Email = user.Email;
             UserName = user.UserName;
+            Password = null;
             ContestantId = user.ContestantId;
             ContestantName = user.ContestantName;
             IsAdministrator = roles.Contains(ApplicationRoles.Administrator);

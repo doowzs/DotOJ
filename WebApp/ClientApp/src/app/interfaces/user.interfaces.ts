@@ -10,6 +10,7 @@ export interface UserEditDto {
   id: string;
   email: string;
   userName: string;
+  password: string;
   contestantId: string;
   contestantName: string;
   isAdministrator: boolean;
