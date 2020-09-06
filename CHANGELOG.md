@@ -5,7 +5,7 @@
 ### Fixed
 
 - Fixed an issue that forbids submitting code in textarea.
-- Fixed network configuration of webapp Docker container.
+- Fixed RO permission when worker opens file in judge-data folder.
 
 ## 0.2.0 - 2020-09-06
 
