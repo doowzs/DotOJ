@@ -62,6 +62,16 @@ namespace WebApp.Services.Admin
             await ValidateApplicationUserEditDto(id, dto);
 
             var user = await Manager.FindByIdAsync(id);
+            if (!string.IsNullOrEmpty(dto.Password))
+            {
+                var token = await Manager.GeneratePasswordResetTokenAsync(user);
+                var result = await Manager.ResetPasswordAsync(user, token, dto.Password);
+                if (!result.Succeeded)
+                {
+                    throw new ValidationException(result.Errors.ToString());
+                }
+            }
+
             user.ContestantId = dto.ContestantId;
             user.ContestantName = dto.ContestantName;
             await Manager.UpdateAsync(user);

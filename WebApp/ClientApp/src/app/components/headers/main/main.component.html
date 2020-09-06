@@ -31,6 +31,9 @@
           <li *ngIf="canViewAdminPages | async" nz-menu-item routerLink="/admin">
             <i nz-icon nzType="setting"></i><span>Administration</span>
           </li>
+          <li nz-menu-item routerLink="/authentication/profile">
+            <i nz-icon nzType="user"></i><span>Account</span>
+          </li>
           <li nz-menu-item routerLink="/authentication/logout" [state]="{ local: true }">
             <i nz-icon nzType="logout"></i><span>Logout</span>
           </li>

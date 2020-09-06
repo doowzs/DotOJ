@@ -49,8 +49,9 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
-import { MarkdownModule } from 'ngx-markdown';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { MarkdownModule } from 'ngx-markdown';
 
 @NgModule({
   imports: [
@@ -149,8 +150,9 @@ import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
     NzDividerModule,
     NzTagModule,
     NzRadioModule,
-    MarkdownModule,
     NzBreadCrumbModule,
+    NzDropDownModule,
+    MarkdownModule,
   ],
   declarations: [
     AdminComponent,

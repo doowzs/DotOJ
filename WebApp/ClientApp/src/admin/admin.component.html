@@ -5,9 +5,19 @@
       <button nz-button nzType="text" nzDanger routerLink="/">
         <i nz-icon nzType="logout"></i><span>Exit</span>
       </button>
-      <button nz-button nzType="text" class="header-content">
+      <button nz-button nzType="text" class="header-content" nz-dropdown [nzDropdownMenu]="userMenu">
         <i nz-icon nzType="user"></i><span>{{ user.name }}</span>
       </button>
+      <nz-dropdown-menu #userMenu>
+        <ul nz-menu>
+          <li nz-menu-item routerLink="/authentication/profile">
+            <i nz-icon nzType="user"></i><span>Account</span>
+          </li>
+          <li nz-menu-item routerLink="/authentication/logout" [state]="{ local: true }">
+            <i nz-icon nzType="logout"></i><span>Logout</span>
+          </li>
+        </ul>
+      </nz-dropdown-menu>
     </div>
   </nz-header>
   <nz-content class="outer-content">
