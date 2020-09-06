@@ -1,8 +1,9 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 
 import { LanguageInfo, Languages } from '../../../consts/languages.consts';
 import { SubmissionService } from '../../../services/submission.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { ProblemViewDto } from '../../../interfaces/problem.interfaces';
 
 @Component({
   selector: 'app-submission-creator',
@@ -13,13 +14,16 @@ export class SubmissionCreatorComponent implements OnInit {
   readonly Languages = Languages;
   readonly languageStorageKey = 'app-submission-creator-language';
 
-  @Input() public problemId: number;
+  @Input() public problem: ProblemViewDto;
   @ViewChild('sourceFileInput') sourceFileInput: ElementRef;
-  @Output() public languageChanged = new EventEmitter<LanguageInfo>();
+  @ViewChild('sourceCodeTextArea') sourceCodeTextArea: ElementRef;
 
   public language: number;
+  public factor: number;
   public filename: string;
   public code: string;
+  public visible = false;
+  public submitting = false;
 
   constructor(
     private service: SubmissionService,
@@ -34,9 +38,15 @@ export class SubmissionCreatorComponent implements OnInit {
   }
 
   public selectLanguage(value: number) {
-    this.language = value;
-    localStorage.setItem(this.languageStorageKey, JSON.stringify(value));
-    this.languageChanged.emit(Languages.find(l => l.code === value));
+    const l = Languages.find(l => l.code === value);
+    if (l != null) {
+      this.language = value;
+      this.factor = l.factor;
+      localStorage.setItem(this.languageStorageKey, JSON.stringify(value));
+    } else {
+      this.language = this.factor = null;
+      localStorage.removeItem(this.languageStorageKey);
+    }
   }
 
   public selectSourceFile(event: any) {
@@ -61,16 +71,23 @@ export class SubmissionCreatorComponent implements OnInit {
     }
   }
 
+  public clearSourceFile(event: any) {
+    this.code = this.filename = null;
+    this.sourceFileInput.nativeElement.value = '';
+  }
+
   public makeSubmission(): void {
     if (this.language && this.code) {
-      this.service.createSingle(this.problemId, this.language, this.code)
+      this.submitting = true;
+      this.service.createSingle(this.problem.id, this.language, this.code)
         .subscribe(submission => {
           this.notification.create('success', 'Submitted', 'Code submitted as #' + submission.id.toString() + '.');
-          this.code = this.filename = null;
-          this.sourceFileInput.nativeElement.value = '';
+          this.clearSourceFile(null);
+          this.submitting = this.visible = false;
         }, error => {
           console.log(error);
           this.notification.create('error', 'Error', 'Submitting failed: ' + error.error);
+          this.submitting = false;
         });
     }
   }

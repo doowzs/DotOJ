@@ -57,6 +57,8 @@ import { NzEmptyModule } from 'ng-zorro-antd/empty';
 import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
 import { NzBadgeModule } from 'ng-zorro-antd/badge';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzInputModule } from 'ng-zorro-antd/input';
 
 const loadApplicationConfig = (service: ApplicationConfigService) => {
   return () => service.loadApplicationConfig();
@@ -128,7 +130,9 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     NzEmptyModule,
     NzDrawerModule,
     NzSkeletonModule,
-    NzBadgeModule
+    NzBadgeModule,
+    NzModalModule,
+    NzInputModule
   ],
   providers: [
     ApplicationConfigService,
