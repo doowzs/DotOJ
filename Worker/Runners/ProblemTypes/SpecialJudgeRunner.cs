@@ -53,7 +53,8 @@ namespace Worker.Runners.ProblemTypes
                 };
                 foreach (var file in files)
                 {
-                    await using var srcStream = new FileStream(Path.Combine("Resources", file), FileMode.Open);
+                    await using var srcStream =
+                        new FileStream(Path.Combine("Resources", file), FileMode.Open, FileAccess.Read);
                     await using var destStream = new FileStream(Path.Combine(path, file), FileMode.Create);
                     await srcStream.CopyToAsync(destStream);
                 }
@@ -77,7 +78,7 @@ namespace Worker.Runners.ProblemTypes
                 {
                     var inputFile = Path.Combine(Options.Value.DataPath, Problem.Id.ToString(),
                         Problem.TestCases[run.Index - 1].Input);
-                    await using var fileStream = new FileStream(inputFile, FileMode.Open);
+                    await using var fileStream = new FileStream(inputFile, FileMode.Open, FileAccess.Read);
                     await fileStream.CopyToAsync(inputStream);
                 }
             }
@@ -93,7 +94,7 @@ namespace Worker.Runners.ProblemTypes
                 {
                     var answerFile = Path.Combine(Options.Value.DataPath, Problem.Id.ToString(),
                         Problem.TestCases[run.Index - 1].Output);
-                    await using var fileStream = new FileStream(answerFile, FileMode.Open);
+                    await using var fileStream = new FileStream(answerFile, FileMode.Open, FileAccess.Read);
                     await fileStream.CopyToAsync(answerStream);
                 }
             }

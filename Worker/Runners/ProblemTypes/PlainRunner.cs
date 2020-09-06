@@ -186,8 +186,8 @@ namespace Worker.Runners.ProblemTypes
                 var outputFile =
                     Path.Combine(Options.Value.DataPath, Problem.Id.ToString(), testCase.Output);
 
-                await using (var inputFileStream = new FileStream(inputFile, FileMode.Open))
-                await using (var outputFileStream = new FileStream(outputFile, FileMode.Open))
+                await using (var inputFileStream = new FileStream(inputFile, FileMode.Open, FileAccess.Read))
+                await using (var outputFileStream = new FileStream(outputFile, FileMode.Open, FileAccess.Read))
                 await using (var inputMemoryStream = new MemoryStream())
                 await using (var outputMemoryStream = new MemoryStream())
                 {
