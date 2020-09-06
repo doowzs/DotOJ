@@ -12,6 +12,7 @@ import { ContestViewDto } from '../../../interfaces/contest.interfaces';
 import { Verdicts } from '../../../consts/verdicts.consts';
 import { SubmissionDetailComponent } from '../detail/detail.component';
 import { AuthorizeService, IUser } from '../../../../api-authorization/authorize.service';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-submission-list',
@@ -35,6 +36,7 @@ export class SubmissionListComponent implements OnInit {
   public submissionDrawer: NzDrawerRef;
 
   constructor(
+    private title: Title,
     private route: ActivatedRoute,
     private router: Router,
     private service: SubmissionService,
@@ -64,6 +66,7 @@ export class SubmissionListComponent implements OnInit {
     this.contestService.getSingle(this.contestId)
       .subscribe(contest => {
         this.contest = contest;
+        this.title.setTitle(contest.title + ' - Submissions');
         this.problemFilterList = [];
         for (let i = 0; i < contest.problems.length; ++i) {
           const problem = contest.problems[i];

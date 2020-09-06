@@ -49,101 +49,111 @@ import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
 import { NzDividerModule } from 'ng-zorro-antd/divider';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
-import { MarkdownModule } from 'ngx-markdown';
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { MarkdownModule } from 'ngx-markdown';
 
 @NgModule({
-    imports: [
-        CommonModule,
-        BrowserModule,
-        BrowserAnimationsModule,
-        ReactiveFormsModule,
-        RouterModule.forChild([
-            {
-                path: 'admin',
-                component: AdminComponent,
-                canActivate: [AuthorizeGuard, AdminGuard],
-                data: { roles: ['*'] },
+  imports: [
+    CommonModule,
+    BrowserModule,
+    BrowserAnimationsModule,
+    ReactiveFormsModule,
+    RouterModule.forChild([
+      {
+        path: 'admin',
+        component: AdminComponent,
+        canActivate: [AuthorizeGuard, AdminGuard],
+        data: { roles: ['*'], breadcrumb: 'Admin' },
+        children: [
+          { path: '', pathMatch: 'full', component: AdminDashboardComponent },
+          {
+            path: 'bulletin', canActivate: [AdminGuard], data: { roles: ['Administrator'], breadcrumb: 'Bulletins' },
+            children: [
+              { path: '', pathMatch: 'full', component: AdminBulletinListComponent },
+              { path: 'new', component: AdminBulletinCreatorComponent, data: { breadcrumb: 'Create' } },
+              { path: ':bulletinId', component: AdminBulletinEditorComponent, data: { breadcrumb: 'View' } },
+            ]
+          },
+          {
+            path: 'user',
+            canActivate: [AdminGuard],
+            data: { roles: ['Administrator', 'UserManager'], breadcrumb: 'Users' },
+            children: [
+              { path: '', pathMatch: 'full', component: AdminUserListComponent },
+              { path: ':userId', component: AdminUserEditorComponent, data: { breadcrumb: 'View' } }
+            ]
+          },
+          {
+            path: 'contest',
+            canActivate: [AdminGuard],
+            data: { roles: ['Administrator', 'ContestManager'], breadcrumb: 'Contests' },
+            children: [
+              { path: '', pathMatch: 'full', component: AdminContestListComponent },
+              { path: 'new', component: AdminContestCreatorComponent, data: { breadcrumb: 'Create' } },
+              {
+                path: ':contestId', data: { breadcrumb: 'View' },
                 children: [
-                    { path: '', pathMatch: 'full', component: AdminDashboardComponent },
-                    {
-                        path: 'bulletin', canActivate: [AdminGuard], data: { roles: ['Administrator'] },
-                        children: [
-                            { path: '', pathMatch: 'full', component: AdminBulletinListComponent },
-                            { path: 'new', component: AdminBulletinCreatorComponent },
-                            { path: ':bulletinId', component: AdminBulletinEditorComponent },
-                        ]
-                    },
-                    {
-                        path: 'user', canActivate: [AdminGuard], data: { roles: ['Administrator', 'UserManager'] },
-                        children: [
-                            { path: '', pathMatch: 'full', component: AdminUserListComponent },
-                            { path: ':userId', component: AdminUserEditorComponent }
-                        ]
-                    },
-                    {
-                        path: 'contest',
-                        canActivate: [AdminGuard],
-                        data: { roles: ['Administrator', 'ContestManager'] },
-                        children: [
-                            { path: '', pathMatch: 'full', component: AdminContestListComponent },
-                            { path: 'new', component: AdminContestCreatorComponent },
-                            {
-                                path: ':contestId', children: [
-                                    { path: '', pathMatch: 'full', component: AdminContestEditorComponent },
-                                    { path: 'registrations', component: AdminContestRegistrationsComponent }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        path: 'problem',
-                        canActivate: [AdminGuard],
-                        data: { roles: ['Administrator', 'ContestManager'] },
-                        children: [
-                            { path: '', pathMatch: 'full', component: AdminProblemListComponent },
-                            { path: 'new', component: AdminProblemCreatorComponent },
-                            {
-                                path: ':problemId', children: [
-                                    { path: '', pathMatch: 'full', component: AdminProblemEditorComponent },
-                                    { path: 'test-cases', component: AdminProblemTestCasesComponent }
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        path: 'submission',
-                        canActivate: [AdminGuard],
-                        data: { roles: ['Administrator', 'SubmissionManager'] },
-                        children: [
-                            { path: '', pathMatch: 'full', component: AdminSubmissionListComponent },
-                            { path: 'rejudge', component: AdminSubmissionRejudgeComponent },
-                            { path: ':submissionId', component: AdminSubmissionEditorComponent }
-                        ]
-                    }
+                  { path: '', pathMatch: 'full', component: AdminContestEditorComponent },
+                  {
+                    path: 'registrations',
+                    component: AdminContestRegistrationsComponent,
+                    data: { breadcrumb: 'Registrations' }
+                  }
                 ]
-            }
-        ]),
-        ApiAuthorizationModule,
-        NzLayoutModule,
-        NzMenuModule,
-        NzCardModule,
-        NzPageHeaderModule,
-        NzButtonModule,
-        NzIconModule,
-        NzFormModule,
-        NzInputModule,
-        NzSelectModule,
-        NzDatePickerModule,
-        NzCheckboxModule,
-        NzTableModule,
-        NzPopconfirmModule,
-        NzDividerModule,
-        NzTagModule,
-        NzRadioModule,
-        MarkdownModule,
-        NzDropDownModule,
-    ],
+              }
+            ]
+          },
+          {
+            path: 'problem',
+            canActivate: [AdminGuard],
+            data: { roles: ['Administrator', 'ContestManager'], breadcrumb: 'Problems' },
+            children: [
+              { path: '', pathMatch: 'full', component: AdminProblemListComponent },
+              { path: 'new', component: AdminProblemCreatorComponent, data: { breadcrumb: 'Create' } },
+              {
+                path: ':problemId', data: { breadcrumb: 'View' },
+                children: [
+                  { path: '', pathMatch: 'full', component: AdminProblemEditorComponent },
+                  { path: 'test-cases', component: AdminProblemTestCasesComponent, data: { breadcrumb: 'Test Cases' } }
+                ]
+              }
+            ]
+          },
+          {
+            path: 'submission',
+            canActivate: [AdminGuard],
+            data: { roles: ['Administrator', 'SubmissionManager'], breadcrumb: 'Submissions' },
+            children: [
+              { path: '', pathMatch: 'full', component: AdminSubmissionListComponent },
+              { path: 'rejudge', component: AdminSubmissionRejudgeComponent, data: { breadcrumb: 'Rejudge' } },
+              { path: ':submissionId', component: AdminSubmissionEditorComponent, data: { breadcrumb: 'View' } }
+            ]
+          }
+        ]
+      }
+    ]),
+    ApiAuthorizationModule,
+    NzLayoutModule,
+    NzMenuModule,
+    NzCardModule,
+    NzPageHeaderModule,
+    NzButtonModule,
+    NzIconModule,
+    NzFormModule,
+    NzInputModule,
+    NzSelectModule,
+    NzDatePickerModule,
+    NzCheckboxModule,
+    NzTableModule,
+    NzPopconfirmModule,
+    NzDividerModule,
+    NzTagModule,
+    NzRadioModule,
+    NzBreadCrumbModule,
+    NzDropDownModule,
+    MarkdownModule,
+  ],
   declarations: [
     AdminComponent,
     AdminDashboardComponent,

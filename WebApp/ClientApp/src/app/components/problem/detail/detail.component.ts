@@ -6,6 +6,7 @@ import { takeUntil } from 'rxjs/operators';
 import { ProblemService } from '../../../services/problem.service';
 import { ProblemViewDto } from '../../../interfaces/problem.interfaces';
 import { LanguageInfo } from '../../../consts/languages.consts';
+import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-problem-detail',
@@ -24,6 +25,7 @@ export class ProblemDetailComponent implements OnInit, OnDestroy {
   }
 
   constructor(
+    private title: Title,
     private route: ActivatedRoute,
     private service: ProblemService,
   ) {
@@ -45,7 +47,10 @@ export class ProblemDetailComponent implements OnInit, OnDestroy {
 
   public loadProblem() {
     this.service.getSingle(this.problemId)
-      .subscribe(problem => this.problem = problem);
+      .subscribe(problem => {
+        this.problem = problem;
+        this.title.setTitle(problem.title);
+      });
   }
 }
 
