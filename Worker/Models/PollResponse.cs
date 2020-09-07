@@ -7,6 +7,7 @@ namespace Worker.Models
     {
         [JsonProperty("token")] public string Token { get; set; }
         [JsonProperty("stdout")] public string Stdout { get; set; }
+        [JsonProperty("stderr")] public string Stderr { get; set; }
         [JsonProperty("compile_output")] public string CompileOutput { get; set; }
         [JsonProperty("time")] public string Time { get; set; }
         [JsonProperty("wall_time")] public string WallTime { get; set; }

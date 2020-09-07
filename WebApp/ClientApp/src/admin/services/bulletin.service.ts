@@ -21,10 +21,10 @@ export class AdminBulletinService {
       for (let i = 0; i < list.items.length; ++i) {
         const bulletin = list.items[i];
         if (bulletin.publishAt) {
-          list.items[i].publishAt = moment.utc(bulletin.publishAt).local();
+          bulletin.publishAt = moment.utc(bulletin.publishAt).local();
         }
         if (bulletin.expireAt) {
-          list.items[i].expireAt = moment.utc(bulletin.expireAt).local();
+          bulletin.expireAt = moment.utc(bulletin.expireAt).local();
         }
       }
       return list;

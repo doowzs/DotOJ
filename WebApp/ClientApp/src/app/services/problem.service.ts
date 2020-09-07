@@ -1,7 +1,8 @@
 ﻿import { Injectable } from '@angular/core';
 import { HttpClient, } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Base64 } from 'js-base64';
 
 import { ProblemViewDto } from '../interfaces/problem.interfaces';
 
@@ -25,8 +26,8 @@ export class ProblemService {
         .pipe(map(data => {
           for (let i = 0; i < data.sampleCases.length; ++i) {
             const sampleCase = data.sampleCases[i];
-            sampleCase.input = atob(sampleCase.input);
-            sampleCase.output = atob(sampleCase.output);
+            sampleCase.input = Base64.decode(sampleCase.input);
+            sampleCase.output = Base64.decode(sampleCase.output);
           }
           return data;
         }));

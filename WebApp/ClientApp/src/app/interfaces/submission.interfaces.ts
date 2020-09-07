@@ -1,6 +1,7 @@
 import * as moment from 'moment';
 import { fixSubmissionREVerdictCode, VerdictInfo, Verdicts } from '../consts/verdicts.consts';
 import { LanguageInfo, Languages } from '../consts/languages.consts';
+import { Base64 } from 'js-base64';
 
 export interface Program {
   language: LanguageInfo | number;
@@ -79,9 +80,9 @@ export const mapSubmissionViewDtoFields = (submission: SubmissionViewDto): Submi
   fixSubmissionREVerdictCode(submission);
   submission.verdict = submission.verdictInfo  = Verdicts.find(v => v.code === submission.verdict);
   submission.program.language = Languages.find(l => l.code === submission.program.language);
-  submission.program.code = atob(submission.program.code);
+  submission.program.code = Base64.decode(submission.program.code);
   submission.codeBytes = new Blob([submission.program.code]).size;
-  submission.message = atob(submission.message);
+  submission.message = Base64.decode(submission.message);
   submission.createdAt = moment.utc(submission.createdAt).local();
   if (submission.judgedAt) {
     submission.judgedAt = moment.utc(submission.judgedAt).local();
@@ -93,8 +94,8 @@ export const mapSubmissionEditDtoFields = (submission: SubmissionEditDto): Submi
   fixSubmissionREVerdictCode(submission);
   submission.verdict = submission.verdictInfo  = Verdicts.find(v => v.code === submission.verdict);
   submission.program.language = Languages.find(l => l.code === submission.program.language);
-  submission.program.code = atob(submission.program.code);
-  submission.message = atob(submission.message);
+  submission.program.code = Base64.decode(submission.program.code);
+  submission.message = Base64.decode(submission.message);
   submission.createdAt = moment.utc(submission.createdAt).local();
   if (submission.judgedAt) {
     submission.judgedAt = moment.utc(submission.judgedAt).local();
