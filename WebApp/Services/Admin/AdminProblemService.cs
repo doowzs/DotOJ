@@ -25,6 +25,7 @@ namespace WebApp.Services.Admin
         public Task DeleteProblemAsync(int id);
         public Task<List<TestCase>> GetProblemTestCasesAsync(int id);
         public Task<List<TestCase>> UpdateProblemTestCasesAsync(int id, IFormFile file);
+        public Task<byte[]> ExportProblemAsync(int id);
     }
 
     public class AdminProblemService : LoggableService<AdminProblemService>, IAdminProblemService
@@ -247,6 +248,13 @@ namespace WebApp.Services.Admin
 
             await LogInformation($"UpdateProblemTestCases Id={problem.Id} Count={problem.TestCases.Count}");
             return testCases;
+        }
+
+        public async Task<byte[]> ExportProblemAsync(int id)
+        {
+            await EnsureProblemExists(id);
+            var problem = await Context.Problems.FindAsync(id);
+            return await Data.Archives.v1.ProblemArchive.CreateAsync(problem, Options);
         }
     }
 }

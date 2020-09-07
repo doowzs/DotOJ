@@ -6,6 +6,7 @@ using Data.Generics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Logging;
 using WebApp.Exceptions;
 using WebApp.Services.Admin;
@@ -122,7 +123,6 @@ namespace WebApp.Controllers.Api.v1.Admin
             }
         }
 
-
         [HttpPost("{id:int}/test-cases")]
         [Consumes("multipart/form-data")]
         [Produces(MediaTypeNames.Application.Json)]
@@ -142,6 +142,23 @@ namespace WebApp.Controllers.Api.v1.Admin
             catch (ValidationException e)
             {
                 return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet("{id:int}/export")]
+        [Produces(MediaTypeNames.Application.Zip)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> ExportProblem(int id)
+        {
+            try
+            {
+                var bytes = await _service.ExportProblemAsync(id);
+                return File(bytes, MediaTypeNames.Application.Zip, id + ".zip");
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
             }
         }
     }

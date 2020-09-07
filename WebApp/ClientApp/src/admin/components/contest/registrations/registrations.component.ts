@@ -7,7 +7,6 @@ import { AdminContestService } from '../../../services/contest.service';
 import { AdminUserService } from '../../../services/user.service';
 import { UserInfoDto } from '../../../../app/interfaces/user.interfaces';
 import { PaginatedList } from '../../../../app/interfaces/pagination.interfaces';
-import { TransferItem } from 'ng-zorro-antd/transfer';
 
 @Component({
   selector: 'app-admin-contest-registrations',

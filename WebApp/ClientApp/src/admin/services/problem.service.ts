@@ -74,4 +74,8 @@ export class AdminProblemService {
     const request = new HttpRequest('POST', endpoint, formData, options);
     return this.http.request(request);
   }
+
+  public exportProblem(problemId: number): Observable<Blob> {
+    return this.http.get('/admin/problem/' + problemId.toString() + '/export', { responseType: 'blob' });
+  }
 }

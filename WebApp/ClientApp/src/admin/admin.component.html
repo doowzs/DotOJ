@@ -80,6 +80,10 @@
                   [routerLinkActive]="['ant-menu-item-selected']">
                 Create
               </li>
+              <li nz-menu-item routerLink="/admin/problem/archive"
+                  [routerLinkActive]="['ant-menu-item-selected']">
+                Archive
+              </li>
             </ul>
           </li>
           <li *ngIf="hasAnyRole(['Administrator', 'SubmissionManager'])"

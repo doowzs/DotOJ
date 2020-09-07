@@ -1,0 +1,21 @@
+<h2>Problem Archive</h2>
+<nz-divider></nz-divider>
+<h3>Import Problem</h3>
+<nz-divider></nz-divider>
+<h3>Export Problem</h3>
+<div nz-row [nzGutter]="20">
+  <div nz-col [nzSpan]="16">
+    <nz-form-item>
+      <nz-form-label nzFor="problemId" nzRequired>Problem ID</nz-form-label>
+      <nz-form-control>
+        <input nz-input [(ngModel)]="exportProblemId" placeholder="Problem ID" id="problemId"/>
+      </nz-form-control>
+    </nz-form-item>
+  </div>
+  <div nz-col [nzSpan]="8">
+    <button nz-button nzType="primary" style="width: 100%;"
+            [disabled]="!exportProblemId" (click)="exportProblem($event)">
+      <i nz-icon nzType="download"></i><span>Export</span>
+    </button>
+  </div>
+</div>
