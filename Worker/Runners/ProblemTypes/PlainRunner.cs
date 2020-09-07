@@ -244,7 +244,7 @@ namespace Worker.Runners.ProblemTypes
                 {
                     string time = response.Verdict == Verdict.TimeLimitExceeded ? response.WallTime : response.Time;
 
-                    run.Stdout = response.Stdout;
+                    run.Stdout = response.Stdout ?? "";
                     run.Verdict = response.Verdict;
                     run.Time = string.IsNullOrEmpty(time)
                         ? (int?) null

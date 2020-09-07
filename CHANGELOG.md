@@ -9,6 +9,7 @@
 - Fixed incorrect integer conversion in backend interaction of worker.
 - Fixed empty sequence error when calculating score for problem.
 - Fixed X permission on special judge `compile` and `run` script.
+- Fixed handling empty output (null string) of programs.
 
 ## 0.2.0 - 2020-09-06
 
