@@ -86,7 +86,7 @@ namespace Data.Models
 
                 score = await problemSubmissions
                     .Where(s => s.ProblemId == problemId && s.Score.HasValue)
-                    .MaxAsync(s => s.Score.GetValueOrDefault());
+                    .MaxAsync(s => s.Score) ?? 0;
 
                 var problemStatistics = new ProblemStatistics
                 {
