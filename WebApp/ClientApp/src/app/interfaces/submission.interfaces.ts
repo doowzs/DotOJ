@@ -82,7 +82,7 @@ export const mapSubmissionViewDtoFields = (submission: SubmissionViewDto): Submi
   submission.program.language = Languages.find(l => l.code === submission.program.language);
   submission.program.code = Base64.decode(submission.program.code);
   submission.codeBytes = new Blob([submission.program.code]).size;
-  submission.message = Base64.decode(submission.message);
+  submission.message = Base64.decode(submission.message ?? '');
   submission.createdAt = moment.utc(submission.createdAt).local();
   if (submission.judgedAt) {
     submission.judgedAt = moment.utc(submission.judgedAt).local();
@@ -95,7 +95,7 @@ export const mapSubmissionEditDtoFields = (submission: SubmissionEditDto): Submi
   submission.verdict = submission.verdictInfo  = Verdicts.find(v => v.code === submission.verdict);
   submission.program.language = Languages.find(l => l.code === submission.program.language);
   submission.program.code = Base64.decode(submission.program.code);
-  submission.message = Base64.decode(submission.message);
+  submission.message = Base64.decode(submission.message ?? '');
   submission.createdAt = moment.utc(submission.createdAt).local();
   if (submission.judgedAt) {
     submission.judgedAt = moment.utc(submission.judgedAt).local();

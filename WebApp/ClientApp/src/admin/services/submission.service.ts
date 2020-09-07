@@ -33,7 +33,7 @@ export class AdminSubmissionService {
   }
 
   public updateSingle(submission: SubmissionEditDto): Observable<SubmissionEditDto> {
-    submission.message = Base64.encode(submission.message);
+    submission.message = Base64.encode(submission.message ?? '');
     return this.http.put<SubmissionEditDto>('/admin/submission/' + submission.id.toString(), submission)
       .pipe(map(mapSubmissionEditDtoFields));
   }
