@@ -32,8 +32,8 @@
     <tbody>
     <tr *ngFor="let testCase of testCasesTable.data; index as index">
       <td>{{ index + 1 }}</td>
-      <td>{{ testCase.input }}</td>
-      <td>{{ testCase.output }}</td>
+      <td><span class="monospace">{{ testCase.input }}</span></td>
+      <td><span class="monospace">{{ testCase.output }}</span></td>
     </tr>
     </tbody>
   </nz-table>

@@ -53,5 +53,7 @@
       </button>
     </div>
   </div>
-  <textarea #sourceCodeTextArea nz-input [(ngModel)]="code" rows="20" [disabled]="!!filename"></textarea>
+  <textarea #sourceCodeTextArea nz-input rows="20" class="monospace"
+            [(ngModel)]="code" [disabled]="!!filename"
+  ></textarea>
 </nz-modal>

@@ -83,15 +83,15 @@
       <nz-form-label nzRequired [nzFor]="control.instances[0]">Input</nz-form-label>
       <nz-form-control>
         <textarea nz-input [formControlName]="control.instances[0]"
-                  [attr.id]="control.instances[0]" rows="5"
+                  [attr.id]="control.instances[0]" rows="5" class="monospace"
         ></textarea>
       </nz-form-control>
       <span style="width: 1rem;"></span>
       <nz-form-label nzRequired [nzFor]="control.instances[1]">Output</nz-form-label>
       <nz-form-control>
         <textarea nz-input [formControlName]="control.instances[1]"
-                  [attr.id]="control.instances[1]" rows="5">
-        </textarea>
+                  [attr.id]="control.instances[1]" rows="5" class="monospace"
+        ></textarea>
       </nz-form-control>
     </nz-form-item>
   </ng-container>
