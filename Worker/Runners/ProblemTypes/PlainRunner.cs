@@ -215,6 +215,7 @@ namespace Worker.Runners.ProblemTypes
                                   (inline ? $"SampleCase" : $"TestCase") + $"={index} Token={token.Token}");
             return new Run
             {
+                Check = false,
                 Inline = inline,
                 Index = index,
                 TimeLimit = (int) (options.CpuTimeLimit * 1000),
