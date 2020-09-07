@@ -1,15 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable, Subject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
+import { Base64 } from 'js-base64';
 
 import { SubmissionInfoDto, SubmissionViewDto } from '../interfaces/submission.interfaces';
 import { AuthorizeService } from '../../api-authorization/authorize.service';
 import { PaginatedList } from '../interfaces/pagination.interfaces';
-import {
-  mapSubmissionInfoDtoFields,
-  mapSubmissionViewDtoFields
-} from '../interfaces/submission.interfaces';
+import { mapSubmissionInfoDtoFields, mapSubmissionViewDtoFields } from '../interfaces/submission.interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -86,7 +84,7 @@ export class SubmissionService {
       problemId: problemId,
       program: {
         language: language,
-        code: btoa(code)
+        code: Base64.encode(code)
       }
     }).pipe(map(mapSubmissionInfoDtoFields), tap(data => this.newSubmission.next(data)));
   }

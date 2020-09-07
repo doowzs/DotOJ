@@ -1,10 +1,11 @@
 ﻿import { Injectable } from '@angular/core';
 import { HttpClient, HttpEvent, HttpParams, HttpRequest } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Base64 } from 'js-base64';
 
 import { ProblemEditDto, ProblemInfoDto, TestCase } from '../../app/interfaces/problem.interfaces';
 import { PaginatedList } from '../../app/interfaces/pagination.interfaces';
-import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -23,12 +24,12 @@ export class AdminProblemService {
     return this.http.get<ProblemEditDto>('/admin/problem/' + problemId.toString())
       .pipe(map(data => {
         if (data.specialJudgeProgram) {
-          data.specialJudgeProgram.code = atob(data.specialJudgeProgram.code);
+          data.specialJudgeProgram.code = Base64.decode(data.specialJudgeProgram.code);
         }
         for (let i = 0; i < data.sampleCases.length; ++i) {
           const sampleCase = data.sampleCases[i];
-          sampleCase.input = atob(sampleCase.input);
-          sampleCase.output = atob(sampleCase.output);
+          sampleCase.input = Base64.decode(sampleCase.input);
+          sampleCase.output = Base64.decode(sampleCase.output);
         }
         return data;
       }));
@@ -37,8 +38,8 @@ export class AdminProblemService {
   public createSingle(problem: ProblemEditDto): Observable<any> {
     for (let i = 0; i < problem.sampleCases.length; ++i) {
       const sampleCase = problem.sampleCases[i];
-      sampleCase.input = btoa(sampleCase.input);
-      sampleCase.output = btoa(sampleCase.output);
+      sampleCase.input = Base64.encode(sampleCase.input);
+      sampleCase.output = Base64.encode(sampleCase.output);
     }
     return this.http.post('/admin/problem', problem);
   }
@@ -46,8 +47,8 @@ export class AdminProblemService {
   public updateSingle(problem: ProblemEditDto): Observable<ProblemEditDto> {
     for (let i = 0; i < problem.sampleCases.length; ++i) {
       const sampleCase = problem.sampleCases[i];
-      sampleCase.input = btoa(sampleCase.input);
-      sampleCase.output = btoa(sampleCase.output);
+      sampleCase.input = Base64.encode(sampleCase.input);
+      sampleCase.output = Base64.encode(sampleCase.output);
     }
     return this.http.put<ProblemEditDto>('/admin/problem/' + problem.id.toString(), problem);
   }

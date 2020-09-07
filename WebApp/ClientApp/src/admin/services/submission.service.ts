@@ -1,9 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { Base64 } from 'js-base64';
+
 import { SubmissionEditDto, SubmissionInfoDto } from '../../app/interfaces/submission.interfaces';
 import { PaginatedList } from '../../app/interfaces/pagination.interfaces';
-import { map } from 'rxjs/operators';
 import { mapSubmissionEditDtoFields, mapSubmissionInfoDtoFields } from '../../app/interfaces/submission.interfaces';
 
 @Injectable({
@@ -31,7 +33,7 @@ export class AdminSubmissionService {
   }
 
   public updateSingle(submission: SubmissionEditDto): Observable<SubmissionEditDto> {
-    submission.message = btoa(submission.message);
+    submission.message = Base64.encode(submission.message);
     return this.http.put<SubmissionEditDto>('/admin/submission/' + submission.id.toString(), submission)
       .pipe(map(mapSubmissionEditDtoFields));
   }
