@@ -33,9 +33,14 @@ namespace Worker.Runners.ProblemTypes
 
         private async Task OnRunCompleteImpl(Run run)
         {
+            if (run.Verdict > Verdict.Accepted)
+            {
+                return; // Any verdict except accepted indicates the run already failed.
+            }
+
             run.Token = await CreateSpjRunAsync(run);
             run.Verdict = Verdict.Running;
-            await PollRunAsync(run, getStderr:true);
+            await PollRunAsync(run, getStderr: true);
             await DeleteRunAsync(run);
             if (!string.IsNullOrEmpty(run.StdErr))
             {

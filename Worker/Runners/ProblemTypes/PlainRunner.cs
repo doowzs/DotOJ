@@ -98,7 +98,7 @@ namespace Worker.Runners.ProblemTypes
                 foreach (var testCase in testCases)
                 {
                     var run = await CreateRunAsync(inline, ++index, testCase);
-                    await PollRunAsync(run, getStdout:Problem.HasSpecialJudge);
+                    await PollRunAsync(run, getStdout: Problem.HasSpecialJudge);
                     await DeleteRunAsync(run);
 
                     if (OnRunCompleteDelegate != null)
