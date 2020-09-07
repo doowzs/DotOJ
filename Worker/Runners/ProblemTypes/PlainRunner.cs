@@ -215,6 +215,7 @@ namespace Worker.Runners.ProblemTypes
                                   (inline ? $"SampleCase" : $"TestCase") + $"={index} Token={token.Token}");
             return new Run
             {
+                Check = false,
                 Inline = inline,
                 Index = index,
                 TimeLimit = (int) (options.CpuTimeLimit * 1000),
@@ -253,9 +254,9 @@ namespace Worker.Runners.ProblemTypes
                     run.Memory = response.Memory.HasValue
                         ? (int) Math.Ceiling(response.Memory.Value)
                         : Problem.MemoryLimit;
-                    run.Message = response.Verdict == Verdict.CompilationError
+                    run.Message = (response.Verdict == Verdict.CompilationError
                         ? response.CompileOutput
-                        : response.Message;
+                        : response.Message) ?? "";
                     Logger.LogInformation($"PollRun succeed Token={run.Token} Verdict={run.Verdict}" +
                                           $" Time={run.Time} Memory={run.Memory}");
                     return;

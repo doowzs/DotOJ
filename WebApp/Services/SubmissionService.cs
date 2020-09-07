@@ -181,7 +181,16 @@ namespace WebApp.Services
             {
                 UserId = Accessor.HttpContext.User.GetSubjectId(),
                 ProblemId = dto.ProblemId.GetValueOrDefault(),
-                Program = dto.Program
+                Program = dto.Program,
+                Verdict = Verdict.Pending,
+                Time = null,
+                Memory = null,
+                FailedOn = null,
+                Score = null,
+                Progress = null,
+                Message = null,
+                JudgedBy = null,
+                JudgedAt = null
             };
             await Context.Submissions.AddAsync(submission);
             await Context.SaveChangesAsync();

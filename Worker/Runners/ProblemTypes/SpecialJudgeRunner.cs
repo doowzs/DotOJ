@@ -38,6 +38,7 @@ namespace Worker.Runners.ProblemTypes
                 return; // Any verdict except accepted indicates the run already failed.
             }
 
+            run.Check = true;
             run.Token = await CreateSpjRunAsync(run);
             run.Verdict = Verdict.Running;
             await PollRunAsync(run, getStderr: true);
@@ -52,8 +53,12 @@ namespace Worker.Runners.ProblemTypes
 
         private Task InnerOnRunFailedImpl(Run run)
         {
-            // Any failure in SPJ is considered Wrong Answer.
-            run.Verdict = Verdict.WrongAnswer;
+            // Any failure in checking is considered Wrong Answer.
+            if (run.Check)
+            {
+                run.Verdict = Verdict.WrongAnswer;
+            }
+
             return Task.CompletedTask;
         }
 
