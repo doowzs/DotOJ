@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.3.0 - 2020-09-07
+
+### Added
+
+- Show submission time, memory and message in detail drawer.
+- Use a monospace font (Ubuntu Mono) in source code displaying.
+
+### Fixed
+
+- Fixed file permissions in special judge file archive.
+- Fixed handling empty output (null string) of programs.
+- Fixed special judge logic when the original run fails.
+- Fixed UTF8 character displaying in Base64 encoded strings.
+
 ## 0.2.5 - 2020-09-07
 
 ### Fixed
@@ -8,8 +22,6 @@
 - Fixed RO permission when worker opens file in judge-data folder.
 - Fixed incorrect integer conversion in backend interaction of worker.
 - Fixed empty sequence error when calculating score for problem.
-- Fixed X permission on special judge `compile` and `run` script.
-- Fixed handling empty output (null string) of programs.
 
 ## 0.2.0 - 2020-09-06
 
