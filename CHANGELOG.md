@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.3.0 - 2020-09-07
+## 0.3.1 - 2020-09-07
 
 ### Added
 
@@ -10,20 +10,11 @@
 ### Fixed
 
 - Fixed file permissions in special judge file archive.
-- Fixed handling empty output (null string) of programs.
+- Fixed handling empty output and message (null string) of runs.
 - Fixed special judge logic when the original run fails.
 - Fixed UTF8 character displaying in Base64 encoded strings.
 
 ## 0.2.5 - 2020-09-07
-
-### Fixed
-
-- Fixed an issue that forbids submitting code in textarea.
-- Fixed RO permission when worker opens file in judge-data folder.
-- Fixed incorrect integer conversion in backend interaction of worker.
-- Fixed empty sequence error when calculating score for problem.
-
-## 0.2.0 - 2020-09-06
 
 ### Added
 
@@ -42,6 +33,10 @@
 - Fixed submission timeline updating logic and verdict display.
 - Fixed using UTC timestamp in creating and modifying contests.
 - Fixed hunger in submission triggers caused by wrong picking logic.
+- Fixed an issue that forbids submitting code in textarea.
+- Fixed RO permission when worker opens file in judge-data folder.
+- Fixed incorrect integer conversion in backend interaction of worker.
+- Fixed empty sequence error when calculating score for problem.
 
 ## 0.1.0 - 2020-09-05
 
