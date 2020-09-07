@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net.Http;
 using System.Net.Mime;
 using System.Text;
@@ -28,6 +29,27 @@ namespace Worker.Runners.ProblemTypes
 
             OnRunCompleteDelegate = OnRunCompleteImpl;
             InnerOnRunFailedDelegate = InnerOnRunFailedImpl;
+        }
+
+        private async Task OnRunCompleteImpl(Run run)
+        {
+            run.Token = await CreateSpjRunAsync(run);
+            run.Verdict = Verdict.Running;
+            await PollRunAsync(run, getStderr:true);
+            await DeleteRunAsync(run);
+            if (!string.IsNullOrEmpty(run.StdErr))
+            {
+                var stderr = Convert.FromBase64String(run.StdErr);
+                var message = Convert.FromBase64String(run.Message);
+                run.Message = Convert.ToBase64String(stderr.Concat(message).ToArray());
+            }
+        }
+
+        private Task InnerOnRunFailedImpl(Run run)
+        {
+            // Any failure in SPJ is considered Wrong Answer.
+            run.Verdict = Verdict.WrongAnswer;
+            return Task.CompletedTask;
         }
 
         private async Task<string> CreateSpjRunAsync(Run run)
@@ -136,21 +158,6 @@ namespace Worker.Runners.ProblemTypes
             Logger.LogInformation($"CreateSpjRun succeed Submission={Submission.Id} " +
                                   (run.Inline ? $"SampleCase" : $"TestCase") + $"={run.Index} Token={token}");
             return token.Token;
-        }
-
-        private async Task OnRunCompleteImpl(Run run)
-        {
-            run.Token = await CreateSpjRunAsync(run);
-            run.Verdict = Verdict.Running;
-            await PollRunAsync(run);
-            await DeleteRunAsync(run);
-        }
-
-        private Task InnerOnRunFailedImpl(Run run)
-        {
-            // Any failure in SPJ is considered Wrong Answer.
-            run.Verdict = Verdict.WrongAnswer;
-            return Task.CompletedTask;
         }
     }
 }

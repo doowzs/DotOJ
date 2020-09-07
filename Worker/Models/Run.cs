@@ -10,6 +10,7 @@ namespace Worker.Models
         public string Token { get; set; }
 
         public string Stdout { get; set; }
+        public string StdErr { get; set; }
         public Verdict Verdict { get; set; }
         public int? Time { get; set; }
         public int? Memory { set; get; }

@@ -98,7 +98,7 @@ namespace Worker.Runners.ProblemTypes
                 foreach (var testCase in testCases)
                 {
                     var run = await CreateRunAsync(inline, ++index, testCase);
-                    await PollRunAsync(run, Problem.HasSpecialJudge);
+                    await PollRunAsync(run, getStdout:Problem.HasSpecialJudge);
                     await DeleteRunAsync(run);
 
                     if (OnRunCompleteDelegate != null)
@@ -223,7 +223,7 @@ namespace Worker.Runners.ProblemTypes
             };
         }
 
-        protected async Task PollRunAsync(Run run, bool getStdout = false)
+        protected async Task PollRunAsync(Run run, bool getStdout = false, bool getStderr = false)
         {
             for (int i = 0; i < PollLimit * 3 && run.Verdict == Verdict.Running; ++i)
             {
@@ -231,7 +231,7 @@ namespace Worker.Runners.ProblemTypes
 
                 var uri = Options.Value.Instance.Endpoint + "/submissions/" + run.Token +
                           "?base64_encoded=true&fields=token,time,wall_time,memory,compile_output,message,status_id" +
-                          (getStdout ? ",stdout" : "");
+                          (getStdout ? ",stdout" : "") + (getStderr ? ",stderr" : "");
                 using var message = await Client.GetAsync(uri);
                 if (!message.IsSuccessStatusCode)
                 {
@@ -245,6 +245,7 @@ namespace Worker.Runners.ProblemTypes
                     string time = response.Verdict == Verdict.TimeLimitExceeded ? response.WallTime : response.Time;
 
                     run.Stdout = response.Stdout ?? "";
+                    run.StdErr = response.Stderr ?? "";
                     run.Verdict = response.Verdict;
                     run.Time = string.IsNullOrEmpty(time)
                         ? (int?) null
