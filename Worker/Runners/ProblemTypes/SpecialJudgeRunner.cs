@@ -35,10 +35,6 @@ namespace Worker.Runners.ProblemTypes
             var temp = Path.GetTempPath();
             var path = Path.Combine(temp, Submission.Id.ToString());
             var zip = Path.Combine(temp, "spj" + Submission.Id + ".zip");
-            if (!Directory.Exists(path))
-            {
-                Directory.CreateDirectory(path);
-            }
 
             if (File.Exists(zip))
             {
@@ -129,7 +125,7 @@ namespace Worker.Runners.ProblemTypes
             using var stringContent = new StringContent(JsonConvert.SerializeObject(options),
                 Encoding.UTF8, MediaTypeNames.Application.Json);
             using var response = await Client.PostAsync(uri, stringContent);
-            Directory.Delete(path, true); // Delete folder after creating a new run.
+            File.Delete(zip); // Delete zip file after creating a new run.
             if (!response.IsSuccessStatusCode)
             {
                 Logger.LogError($"CreateSpjRun failed Submission={Submission.Id}" +
