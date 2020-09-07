@@ -8,13 +8,25 @@
       <nz-badge [nzColor]="submission.verdict.color"></nz-badge>
       <app-submission-verdict [submission]="submission"></app-submission-verdict>
     </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Time">
+      <ng-container *ngIf="submission.time">{{ submission.time }} ms</ng-container>
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Memory">
+      <ng-container *ngIf="submission.memory">{{ submission.memory }} KiB</ng-container>
+    </nz-descriptions-item>
     <nz-descriptions-item nzTitle="Created At">
       {{ submission.createdAt.format('YYYY-MM-DD HH:mm') }}
     </nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Judged At" *ngIf="submission.judgedAt">
+    <nz-descriptions-item nzTitle="Judged At" nzSpan="2" *ngIf="submission.judgedAt">
       {{ submission.judgedAt.format('YYYY-MM-DD HH:mm') }} by {{ submission.judgedBy }}
     </nz-descriptions-item>
   </nz-descriptions>
+  <ng-container *ngIf="submission.message">
+    <nz-divider></nz-divider>
+    <h3>Message</h3>
+    <pre>{{ submission.message }}</pre>
+  </ng-container>
   <nz-divider></nz-divider>
+  <h3>Source Code</h3>
   <pre [attr.lang]="submission.program.language.name">{{ submission.program.code }}</pre>
 </ng-container>
