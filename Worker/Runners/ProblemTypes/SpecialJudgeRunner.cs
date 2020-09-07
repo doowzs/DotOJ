@@ -33,7 +33,6 @@ namespace Worker.Runners.ProblemTypes
         private async Task<string> CreateSpjRunAsync(Run run)
         {
             var temp = Path.GetTempPath();
-            var path = Path.Combine(temp, Submission.Id.ToString());
             var zip = Path.Combine(temp, "spj" + Submission.Id + ".zip");
 
             if (File.Exists(zip))
