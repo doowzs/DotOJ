@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Data.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Mono.Unix;
 using Newtonsoft.Json;
 using Worker.Models;
 
@@ -47,16 +48,29 @@ namespace Worker.Runners.ProblemTypes
 
             // Prepare testlib.h and backend configuration files.
             {
-                var files = new List<string>
+                var pairs = new List<KeyValuePair<string, bool>>
                 {
-                    "testlib.h", "compile", "run"
+                    new KeyValuePair<string, bool>("testlib.h", false),
+                    new KeyValuePair<string, bool>("compile", true),
+                    new KeyValuePair<string, bool>("run", true)
                 };
-                foreach (var file in files)
+                foreach (var pair in pairs)
                 {
-                    await using var srcStream =
-                        new FileStream(Path.Combine("Resources", file), FileMode.Open, FileAccess.Read);
-                    await using var destStream = new FileStream(Path.Combine(path, file), FileMode.Create);
-                    await srcStream.CopyToAsync(destStream);
+                    await using (var srcStream =
+                        new FileStream(Path.Combine("Resources", pair.Key), FileMode.Open, FileAccess.Read))
+                    await using (var destStream = new FileStream(Path.Combine(path, pair.Key), FileMode.Create))
+                    {
+                        await srcStream.CopyToAsync(destStream);
+                    }
+
+                    if (pair.Value) // set script file permission to 755
+                    {
+                        var unixFileInfo = new UnixFileInfo(Path.Combine(path, pair.Key));
+                        unixFileInfo.FileAccessPermissions = FileAccessPermissions.UserReadWriteExecute | 
+                            FileAccessPermissions.GroupRead | FileAccessPermissions.GroupExecute |
+                            FileAccessPermissions.OtherRead | FileAccessPermissions.OtherExecute;
+                        unixFileInfo.Refresh();
+                    }
                 }
             }
 
