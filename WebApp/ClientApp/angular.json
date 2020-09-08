@@ -35,7 +35,8 @@
             ],
             "scripts": [
               "node_modules/marked/lib/marked.js",
-              "node_modules/katex/dist/katex.min.js"
+              "node_modules/katex/dist/katex.min.js",
+              "node_modules/katex/dist/contrib/auto-render.js"
             ]
           },
           "configurations": {
@@ -102,7 +103,8 @@
             ],
             "scripts": [
               "node_modules/marked/lib/marked.js",
-              "node_modules/katex/dist/katex.min.js"
+              "node_modules/katex/dist/katex.min.js",
+              "node_modules/katex/dist/contrib/auto-render.js"
             ]
           }
         },

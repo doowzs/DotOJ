@@ -33,7 +33,7 @@ import { SubmissionVerdictComponent } from './components/submission/verdict/verd
 import { SubmissionTimelineComponent } from './components/submission/timeline/timeline.component';
 import { SubmissionDetailComponent } from './components/submission/detail/detail.component';
 
-import { MarkdownModule } from 'ngx-markdown';
+import { MarkdownModule } from '../lib/markdown/markdown.module';
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';

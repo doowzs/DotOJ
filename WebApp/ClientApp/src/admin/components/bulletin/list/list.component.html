@@ -17,8 +17,8 @@
     <td>{{ bulletin.id }}</td>
     <td>{{ bulletin.weight }}</td>
     <td>{{ bulletin.content.substr(0, 20) }}...</td>
-    <td>{{ bulletin.publishAt.format('YYYY-MM-DD HH:mm') }}</td>
-    <td>{{ bulletin.expireAt.format('YYYY-MM-DD HH:mm') }}</td>
+    <td>{{ bulletin.publishAt?.format('YYYY-MM-DD HH:mm') }}</td>
+    <td>{{ bulletin.expireAt?.format('YYYY-MM-DD HH:mm') }}</td>
     <td>
       <button nz-button nzType="default" [routerLink]="['/admin/bulletin', bulletin.id]">View</button>
     </td>

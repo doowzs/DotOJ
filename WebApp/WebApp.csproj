@@ -40,6 +40,16 @@
     <ProjectReference Include="..\Data\Data.csproj" />
     <ProjectReference Include="..\Notification\Notification.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="ClientApp\lib\jfcere\ngx-markdown\ng-package.json" />
+    <_ContentIncludedByDefault Remove="ClientApp\lib\jfcere\ngx-markdown\ng-package.prod.json" />
+    <_ContentIncludedByDefault Remove="ClientApp\lib\jfcere\ngx-markdown\package-lock.json" />
+    <_ContentIncludedByDefault Remove="ClientApp\lib\jfcere\ngx-markdown\package.json" />
+    <_ContentIncludedByDefault Remove="ClientApp\lib\jfcere\ngx-markdown\tsconfig.lib.json" />
+    <_ContentIncludedByDefault Remove="ClientApp\lib\jfcere\ngx-markdown\tsconfig.lib.prod.json" />
+    <_ContentIncludedByDefault Remove="ClientApp\lib\jfcere\ngx-markdown\tsconfig.spec.json" />
+    <_ContentIncludedByDefault Remove="ClientApp\lib\jfcere\ngx-markdown\tslint.json" />
+  </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
     <!-- Ensure Node.js is installed -->
