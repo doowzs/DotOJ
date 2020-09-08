@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.4.0 - 2020-09-08
+## 0.4.1 - 2020-09-08
 
 ### Added
 
@@ -9,6 +9,7 @@
 ### Fixed
 
 - Fixed form data handling logic that could prevent updating problem.
+- Fixed listing test cases using a list in `nz-table`.
 
 ## 0.3.1 - 2020-09-07
 
