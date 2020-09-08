@@ -122,7 +122,6 @@ namespace WebApp.Controllers.Api.v1.Admin
             }
         }
 
-
         [HttpPost("{id:int}/test-cases")]
         [Consumes("multipart/form-data")]
         [Produces(MediaTypeNames.Application.Json)]
@@ -142,6 +141,46 @@ namespace WebApp.Controllers.Api.v1.Admin
             catch (ValidationException e)
             {
                 return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPost("import")]
+        [Consumes("multipart/form-data")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<ProblemEditDto>> ImportProblem
+            ([Required, FromForm(Name = "contest-id")] int? contestId, [FromForm(Name = "zip-file")] IFormFile file)
+        {
+            try
+            {
+                return Ok(await _service.ImportProblemAsync(contestId.GetValueOrDefault(), file));
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (ValidationException e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpGet("{id:int}/export")]
+        [Produces(MediaTypeNames.Application.Zip)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> ExportProblem(int id)
+        {
+            try
+            {
+                var bytes = await _service.ExportProblemAsync(id);
+                return File(bytes, MediaTypeNames.Application.Zip, id + ".zip");
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
             }
         }
     }

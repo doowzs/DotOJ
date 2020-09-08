@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.4.0 - 2020-09-08
+
+### Added
+
+- Add support for importing/exporting problem as a zip archive.
+
+### Fixed
+
+- Fixed form data handling logic that could prevent updating problem.
+
 ## 0.3.1 - 2020-09-07
 
 ### Added
