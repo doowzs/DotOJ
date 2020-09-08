@@ -19,7 +19,7 @@ export class AdminBulletinFormComponent implements OnInit, OnChanges {
   constructor(private builder: FormBuilder) {
     this.form = this.builder.group({
       id: [null],
-      weight: [null],
+      weight: [null, [Validators.required]],
       content: [null, [Validators.required, Validators.maxLength(30000)]],
       publishAt: [null],
       expireAt: [null]

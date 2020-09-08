@@ -1,5 +1,8 @@
 ﻿@import "~ng-zorro-antd/ng-zorro-antd.less";
 @import "~typeface-ubuntu-mono/index.css";
+@import "~katex/dist/katex.css";
+
+@code-family: 'Ubuntu Mono', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
 
 nz-table {
   overflow-x: auto;
@@ -7,4 +10,10 @@ nz-table {
 
 pre, code, .monospace {
   font-family: 'Ubuntu Mono', monospace;
+}
+
+blockquote {
+  padding: 0 1em;
+  color: @text-color-secondary;
+  border-left: .25em solid @background-color-base;
 }

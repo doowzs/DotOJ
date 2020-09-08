@@ -1,6 +1,6 @@
 ﻿<form nz-form [formGroup]="form" (ngSubmit)="submitForm(form.value)">
   <nz-form-item>
-    <nz-form-label nzFor="weight">Weight</nz-form-label>
+    <nz-form-label nzRequired nzFor="weight">Weight</nz-form-label>
     <nz-form-control>
       <input nz-input formControlName="weight" id="weight"/>
     </nz-form-control>
