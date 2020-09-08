@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.4.2 - 2020-09-08
+
+### Added
+
+- A tooltip will appear when clicking on copy icon of sample data.
+
+### Changed
+
+- Use a local modified version of markdown component.
+- Updated KaTeX rendering option and blockquote stylesheet.
+
 ## 0.3.1 - 2020-09-07
 
 ### Added
