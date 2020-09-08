@@ -25,6 +25,7 @@ namespace WebApp.Services.Admin
         public Task DeleteProblemAsync(int id);
         public Task<List<TestCase>> GetProblemTestCasesAsync(int id);
         public Task<List<TestCase>> UpdateProblemTestCasesAsync(int id, IFormFile file);
+        public Task<ProblemEditDto> ImportProblemAsync(int contestId, IFormFile file);
         public Task<byte[]> ExportProblemAsync(int id);
     }
 
@@ -168,86 +169,26 @@ namespace WebApp.Services.Admin
         public async Task<List<TestCase>> UpdateProblemTestCasesAsync(int id, IFormFile file)
         {
             await EnsureProblemExists(id);
-            var testCases = new List<TestCase>();
-
-            using (var stream = file.OpenReadStream())
-            using (var zip = new ZipArchive(stream, ZipArchiveMode.Read))
-            {
-                var inputs = new HashSet<string>();
-                var outputs = new HashSet<string>();
-                var path = Path.Combine(Options.Value.DataPath, id.ToString());
-
-                // Traverse all files in zip archive and get filenames.
-                foreach (var entry in zip.Entries)
-                {
-                    var filename = Path.GetFileNameWithoutExtension(entry.FullName);
-                    var extension = Path.GetExtension(entry.FullName);
-                    if (extension.Equals(".in"))
-                    {
-                        inputs.Add(filename);
-                    }
-                    else if (extension.Equals(".out"))
-                    {
-                        outputs.Add(filename);
-                    }
-                }
-
-                // Filter all valid test case files.
-                foreach (var filename in inputs)
-                {
-                    if (outputs.Contains(filename))
-                    {
-                        testCases.Add(new TestCase
-                        {
-                            Input = filename + ".in",
-                            Output = filename + ".out"
-                        });
-                    }
-                    else
-                    {
-                        inputs.Remove(filename);
-                    }
-                }
-
-                // Clear current test case folder.
-                if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
-
-                var dir = new DirectoryInfo(path);
-                foreach (var f in dir.EnumerateFiles())
-                {
-                    f.Delete();
-                }
-
-                foreach (var d in dir.EnumerateDirectories())
-                {
-                    d.Delete(true);
-                }
-
-                // Move new test case files into test case folder.
-                foreach (var entry in zip.Entries)
-                {
-                    var filename = Path.GetFileNameWithoutExtension(entry.FullName);
-                    var extension = Path.GetExtension(entry.FullName);
-                    if (inputs.Contains(filename) && (extension.Equals(".in") || extension.Equals(".out")))
-                    {
-                        var dest = Path.Combine(path, entry.FullName);
-                        await using (var fs = new FileStream(dest, FileMode.Create))
-                        {
-                            await entry.Open().CopyToAsync(fs);
-                        }
-                    }
-                }
-            }
 
             var problem = await Context.Problems.FindAsync(id);
-            problem.TestCases = testCases;
+            await Data.Archives.v1.ProblemArchive.ExtractTestCasesAsync(problem, file, "", Options);
             await Context.SaveChangesAsync();
 
             await LogInformation($"UpdateProblemTestCases Id={problem.Id} Count={problem.TestCases.Count}");
-            return testCases;
+            return problem.TestCases;
+        }
+
+        public async Task<ProblemEditDto> ImportProblemAsync(int contestId, IFormFile file)
+        {
+            if (!await Context.Contests.AnyAsync(c => c.Id == contestId))
+            {
+                throw new ValidationException("Invalid Contest ID.");
+            }
+            
+            var problem = await Data.Archives.v1.ProblemArchive.ParseAsync(contestId, file, Options);
+            await Context.Problems.AddRangeAsync(problem);
+            await Context.SaveChangesAsync();
+            return new ProblemEditDto(problem);
         }
 
         public async Task<byte[]> ExportProblemAsync(int id)
