@@ -4,12 +4,18 @@
 
 ### Added
 
+- Add support for importing/exporting problem as a zip archive.
 - A tooltip will appear when clicking on copy icon of sample data.
 
 ### Changed
 
 - Use a local modified version of markdown component.
 - Updated KaTeX rendering option and blockquote stylesheet.
+
+### Fixed
+
+- Fixed form data handling logic that could prevent updating problem.
+- Fixed listing test cases using a list in `nz-table`.
 
 ## 0.3.1 - 2020-09-07
 

@@ -6,7 +6,6 @@ using Data.Generics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Logging;
 using WebApp.Exceptions;
 using WebApp.Services.Admin;
@@ -134,6 +133,29 @@ namespace WebApp.Controllers.Api.v1.Admin
             try
             {
                 return Ok(await _service.UpdateProblemTestCasesAsync(id, file));
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (ValidationException e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPost("import")]
+        [Consumes("multipart/form-data")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<ProblemEditDto>> ImportProblem
+            ([Required, FromForm(Name = "contest-id")] int? contestId, [FromForm(Name = "zip-file")] IFormFile file)
+        {
+            try
+            {
+                return Ok(await _service.ImportProblemAsync(contestId.GetValueOrDefault(), file));
             }
             catch (NotFoundException e)
             {

@@ -75,6 +75,22 @@ export class AdminProblemService {
     return this.http.request(request);
   }
 
+  public importProblem(contestId: number, file: File): Observable<HttpEvent<any>> {
+    const formData = new FormData();
+    formData.append('contest-id', contestId.toString());
+    formData.append('zip-file', file, file.name);
+
+    const endpoint = '/admin/problem/import';
+    const options = {
+      params: new HttpParams(),
+      reportProgress: true
+    };
+
+    const request = new HttpRequest('POST', endpoint, formData, options);
+    return this.http.request(request);
+  }
+
+
   public exportProblem(problemId: number): Observable<Blob> {
     return this.http.get('/admin/problem/' + problemId.toString() + '/export', { responseType: 'blob' });
   }
