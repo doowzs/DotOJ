@@ -31,8 +31,6 @@ namespace Worker
             {
                 await Task.Delay(1000, stoppingToken);
 
-                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-
                 foreach (var trigger in _triggers)
                 {
                     try
