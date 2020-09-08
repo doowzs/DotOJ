@@ -27,6 +27,7 @@
     "file-saver": "^2.0.2",
     "js-base64": "^3.4.5",
     "katex": "^0.12.0",
+    "marked": "^1.1.1",
     "moment": "^2.27.0",
     "ng-zorro-antd": "10.0.0-beta.4",
     "oidc-client": "^1.9.1",
