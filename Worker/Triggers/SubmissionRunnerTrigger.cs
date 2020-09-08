@@ -38,7 +38,16 @@ namespace Worker.Triggers
                     .Where(s => s.Verdict == Verdict.Pending).ToListAsync();
                 foreach (var pendingSubmission in pendingSubmissions)
                 {
+                    // Must reset all fields to clear cache in DBContext.
                     pendingSubmission.Verdict = Verdict.InQueue;
+                    pendingSubmission.Time = null;
+                    pendingSubmission.Memory = null;
+                    pendingSubmission.Score = null;
+                    pendingSubmission.FailedOn = null;
+                    pendingSubmission.Progress = null;
+                    pendingSubmission.Message = null;
+                    pendingSubmission.JudgedBy = null;
+                    pendingSubmission.JudgedAt = null;
                 }
 
                 Context.UpdateRange(pendingSubmissions);
