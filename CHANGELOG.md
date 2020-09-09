@@ -10,7 +10,7 @@
 
 - Drop Judge0 API in worker and docker containers.
 
-## 0.4.3 - 2020-09-08
+## 0.4.5 - 2020-09-09
 
 ### Added
 
@@ -21,12 +21,14 @@
 
 - Use a local modified version of markdown component.
 - Updated KaTeX rendering option and blockquote stylesheet.
+- Changed upload request size limit from default to 300MiB.
 
 ### Fixed
 
 - Fixed form data handling logic that could prevent updating problem.
 - Fixed listing test cases using a list in `nz-table`.
 - Fixed wrong queuing status of submissions caused by DB caching.
+- Fixed extracting test cases when importing a problem archive.
 
 ## 0.3.1 - 2020-09-07
 

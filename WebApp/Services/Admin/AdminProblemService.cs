@@ -184,10 +184,14 @@ namespace WebApp.Services.Admin
             {
                 throw new ValidationException("Invalid Contest ID.");
             }
-            
+
             var problem = await Data.Archives.v1.ProblemArchive.ParseAsync(contestId, file, Options);
             await Context.Problems.AddRangeAsync(problem);
             await Context.SaveChangesAsync();
+
+            await Data.Archives.v1.ProblemArchive.ExtractTestCasesAsync(problem, file, "tests/", Options);
+            await Context.SaveChangesAsync();
+
             return new ProblemEditDto(problem);
         }
 
