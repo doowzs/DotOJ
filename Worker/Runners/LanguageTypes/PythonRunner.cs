@@ -19,7 +19,7 @@ namespace Worker.Runners.LanguageTypes
 
         protected override async Task<JudgeResult> CompileAsync()
         {
-            var file = Path.Combine(Box, "program.py");
+            var file = Path.Combine(Jail, "main.py");
             var program = Convert.FromBase64String(Submission.Program.Code);
             await using (var stream = new FileStream(file, FileMode.Create, FileAccess.Write))
             {
@@ -36,9 +36,9 @@ namespace Worker.Runners.LanguageTypes
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "isolate",
-                    Arguments = $"--cg -s -M {meta} -i input -o output -r stderr -p1 -f {bytes}" +
+                    Arguments = $"--cg -s -M {meta} -c jail -i jail/input -o jail/output -r jail/stderr -p1 -f {bytes}" +
                                 $" --cg-timing -t {TimeLimit} -x 0 -w {TimeLimit + 3.0f} -k 128000 --cg-mem={MemoryLimit}" +
-                                " --run -- /usr/bin/python3 program.py"
+                                " --run -- /usr/bin/python3 main.py"
                 }
             };
             process.Start();

@@ -30,6 +30,7 @@ namespace Worker.Runners.LanguageTypes
         protected readonly IOptions<JudgingConfig> Options;
         protected ILogger Logger;
         protected string Box;
+        protected string Jail;
 
         public Func<Contest, Problem, Submission, Task<JudgeResult>> BeforeStartDelegate = null;
         public Func<Contest, Problem, Submission, bool, Task<JudgeResult>> BeforeTestGroupDelegate = null;
@@ -79,7 +80,13 @@ namespace Worker.Runners.LanguageTypes
             process.Start();
             process.WaitForExit();
             Box = Path.Combine((await process.StandardOutput.ReadToEndAsync()).Trim(), "box");
-            Logger.LogInformation($"Box created with Path={Box}.");
+            Jail = Path.Combine(Box, "jail");
+            if (!Directory.Exists(Jail))
+            {
+                Directory.CreateDirectory(Jail);
+            }
+
+            Logger.LogInformation($"Isolated initialized with Path={Box}.");
         }
 
         protected virtual Task<JudgeResult> CompileAsync()
@@ -142,14 +149,14 @@ namespace Worker.Runners.LanguageTypes
             await PrepareTestCaseAsync(inline, testCase);
             await ExecuteProgramAsync(meta, bytes);
 
-            var output = Path.Combine(Box, "output");
+            var output = Path.Combine(Jail, "output");
             await using (var stream = new FileStream(output, FileMode.Open, FileAccess.Read))
             using (var reader = new StreamReader(stream))
             {
                 run.Stdout = await reader.ReadToEndAsync();
             }
 
-            var stderr = Path.Combine(Box, "stderr");
+            var stderr = Path.Combine(Jail, "stderr");
             await using (var stream = new FileStream(stderr, FileMode.Open, FileAccess.Read))
             using (var reader = new StreamReader(stream))
             {

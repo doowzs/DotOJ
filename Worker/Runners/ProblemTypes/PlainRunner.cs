@@ -14,7 +14,6 @@ namespace Worker.Runners.ProblemTypes
         protected readonly Problem Problem;
         protected readonly Submission Submission;
         protected readonly IServiceProvider Provider;
-        protected ILogger Logger;
 
         public Func<Contest, Problem, Submission, Task<JudgeResult>> BeforeStartDelegate = null;
         public Func<Contest, Problem, Submission, bool, Task<JudgeResult>> BeforeTestGroupDelegate = null;
@@ -26,8 +25,6 @@ namespace Worker.Runners.ProblemTypes
             Problem = problem;
             Submission = submission;
             Provider = provider;
-
-            Logger = provider.GetRequiredService<ILogger<PlainRunner>>();
         }
 
         public async Task<JudgeResult> RunSubmissionAsync()

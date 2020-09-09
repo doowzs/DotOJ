@@ -19,7 +19,7 @@ namespace Worker.Runners.LanguageTypes
 
         protected override async Task<JudgeResult> CompileAsync()
         {
-            var file = Path.Combine(Box, "program.c");
+            var file = Path.Combine(Jail, "main.c");
             var program = Convert.FromBase64String(Submission.Program.Code);
             await using (var stream = new FileStream(file, FileMode.Create, FileAccess.Write))
             {
@@ -31,11 +31,11 @@ namespace Worker.Runners.LanguageTypes
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "isolate",
-                    Arguments = "--cg -s -E PATH=/usr/bin/ -i /dev/null -r compiler_output" +
+                    Arguments = "--cg -s -E PATH=/usr/bin/ -c jail -i /dev/null -r compiler_output" +
                                 " -p120 -f 409600 --cg-timing -t 15.0 -x 0 -w 20.0 -k 128000 --cg-mem=512000" +
                                 " --run -- /usr/bin/gcc " +
                                 LanguageOptions.LanguageOptionsDict[Language.C].CompilerOptions +
-                                " program.c -o program"
+                                " main.c -o main"
                 }
             };
             process.Start();
@@ -73,9 +73,9 @@ namespace Worker.Runners.LanguageTypes
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "isolate",
-                    Arguments = $"--cg -s -M {meta} -i input -o output -r stderr -p1 -f {bytes}" +
+                    Arguments = $"--cg -s -M {meta} -c jail -i jail/input -o jail/output -r jail/stderr -p1 -f {bytes}" +
                                 $" --cg-timing -t {TimeLimit} -x 0 -w {TimeLimit + 3.0f} -k 128000 --cg-mem={MemoryLimit}" +
-                                " --run -- program"
+                                " --run -- main"
                 }
             };
             process.Start();
