@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
 using Data.Models;
@@ -103,7 +104,7 @@ namespace Worker.Triggers
                     submission.FailedOn = result.FailedOn;
                     submission.Score = result.Score;
                     submission.Progress = 100;
-                    submission.Message = result.Message;
+                    submission.Message = Convert.ToBase64String(Encoding.UTF8.GetBytes(result.Message));
                     submission.JudgedAt = DateTime.Now.ToUniversalTime();
 
                     using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))

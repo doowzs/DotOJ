@@ -50,7 +50,7 @@ namespace Worker.Runners.LanguageTypes
         {
             await InitAsync();
             var result = await InnerRunSubmissionAsync();
-            await CleanupAsync();
+            //await CleanupAsync();
             return result;
         }
 
@@ -99,7 +99,7 @@ namespace Worker.Runners.LanguageTypes
                 }
                 else
                 {
-                    var dataFile = Path.Combine(Options.Value.DataPath, Problem.Id.ToString(), testCase.Output);
+                    var dataFile = Path.Combine(Options.Value.DataPath, Problem.Id.ToString(), testCase.Input);
                     await using var dataStream = new FileStream(dataFile, FileMode.Open, FileAccess.Read);
                     await dataStream.CopyToAsync(stream);
                 }
