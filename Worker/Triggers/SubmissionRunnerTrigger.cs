@@ -87,7 +87,7 @@ namespace Worker.Triggers
                 var problem = await Context.Problems.FindAsync(submission.ProblemId);
                 var contest = await Context.Contests.FindAsync(problem.ContestId);
 
-                //try
+                try
                 {
                     Logger.LogInformation($"SubmissionRunner Trigger Id={submission.Id} Problem={problem.Id}");
 
@@ -142,7 +142,6 @@ namespace Worker.Triggers
                     Logger.LogInformation($"SubmissionRunner Complete Submission={submission.Id} Problem={problem.Id}" +
                                           $" Verdict={submission.Verdict} TimeElapsed={stopwatch.Elapsed}");
                 }
-                /*
                 catch (Exception e)
                 {
                     submission.Verdict = Verdict.Failed;
@@ -155,7 +154,7 @@ namespace Worker.Triggers
                     await Broadcaster.SendNotification(true, $"Runner failed on Submission #{submission.Id}",
                         $"Submission runner \"{Options.Value.Name}\" failed on submission #{submission.Id}" +
                         $" with error message **\"{e.Message}\"**.");
-                }*/
+                }
             }
 
             return submission != null;

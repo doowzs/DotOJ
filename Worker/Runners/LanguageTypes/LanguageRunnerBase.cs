@@ -50,7 +50,7 @@ namespace Worker.Runners.LanguageTypes
         {
             await InitAsync();
             var result = await InnerRunSubmissionAsync();
-            //await CleanupAsync();
+            await CleanupAsync();
             return result;
         }
 
