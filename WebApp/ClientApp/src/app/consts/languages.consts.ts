@@ -9,16 +9,17 @@ export interface LanguageInfo {
 
 export const Languages: LanguageInfo[] = [
   {
-    code: 50, factor: 1.0, name: 'C', mode: 'c_cpp',
+    code: 1, factor: 1.0, name: 'C', mode: 'c_cpp',
     env: 'GCC 9.2', option: '-DONLINE_JUDGE --static -O2 --std=c11'
   },
   {
+    code: 2, factor: 1.0, name: 'C++', mode: 'c_cpp',
+    env: 'GCC 9.2', option: '-DONLINE_JUDGE --static -O2 --std=c++17'
+  }
+  /*
+  {
     code: 51, factor: 1.5, name: 'C#', mode: 'csharp',
     env: 'Mono 6.6', option: ''
-  },
-  {
-    code: 54, factor: 1.0, name: 'C++', mode: 'c_cpp',
-    env: 'GCC 9.2', option: '-DONLINE_JUDGE --static -O2 --std=c++17'
   },
   {
     code: 60, factor: 2.0, name: 'Golang', mode: 'golang',
@@ -60,4 +61,5 @@ export const Languages: LanguageInfo[] = [
     code: 74, factor: 5.0, name: 'TypeScript', mode: 'typescript',
     env: 'TypeScript 3.7', option: ''
   }
+  */
 ];
