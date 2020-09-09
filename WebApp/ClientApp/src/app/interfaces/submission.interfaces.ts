@@ -1,5 +1,5 @@
 import * as moment from 'moment';
-import { fixSubmissionREVerdictCode, VerdictInfo, Verdicts } from '../consts/verdicts.consts';
+import { VerdictInfo, Verdicts } from '../consts/verdicts.consts';
 import { LanguageInfo, Languages } from '../consts/languages.consts';
 import { Base64 } from 'js-base64';
 
