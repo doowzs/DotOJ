@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.4.4 - 2020-09-08
+## 0.4.5 - 2020-09-09
 
 ### Added
 
@@ -11,6 +11,7 @@
 
 - Use a local modified version of markdown component.
 - Updated KaTeX rendering option and blockquote stylesheet.
+- Changed upload request size limit from default to 300MiB.
 
 ### Fixed
 
