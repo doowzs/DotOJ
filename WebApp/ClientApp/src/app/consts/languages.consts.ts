@@ -3,19 +3,14 @@ export interface LanguageInfo {
   factor: number;
   name: string;
   mode: string; // For Cloud Ace9 Editor
-  env: string;
   option: string;
 }
 
 export const Languages: LanguageInfo[] = [
-  {
-    code: 1, factor: 1.0, name: 'C', mode: 'c_cpp',
-    env: 'GCC 9.2', option: '-DONLINE_JUDGE --static -O2 --std=c11'
-  },
-  {
-    code: 2, factor: 1.0, name: 'C++', mode: 'c_cpp',
-    env: 'GCC 9.2', option: '-DONLINE_JUDGE --static -O2 --std=c++17'
-  }
+  { code: 1, factor: 1.0, name: 'C 11', mode: 'c_cpp', option: '-DONLINE_JUDGE --static -O2 --std=c11' },
+  { code: 2, factor: 1.0, name: 'C++ 17', mode: 'c_cpp', option: '-DONLINE_JUDGE --static -O2 --std=c++17' },
+  { code: 3, factor: 2.0, name: 'Java 11', mode: 'java', option: '-J-Xms32m -J-Xmx256m' },
+  { code: 4, factor: 5.0, name: 'Python 3', mode: 'python', option: '' },
   /*
   {
     code: 51, factor: 1.5, name: 'C#', mode: 'csharp',
@@ -30,10 +25,6 @@ export const Languages: LanguageInfo[] = [
     env: 'GHC 8.8', option: ''
   },
   {
-    code: 62, factor: 2.0, name: 'Java 11', mode: 'java',
-    env: 'OpenJDK 13.0', option: '-J-Xms32m -J-Xmx256m'
-  },
-  {
     code: 63, factor: 5.0, name: 'JavaScript', mode: 'javascript',
     env: 'Node.js 12.14', option: ''
   },
@@ -44,10 +35,6 @@ export const Languages: LanguageInfo[] = [
   {
     code: 68, factor: 4.5, name: 'PHP', mode: 'php',
     env: 'PHP 7.4', option: ''
-  },
-  {
-    code: 71, factor: 5.0, name: 'Python 3', mode: 'python',
-    env: 'Python 3.8', option: ''
   },
   {
     code: 72, factor: 5.0, name: 'Ruby', mode: 'ruby',

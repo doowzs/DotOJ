@@ -7,6 +7,8 @@ namespace Data.Models
     {
         C = 1,
         Cpp = 2,
+        Java = 3,
+        Python = 4,
         /*
         CSharp = 51,
         Go = 60,

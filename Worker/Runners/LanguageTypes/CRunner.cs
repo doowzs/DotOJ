@@ -1,7 +1,6 @@
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using Data.Models;
 using Microsoft.Extensions.DependencyInjection;
@@ -63,7 +62,7 @@ namespace Worker.Runners.LanguageTypes
                 Memory = null,
                 FailedOn = 0,
                 Score = 0,
-                Message = Convert.ToBase64String(Encoding.UTF8.GetBytes(compilerOutputString))
+                Message = compilerOutputString
             };
         }
 

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Data.Models;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,8 +10,6 @@ namespace Worker.Runners.ProblemTypes
 {
     public class PlainRunner
     {
-        private const int PollLimit = 100;
-
         protected readonly Contest Contest;
         protected readonly Problem Problem;
         protected readonly Submission Submission;
@@ -43,6 +40,9 @@ namespace Worker.Runners.ProblemTypes
                     break;
                 case Language.Cpp:
                     runner = new CppRunner(Contest, Problem, Submission, Provider);
+                    break;
+                case Language.Python:
+                    runner = new Py3Runner(Contest, Problem, Submission, Provider);
                     break;
                 default:
                     throw new Exception($"Invalid language Submission={Submission.Id}" +
