@@ -9,12 +9,12 @@ using Worker.Models;
 
 namespace Worker.Runners.LanguageTypes
 {
-    public class Py3Runner : LanguageRunnerBase
+    public class PythonRunner : LanguageRunnerBase
     {
-        public Py3Runner(Contest contest, Problem problem, Submission submission, IServiceProvider provider)
+        public PythonRunner(Contest contest, Problem problem, Submission submission, IServiceProvider provider)
             : base(contest, problem, submission, provider)
         {
-            Logger = provider.GetRequiredService<ILogger<Py3Runner>>();
+            Logger = provider.GetRequiredService<ILogger<PythonRunner>>();
         }
 
         protected override async Task<JudgeResult> CompileAsync()

@@ -123,7 +123,7 @@ namespace Worker.Runners.LanguageTypes
                 Verdict = Verdict.Accepted,
                 Time = null,
                 Memory = null,
-                Message = null
+                Message = ""
             };
 
             var meta = Path.Combine(Box, "meta");
