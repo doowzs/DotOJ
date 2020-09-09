@@ -27,15 +27,23 @@ namespace Worker
             using var scope = _factory.CreateScope();
             _triggers.Add(new SubmissionRunnerTrigger(scope.ServiceProvider));
 
+            bool wait = true;
             while (!stoppingToken.IsCancellationRequested)
             {
-                await Task.Delay(1000, stoppingToken);
+                if (wait)
+                {
+                    await Task.Delay(1000, stoppingToken);
+                }
 
+                wait = true;
                 foreach (var trigger in _triggers)
                 {
                     try
                     {
-                        await trigger.CheckAndRunAsync();
+                        if (await trigger.CheckAndRunAsync())
+                        {
+                            wait = false;
+                        }
                     }
                     catch (Exception e)
                     {

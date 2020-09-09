@@ -19,7 +19,7 @@ namespace Worker.Triggers
             _provider = provider;
         }
 
-        public override async Task CheckAndRunAsync()
+        public override async Task<bool> CheckAndRunAsync()
         {
             var now = DateTime.Now.ToUniversalTime();
             var contestIds = await Context.Contests
@@ -157,6 +157,8 @@ namespace Worker.Triggers
                         $" with error message **\"{e.Message}\"**.");
                 }*/
             }
+
+            return submission != null;
         }
     }
 }
