@@ -39,7 +39,10 @@ namespace Worker.Runners.ProblemTypes
             switch (Submission.Program.Language)
             {
                 case Language.C:
-                    runner = new C11Runner(Contest, Problem, Submission, Provider);
+                    runner = new CRunner(Contest, Problem, Submission, Provider);
+                    break;
+                case Language.Cpp:
+                    runner = new CppRunner(Contest, Problem, Submission, Provider);
                     break;
                 default:
                     throw new Exception($"Invalid language Submission={Submission.Id}" +

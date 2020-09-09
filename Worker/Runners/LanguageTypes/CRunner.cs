@@ -10,12 +10,12 @@ using Worker.Models;
 
 namespace Worker.Runners.LanguageTypes
 {
-    public class C11Runner : LanguageRunnerBase
+    public class CRunner : LanguageRunnerBase
     {
-        public C11Runner(Contest contest, Problem problem, Submission submission, IServiceProvider provider)
+        public CRunner(Contest contest, Problem problem, Submission submission, IServiceProvider provider)
             : base(contest, problem, submission, provider)
         {
-            Logger = provider.GetRequiredService<ILogger<C11Runner>>();
+            Logger = provider.GetRequiredService<ILogger<CRunner>>();
         }
 
         protected override async Task<JudgeResult> CompileAsync()
@@ -34,7 +34,7 @@ namespace Worker.Runners.LanguageTypes
                     FileName = "isolate",
                     Arguments = "--cg -s -E PATH=/usr/bin/ -i /dev/null -r compiler_output" +
                                 " -p120 -f 409600 --cg-timing -t 15.0 -x 0 -w 20.0 -k 128000 --cg-mem=512000" +
-                                " --run -- /usr/bin/gcc --std=c11 " +
+                                " --run -- /usr/bin/gcc " +
                                 LanguageOptions.LanguageOptionsDict[Language.C].CompilerOptions +
                                 " program.c -o program"
                 }
