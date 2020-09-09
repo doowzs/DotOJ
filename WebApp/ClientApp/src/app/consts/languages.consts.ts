@@ -3,22 +3,18 @@ export interface LanguageInfo {
   factor: number;
   name: string;
   mode: string; // For Cloud Ace9 Editor
-  env: string;
   option: string;
 }
 
 export const Languages: LanguageInfo[] = [
-  {
-    code: 50, factor: 1.0, name: 'C', mode: 'c_cpp',
-    env: 'GCC 9.2', option: '-DONLINE_JUDGE --static -O2 --std=c11'
-  },
+  { code: 1, factor: 1.0, name: 'C 11', mode: 'c_cpp', option: '-DONLINE_JUDGE --static -O2 --std=c11' },
+  { code: 2, factor: 1.0, name: 'C++ 17', mode: 'c_cpp', option: '-DONLINE_JUDGE --static -O2 --std=c++17' },
+  { code: 3, factor: 2.0, name: 'Java 11', mode: 'java', option: '-J-Xms32m -J-Xmx256m' },
+  { code: 4, factor: 5.0, name: 'Python 3', mode: 'python', option: '' },
+  /*
   {
     code: 51, factor: 1.5, name: 'C#', mode: 'csharp',
     env: 'Mono 6.6', option: ''
-  },
-  {
-    code: 54, factor: 1.0, name: 'C++', mode: 'c_cpp',
-    env: 'GCC 9.2', option: '-DONLINE_JUDGE --static -O2 --std=c++17'
   },
   {
     code: 60, factor: 2.0, name: 'Golang', mode: 'golang',
@@ -27,10 +23,6 @@ export const Languages: LanguageInfo[] = [
   {
     code: 61, factor: 2.5, name: 'Haskell', mode: 'haskell',
     env: 'GHC 8.8', option: ''
-  },
-  {
-    code: 62, factor: 2.0, name: 'Java 11', mode: 'java',
-    env: 'OpenJDK 13.0', option: '-J-Xms32m -J-Xmx256m'
   },
   {
     code: 63, factor: 5.0, name: 'JavaScript', mode: 'javascript',
@@ -45,10 +37,6 @@ export const Languages: LanguageInfo[] = [
     env: 'PHP 7.4', option: ''
   },
   {
-    code: 71, factor: 5.0, name: 'Python 3', mode: 'python',
-    env: 'Python 3.8', option: ''
-  },
-  {
     code: 72, factor: 5.0, name: 'Ruby', mode: 'ruby',
     env: 'Ruby 2.7', option: ''
   },
@@ -60,4 +48,5 @@ export const Languages: LanguageInfo[] = [
     code: 74, factor: 5.0, name: 'TypeScript', mode: 'typescript',
     env: 'TypeScript 3.7', option: ''
   }
+  */
 ];

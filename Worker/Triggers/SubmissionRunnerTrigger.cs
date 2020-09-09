@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
 using Data.Models;
@@ -19,7 +20,7 @@ namespace Worker.Triggers
             _provider = provider;
         }
 
-        public override async Task CheckAndRunAsync()
+        public override async Task<bool> CheckAndRunAsync()
         {
             var now = DateTime.Now.ToUniversalTime();
             var contestIds = await Context.Contests
@@ -103,7 +104,7 @@ namespace Worker.Triggers
                     submission.FailedOn = result.FailedOn;
                     submission.Score = result.Score;
                     submission.Progress = 100;
-                    submission.Message = result.Message;
+                    submission.Message = Convert.ToBase64String(Encoding.UTF8.GetBytes(result.Message));
                     submission.JudgedAt = DateTime.Now.ToUniversalTime();
 
                     using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
@@ -139,23 +140,26 @@ namespace Worker.Triggers
                     #endregion
 
                     stopwatch.Stop();
-                    Logger.LogInformation($"SubmissionRunner Complete Id={submission.Id} Problem={problem.Id}" +
-                                          $" TimeElapsed={stopwatch.Elapsed}");
+                    Logger.LogInformation($"SubmissionRunner Complete Submission={submission.Id} Problem={problem.Id}" +
+                                          $" Verdict={submission.Verdict} TimeElapsed={stopwatch.Elapsed}");
                 }
                 catch (Exception e)
                 {
                     submission.Verdict = Verdict.Failed;
                     submission.FailedOn = null;
                     submission.Score = 0;
+                    submission.Message = Convert.ToBase64String(Encoding.UTF8.GetBytes(e.Message));
                     submission.JudgedAt = DateTime.Now.ToUniversalTime();
                     Context.Submissions.Update(submission);
                     await Context.SaveChangesAsync();
-                    Logger.LogError($"RunSubmission Error Id={submission.Id} Error={e.Message}");
+                    Logger.LogError($"RunSubmission Error Submission={submission.Id} Error={e.Message}");
                     await Broadcaster.SendNotification(true, $"Runner failed on Submission #{submission.Id}",
                         $"Submission runner \"{Options.Value.Name}\" failed on submission #{submission.Id}" +
                         $" with error message **\"{e.Message}\"**.");
                 }
             }
+
+            return submission != null;
         }
     }
 }

@@ -29,8 +29,8 @@
       <nz-select nzPlaceHolder="Language"
                  [ngModel]="language" (ngModelChange)="selectLanguage($event)">
         <nz-option *ngFor="let language of Languages" nzCustomContent
-                   [nzLabel]="language.name + ' (' + language.env + ')'" [nzValue]="language.code">
-          <span>{{ language.name }} ({{ language.env }})</span>
+                   [nzLabel]="language.name" [nzValue]="language.code">
+          <span>{{ language.name }}</span>
           <span *ngIf="language.option" style="float: right;" nz-tooltip
                 nzTooltipPlacement="right" [nzTooltipTitle]="language.option">
             <i nz-icon nzType="info-circle"></i>

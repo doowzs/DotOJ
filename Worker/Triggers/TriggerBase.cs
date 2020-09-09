@@ -11,7 +11,7 @@ namespace Worker.Triggers
 {
     public interface ITrigger
     {
-        public Task CheckAndRunAsync();
+        public Task<bool> CheckAndRunAsync();
     }
 
     public abstract class TriggerBase<T> : ITrigger where T : class
@@ -29,9 +29,9 @@ namespace Worker.Triggers
             Broadcaster = provider.GetRequiredService<INotificationBroadcaster>();
         }
 
-        public virtual Task CheckAndRunAsync()
+        public virtual Task<bool> CheckAndRunAsync()
         {
-            return Task.CompletedTask;
+            return Task.FromResult(false);
         }
     }
 }

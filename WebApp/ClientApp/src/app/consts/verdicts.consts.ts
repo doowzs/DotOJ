@@ -1,6 +1,4 @@
 ﻿import { SubmissionEditDto, SubmissionInfoDto, SubmissionViewDto } from '../interfaces/submission.interfaces';
-import { Languages } from './languages.consts';
-import * as moment from 'moment';
 
 export enum VerdictStage {
   ERROR, RUNNING, ACCEPTED, REJECTED
@@ -49,25 +47,19 @@ export const Verdicts: VerdictInfo[] = [
     color: 'red', explain: 'Your program did not terminate before hitting the time limit.'
   },
   {
-    code: 6, name: 'Compilation Error', showCase: false, stage: VerdictStage.REJECTED,
+    code: 6, name: 'Memory Limit Exceeded', showCase: false, stage: VerdictStage.REJECTED,
+    color: 'red', explain: 'Your program hit the memory limit.'
+  },
+  {
+    code: 7, name: 'Compilation Error', showCase: false, stage: VerdictStage.REJECTED,
     color: 'red', explain: 'Your code cannot compile.'
   },
   {
-    code: 7, name: 'Runtime Error', showCase: true, stage: VerdictStage.REJECTED,
-    color: 'red', explain: 'Your program did not exit normally or hit the memory limit.'
+    code: 8, name: 'Runtime Error', showCase: true, stage: VerdictStage.REJECTED,
+    color: 'red', explain: 'Your program did not exit normally with exit code 0.'
   },
   {
-    code: 13, name: 'Internal Error', showCase: false, stage: VerdictStage.ERROR,
+    code: 9, name: 'Internal Error', showCase: false, stage: VerdictStage.ERROR,
     color: 'gray', explain: 'An error occurred in the backend judging service.'
-  },
-  {
-    code: 14, name: 'Exec Format Error', showCase: false, stage: VerdictStage.REJECTED,
-    color: 'red', explain: 'Your program has invalid executable format.'
   }
 ];
-
-export const fixSubmissionREVerdictCode = (submission: SubmissionInfoDto | SubmissionViewDto | SubmissionEditDto) => {
-  if (submission.verdict >= 8 && submission.verdict <= 12) {
-    submission.verdict = 7;
-  }
-};

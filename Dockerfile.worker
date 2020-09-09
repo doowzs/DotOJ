@@ -5,6 +5,26 @@ COPY . ./
 RUN dotnet publish Worker -c Release -o /app/out
 
 FROM ccr.ccs.tencentyun.com/judge1/runtime:3.1
+RUN sed -i 's/deb.debian.org/mirrors.aliyun.com/' /etc/apt/sources.list
+RUN sed -i 's/security.debian.org/mirrors.aliyun.com/' /etc/apt/sources.list
+ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
+RUN apt-get update -yqq
+
+# Build isolate
+RUN apt-get install -y curl wget build-essential libcap-dev
+COPY ./Isolate /isolate
+WORKDIR /isolate
+RUN make isolate && make install
+
+# Install language tools
+RUN mkdir -p /usr/share/man/man1 # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=863199
+RUN wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add -
+RUN echo "deb http://mirrors.tuna.tsinghua.edu.cn/AdoptOpenJDK/deb buster main" >> /etc/apt/sources.list.d/AdoptOpenJDK.list
+RUN apt-get update -yqq
+RUN apt-get install -y gcc python3 adoptopenjdk-11-hotspot
+
 WORKDIR /app
+RUN rm -rf /isolate
+RUN rm -rf /var/lib/apt/lists/*
 COPY --from=build-env /app/out .
 ENTRYPOINT ["dotnet", "Worker.dll"]

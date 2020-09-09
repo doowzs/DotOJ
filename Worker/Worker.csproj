@@ -26,12 +26,6 @@
 
     <ItemGroup>
       <None Remove="Files\compile" />
-      <None Include="Resources\compile">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
       <None Remove="Files\run" />
-      <None Include="Resources\run">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </None>
     </ItemGroup>
 </Project>

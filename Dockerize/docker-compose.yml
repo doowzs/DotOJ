@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3'
 
 networks:
   frontend:
@@ -7,17 +7,9 @@ networks:
     driver: ${NETWORKS_DRIVER}
 
 volumes:
-  backend-server:
-    driver: ${VOLUMES_DRIVER}
-  backend-workers:
-    driver: ${VOLUMES_DRIVER}
   caddy:
     driver: ${VOLUMES_DRIVER}
   mariadb:
-    driver: ${VOLUMES_DRIVER}
-  postgres:
-    driver: ${VOLUMES_DRIVER}
-  redis:
     driver: ${VOLUMES_DRIVER}
   webapp:
     driver: ${VOLUMES_DRIVER}
@@ -25,25 +17,6 @@ volumes:
     driver: ${VOLUMES_DRIVER}
 
 services:
-  backend-server:
-    image: judge0/api:${BACKEND_VERSION}
-    volumes:
-      - ./backend/judge0.conf:/judge0.conf:ro
-    privileged: true
-    restart: always
-    networks:
-      - backend
-
-  backend-workers:
-    image: judge0/api:${BACKEND_VERSION}
-    command: ["./scripts/workers"]
-    volumes:
-      - ./backend/judge0.conf:/judge0.conf:ro
-    privileged: true
-    restart: always
-    networks:
-      - backend
-
   caddy:
     build:
       context: ./caddy
@@ -58,7 +31,7 @@ services:
       - frontend
       - backend
 
-  frontend-webapp:
+  webapp:
     image: ccr.ccs.tencentyun.com/judge1/webapp:${FRONTEND_VERSION}
     volumes:
       - ./webapp/identity.pfx:/app/identity.pfx:ro
@@ -67,7 +40,7 @@ services:
     networks:
       - backend
 
-  frontend-worker:
+  worker:
     image: ccr.ccs.tencentyun.com/judge1/worker:${FRONTEND_VERSION}
     volumes:
       - ./worker/appsettings.json:/app/appsettings.json:ro
@@ -84,25 +57,5 @@ services:
       - ./mariadb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
     ports:
       - "${MARIADB_PORT}:3306"
-    networks:
-      - backend
-
-  postgres:
-    image: postgres:9.6
-    env_file: backend/judge0.conf
-    volumes:
-      - ${DATA_PATH_HOST}/postgres:/var/lib/postgresql/data/
-    networks:
-      - backend
-
-  redis:
-    image: redis:4.0
-    command: [
-      "bash", "-c",
-      'docker-entrypoint.sh --appendonly yes --requirepass "$$REDIS_PASSWORD"'
-    ]
-    env_file: backend/judge0.conf
-    volumes:
-      - ${DATA_PATH_HOST}/redis:/data
     networks:
       - backend

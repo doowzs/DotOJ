@@ -1,5 +1,3 @@
-using System;
-using System.Text;
 using Data.Models;
 
 namespace Worker.Models
@@ -18,7 +16,7 @@ namespace Worker.Models
             Verdict = Verdict.Failed,
             Time = null, Memory = null,
             FailedOn = null, Score = 0,
-            Message = Convert.ToBase64String(Encoding.UTF8.GetBytes("No test case available."))
+            Message = "No test case available."
         };
 
         public static readonly JudgeResult TimeoutFailure = new JudgeResult
@@ -26,7 +24,7 @@ namespace Worker.Models
             Verdict = Verdict.Failed,
             Time = null, Memory = null,
             FailedOn = null, Score = 0,
-            Message = Convert.ToBase64String(Encoding.UTF8.GetBytes("Worker runner timed out."))
+            Message = "Worker runner timed out."
         };
     }
 }

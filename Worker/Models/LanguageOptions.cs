@@ -25,18 +25,20 @@ namespace Worker.Models
             new Dictionary<Language, LanguageOptions>()
             {
                 {Language.C, new LanguageOptions(50, 1.0f, "-DONLINE_JUDGE --static -O2 --std=c11")},
-                {Language.CSharp, new LanguageOptions(51, 1.5f)},
                 {Language.Cpp, new LanguageOptions(54, 1.0f, "-DONLINE_JUDGE --static -O2 --std=c++17")},
+                {Language.Java, new LanguageOptions(62, 2.0f, "-J-Xms64m -J-Xmx512m")},
+                {Language.Python, new LanguageOptions(71, 5.0f)},
+                /*
+                {Language.CSharp, new LanguageOptions(51, 1.5f)},
                 {Language.Go, new LanguageOptions(60, 2.0f)},
                 {Language.Haskell, new LanguageOptions(61, 2.5f)},
-                {Language.Java13, new LanguageOptions(62, 2.0f, "-J-Xms32m -J-Xmx256m")},
                 {Language.JavaScript, new LanguageOptions(63, 5.0f)},
                 {Language.Lua, new LanguageOptions(64, 6.0f)},
                 {Language.Php, new LanguageOptions(68, 4.5f)},
-                {Language.Python3, new LanguageOptions(71, 5.0f)},
                 {Language.Ruby, new LanguageOptions(72, 5.0f)},
                 {Language.Rust, new LanguageOptions(73, 2.5f)},
                 {Language.TypeScript, new LanguageOptions(74, 5.0f)}
+                */
             };
     }
 }

@@ -28,7 +28,6 @@ COMPOSE_PROJECT_NAME=judged
 ### Container versions #####################################
 
 FRONTEND_VERSION=
-BACKEND_VERSION=1.10.0
 
 ### Caddy ##################################################
 

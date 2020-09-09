@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.5.0 - 2020-09-10
+
+### Added
+
+- Custom judging service using `isolate` in worker.
+
+### Removed
+
+- Drop Judge0 API in worker and docker containers.
+
 ## 0.4.5 - 2020-09-09
 
 ### Added
