@@ -68,7 +68,6 @@ export interface SubmissionEditDto {
 }
 
 export const mapSubmissionInfoDtoFields = (submission: SubmissionInfoDto): SubmissionInfoDto => {
-  fixSubmissionREVerdictCode(submission);
   submission.verdict = submission.verdictInfo = Verdicts.find(v => v.code === submission.verdict);
   submission.language = Languages.find(l => l.code === submission.language);
   submission.createdAt = moment.utc(submission.createdAt).local();
@@ -77,7 +76,6 @@ export const mapSubmissionInfoDtoFields = (submission: SubmissionInfoDto): Submi
 };
 
 export const mapSubmissionViewDtoFields = (submission: SubmissionViewDto): SubmissionViewDto => {
-  fixSubmissionREVerdictCode(submission);
   submission.verdict = submission.verdictInfo  = Verdicts.find(v => v.code === submission.verdict);
   submission.program.language = Languages.find(l => l.code === submission.program.language);
   submission.program.code = Base64.decode(submission.program.code);
@@ -91,7 +89,6 @@ export const mapSubmissionViewDtoFields = (submission: SubmissionViewDto): Submi
 };
 
 export const mapSubmissionEditDtoFields = (submission: SubmissionEditDto): SubmissionEditDto => {
-  fixSubmissionREVerdictCode(submission);
   submission.verdict = submission.verdictInfo  = Verdicts.find(v => v.code === submission.verdict);
   submission.program.language = Languages.find(l => l.code === submission.program.language);
   submission.program.code = Base64.decode(submission.program.code);

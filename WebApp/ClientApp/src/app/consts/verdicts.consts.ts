@@ -63,9 +63,3 @@ export const Verdicts: VerdictInfo[] = [
     color: 'gray', explain: 'An error occurred in the backend judging service.'
   }
 ];
-
-export const fixSubmissionREVerdictCode = (submission: SubmissionInfoDto | SubmissionViewDto | SubmissionEditDto) => {
-  if (submission.verdict >= 8 && submission.verdict <= 12) {
-    submission.verdict = 7;
-  }
-};

@@ -15,7 +15,25 @@ COPY . ./
 COPY ./CHANGELOG.md /src/WebApp/wwwroot/changelog.md
 RUN dotnet publish WebApp -c Release -o /app/out
 
+
 FROM ccr.ccs.tencentyun.com/judge1/runtime:3.1
+ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
+RUN apt-get update -yqq
+
+# Build isolate
+RUN apt-get install -y curl wget build-essential libcap-dev
+COPY ./Isolate /isolate
+WORKDIR /isolate
+RUN make && make install
+
+# Install language tools
+RUN wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | sudo apt-key add -
+RUN echo "deb http://mirrors.tuna.tsinghua.edu.cn/AdoptOpenJDK/deb buster main" >> /etc/apt/sources.list.d/AdoptOpenJDK.list
+RUN apt-get update -yqq
+RUN apt-get install -y gcc python3 adoptopenjdk-11-hotspot-jre
+
 WORKDIR /app
+RUN rm -rf /isolate
+RUN rm -rf /var/lib/apt/lists/*
 COPY --from=build-env /app/out .
 ENTRYPOINT ["dotnet", "WebApp.dll"]

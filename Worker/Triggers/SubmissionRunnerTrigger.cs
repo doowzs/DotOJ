@@ -87,7 +87,7 @@ namespace Worker.Triggers
                 var problem = await Context.Problems.FindAsync(submission.ProblemId);
                 var contest = await Context.Contests.FindAsync(problem.ContestId);
 
-                try
+                //try
                 {
                     Logger.LogInformation($"SubmissionRunner Trigger Id={submission.Id} Problem={problem.Id}");
 
@@ -139,9 +139,10 @@ namespace Worker.Triggers
                     #endregion
 
                     stopwatch.Stop();
-                    Logger.LogInformation($"SubmissionRunner Complete Id={submission.Id} Problem={problem.Id}" +
-                                          $" TimeElapsed={stopwatch.Elapsed}");
+                    Logger.LogInformation($"SubmissionRunner Complete Submission={submission.Id} Problem={problem.Id}" +
+                                          $" Verdict={submission.Verdict} TimeElapsed={stopwatch.Elapsed}");
                 }
+                /*
                 catch (Exception e)
                 {
                     submission.Verdict = Verdict.Failed;
@@ -150,11 +151,11 @@ namespace Worker.Triggers
                     submission.JudgedAt = DateTime.Now.ToUniversalTime();
                     Context.Submissions.Update(submission);
                     await Context.SaveChangesAsync();
-                    Logger.LogError($"RunSubmission Error Id={submission.Id} Error={e.Message}");
+                    Logger.LogError($"RunSubmission Error Submission={submission.Id} Error={e.Message}");
                     await Broadcaster.SendNotification(true, $"Runner failed on Submission #{submission.Id}",
                         $"Submission runner \"{Options.Value.Name}\" failed on submission #{submission.Id}" +
                         $" with error message **\"{e.Message}\"**.");
-                }
+                }*/
             }
         }
     }
