@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.4.3 - 2020-09-08
+## 0.4.4 - 2020-09-08
 
 ### Added
 
@@ -17,6 +17,7 @@
 - Fixed form data handling logic that could prevent updating problem.
 - Fixed listing test cases using a list in `nz-table`.
 - Fixed wrong queuing status of submissions caused by DB caching.
+- Fixed extracting test cases when importing a problem archive.
 
 ## 0.3.1 - 2020-09-07
 
