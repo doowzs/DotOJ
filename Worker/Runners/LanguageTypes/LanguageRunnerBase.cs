@@ -51,7 +51,7 @@ namespace Worker.Runners.LanguageTypes
         {
             await InitAsync();
             var result = await InnerRunSubmissionAsync();
-            //await CleanupAsync();
+            await CleanupAsync();
             return result;
         }
 
@@ -94,9 +94,38 @@ namespace Worker.Runners.LanguageTypes
             return Task.FromResult<JudgeResult>(null);
         }
 
+        private async Task PrepareCheckerAsync()
+        {
+            File.Copy("Resources/testlib.h", Path.Combine(Box, "testlib.h"));
+            var checker = Path.Combine(Box, "checker.cpp");
+            await using (var stream = new FileStream(checker, FileMode.Create, FileAccess.Write))
+            {
+                await stream.WriteAsync(Convert.FromBase64String(Problem.SpecialJudgeProgram.Code));
+            }
+
+            var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "isolate",
+                    Arguments = "--cg -s -E PATH=/usr/bin/ -i /dev/null -r compiler_output" +
+                                " -p120 -f 409600 --cg-timing -t 15.0 -x 0 -w 20.0 -k 128000 --cg-mem=512000" +
+                                " --run -- /usr/bin/g++ " +
+                                LanguageOptions.LanguageOptionsDict[Language.Cpp].CompilerOptions +
+                                " checker.cpp -o checker"
+                }
+            };
+            process.Start();
+            process.WaitForExit();
+            if (process.ExitCode != 0)
+            {
+                throw new Exception($"Prepare checker error ExitCode={process.ExitCode}.");
+            }
+        }
+
         private async Task PrepareTestCaseAsync(bool inline, TestCase testCase)
         {
-            var file = Path.Combine(Box, "input");
+            var file = Path.Combine(Jail, "input");
             await using (var stream = new FileStream(file, FileMode.Create, FileAccess.Write))
             {
                 if (inline)
@@ -232,7 +261,6 @@ namespace Worker.Runners.LanguageTypes
                 return true; // do not change a failed state
             }
 
-            string output = run.Stdout.TrimEnd();
             string answer = null;
             if (inline)
             {
@@ -243,10 +271,48 @@ namespace Worker.Runners.LanguageTypes
                 var file = Path.Combine(Options.Value.DataPath, Problem.Id.ToString(), testCase.Output);
                 await using var stream = new FileStream(file, FileMode.Open, FileAccess.Read);
                 using var reader = new StreamReader(stream);
-                answer = await reader.ReadToEndAsync();
+                answer = (await reader.ReadToEndAsync()).TrimEnd();
             }
 
-            return output.Equals(answer);
+            if (!Problem.HasSpecialJudge)
+            {
+                string output = run.Stdout.TrimEnd();
+                return output.Equals(answer);
+            }
+            else
+            {
+                var file = Path.Combine(Box, "answer");
+                await using (var stream = new FileStream(file, FileMode.Create, FileAccess.Write))
+                await using (var writer = new StreamWriter(stream))
+                {
+                    await writer.WriteAsync(answer);
+                }
+
+                var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = "isolate",
+                        Arguments = "--cg -s -E PATH=/usr/bin/ -i /dev/null -r checker_message" +
+                                    $" -p1 -f 409600 --cg-timing -t {TimeLimit} -x 0 -w {TimeLimit + 3.0f} -k 128000 --cg-mem={MemoryLimit}" +
+                                    " --run -- checker ./jail/input ./jail/output answer"
+                    }
+                };
+                process.Start();
+                process.WaitForExit();
+                if (process.ExitCode == 0)
+                {
+                    return true;
+                }
+                else if (process.ExitCode == 1)
+                {
+                    return false;
+                }
+                else
+                {
+                    throw new Exception($"SPJ isolate error ExitCode={process.ExitCode}.");
+                }
+            }
         }
 
         private async Task<JudgeResult> InnerRunSubmissionAsync()
@@ -274,10 +340,19 @@ namespace Worker.Runners.LanguageTypes
             stopWatch.Start();
             result = await CompileAsync();
             stopWatch.Stop();
-            Logger.LogInformation($"Compile complete TimeElapsed={stopWatch.Elapsed}.");
+            Logger.LogInformation($"Compile program complete TimeElapsed={stopWatch.Elapsed}.");
             if (result != null)
             {
                 return result;
+            }
+
+            if (Problem.HasSpecialJudge)
+            {
+                stopWatch.Reset();
+                stopWatch.Start();
+                await PrepareCheckerAsync();
+                stopWatch.Stop();
+                Logger.LogInformation($"Compile checker complete TimeElapsed={stopWatch.Elapsed}.");
             }
 
             var runs = new List<Run>();
@@ -311,6 +386,8 @@ namespace Worker.Runners.LanguageTypes
                     {
                         run.Verdict = Verdict.WrongAnswer;
                     }
+                    
+                    if (index == 4) throw new Exception("test");
 
                     stopWatch.Stop();
                     Logger.LogInformation((inline ? "SampleCase" : "TestCase") +

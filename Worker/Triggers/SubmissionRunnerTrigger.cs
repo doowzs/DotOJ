@@ -148,6 +148,7 @@ namespace Worker.Triggers
                     submission.Verdict = Verdict.Failed;
                     submission.FailedOn = null;
                     submission.Score = 0;
+                    submission.Message = Convert.ToBase64String(Encoding.UTF8.GetBytes(e.Message));
                     submission.JudgedAt = DateTime.Now.ToUniversalTime();
                     Context.Submissions.Update(submission);
                     await Context.SaveChangesAsync();
