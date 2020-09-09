@@ -19,7 +19,7 @@ namespace Worker.Runners.ProblemTypes
 {
     public class PlainRunner : IDisposable
     {
-        private const int PollLimit = 100;
+        private const int PollLimit = 20;
 
         protected readonly Contest Contest;
         protected readonly Problem Problem;
@@ -226,9 +226,9 @@ namespace Worker.Runners.ProblemTypes
 
         protected async Task PollRunAsync(Run run, bool getStdout = false, bool getStderr = false)
         {
-            for (int i = 0; i < PollLimit * 3 && run.Verdict == Verdict.Running; ++i)
+            for (int i = 0; i < PollLimit * run.TimeLimit * 20 && run.Verdict == Verdict.Running; ++i)
             {
-                await Task.Delay(run.TimeLimit / 3);
+                await Task.Delay(100); // Wait for 0.1s after each polling, will fail after 20 times of time limit.
 
                 var uri = Options.Value.Instance.Endpoint + "/submissions/" + run.Token +
                           "?base64_encoded=true&fields=token,time,wall_time,memory,compile_output,message,status_id" +
