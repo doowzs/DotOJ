@@ -9,7 +9,7 @@ using Worker.Models;
 
 namespace Worker.Runners.LanguageTypes
 {
-    public class CRunner : LanguageRunnerBase
+    public class CRunner : Base.Runner
     {
         public CRunner(Contest contest, Problem problem, Submission submission, IServiceProvider provider)
             : base(contest, problem, submission, provider)
