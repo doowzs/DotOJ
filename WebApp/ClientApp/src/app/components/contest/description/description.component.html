@@ -3,7 +3,7 @@
     {{ contest.title }}
     <span *ngIf="privileged" style="float: right;">
       <small>
-        [<a [routerLink]="['/admin/contest', contestId]">Edit</a>]
+        [<a nz-button nzType="link" nzDanger [routerLink]="['/admin/contest', contestId]">Edit</a>]
       </small>
     </span>
   </h2>

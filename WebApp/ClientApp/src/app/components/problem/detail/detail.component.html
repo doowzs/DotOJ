@@ -3,8 +3,8 @@
     {{ problem.title }}
     <span *ngIf="privileged" style="float: right;">
       <small>
-        [<a [routerLink]="['/admin/problem', problemId]">Edit</a>]
-        [<a [routerLink]="['/admin/problem', problemId, 'test-cases']">TestCases</a>]
+        [<a nz-button nzType="link" nzDanger [routerLink]="['/admin/problem', problemId]">Edit</a>]
+        [<a nz-button nzType="link" nzDanger [routerLink]="['/admin/problem', problemId, 'test-cases']">TestCases</a>]
       </small>
     </span>
   </h2>
