@@ -53,6 +53,9 @@ namespace Worker.Runners.ProblemTypes
                 case Language.CSharp:
                     runner = new CSharpRunner(Contest, Problem, Submission, Provider);
                     break;
+                case Language.Haskell:
+                    runner = new HaskellRunner(Contest, Problem, Submission, Provider);
+                    break;
                 default:
                     throw new Exception($"Invalid language Submission={Submission.Id}" +
                                         $" Language={Submission.Program.Language}.");

@@ -25,6 +25,7 @@ RUN bash ./Python.sh
 RUN bash ./Golang.sh
 RUN bash ./Rust.sh
 RUN bash ./CSharp.sh
+RUN bash ./Haskell.sh
 
 WORKDIR /app
 RUN rm -rf /isolate

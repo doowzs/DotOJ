@@ -37,14 +37,7 @@ namespace Worker.Models
                 {Language.Golang, new LanguageOptions(5, 2.0f)},
                 {Language.Rust, new LanguageOptions(6, 2.5f, "-O")},
                 {Language.CSharp, new LanguageOptions(7, 1.5f, "/o+ /d:ONLINE_JUDGE")},
-                /*
-                {Language.Haskell, new LanguageOptions(61, 2.5f)},
-                {Language.JavaScript, new LanguageOptions(63, 5.0f)},
-                {Language.Lua, new LanguageOptions(64, 6.0f)},
-                {Language.Php, new LanguageOptions(68, 4.5f)},
-                {Language.Ruby, new LanguageOptions(72, 5.0f)},
-                {Language.TypeScript, new LanguageOptions(74, 5.0f)}
-                */
+                {Language.Haskell, new LanguageOptions(61, 2.5f, "-v0 -O")},
             };
     }
 }

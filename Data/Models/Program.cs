@@ -11,16 +11,8 @@ namespace Data.Models
         Python = 4,
         Golang = 5,
         Rust = 6,
-        CSharp = 7
-        /*
-        Haskell = 61,
-        JavaScript = 63,
-        Lua = 64,
-        Php = 68,
-        Python3 = 71,
-        Ruby = 72,
-        TypeScript = 74,
-        */
+        CSharp = 7,
+        Haskell = 8
     }
 
     public enum Verdict
