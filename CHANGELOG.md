@@ -1,10 +1,11 @@
 # Changelog
 
-## 0.5.5 - 2020-09-10
+## 0.5.6 - 2020-09-11
 
 ### Added
 
 - Custom judging service using `isolate` in worker.
+- Added C/C++, Java, Python, Golang, Rust, C# and Haskell runners.
 - Check program output line by line ignoring trailing spaces.
 - Limit RO access to outer box when running contestant programs.
 - Added quick links for administrator to edit contest or problem.

@@ -9,17 +9,17 @@ using Worker.Models;
 
 namespace Worker.Runners.LanguageTypes
 {
-    public class CRunner : Base.Runner
+    public class RustRunner : Base.Runner
     {
-        public CRunner(Contest contest, Problem problem, Submission submission, IServiceProvider provider)
+        public RustRunner(Contest contest, Problem problem, Submission submission, IServiceProvider provider)
             : base(contest, problem, submission, provider)
         {
-            Logger = provider.GetRequiredService<ILogger<CRunner>>();
+            Logger = provider.GetRequiredService<ILogger<RustRunner>>();
         }
 
         protected override async Task<JudgeResult> CompileAsync()
         {
-            var file = Path.Combine(Jail, "main.c");
+            var file = Path.Combine(Jail, "main.rs");
             var program = Convert.FromBase64String(Submission.Program.Code);
             await using (var stream = new FileStream(file, FileMode.Create, FileAccess.Write))
             {
@@ -33,9 +33,9 @@ namespace Worker.Runners.LanguageTypes
                     FileName = "isolate",
                     Arguments = "--cg -s -E PATH=/usr/bin -d /etc -c jail -i /dev/null -r compiler_output" +
                                 " -p120 -f 409600 --cg-timing -t 15.0 -x 0 -w 20.0 -k 128000 --cg-mem=512000" +
-                                " --run -- /usr/bin/gcc " +
-                                LanguageOptions.LanguageOptionsDict[Language.C].CompilerOptions +
-                                " -o main main.c"
+                                " --run -- /usr/bin/rustc " +
+                                LanguageOptions.LanguageOptionsDict[Language.Rust].CompilerOptions +
+                                " -o main main.rs"
                 }
             };
             process.Start();

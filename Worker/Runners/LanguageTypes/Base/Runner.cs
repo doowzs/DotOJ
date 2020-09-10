@@ -235,13 +235,18 @@ namespace Worker.Runners.LanguageTypes.Base
                         break;
                     case "TO":
                         run.Verdict = Verdict.TimeLimitExceeded;
+                        if (dict.ContainsKey("time-wall") && float.TryParse(dict["time-wall"], out var wallTime))
+                        {
+                            run.Time = (int) (Math.Min(wallTime, TimeLimit) * 1000);
+                        }
+
                         break;
                     case "XX":
                         throw new Exception("Isolate internal error XX in meta file.");
                 }
             }
 
-            if (float.TryParse(dict["time"], out var time))
+            if (!run.Time.HasValue && float.TryParse(dict["time"], out var time))
             {
                 run.Time = (int) (Math.Min(time, TimeLimit) * 1000);
             }

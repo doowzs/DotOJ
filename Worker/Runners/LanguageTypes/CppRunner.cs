@@ -31,11 +31,11 @@ namespace Worker.Runners.LanguageTypes
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "isolate",
-                    Arguments = "--cg -s -E PATH=/usr/bin/ -c jail -i /dev/null -r compiler_output" +
+                    Arguments = "--cg -s -E PATH=/usr/bin -d /etc -c jail -i /dev/null -r compiler_output" +
                                 " -p120 -f 409600 --cg-timing -t 15.0 -x 0 -w 20.0 -k 128000 --cg-mem=512000" +
                                 " --run -- /usr/bin/g++ " +
                                 LanguageOptions.LanguageOptionsDict[Language.Cpp].CompilerOptions +
-                                " main.cpp -o main"
+                                " -o main main.cpp"
                 }
             };
             process.Start();
