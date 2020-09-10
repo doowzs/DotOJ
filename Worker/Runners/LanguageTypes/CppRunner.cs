@@ -73,7 +73,8 @@ namespace Worker.Runners.LanguageTypes
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "isolate",
-                    Arguments = $"--cg -s -M {meta} -c jail -i jail/input -o jail/output -r jail/stderr -p1 -f {bytes}" +
+                    Arguments = $"--cg -s -M {meta} -c jail -d /box={Box}:norec -d /box/jail={Jail}:rw" +
+                                $" -i jail/input -o jail/output -r jail/stderr -p1 -f {bytes}" +
                                 $" --cg-timing -t {TimeLimit} -x 0 -w {TimeLimit + 3.0f} -k 128000 --cg-mem={MemoryLimit}" +
                                 " --run -- main"
                 }
