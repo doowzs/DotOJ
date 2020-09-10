@@ -29,7 +29,7 @@ namespace Worker.Runners.ProblemTypes
 
         public async Task<JudgeResult> RunSubmissionAsync()
         {
-            LanguageRunnerBase runner;
+            LanguageTypes.Base.Runner runner;
             switch (Submission.Program.Language)
             {
                 case Language.C:

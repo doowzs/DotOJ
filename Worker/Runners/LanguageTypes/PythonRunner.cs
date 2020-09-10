@@ -9,7 +9,7 @@ using Worker.Models;
 
 namespace Worker.Runners.LanguageTypes
 {
-    public class PythonRunner : LanguageRunnerBase
+    public class PythonRunner : Base.Runner
     {
         public PythonRunner(Contest contest, Problem problem, Submission submission, IServiceProvider provider)
             : base(contest, problem, submission, provider)
@@ -36,9 +36,10 @@ namespace Worker.Runners.LanguageTypes
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "isolate",
-                    Arguments = $"--cg -s -M {meta} -c jail -i jail/input -o jail/output -r jail/stderr -p1 -f {bytes}" +
-                                $" --cg-timing -t {TimeLimit} -x 0 -w {TimeLimit + 3.0f} -k 128000 --cg-mem={MemoryLimit}" +
-                                " --run -- /usr/bin/python3 main.py"
+                    Arguments =
+                        $"--cg -s -M {meta} -c jail -i jail/input -o jail/output -r jail/stderr -p1 -f {bytes}" +
+                        $" --cg-timing -t {TimeLimit} -x 0 -w {TimeLimit + 3.0f} -k 128000 --cg-mem={MemoryLimit}" +
+                        " --run -- /usr/bin/python3 main.py"
                 }
             };
             process.Start();

@@ -13,9 +13,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Worker.Models;
 
-namespace Worker.Runners.LanguageTypes
+namespace Worker.Runners.LanguageTypes.Base
 {
-    public abstract class LanguageRunnerBase
+    public abstract partial class Runner
     {
         protected readonly Contest Contest;
         protected readonly Problem Problem;
@@ -36,7 +36,7 @@ namespace Worker.Runners.LanguageTypes
         public Func<Contest, Problem, Submission, bool, Task<JudgeResult>> BeforeTestGroupDelegate = null;
         public Func<Contest, Problem, Submission, Run, Task<JudgeResult>> OnRunFailedDelegate = null;
 
-        protected LanguageRunnerBase(Contest contest, Problem problem, Submission submission, IServiceProvider provider)
+        protected Runner(Contest contest, Problem problem, Submission submission, IServiceProvider provider)
         {
             Contest = contest;
             Problem = problem;
@@ -44,7 +44,7 @@ namespace Worker.Runners.LanguageTypes
 
             Context = provider.GetRequiredService<ApplicationDbContext>();
             Options = provider.GetRequiredService<IOptions<JudgingConfig>>();
-            Logger = provider.GetRequiredService<ILogger<LanguageRunnerBase>>();
+            Logger = provider.GetRequiredService<ILogger<Runner>>();
         }
 
         public async Task<JudgeResult> RunSubmissionAsync()
@@ -243,76 +243,15 @@ namespace Worker.Runners.LanguageTypes
 
             if (float.TryParse(dict["time"], out var time))
             {
-                run.Time = (int) (time * 1000);
+                run.Time = (int) (Math.Min(time, TimeLimit) * 1000);
             }
 
             if (int.TryParse(dict["cg-mem"], out var memory))
             {
-                run.Memory = memory;
+                run.Memory = Math.Min(memory, MemoryLimit);
             }
 
             return run;
-        }
-
-        private async Task<bool> CheckTestCaseOutputAsync(Run run, bool inline, TestCase testCase)
-        {
-            if (run.Verdict > Verdict.Accepted)
-            {
-                return true; // do not change a failed state
-            }
-
-            string answer = null;
-            if (inline)
-            {
-                answer = Encoding.UTF8.GetString(Convert.FromBase64String(testCase.Output)).TrimEnd();
-            }
-            else
-            {
-                var file = Path.Combine(Options.Value.DataPath, Problem.Id.ToString(), testCase.Output);
-                await using var stream = new FileStream(file, FileMode.Open, FileAccess.Read);
-                using var reader = new StreamReader(stream);
-                answer = (await reader.ReadToEndAsync()).TrimEnd();
-            }
-
-            if (!Problem.HasSpecialJudge)
-            {
-                string output = run.Stdout.TrimEnd();
-                return output.Equals(answer);
-            }
-            else
-            {
-                var file = Path.Combine(Box, "answer");
-                await using (var stream = new FileStream(file, FileMode.Create, FileAccess.Write))
-                await using (var writer = new StreamWriter(stream))
-                {
-                    await writer.WriteAsync(answer);
-                }
-
-                var process = new Process
-                {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = "isolate",
-                        Arguments = "--cg -s -E PATH=/usr/bin/ -i /dev/null -r checker_message" +
-                                    $" -p1 -f 409600 --cg-timing -t {TimeLimit} -x 0 -w {TimeLimit + 3.0f} -k 128000 --cg-mem={MemoryLimit}" +
-                                    " --run -- checker ./jail/input ./jail/output answer"
-                    }
-                };
-                process.Start();
-                process.WaitForExit();
-                if (process.ExitCode == 0)
-                {
-                    return true;
-                }
-                else if (process.ExitCode == 1)
-                {
-                    return false;
-                }
-                else
-                {
-                    throw new Exception($"SPJ isolate error ExitCode={process.ExitCode}.");
-                }
-            }
         }
 
         private async Task<JudgeResult> InnerRunSubmissionAsync()

@@ -9,7 +9,7 @@ using Worker.Models;
 
 namespace Worker.Runners.LanguageTypes
 {
-    public class JavaRunner : LanguageRunnerBase
+    public class JavaRunner : Base.Runner
     {
         public JavaRunner(Contest contest, Problem problem, Submission submission, IServiceProvider provider)
             : base(contest, problem, submission, provider)

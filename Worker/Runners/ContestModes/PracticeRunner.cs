@@ -20,8 +20,8 @@ namespace Worker.Runners.ContestModes
                 return Task.FromResult(new JudgeResult
                 {
                     Verdict = run.Verdict,
-                    Time = null,
-                    Memory = null,
+                    Time = run.Time,
+                    Memory = run.Memory,
                     FailedOn = 0,
                     Score = 0,
                     Message = run.Message
