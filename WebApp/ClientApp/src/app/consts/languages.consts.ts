@@ -7,9 +7,21 @@ export interface LanguageInfo {
 }
 
 export const Languages: LanguageInfo[] = [
-  { code: 1, factor: 1.0, name: 'C 11', mode: 'c_cpp', option: '-DONLINE_JUDGE --static -O2 --std=c11' },
-  { code: 2, factor: 1.0, name: 'C++ 17', mode: 'c_cpp', option: '-DONLINE_JUDGE --static -O2 --std=c++17' },
-  { code: 3, factor: 2.0, name: 'Java 11', mode: 'java', option: '-J-Xms32m -J-Xmx256m' },
+  {
+    code: 1,
+    factor: 1.0,
+    name: 'C 11',
+    mode: 'c_cpp',
+    option: '-std=c11 -static -march=native -O2 -fno-strict-aliasing -DONLINE_JUDGE'
+  },
+  {
+    code: 2,
+    factor: 1.0,
+    name: 'C++ 17',
+    mode: 'c_cpp',
+    option: '-std=c++17 -static -march=native -O2 -fno-strict-aliasing -DONLINE_JUDGE'
+  },
+  { code: 3, factor: 2.0, name: 'Java 11', mode: 'java', option: '-J-Xms64m -J-Xmx512m -DONLINE_JUDGE' },
   { code: 4, factor: 5.0, name: 'Python 3', mode: 'python', option: '' },
   { code: 5, factor: 2.0, name: 'Golang', mode: 'golang', option: '' },
   { code: 6, factor: 2.5, name: 'Rust', mode: 'rust', option: '-O' },
