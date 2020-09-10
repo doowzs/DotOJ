@@ -1,14 +1,15 @@
 # Changelog
 
-## 0.5.1 - 2020-09-10
+## 0.5.2 - 2020-09-10
 
 ### Added
 
 - Custom judging service using `isolate` in worker.
+- Check program output line by line ignoring trailing spaces.
 
 ### Removed
 
-- Drop Judge0 API in worker and docker containers.
+- Dropped Judge0 API in worker and docker containers.
 
 ## 0.4.3 - 2020-09-08
 
