@@ -10,12 +10,12 @@
       </nz-form-control>
     </nz-form-item>
     <input #zipFileInput type="file" accept="application/zip" (change)="selectZipFile($event)"/>
-    <button nz-button [nzType]="file ? 'default' : 'dashed'" (click)="zipFileInput.click()">
+    <button nz-button [nzType]="file ? 'default' : 'dashed'" nzBlock (click)="zipFileInput.click()">
       {{ file ? file.name : 'Select Zip File' }}
     </button>
   </div>
   <div nz-col [nzSpan]="8">
-    <button nz-button nzType="primary" [disabled]="!importContestId || !file" (click)="importProblem($event)">
+    <button nz-button nzType="primary" nzBlock [disabled]="!importContestId || !file" (click)="importProblem($event)">
       <ng-container *ngIf="!progress; else uploadProgress">
         <i nz-icon nzType="upload"></i><span>Import</span>
       </ng-container>
@@ -38,7 +38,7 @@
     </nz-form-item>
   </div>
   <div nz-col [nzSpan]="8">
-    <button nz-button nzType="primary" [disabled]="!exportProblemId" (click)="exportProblem($event)">
+    <button nz-button nzType="primary" nzBlock [disabled]="!exportProblemId" (click)="exportProblem($event)">
       <i nz-icon nzType="download"></i><span>Export</span>
     </button>
   </div>
