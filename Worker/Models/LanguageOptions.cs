@@ -32,12 +32,12 @@ namespace Worker.Models
                     Language.Cpp, new LanguageOptions(2, 1.0f,
                         "-std=c++17 -static -march=native -O2 -fno-strict-aliasing -DONLINE_JUDGE")
                 },
-                {Language.Java, new LanguageOptions(3, 2.0f, "-J-Xms64m -J-Xmx512m -DONLINE_JUDGE")},
+                {Language.Java, new LanguageOptions(3, 2.0f, "-J-Xms64m -J-Xmx512m")},
                 {Language.Python, new LanguageOptions(4, 5.0f)},
                 {Language.Golang, new LanguageOptions(5, 2.0f)},
                 {Language.Rust, new LanguageOptions(6, 2.5f, "-O")},
+                {Language.CSharp, new LanguageOptions(7, 1.5f, "/o+ /d:ONLINE_JUDGE")},
                 /*
-                {Language.CSharp, new LanguageOptions(51, 1.5f)},
                 {Language.Haskell, new LanguageOptions(61, 2.5f)},
                 {Language.JavaScript, new LanguageOptions(63, 5.0f)},
                 {Language.Lua, new LanguageOptions(64, 6.0f)},

@@ -4,7 +4,7 @@ WORKDIR /src
 COPY . ./
 RUN dotnet publish Worker -c Release -o /app/out
 
-FROM ccr.ccs.tencentyun.com/judge1/runtime:3.1
+FROM ccr.ccs.tencentyun.com/judge1/sdk:3.1
 RUN sed -i 's/deb.debian.org/mirrors.aliyun.com/' /etc/apt/sources.list
 RUN sed -i 's/security.debian.org/mirrors.aliyun.com/' /etc/apt/sources.list
 ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
@@ -24,6 +24,7 @@ RUN bash ./Java.sh
 RUN bash ./Python.sh
 RUN bash ./Golang.sh
 RUN bash ./Rust.sh
+RUN bash ./CSharp.sh
 
 WORKDIR /app
 RUN rm -rf /isolate

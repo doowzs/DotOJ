@@ -21,15 +21,12 @@ export const Languages: LanguageInfo[] = [
     mode: 'c_cpp',
     option: '-std=c++17 -static -march=native -O2 -fno-strict-aliasing -DONLINE_JUDGE'
   },
-  { code: 3, factor: 2.0, name: 'Java 11', mode: 'java', option: '-J-Xms64m -J-Xmx512m -DONLINE_JUDGE' },
+  { code: 3, factor: 2.0, name: 'Java 11', mode: 'java', option: '-J-Xms64m -J-Xmx512m' },
   { code: 4, factor: 5.0, name: 'Python 3', mode: 'python', option: '' },
   { code: 5, factor: 2.0, name: 'Golang', mode: 'golang', option: '' },
   { code: 6, factor: 2.5, name: 'Rust', mode: 'rust', option: '-O' },
+  { code: 7, factor: 1.5, name: 'C# 8.0', mode: 'csharp', option: '/o+ /d:ONLINE_JUDGE' },
   /*
-  {
-    code: 51, factor: 1.5, name: 'C#', mode: 'csharp',
-    env: 'Mono 6.6', option: ''
-  },
   {
     code: 61, factor: 2.5, name: 'Haskell', mode: 'haskell',
     env: 'GHC 8.8', option: ''
@@ -49,10 +46,6 @@ export const Languages: LanguageInfo[] = [
   {
     code: 72, factor: 5.0, name: 'Ruby', mode: 'ruby',
     env: 'Ruby 2.7', option: ''
-  },
-  {
-    code: 73, factor: 2.5, name: 'Rust', mode: 'rust',
-    env: 'Rust 1.40', option: ''
   },
   {
     code: 74, factor: 5.0, name: 'TypeScript', mode: 'typescript',
