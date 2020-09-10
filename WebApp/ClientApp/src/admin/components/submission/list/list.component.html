@@ -25,10 +25,10 @@
       </button>
     </td>
     <td>{{ submission.problemId }}</td>
-    <td><nz-tag [nzColor]="submission.verdict.color">{{ submission.verdict.name }}</nz-tag></td>
+    <td><nz-tag [nzColor]="submission.verdictInfo.color">{{ submission.verdictInfo.name }}</nz-tag></td>
     <td>{{ submission.time }}</td>
     <td>{{ submission.memory }}</td>
-    <td>{{ submission.language.name }}</td>
+    <td>{{ submission.languageInfo.name }}</td>
     <td>{{ submission.codeBytes }} bytes</td>
     <td>{{ submission.createdAt.format('YYYY-MM-DD HH:mm') }}</td>
     <td><button nz-button nzType="default" [routerLink]="['/admin/submission', submission.id]">View</button></td>

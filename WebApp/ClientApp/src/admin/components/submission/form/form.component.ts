@@ -45,9 +45,9 @@ export class AdminSubmissionFormComponent implements OnInit, OnChanges {
       this.form.setValue({
         userId: changes.submission.currentValue.userId,
         problemId: changes.submission.currentValue.problemId,
-        language: changes.submission.currentValue.program.language.name,
+        language: changes.submission.currentValue.program.languageInfo.name,
         code: changes.submission.currentValue.program.code,
-        verdict: changes.submission.currentValue.verdict.code,
+        verdict: changes.submission.currentValue.verdict,
         time: changes.submission.currentValue.time,
         memory: changes.submission.currentValue.memory,
         failedOn: changes.submission.currentValue.failedOn,

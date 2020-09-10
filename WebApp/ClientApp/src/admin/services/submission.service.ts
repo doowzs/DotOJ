@@ -32,6 +32,24 @@ export class AdminSubmissionService {
       .pipe(map(mapSubmissionEditDtoFields));
   }
 
+  public getBatchInfos(submissionIds: number[]): Observable<SubmissionInfoDto[]> {
+    if (submissionIds.length === 0) {
+      return;
+    }
+
+    let params = new HttpParams();
+    for (let i = 0; i < submissionIds.length; ++i) {
+      params = params.append('id', submissionIds[i].toString());
+    }
+    return this.http.get<SubmissionInfoDto[]>('/admin/submission/batch', { params: params })
+      .pipe(map(list => {
+        for (let i = 0; i < list.length; ++i) {
+          list[i] = mapSubmissionInfoDtoFields(list[i]);
+        }
+        return list;
+      }));
+  }
+
   public updateSingle(submission: SubmissionEditDto): Observable<SubmissionEditDto> {
     submission.message = Base64.encode(submission.message ?? '');
     return this.http.put<SubmissionEditDto>('/admin/submission/' + submission.id.toString(), submission)
