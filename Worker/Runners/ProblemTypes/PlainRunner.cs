@@ -44,6 +44,9 @@ namespace Worker.Runners.ProblemTypes
                 case Language.Python:
                     runner = new PythonRunner(Contest, Problem, Submission, Provider);
                     break;
+                case Language.Golang:
+                    runner = new GolangRunner(Contest, Problem, Submission, Provider);
+                    break;
                 default:
                     throw new Exception($"Invalid language Submission={Submission.Id}" +
                                         $" Language={Submission.Program.Language}.");

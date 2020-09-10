@@ -9,9 +9,9 @@ namespace Data.Models
         Cpp = 2,
         Java = 3,
         Python = 4,
+        Golang = 5,
         /*
         CSharp = 51,
-        Go = 60,
         Haskell = 61,
         Java13 = 62,
         JavaScript = 63,

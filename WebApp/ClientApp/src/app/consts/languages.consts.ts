@@ -11,14 +11,11 @@ export const Languages: LanguageInfo[] = [
   { code: 2, factor: 1.0, name: 'C++ 17', mode: 'c_cpp', option: '-DONLINE_JUDGE --static -O2 --std=c++17' },
   { code: 3, factor: 2.0, name: 'Java 11', mode: 'java', option: '-J-Xms32m -J-Xmx256m' },
   { code: 4, factor: 5.0, name: 'Python 3', mode: 'python', option: '' },
+  { code: 5, factor: 2.0, name: 'Golang', mode: 'golang', option: '' },
   /*
   {
     code: 51, factor: 1.5, name: 'C#', mode: 'csharp',
     env: 'Mono 6.6', option: ''
-  },
-  {
-    code: 60, factor: 2.0, name: 'Golang', mode: 'golang',
-    env: 'Go 1.13', option: ''
   },
   {
     code: 61, factor: 2.5, name: 'Haskell', mode: 'haskell',

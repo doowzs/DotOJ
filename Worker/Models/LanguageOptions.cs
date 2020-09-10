@@ -28,9 +28,9 @@ namespace Worker.Models
                 {Language.Cpp, new LanguageOptions(54, 1.0f, "-DONLINE_JUDGE --static -O2 --std=c++17")},
                 {Language.Java, new LanguageOptions(62, 2.0f, "-J-Xms64m -J-Xmx512m")},
                 {Language.Python, new LanguageOptions(71, 5.0f)},
+                {Language.Golang, new LanguageOptions(60, 2.0f)},
                 /*
                 {Language.CSharp, new LanguageOptions(51, 1.5f)},
-                {Language.Go, new LanguageOptions(60, 2.0f)},
                 {Language.Haskell, new LanguageOptions(61, 2.5f)},
                 {Language.JavaScript, new LanguageOptions(63, 5.0f)},
                 {Language.Lua, new LanguageOptions(64, 6.0f)},

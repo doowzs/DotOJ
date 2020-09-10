@@ -35,7 +35,7 @@ namespace Worker.Runners.LanguageTypes
                                 " -p120 -f 409600 --cg-timing -t 15.0 -x 0 -w 20.0 -k 128000 --cg-mem=512000" +
                                 " --run -- /usr/bin/gcc " +
                                 LanguageOptions.LanguageOptionsDict[Language.C].CompilerOptions +
-                                " main.c -o main"
+                                " -o main main.c"
                 }
             };
             process.Start();
