@@ -1,6 +1,10 @@
-﻿<nz-page-header nzBackIcon (nzBack)="leaveContest()">
+﻿<nz-page-header nzBackIcon (nzBack)="leaveContest()"
+                [attr.style]="ended ? 'box-shadow: 0 2px 8px #f0f1f2;' : ''">
   <nz-page-header-title>
-    <span *ngIf="contest">{{ contest.title }}</span>
+    <span *ngIf="contest">
+      {{ contest.title }}
+      <nz-badge *ngIf="ended === true">Practice Mode</nz-badge>
+    </span>
   </nz-page-header-title>
   <nz-page-header-extra>
     <button nz-button nzType="link" nzDanger (click)="leaveContest()">

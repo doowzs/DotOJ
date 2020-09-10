@@ -7,6 +7,13 @@
       </small>
     </span>
   </h2>
+  <ng-container *ngIf="ended === false">
+    <nz-countdown nzTitle="Running" [nzValue]="contest.endTime.unix() * 1000"></nz-countdown>
+  </ng-container>
+  <p>
+    {{ contest.beginTime.format('YYYY-MM-DD HH:mm') }} -
+    {{ contest.endTime.format('YYYY-MM-DD HH:mm') }}
+  </p>
   <nz-divider nzText="Description" nzOrientation="left"></nz-divider>
   <markdown [data]="contest.description" katex></markdown>
   <nz-divider nzText="Rules" nzOrientation="left"></nz-divider>
