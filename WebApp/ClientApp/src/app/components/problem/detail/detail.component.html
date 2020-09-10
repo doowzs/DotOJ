@@ -1,5 +1,13 @@
 ﻿<ng-container *ngIf="problem">
-  <h2>{{ problem.title }}</h2>
+  <h2>
+    {{ problem.title }}
+    <span *ngIf="privileged" style="float: right;">
+      <small>
+        [<a [routerLink]="['/admin/problem', problemId]">Edit</a>]
+        [<a [routerLink]="['/admin/problem', problemId, 'test-cases']">TestCases</a>]
+      </small>
+    </span>
+  </h2>
   <p *ngIf="problem.hasSpecialJudge">Special Judge</p>
   <p>Base Time Limit: {{ problem.timeLimit }} ms</p>
   <p>Memory Limit: {{ problem.memoryLimit / 1024 | number: "1.0-0" | noComma }} MiB</p>
