@@ -19,11 +19,11 @@ import { ProblemViewDto } from '../../../interfaces/problem.interfaces';
 export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy {
   @Input() public problem: ProblemViewDto;
 
-  private destroy$ = new Subject();
   public userId: Observable<string>;
   public list: PaginatedList<SubmissionInfoDto>;
   public submissions: SubmissionInfoDto[];
   public submissionDrawer: NzDrawerRef;
+  private destroy$ = new Subject();
 
   constructor(
     private auth: AuthorizeService,
@@ -37,9 +37,9 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
     interval(2000)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
-        if (this.submissions.filter(s => {
-          const verdict = s.verdict as VerdictInfo;
-          return verdict.stage === VerdictStage.RUNNING || (verdict.stage === VerdictStage.REJECTED && s.score == null);
+        if (this.submissions && this.submissions.filter(s => {
+          return s.verdictInfo.stage === VerdictStage.RUNNING ||
+            (s.verdictInfo.stage === VerdictStage.REJECTED && s.score == null);
         }).length > 0) {
           this.updatePendingSubmissions();
         }
@@ -75,22 +75,24 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
 
   private updatePendingSubmissions(): void {
     const submissionIds = this.submissions.filter(s => {
-      const verdict = s.verdict as VerdictInfo;
-      return verdict.stage === VerdictStage.RUNNING || (verdict.stage === VerdictStage.REJECTED && s.score == null);
+      return s.verdictInfo.stage === VerdictStage.RUNNING ||
+        (s.verdictInfo.stage === VerdictStage.REJECTED && s.score == null);
     }).map(s => s.id);
     this.service.getBatchInfos(submissionIds)
       .subscribe(updatedSubmissions => {
         for (let i = 0; i < updatedSubmissions.length; ++i) {
           const updated = updatedSubmissions[i];
           const submission = this.submissions.find(s => s.id === updated.id);
-          submission.verdict = updated.verdict;
-          submission.verdictInfo = updated.verdictInfo;
-          submission.time = updated.time;
-          submission.memory = updated.memory;
-          submission.failedOn = updated.failedOn;
-          submission.score = updated.score;
-          submission.progress = updated.progress;
-          submission.judgedAt = updated.judgedAt;
+          if (submission) {
+            submission.verdict = updated.verdict;
+            submission.verdictInfo = updated.verdictInfo;
+            submission.time = updated.time;
+            submission.memory = updated.memory;
+            submission.failedOn = updated.failedOn;
+            submission.score = updated.score;
+            submission.progress = updated.progress;
+            submission.judgedAt = updated.judgedAt;
+          }
         }
       });
   }

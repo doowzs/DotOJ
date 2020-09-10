@@ -26,7 +26,7 @@ import { AdminContestRegistrationsComponent } from './components/contest/registr
 import { AdminProblemListComponent } from './components/problem/list/list.component';
 import { AdminProblemFormComponent } from './components/problem/form/form.component';
 import { AdminProblemCreatorComponent } from './components/problem/creator/creator.component';
-import { AdminProblemArvhiceComponent } from './components/problem/archive/archive.component';
+import { AdminProblemArchiveComponent } from './components/problem/archive/archive.component';
 import { AdminProblemEditorComponent } from './components/problem/editor/editor.component';
 import { AdminProblemTestCasesComponent } from './components/problem/test-cases/test-cases.component';
 import { AdminSubmissionListComponent } from './components/submission/list/list.component';
@@ -120,7 +120,7 @@ import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
               { path: 'new', component: AdminProblemCreatorComponent, data: { breadcrumb: 'Create' } },
               {
                 path: 'archive',
-                component: AdminProblemArvhiceComponent,
+                component: AdminProblemArchiveComponent,
                 data: { breadcrumb: 'Archive' }
               },
               {
@@ -197,7 +197,7 @@ import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
     AdminProblemListComponent,
     AdminProblemFormComponent,
     AdminProblemCreatorComponent,
-    AdminProblemArvhiceComponent,
+    AdminProblemArchiveComponent,
     AdminProblemEditorComponent,
     AdminProblemTestCasesComponent,
     AdminSubmissionListComponent,

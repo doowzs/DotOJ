@@ -17,6 +17,7 @@ namespace WebApp.Services.Admin
         public Task<PaginatedList<SubmissionInfoDto>> GetPaginatedSubmissionInfosAsync
             (int? contestId, int? problemId, string userId, Verdict? verdict, int? pageIndex);
 
+        public Task<List<SubmissionInfoDto>> GetBatchSubmissionInfosAsync(IEnumerable<int> ids);
         public Task<SubmissionEditDto> GetSubmissionEditAsync(int id);
         public Task<SubmissionEditDto> UpdateSubmissionAsync(int id, SubmissionEditDto dto);
         public Task DeleteSubmissionAsync(int id);
@@ -81,6 +82,15 @@ namespace WebApp.Services.Admin
 
             return await submissions.OrderByDescending(s => s.Id)
                 .PaginateAsync(s => s.User, s => new SubmissionInfoDto(s), pageIndex ?? 1, PageSize);
+        }
+
+        public async Task<List<SubmissionInfoDto>> GetBatchSubmissionInfosAsync(IEnumerable<int> ids)
+        {
+            return await Context.Submissions
+                .Where(s => ids.Contains(s.Id))
+                .Include(s => s.User)
+                .Select(s => new SubmissionInfoDto(s))
+                .ToListAsync();
         }
 
         public async Task<SubmissionEditDto> GetSubmissionEditAsync(int id)

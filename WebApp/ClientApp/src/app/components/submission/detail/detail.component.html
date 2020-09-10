@@ -2,10 +2,10 @@
 <ng-container *ngIf="submission">
   <nz-descriptions>
     <nz-descriptions-item nzTitle="Contestant">{{ submission.contestantName }}</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Language">{{ submission.program.language.name }}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Language">{{ submission.program.languageInfo.name }}</nz-descriptions-item>
     <nz-descriptions-item nzTitle="Length">{{ submission.codeBytes }} bytes</nz-descriptions-item>
     <nz-descriptions-item nzTitle="Verdict">
-      <nz-badge [nzColor]="submission.verdict.color"></nz-badge>
+      <nz-badge [nzColor]="submission.verdictInfo.color"></nz-badge>
       <app-submission-verdict [submission]="submission"></app-submission-verdict>
     </nz-descriptions-item>
     <nz-descriptions-item nzTitle="Time">
@@ -28,5 +28,5 @@
   </ng-container>
   <nz-divider></nz-divider>
   <h3>Source Code</h3>
-  <pre [attr.lang]="submission.program.language.name">{{ submission.program.code }}</pre>
+  <pre [attr.lang]="submission.program.languageInfo.name">{{ submission.program.code }}</pre>
 </ng-container>

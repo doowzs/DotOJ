@@ -38,6 +38,15 @@ namespace WebApp.Controllers.Api.v1.Admin
                 (contestId, problemId, userId, verdict, pageIndex));
         }
 
+        [HttpGet("batch")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<SubmissionInfoDto>>> GetBatchSubmissionInfos
+            ([FromQuery(Name = "id")] List<int> ids)
+        {
+            return Ok(await _service.GetBatchSubmissionInfosAsync(ids));
+        }
+
         [HttpGet("{id:int}")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]

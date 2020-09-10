@@ -1,12 +1,13 @@
 ﻿import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Title } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
+import { AuthorizeService, IUser } from '../../../../api-authorization/authorize.service';
 import { ProblemService } from '../../../services/problem.service';
 import { ProblemViewDto } from '../../../interfaces/problem.interfaces';
 import { LanguageInfo } from '../../../consts/languages.consts';
-import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-problem-detail',
@@ -14,6 +15,8 @@ import { Title } from '@angular/platform-browser';
   styleUrls: ['./detail.component.css']
 })
 export class ProblemDetailComponent implements OnInit, OnDestroy {
+  public user: IUser;
+  public privileged = false;
   public problemId: number;
   public problem: ProblemViewDto;
   public language: LanguageInfo;
@@ -28,6 +31,7 @@ export class ProblemDetailComponent implements OnInit, OnDestroy {
     private title: Title,
     private route: ActivatedRoute,
     private service: ProblemService,
+    private auth: AuthorizeService
   ) {
     this.route.params
       .pipe(takeUntil(this.destroy$))
@@ -38,6 +42,12 @@ export class ProblemDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.auth
+      .getUser().subscribe(user => {
+      this.user = user;
+      this.privileged = user.roles.indexOf('Administrator') >= 0
+        || user.roles.indexOf('ContestManager') >= 0;
+    })
   }
 
   ngOnDestroy() {

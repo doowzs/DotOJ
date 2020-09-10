@@ -8,12 +8,19 @@
 - Added C/C++, Java, Python, Golang, Rust, C# and Haskell runners.
 - Check program output line by line ignoring trailing spaces.
 - Limit RO access to outer box when running contestant programs.
+- Added quick links for administrator to edit contest or problem.
+- Added progress bar and end of contest prompt in contest pages.
+
+### Changed
+
+- Pending submissions in submission list page will be updated automatically.
+- Users can only view submissions of others after contest ends.
 
 ### Removed
 
 - Dropped Judge0 API in worker and docker containers.
 
-## 0.4.3 - 2020-09-08
+## 0.4.5 - 2020-09-09
 
 ### Added
 
@@ -24,12 +31,14 @@
 
 - Use a local modified version of markdown component.
 - Updated KaTeX rendering option and blockquote stylesheet.
+- Changed upload request size limit from default to 300MiB.
 
 ### Fixed
 
 - Fixed form data handling logic that could prevent updating problem.
 - Fixed listing test cases using a list in `nz-table`.
 - Fixed wrong queuing status of submissions caused by DB caching.
+- Fixed extracting test cases when importing a problem archive.
 
 ## 0.3.1 - 2020-09-07
 

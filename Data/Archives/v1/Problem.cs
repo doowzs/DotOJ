@@ -282,19 +282,21 @@ namespace Data.Archives.v1
 
             #endregion
 
-            await ExtractTestCasesAsync(problem, file, "tests/", options);
+            // Cannot extract now because we don't have an ID.
+            problem.TestCases = new List<TestCase>();
+
             return problem;
         }
 
         public static async Task ExtractTestCasesAsync
             (Problem problem, IFormFile file, string prefix, IOptions<ApplicationConfig> options)
         {
-            var testCases = new List<TestCase>();
             await using var stream = file.OpenReadStream();
             using var archive = new ZipArchive(stream, ZipArchiveMode.Read);
 
             var inputs = new HashSet<string>();
             var path = Path.Combine(options.Value.DataPath, problem.Id.ToString());
+            Console.WriteLine($"Path={path}");
 
             #region Find valid test case pairs
 
@@ -345,7 +347,7 @@ namespace Data.Archives.v1
                     {
                         throw new Exception($"Entry for {filename} is null.");
                     }
-                    
+
                     var dest = Path.Combine(path, filename.Substring(prefix.Length));
                     var folder = Path.GetDirectoryName(dest);
                     if (folder != null && !Directory.Exists(folder))

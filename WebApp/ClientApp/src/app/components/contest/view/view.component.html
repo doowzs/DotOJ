@@ -1,6 +1,9 @@
 <nz-layout>
   <app-header-contest></app-header-contest>
   <nz-content class="outer-content">
+    <nz-progress *ngIf="ended === false" [nzPercent]="progress" nzSize="small"
+                 nzStrokeLinecap="square" nzStatus="normal" [nzShowInfo]="false"
+    ></nz-progress>
     <nz-layout>
       <nz-sider class="sidebar" nzWidth="20vw" nzTheme="light">
         <ul nz-menu nzMode="inline" class="menu">

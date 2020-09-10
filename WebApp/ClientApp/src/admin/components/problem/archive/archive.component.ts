@@ -1,6 +1,5 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { AdminProblemService } from '../../../services/problem.service';
-import { saveAs } from 'file-saver';
 import { HttpEventType } from '@angular/common/http';
 import { Router } from '@angular/router';
 
@@ -9,7 +8,7 @@ import { Router } from '@angular/router';
   templateUrl: './archive.component.html',
   styleUrls: ['./archive.component.css']
 })
-export class AdminProblemArvhiceComponent {
+export class AdminProblemArchiveComponent {
   @ViewChild('zipFileInput') zipFileInput: ElementRef;
 
   public importContestId: number;
@@ -45,9 +44,6 @@ export class AdminProblemArvhiceComponent {
   }
 
   public exportProblem(event: any) {
-    this.service.exportProblem(this.exportProblemId)
-      .subscribe(blob => {
-        saveAs(blob, this.exportProblemId + '.zip');
-      });
+    window.open('/api/v1/admin/problem/' + this.exportProblemId + '/export', '_blank');
   }
 }

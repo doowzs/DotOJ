@@ -23,7 +23,7 @@
   <nz-divider></nz-divider>
   <div nz-row>
     <div nz-col nzSpan="24">
-      <button nz-button nzType="primary" [disabled]="!form.valid" type="button" style="width: 100%;"
+      <button nz-button nzType="primary" nzBlock [disabled]="!form.valid" type="button"
               nz-popconfirm nzPopconfirmTitle="This will rejudge all specified submissions. Continue?"
               (nzOnConfirm)="submitForm(form.value)">
         <i nz-icon nzType="check"></i><span>Submit</span>

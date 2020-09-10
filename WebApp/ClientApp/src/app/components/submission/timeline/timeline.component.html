@@ -5,14 +5,14 @@
   </ng-template>
   <nz-timeline nzReverse="reverse" *ngIf="submissions.length; else noSubmission">
     <ng-template #submissionTimeLineItem let-submission="submission">
-      <nz-timeline-item [nzColor]="submission.verdict.color">
+      <nz-timeline-item [nzColor]="submission.verdictInfo.color">
         <nz-tag>#{{ submission.id }}</nz-tag>
-        <nz-tag [nzColor]="submission.verdict.color"
-                nz-tooltip [nzTooltipTitle]="submission.verdict.explain">
+        <nz-tag [nzColor]="submission.verdictInfo.color"
+                nz-tooltip [nzTooltipTitle]="submission.verdictInfo.explain">
           <app-submission-verdict [submission]="submission"></app-submission-verdict>
         </nz-tag>
         <span style="float: right;">
-          <nz-tag>{{ submission.language.name }}</nz-tag>
+          <nz-tag>{{ submission.languageInfo.name }}</nz-tag>
           <nz-tag>{{ submission.createdAt.format('YYYY-MM-DD HH:mm') }}</nz-tag>
           <button nz-button nzType="link" nzSize="small" (click)="viewSubmissionDetail(submission)">View</button>
         </span>
