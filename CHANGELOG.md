@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.5.4 - 2020-09-10
+## 0.5.5 - 2020-09-10
 
 ### Added
 
@@ -8,6 +8,7 @@
 - Check program output line by line ignoring trailing spaces.
 - Limit RO access to outer box when running contestant programs.
 - Added quick links for administrator to edit contest or problem.
+- Added progress bar and end of contest prompt in contest pages.
 
 ### Changed
 
