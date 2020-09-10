@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { interval, Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { NzTableFilterList, NzTableQueryParams } from 'ng-zorro-antd/table';
 import { NzDrawerRef, NzDrawerService } from 'ng-zorro-antd/drawer';
 import * as moment from 'moment';
@@ -9,7 +11,7 @@ import { PaginatedList } from '../../../interfaces/pagination.interfaces';
 import { SubmissionInfoDto } from '../../../interfaces/submission.interfaces';
 import { ContestService } from '../../../services/contest.service';
 import { ContestViewDto } from '../../../interfaces/contest.interfaces';
-import { Verdicts } from '../../../consts/verdicts.consts';
+import { VerdictInfo, Verdicts, VerdictStage } from '../../../consts/verdicts.consts';
 import { SubmissionDetailComponent } from '../detail/detail.component';
 import { AuthorizeService, IUser } from '../../../../api-authorization/authorize.service';
 import { Title } from '@angular/platform-browser';
@@ -19,7 +21,7 @@ import { Title } from '@angular/platform-browser';
   templateUrl: './list.component.html',
   styleUrls: ['./list.component.css']
 })
-export class SubmissionListComponent implements OnInit {
+export class SubmissionListComponent implements OnInit, OnDestroy {
   Verdicts = Verdicts;
 
   public user: IUser;
@@ -34,6 +36,7 @@ export class SubmissionListComponent implements OnInit {
   public pageIndex: number;
   public list: PaginatedList<SubmissionInfoDto>;
   public submissionDrawer: NzDrawerRef;
+  private destroy$ = new Subject();
 
   constructor(
     private title: Title,
@@ -78,6 +81,21 @@ export class SubmissionListComponent implements OnInit {
         }
         this.loadSubmissions();
       });
+    interval(2000)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        if (this.list && this.list.items.filter(s => {
+          return s.verdictInfo.stage === VerdictStage.RUNNING ||
+            (s.verdictInfo.stage === VerdictStage.REJECTED && s.score == null);
+        }).length > 0) {
+          this.updatePendingSubmissions();
+        }
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   public getProblemLabel(problemId: number): string {
@@ -86,7 +104,31 @@ export class SubmissionListComponent implements OnInit {
 
   public loadSubmissions() {
     this.service.getPaginatedList(this.contestId, this.problemId, this.userId, this.verdict, this.pageIndex)
-      .subscribe(list => this.list = list);
+      .subscribe(list => {console.log(list); this.list = list});
+  }
+
+  private updatePendingSubmissions(): void {
+    const submissionIds = this.list.items.filter(s => {
+      return s.verdictInfo.stage === VerdictStage.RUNNING ||
+        (s.verdictInfo.stage === VerdictStage.REJECTED && s.score == null);
+    }).map(s => s.id);
+    this.service.getBatchInfos(submissionIds)
+      .subscribe(updatedSubmissions => {
+        for (let i = 0; i < updatedSubmissions.length; ++i) {
+          const updated = updatedSubmissions[i];
+          const submission = this.list.items.find(s => s.id === updated.id);
+          if (submission) {
+            submission.verdict = updated.verdict;
+            submission.verdictInfo = updated.verdictInfo;
+            submission.time = updated.time;
+            submission.memory = updated.memory;
+            submission.failedOn = updated.failedOn;
+            submission.score = updated.score;
+            submission.progress = updated.progress;
+            submission.judgedAt = updated.judgedAt;
+          }
+        }
+      });
   }
 
   public onQueryParamsChange(params: NzTableQueryParams) {
@@ -108,8 +150,7 @@ export class SubmissionListComponent implements OnInit {
   }
 
   public canViewSubmission(submission: SubmissionInfoDto): boolean {
-    const problem = this.contest.problems.find(p => p.id === submission.problemId);
-    return (moment().isAfter(this.contest.endTime)) || (this.user && submission.userId === this.user.sub) || (problem && problem.solved);
+    return (moment().isAfter(this.contest.endTime)) || (this.user && submission.userId === this.user.sub);
   }
 
   public viewSubmissionDetail(submission: SubmissionInfoDto) {

@@ -1,5 +1,12 @@
 <div id="contest-description" *ngIf="contest">
-  <h2>{{ contest.title }}</h2>
+  <h2>
+    {{ contest.title }}
+    <span *ngIf="privileged" style="float: right;">
+      <small>
+        [<a nz-button nzType="link" nzDanger [routerLink]="['/admin/contest', contestId]">Edit</a>]
+      </small>
+    </span>
+  </h2>
   <nz-divider nzText="Description" nzOrientation="left"></nz-divider>
   <markdown [data]="contest.description" katex></markdown>
   <nz-divider nzText="Rules" nzOrientation="left"></nz-divider>

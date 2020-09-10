@@ -1,6 +1,6 @@
 <div nz-row>
   <div nz-col nzSpan="24">
-    <button nz-button nzType="default" (click)="visible = true">
+    <button nz-button nzType="default" nzBlock (click)="visible = true">
       <i nz-icon nzType="plus"></i><span>Submit Code</span>
     </button>
   </div>
@@ -42,13 +42,13 @@
   <div nz-row>
     <input #sourceFileInput type="file" (change)="selectSourceFile($event)"/>
     <div nz-col nzSpan="12">
-      <button nz-button nzType="default" (click)="sourceFileInput.click()">
+      <button nz-button nzType="default" nzBlock (click)="sourceFileInput.click()">
         <i *ngIf="!filename" nz-icon nzType="upload"></i>
         <span>{{ filename ? filename : 'Select File' }}</span>
       </button>
     </div>
     <div nz-col nzSpan="12">
-      <button nz-button nzType="deafult" (click)="clearSourceFile($event)" [disabled]="!filename">
+      <button nz-button nzType="deafult" nzBlock (click)="clearSourceFile($event)" [disabled]="!filename">
         <i nz-icon nzType="close"></i><span>Clear</span>
       </button>
     </div>

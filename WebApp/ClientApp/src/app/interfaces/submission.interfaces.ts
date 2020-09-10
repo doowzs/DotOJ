@@ -4,7 +4,8 @@ import { LanguageInfo, Languages } from '../consts/languages.consts';
 import { Base64 } from 'js-base64';
 
 export interface Program {
-  language: LanguageInfo | number;
+  language: number;
+  languageInfo?: LanguageInfo;
   code: string;
 }
 
@@ -14,10 +15,11 @@ export interface SubmissionInfoDto {
   contestantId: string;
   contestantName: string;
   problemId: number;
-  language: LanguageInfo | number;
+  language: number;
+  languageInfo?: LanguageInfo;
   codeBytes: number;
-  verdict: VerdictInfo | number;
-  verdictInfo: VerdictInfo;
+  verdict: number;
+  verdictInfo?: VerdictInfo;
   time: number;
   memory: number;
   failedOn: number;
@@ -35,7 +37,7 @@ export interface SubmissionViewDto {
   problemId: number;
   program: Program;
   codeBytes: number;
-  verdict: VerdictInfo | number;
+  verdict: number;
   verdictInfo: VerdictInfo;
   time: number;
   memory: number;
@@ -55,7 +57,7 @@ export interface SubmissionEditDto {
   contestantName: string;
   problemId: number;
   program: Program;
-  verdict: VerdictInfo | number;
+  verdict: number;
   verdictInfo: VerdictInfo;
   time: number;
   memory: number;
@@ -68,16 +70,16 @@ export interface SubmissionEditDto {
 }
 
 export const mapSubmissionInfoDtoFields = (submission: SubmissionInfoDto): SubmissionInfoDto => {
-  submission.verdict = submission.verdictInfo = Verdicts.find(v => v.code === submission.verdict);
-  submission.language = Languages.find(l => l.code === submission.language);
+  submission.verdictInfo = Verdicts.find(v => v.code === submission.verdict);
+  submission.languageInfo = Languages.find(l => l.code === submission.language);
   submission.createdAt = moment.utc(submission.createdAt).local();
   submission.judgedAt = moment.utc(submission.judgedAt).local();
   return submission;
 };
 
 export const mapSubmissionViewDtoFields = (submission: SubmissionViewDto): SubmissionViewDto => {
-  submission.verdict = submission.verdictInfo  = Verdicts.find(v => v.code === submission.verdict);
-  submission.program.language = Languages.find(l => l.code === submission.program.language);
+  submission.verdictInfo = Verdicts.find(v => v.code === submission.verdict);
+  submission.program.languageInfo = Languages.find(l => l.code === submission.program.language);
   submission.program.code = Base64.decode(submission.program.code);
   submission.codeBytes = new Blob([submission.program.code]).size;
   submission.message = Base64.decode(submission.message ?? '');
@@ -89,8 +91,8 @@ export const mapSubmissionViewDtoFields = (submission: SubmissionViewDto): Submi
 };
 
 export const mapSubmissionEditDtoFields = (submission: SubmissionEditDto): SubmissionEditDto => {
-  submission.verdict = submission.verdictInfo  = Verdicts.find(v => v.code === submission.verdict);
-  submission.program.language = Languages.find(l => l.code === submission.program.language);
+  submission.verdictInfo = Verdicts.find(v => v.code === submission.verdict);
+  submission.program.languageInfo = Languages.find(l => l.code === submission.program.language);
   submission.program.code = Base64.decode(submission.program.code);
   submission.message = Base64.decode(submission.message ?? '');
   submission.createdAt = moment.utc(submission.createdAt).local();

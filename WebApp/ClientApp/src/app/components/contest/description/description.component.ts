@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { ContestMode, ContestViewDto } from '../../../interfaces/contest.interfaces';
-import { ContestService } from '../../../services/contest.service';
 import { Title } from '@angular/platform-browser';
+
+import { AuthorizeService, IUser } from '../../../../api-authorization/authorize.service';
+import { ContestViewDto } from '../../../interfaces/contest.interfaces';
+import { ContestService } from '../../../services/contest.service';
 
 @Component({
   selector: 'app-contest-description',
@@ -10,18 +12,26 @@ import { Title } from '@angular/platform-browser';
   styleUrls: ['./description.component.css']
 })
 export class ContestDescriptionComponent implements OnInit {
+  public user: IUser;
+  public privileged = false;
   public contestId: number;
   public contest: ContestViewDto;
 
   constructor(
     private title: Title,
     private route: ActivatedRoute,
-    private service: ContestService
+    private service: ContestService,
+    private auth: AuthorizeService
   ) {
     this.contestId = this.route.snapshot.params.contestId;
   }
 
   ngOnInit() {
+    this.auth.getUser().subscribe(user => {
+      this.user = user;
+      this.privileged = user.roles.indexOf('Administrator') >= 0
+        || user.roles.indexOf('ContestManager') >= 0;
+    })
     this.service.getSingle(this.contestId)
       .subscribe(contest => {
         this.contest = contest;

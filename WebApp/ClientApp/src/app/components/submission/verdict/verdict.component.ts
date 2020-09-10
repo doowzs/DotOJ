@@ -1,6 +1,6 @@
-import { Component, Input, SimpleChanges } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { SubmissionInfoDto, SubmissionViewDto } from '../../../interfaces/submission.interfaces';
-import { VerdictInfo, VerdictStage } from '../../../consts/verdicts.consts';
+import { VerdictStage } from '../../../consts/verdicts.consts';
 
 @Component({
   selector: 'app-submission-verdict',
@@ -14,7 +14,7 @@ export class SubmissionVerdictComponent {
   }
 
   public getSubmissionPct(): string {
-    const verdict = this.submission.verdict as VerdictInfo;
+    const verdict = this.submission.verdictInfo;
     if (verdict.stage === VerdictStage.RUNNING && this.submission.progress) {
       return this.submission.progress + '%';
     } else if (verdict.stage === VerdictStage.REJECTED && this.submission.score == null && this.submission.progress) {
@@ -30,7 +30,8 @@ export class SubmissionVerdictComponent {
   }
 
   public notAnValidAttempt = (): boolean => {
-    const verdict = this.submission.verdict as VerdictInfo;
-    return verdict.stage === VerdictStage.ERROR || (verdict.stage === VerdictStage.REJECTED && this.submission.failedOn === 0);
+    const verdict = this.submission.verdictInfo;
+    return verdict.stage === VerdictStage.ERROR ||
+      (verdict.stage === VerdictStage.REJECTED && this.submission.failedOn === 0);
   };
 }

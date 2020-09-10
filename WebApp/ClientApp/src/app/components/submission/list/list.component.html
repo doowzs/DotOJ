@@ -29,13 +29,13 @@
     <td>{{ submission.contestantId }}</td>
     <td>{{ getProblemLabel(submission.problemId) }}</td>
     <td>
-      <nz-tag [nzColor]="submission.verdict.color">
+      <nz-tag [nzColor]="submission.verdictInfo.color">
         <app-submission-verdict [submission]="submission"></app-submission-verdict>
       </nz-tag>
     </td>
     <td>{{ submission.time }}</td>
     <td>{{ submission.memory }}</td>
-    <td>{{ submission.language.name }}</td>
+    <td>{{ submission.languageInfo.name }}</td>
     <td>{{ submission.codeBytes }}</td>
     <td>{{ submission.createdAt.format('YYYY-MM-DD HH:mm') }}</td>
     <td>
