@@ -32,7 +32,7 @@ services:
       - backend
 
   webapp:
-    image: ccr.ccs.tencentyun.com/judge1/webapp:${FRONTEND_VERSION}
+    image: ccr.ccs.tencentyun.com/judge1/webapp:${JUDGE_VERSION}
     volumes:
       - ./webapp/identity.pfx:/app/identity.pfx:ro
       - ./webapp/appsettings.json:/app/appsettings.json:ro
@@ -41,7 +41,7 @@ services:
       - backend
 
   worker:
-    image: ccr.ccs.tencentyun.com/judge1/worker:${FRONTEND_VERSION}
+    image: ccr.ccs.tencentyun.com/judge1/worker:${JUDGE_VERSION}
     privileged: true
     volumes:
       - ./worker/appsettings.json:/app/appsettings.json:ro

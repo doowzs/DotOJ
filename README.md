@@ -1,6 +1,6 @@
 ﻿# Judge1
 
-A modern frontend for Judge0 API.
+Yet another online judge.
 
 ## Dependencies
 
@@ -12,14 +12,13 @@ Judge1 depends on multiple open-source projects:
 - [ASP.NET Core](https://github.com/dotnet/aspnetcore)
 - [Entity Framework Core](https://github.com/dotnet/efcore)
 - [Identity Server](https://identityserver.io/)
-- [Judge0 API](https://github.com/judge0/api)
 - [Node.js](https://nodejs.org/)
 - [Ng-Zorro](https://ng.ant.design/)
 - [MariaDB](https://mariadb.org/)
 
 ## Installation
 
-To prepare a development environment, please follow the following steps:
+Application must run on GNU/Linux OS with cgroup enabled. Follow the steps to prepare a dev environment:
 
 ### 1. Install .NET Core SDK
 
@@ -62,11 +61,7 @@ We are using MySQL or MariaDB (preferred) as the data source.
 
 Install DB server on your computer and update the connection string in `WebApp/appsettings.json`, then create a user called `judge1` with full access to database `judge1`. Tables will be created on the first run so there is no need for manual migrations.
 
-### 5. Start Judge0 API
-
-Start Judge0 API locally and update the backend address in `Worker/appsettings.json`.
-
-### 6. Run the application
+### 5. Run the application
 
 Before we run the application for the first time, it is CRITICAL to install and trust an HTTPS development certificate on Windows and macOS. Simply run the following command and trust the certificate, or refer to [this manual](https://docs.microsoft.com/en-us/aspnet/core/security/enforcing-ssl):
 
