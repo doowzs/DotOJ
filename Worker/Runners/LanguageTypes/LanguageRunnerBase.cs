@@ -243,12 +243,12 @@ namespace Worker.Runners.LanguageTypes
 
             if (float.TryParse(dict["time"], out var time))
             {
-                run.Time = (int) (time * 1000);
+                run.Time = (int) (Math.Min(time, TimeLimit) * 1000);
             }
 
             if (int.TryParse(dict["cg-mem"], out var memory))
             {
-                run.Memory = memory;
+                run.Memory = Math.Min(memory, MemoryLimit);
             }
 
             return run;
