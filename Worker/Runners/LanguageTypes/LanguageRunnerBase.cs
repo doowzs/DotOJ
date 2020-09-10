@@ -386,8 +386,6 @@ namespace Worker.Runners.LanguageTypes
                     {
                         run.Verdict = Verdict.WrongAnswer;
                     }
-                    
-                    if (index == 4) throw new Exception("test");
 
                     stopWatch.Stop();
                     Logger.LogInformation((inline ? "SampleCase" : "TestCase") +

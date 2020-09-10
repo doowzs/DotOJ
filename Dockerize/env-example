@@ -1,3 +1,5 @@
+JUDGE_VERSION=
+
 ### Paths ##################################################
 
 # You may add flags to the path `:cached`, `:delegated`. When using Docker Sync add `:nocopy`
@@ -24,10 +26,6 @@ COMPOSE_PATH_SEPARATOR=:
 
 # Define the prefix of container names. This is useful if you have multiple projects that use laradock to have separate containers per project.
 COMPOSE_PROJECT_NAME=judged
-
-### Container versions #####################################
-
-FRONTEND_VERSION=
 
 ### Caddy ##################################################
 
