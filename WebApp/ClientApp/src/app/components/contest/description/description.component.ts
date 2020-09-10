@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
+import * as moment from 'moment';
 
 import { AuthorizeService, IUser } from '../../../../api-authorization/authorize.service';
 import { ContestViewDto } from '../../../interfaces/contest.interfaces';
@@ -16,6 +17,7 @@ export class ContestDescriptionComponent implements OnInit {
   public privileged = false;
   public contestId: number;
   public contest: ContestViewDto;
+  public ended: boolean;
 
   constructor(
     private title: Title,
@@ -35,6 +37,7 @@ export class ContestDescriptionComponent implements OnInit {
     this.service.getSingle(this.contestId)
       .subscribe(contest => {
         this.contest = contest;
+        this.ended = moment().isAfter(this.contest.endTime);
         this.title.setTitle(contest.title);
       });
   }

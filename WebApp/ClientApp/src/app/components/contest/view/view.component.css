@@ -5,6 +5,15 @@
   padding: 2rem 3rem;
 }
 
+::ng-deep .ant-progress {
+  line-height: 6px;
+  display: block;
+}
+
+::ng-deep .ant-progress-inner {
+  border-radius: 0 !important;
+}
+
 .sidebar {
   background: #ffffff;
 }
