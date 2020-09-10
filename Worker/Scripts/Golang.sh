@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -e
 
-apt install -y golang
+apt-get install -y golang

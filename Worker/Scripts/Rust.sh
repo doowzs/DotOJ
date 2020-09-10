@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -e
 
-apt install -y rustc
+apt-get install -y rustc

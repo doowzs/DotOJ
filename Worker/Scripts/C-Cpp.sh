@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -e
 
-apt install -y gcc
+apt-get install -y gcc

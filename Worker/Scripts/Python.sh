@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -e
 
-apt install -y python3
+apt-get install -y python3
