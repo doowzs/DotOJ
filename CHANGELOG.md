@@ -1,11 +1,12 @@
 # Changelog
 
-## 0.5.2 - 2020-09-10
+## 0.5.3 - 2020-09-10
 
 ### Added
 
 - Custom judging service using `isolate` in worker.
 - Check program output line by line ignoring trailing spaces.
+- Limit RO access to outer box when running contestant programs.
 
 ### Removed
 
