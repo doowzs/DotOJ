@@ -23,6 +23,7 @@ RUN bash ./C-Cpp.sh
 RUN bash ./Java.sh
 RUN bash ./Python.sh
 RUN bash ./Golang.sh
+RUN bash ./Rust.sh
 
 WORKDIR /app
 RUN rm -rf /isolate

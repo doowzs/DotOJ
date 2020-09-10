@@ -16,19 +16,20 @@ namespace Worker.Models
 
         public LanguageOptions(int languageId, float timeFactor, string compilerOptions)
         {
-            this.LanguageId = languageId;
-            this.TimeFactor = timeFactor;
-            this.CompilerOptions = compilerOptions;
+            LanguageId = languageId;
+            TimeFactor = timeFactor;
+            CompilerOptions = compilerOptions;
         }
 
         public static readonly IDictionary<Language, LanguageOptions> LanguageOptionsDict =
             new Dictionary<Language, LanguageOptions>()
             {
-                {Language.C, new LanguageOptions(50, 1.0f, "-DONLINE_JUDGE --static -O2 --std=c11")},
-                {Language.Cpp, new LanguageOptions(54, 1.0f, "-DONLINE_JUDGE --static -O2 --std=c++17")},
-                {Language.Java, new LanguageOptions(62, 2.0f, "-J-Xms64m -J-Xmx512m")},
-                {Language.Python, new LanguageOptions(71, 5.0f)},
-                {Language.Golang, new LanguageOptions(60, 2.0f)},
+                {Language.C, new LanguageOptions(1, 1.0f, "-DONLINE_JUDGE --static -O2 --std=c11")},
+                {Language.Cpp, new LanguageOptions(2, 1.0f, "-DONLINE_JUDGE --static -O2 --std=c++17")},
+                {Language.Java, new LanguageOptions(3, 2.0f, "-J-Xms64m -J-Xmx512m")},
+                {Language.Python, new LanguageOptions(4, 5.0f)},
+                {Language.Golang, new LanguageOptions(5, 2.0f)},
+                {Language.Rust, new LanguageOptions(6, 2.5f, "-O")},
                 /*
                 {Language.CSharp, new LanguageOptions(51, 1.5f)},
                 {Language.Haskell, new LanguageOptions(61, 2.5f)},
@@ -36,7 +37,6 @@ namespace Worker.Models
                 {Language.Lua, new LanguageOptions(64, 6.0f)},
                 {Language.Php, new LanguageOptions(68, 4.5f)},
                 {Language.Ruby, new LanguageOptions(72, 5.0f)},
-                {Language.Rust, new LanguageOptions(73, 2.5f)},
                 {Language.TypeScript, new LanguageOptions(74, 5.0f)}
                 */
             };

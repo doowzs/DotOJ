@@ -12,6 +12,7 @@ export const Languages: LanguageInfo[] = [
   { code: 3, factor: 2.0, name: 'Java 11', mode: 'java', option: '-J-Xms32m -J-Xmx256m' },
   { code: 4, factor: 5.0, name: 'Python 3', mode: 'python', option: '' },
   { code: 5, factor: 2.0, name: 'Golang', mode: 'golang', option: '' },
+  { code: 6, factor: 2.5, name: 'Rust', mode: 'rust', option: '-O' },
   /*
   {
     code: 51, factor: 1.5, name: 'C#', mode: 'csharp',

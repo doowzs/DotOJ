@@ -10,16 +10,15 @@ namespace Data.Models
         Java = 3,
         Python = 4,
         Golang = 5,
+        Rust = 6
         /*
         CSharp = 51,
         Haskell = 61,
-        Java13 = 62,
         JavaScript = 63,
         Lua = 64,
         Php = 68,
         Python3 = 71,
         Ruby = 72,
-        Rust = 73,
         TypeScript = 74,
         */
     }

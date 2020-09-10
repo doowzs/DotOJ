@@ -31,9 +31,9 @@ namespace Worker.Runners.LanguageTypes
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "isolate",
-                    Arguments = "--cg -s -E PATH=/usr/bin/ -c jail -i /dev/null -r compiler_output" +
+                    Arguments = "--cg -s -E PATH=/usr/bin -d /etc -c jail -i /dev/null -r compiler_output" +
                                 " -p120 -f 409600 --cg-timing -t 15.0 -x 0 -w 20.0 --cg-mem=512000" +
-                                " --run -- /usr/lib/jvm/adoptopenjdk-11-hotspot-amd64/bin/javac " +
+                                " --run -- /usr/bin/javac " +
                                 LanguageOptions.LanguageOptionsDict[Language.Java].CompilerOptions + " Main.java"
                 }
             };
@@ -72,10 +72,10 @@ namespace Worker.Runners.LanguageTypes
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "isolate",
-                    Arguments = $"--cg -s -M {meta} -c jail -d /box={Box}:norec -d /box/jail={Jail}:rw" +
+                    Arguments = $"--cg -s -M {meta} -c jail -d /box={Box}:norec -d /box/jail={Jail}:rw -d /etc" +
                                 $" -i jail/input -o jail/output -r jail/stderr -p120 -f {bytes}" +
                                 $" --cg-timing -t {TimeLimit} -x 0 -w {TimeLimit + 3.0f} --cg-mem=512000" +
-                                " --run -- /usr/lib/jvm/adoptopenjdk-11-hotspot-amd64/bin/java Main"
+                                " --run -- /usr/bin/java Main"
                 }
             };
             process.Start();
