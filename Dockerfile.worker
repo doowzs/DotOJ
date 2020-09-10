@@ -17,14 +17,16 @@ WORKDIR /isolate
 RUN make isolate && make install
 
 # Install language tools
-RUN mkdir -p /usr/share/man/man1 # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=863199
-RUN wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add -
-RUN echo "deb http://mirrors.tuna.tsinghua.edu.cn/AdoptOpenJDK/deb buster main" >> /etc/apt/sources.list.d/AdoptOpenJDK.list
-RUN apt-get update -yqq
-RUN apt-get install -y gcc python3 adoptopenjdk-11-hotspot
+COPY ./Worker/Scripts /scripts
+WORKDIR /scripts
+RUN bash ./C-Cpp.sh
+RUN bash ./Java.sh
+RUN bash ./Python.sh
+RUN bash ./Golang.sh
 
 WORKDIR /app
 RUN rm -rf /isolate
+RUN rm -rf /scripts
 RUN rm -rf /var/lib/apt/lists/*
 COPY --from=build-env /app/out .
 ENTRYPOINT ["dotnet", "Worker.dll"]
