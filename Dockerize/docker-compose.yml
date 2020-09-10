@@ -42,6 +42,7 @@ services:
 
   worker:
     image: ccr.ccs.tencentyun.com/judge1/worker:${FRONTEND_VERSION}
+    privileged: true
     volumes:
       - ./worker/appsettings.json:/app/appsettings.json:ro
       - ${DATA_PATH_HOST}/judge-data:/var/www/judge-data:ro
