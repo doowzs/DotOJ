@@ -108,8 +108,7 @@ export class SubmissionListComponent implements OnInit {
   }
 
   public canViewSubmission(submission: SubmissionInfoDto): boolean {
-    const problem = this.contest.problems.find(p => p.id === submission.problemId);
-    return (moment().isAfter(this.contest.endTime)) || (this.user && submission.userId === this.user.sub) || (problem && problem.solved);
+    return (moment().isAfter(this.contest.endTime)) || (this.user && submission.userId === this.user.sub);
   }
 
   public viewSubmissionDetail(submission: SubmissionInfoDto) {
