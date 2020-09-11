@@ -31,7 +31,7 @@ namespace Worker.Runners.LanguageTypes
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "isolate",
-                    Arguments = "--cg -s -E PATH=/usr/bin -d /etc" +
+                    Arguments = "--cg -s -E PATH=/bin:/usr/bin -d /etc" +
                                 " -d /var/lib/ghc/package.conf.d=/usr/lib/ghc/package.conf.d" +
                                 " -c jail -i /dev/null -r compiler_output" +
                                 " -p120 -f 409600 --cg-timing -t 15.0 -x 0 -w 20.0 -k 128000 --cg-mem=512000" +
