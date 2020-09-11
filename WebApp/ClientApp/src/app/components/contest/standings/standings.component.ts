@@ -31,16 +31,16 @@ export class ContestStandingsComponent implements OnInit {
       .subscribe(contest => {
         this.contest = contest;
         this.title.setTitle(contest.title + ' - Standings');
+        this.service.getRegistrations(this.contestId)
+          .subscribe(registrations => this.registrations = registrations.sort((a, b) => {
+            const scoreA = this.getTotalScore(a), scoreB = this.getTotalScore(b);
+            if (scoreA !== scoreB) {
+              return scoreB - scoreA; // descending in score order
+            } else {
+              return this.getTotalPenalties(a) - this.getTotalPenalties(b); // ascending in penalty order
+            }
+          }));
       });
-    this.service.getRegistrations(this.contestId)
-      .subscribe(registrations => this.registrations = registrations.sort((a, b) => {
-        const scoreA = this.getTotalScore(a), scoreB = this.getTotalScore(b);
-        if (scoreA !== scoreB) {
-          return scoreB - scoreA; // descending in score order
-        } else {
-          return this.getTotalPenalties(a) - this.getTotalPenalties(b); // ascending in penalty order
-        }
-      }));
   }
 
   public getProblemPenalty(registration: RegistrationInfoDto, problem: ProblemInfoDto): number {

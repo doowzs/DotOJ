@@ -1,6 +1,6 @@
 ﻿<h2>Standings</h2>
 <nz-table #standingsTable *ngIf="contest && registrations"
-          nzShowPagination="false" [nzData]="registrations">
+          [nzFrontPagination]="false" [nzShowPagination]="false" [nzData]="registrations">
   <thead>
   <tr>
     <th>Rank</th>

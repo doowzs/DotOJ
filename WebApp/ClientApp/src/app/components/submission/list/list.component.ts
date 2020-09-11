@@ -104,7 +104,7 @@ export class SubmissionListComponent implements OnInit, OnDestroy {
 
   public loadSubmissions() {
     this.service.getPaginatedList(this.contestId, this.problemId, this.userId, this.verdict, this.pageIndex)
-      .subscribe(list => {console.log(list); this.list = list});
+      .subscribe(list => this.list = list);
   }
 
   private updatePendingSubmissions(): void {
