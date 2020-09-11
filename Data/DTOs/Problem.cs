@@ -46,7 +46,7 @@ namespace Data.DTOs
         public ProblemViewDto(Problem problem) : base(problem)
         {
             Id = problem.Id;
-            ContestId = problem.Id;
+            ContestId = problem.ContestId;
             Title = problem.Title;
             Description = problem.Description;
             InputFormat = problem.InputFormat;
