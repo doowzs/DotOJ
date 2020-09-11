@@ -1,10 +1,11 @@
 # Changelog
 
-## 1.0.3 - 2020-09-11
+## 1.0.4 - 2020-09-12
 
 ### Changed
 
 - Rename project to dotOJ (AKA. .OJ, NTOJ, OJ Core, etc.).
+- When API request failed with 401 Unauthorized, redirect user to login page.
 
 ### Fixed
 
