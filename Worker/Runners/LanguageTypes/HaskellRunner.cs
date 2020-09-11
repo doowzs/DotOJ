@@ -31,7 +31,7 @@ namespace Worker.Runners.LanguageTypes
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "isolate",
-                    Arguments = "--cg -s -E PATH=/bin:/usr/bin -d /etc" +
+                    Arguments = $"--cg -b {BoxId} -s -E PATH=/bin:/usr/bin -d /etc" +
                                 " -d /var/lib/ghc/package.conf.d=/usr/lib/ghc/package.conf.d" +
                                 " -c jail -i /dev/null -r compiler_output" +
                                 " -p120 -f 409600 --cg-timing -t 15.0 -x 0 -w 20.0 -k 128000 --cg-mem=512000" +
@@ -75,7 +75,7 @@ namespace Worker.Runners.LanguageTypes
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "isolate",
-                    Arguments = $"--cg -s -M {meta} -c jail -d /box={Box}:norec -d /box/jail={Jail}:rw" +
+                    Arguments = $"--cg -b {BoxId} -s -M {meta} -c jail -d /box={Box}:norec -d /box/jail={Jail}:rw" +
                                 $" -i jail/input -o jail/output -r jail/stderr -p1 -f {bytes}" +
                                 $" --cg-timing -t {TimeLimit} -x 0 -w {TimeLimit + 3.0f} -k 128000 --cg-mem={MemoryLimit}" +
                                 " --run -- main"

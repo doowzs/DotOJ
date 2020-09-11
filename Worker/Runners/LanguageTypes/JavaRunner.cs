@@ -31,7 +31,8 @@ namespace Worker.Runners.LanguageTypes
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "isolate",
-                    Arguments = "--cg -s -E PATH=/bin:/usr/bin -d /etc -c jail -i /dev/null -r compiler_output" +
+                    Arguments = $"--cg -b {BoxId} -s -E PATH=/bin:/usr/bin -d /etc" +
+                                " -c jail -i /dev/null -r compiler_output" +
                                 " -p120 -f 409600 --cg-timing -t 15.0 -x 0 -w 20.0 --cg-mem=512000" +
                                 " --run -- /usr/bin/javac " +
                                 LanguageOptions.LanguageOptionsDict[Language.Java].CompilerOptions + " Main.java"
@@ -72,7 +73,8 @@ namespace Worker.Runners.LanguageTypes
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "isolate",
-                    Arguments = $"--cg -s -M {meta} -c jail -d /box={Box}:norec -d /box/jail={Jail}:rw -d /etc" +
+                    Arguments = $"--cg -b {BoxId} -s -M {meta} -c jail" +
+                                $" -d /box={Box}:norec -d /box/jail={Jail}:rw -d /etc" +
                                 $" -i jail/input -o jail/output -r jail/stderr -p20 -f {bytes}" +
                                 $" --cg-timing -t {TimeLimit} -x 0 -w {TimeLimit + 3.0f} --cg-mem=512000" +
                                 " --run -- /usr/bin/java Main"

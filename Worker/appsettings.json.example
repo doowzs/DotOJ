@@ -4,6 +4,7 @@
   },
   "Judging": {
     "Name": "local",
+    "BoxId": "0",
     "DataPath": "/var/www/judge-data"
   },
   "Notification": {
