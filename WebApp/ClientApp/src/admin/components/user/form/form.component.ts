@@ -23,7 +23,7 @@ export class AdminUserFormComponent implements OnInit, OnChanges {
       userName: [null],
       password: [null],
       contestantId: [null, [Validators.required, Validators.maxLength(50)]],
-      contestantName: [null, [Validators.required, Validators.maxLength(50)]],
+      contestantName: [null, [Validators.required, Validators.maxLength(20)]],
       isAdministrator: [false, [Validators.required]],
       isUserManager: [false, [Validators.required]],
       isContestManager: [false, [Validators.required]],
