@@ -26,6 +26,9 @@ export interface ProblemViewDto {
   hasSpecialJudge: boolean;
   hasHacking: boolean;
   sampleCases: TestCase[];
+  solved: boolean;
+  acceptedSubmissions: number;
+  totalSubmissions: number;
 }
 
 export interface ProblemEditDto {
