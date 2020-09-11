@@ -6,7 +6,7 @@ JUDGE_VERSION=
 APP_CODE_CONTAINER_FLAG=:cached
 
 # Choose storage path on your machine. For all storage systems
-DATA_PATH_HOST=~/.judged/data
+DATA_PATH_HOST=/data/judge
 
 ### Drivers ################################################
 

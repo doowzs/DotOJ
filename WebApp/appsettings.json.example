@@ -1,14 +1,14 @@
 {
   "ConnectionStrings": {
-    "MySqlConnection": "Server=mariadb;Uid=judge1;Pwd=judge1;Database=judge1;"
+    "MySqlConnection": "Server=mariadb;Uid=judge;Pwd=judge;Database=judge;"
   },
   "Application": {
-    "Host": "https://judge1",
-    "Title": "Judge1",
-    "Author": "Judge1 Developers",
+    "Host": "https://dotoj",
+    "Title": ".OJ",
+    "Author": ".OJ developers",
     "DataPath": "/var/www/judge-data",
     "AdminUser": {
-      "Email": "admin@judge1.local",
+      "Email": "admin@dotoj.local",
       "Password": "password",
       "ContestantId": "admin",
       "ContestantName": "admin"

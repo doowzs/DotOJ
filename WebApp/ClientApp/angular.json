@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "judge1": {
+    "dotoj": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -68,18 +68,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "judge1:build"
+            "browserTarget": "dotoj:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "judge1:build:production"
+              "browserTarget": "dotoj:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "judge1:build"
+            "browserTarget": "dotoj:build"
           }
         },
         "test": {
@@ -146,7 +146,7 @@
         }
       }
     },
-    "judge1-e2e": {
+    "dotoj-e2e": {
       "root": "e2e/",
       "projectType": "application",
       "architect": {
@@ -154,7 +154,7 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "judge1:serve"
+            "devServerTarget": "dotoj:serve"
           }
         },
         "lint": {
@@ -169,7 +169,7 @@
       }
     }
   },
-  "defaultProject": "judge1",
+  "defaultProject": "dotoj",
   "cli": {
     "analytics": "0f320950-53dc-4595-acbe-c9aaa3057fb3"
   }
