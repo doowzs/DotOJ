@@ -24,30 +24,30 @@ namespace Worker
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            using var scope = _factory.CreateScope();
-            _triggers.Add(new SubmissionRunnerTrigger(scope.ServiceProvider));
-
-            bool wait = true;
             while (!stoppingToken.IsCancellationRequested)
             {
-                if (wait)
-                {
-                    await Task.Delay(1000, stoppingToken);
-                }
+                await Task.Delay(1000, stoppingToken);
 
-                wait = true;
-                foreach (var trigger in _triggers)
+                var continueWorking = true;
+                while (continueWorking)
                 {
-                    try
+                    continueWorking = false;
+
+                    using var scope = _factory.CreateScope();
+                    _triggers.Add(new SubmissionRunnerTrigger(scope.ServiceProvider));
+                    foreach (var trigger in _triggers)
                     {
-                        if (await trigger.CheckAndRunAsync())
+                        try
                         {
-                            wait = false;
+                            if (await trigger.CheckAndRunAsync())
+                            {
+                                continueWorking = true;
+                            }
                         }
-                    }
-                    catch (Exception e)
-                    {
-                        _logger.LogError($"{nameof(trigger)} error: {e}");
+                        catch (Exception e)
+                        {
+                            _logger.LogError($"{nameof(trigger)} error: {e}");
+                        }
                     }
                 }
             }
