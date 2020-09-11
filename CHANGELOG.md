@@ -2,6 +2,11 @@
 
 ## 1.0.4 - 2020-09-12
 
+### Added
+
+- Add problem statistics to problem detail page.
+- Add reload button to problem detail, submissions and standings pages.
+
 ### Changed
 
 - Rename project to dotOJ (AKA. .OJ, NTOJ, OJ Core, etc.).

@@ -1,4 +1,12 @@
-<h2>Submissions</h2>
+<h2>
+  Submissions
+  <span style="float: right;">
+      <button nz-button nzSize="small" nzShape="circle" style="margin-right: 0.5rem;"
+              [nzLoading]="loading" (click)="loadSubmissions()">
+        <i nz-icon nzType="sync"></i>
+      </button>
+  </span>
+</h2>
 <nz-table #submissionsTable *ngIf="list"
           [nzData]="list.items" [nzFrontPagination]="false"
           [nzTotal]="list.totalPages" [nzPageSize]="list.pageSize" [nzPageIndex]="pageIndex"

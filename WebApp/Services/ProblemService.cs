@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Data.DTOs;
 using Data.Generics;
@@ -81,7 +82,14 @@ namespace WebApp.Services
         {
             await EnsureProblemExistsAsync(id);
             await EnsureUserCanViewProblemAsync(id);
-            return new ProblemViewDto(await Context.Problems.FindAsync(id));
+            
+            var userId = Accessor.HttpContext.User.GetSubjectId();
+            var problem = await Context.Problems.FindAsync(id);
+            await Context.Entry(problem).Collection(p => p.Submissions).LoadAsync();
+            var solved = problem.Submissions.Any(s => s.UserId == userId && s.Verdict == Verdict.Accepted);
+            var acceptedSubmissions = problem.Submissions.Count(s => s.Verdict == Verdict.Accepted);
+            var totalSubmissions = problem.Submissions.Count;
+            return new ProblemViewDto(problem, solved, acceptedSubmissions, totalSubmissions);
         }
     }
 }

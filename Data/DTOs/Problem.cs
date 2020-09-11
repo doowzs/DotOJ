@@ -43,10 +43,14 @@ namespace Data.DTOs
         public bool HasHacking { get; }
         public List<TestCase> SampleCases { get; }
 
+        public bool Solved { get; }
+        public int AcceptedSubmissions { get; }
+        public int TotalSubmissions { get; }
+
         public ProblemViewDto(Problem problem) : base(problem)
         {
             Id = problem.Id;
-            ContestId = problem.Id;
+            ContestId = problem.ContestId;
             Title = problem.Title;
             Description = problem.Description;
             InputFormat = problem.InputFormat;
@@ -57,6 +61,16 @@ namespace Data.DTOs
             HasSpecialJudge = problem.HasSpecialJudge;
             HasHacking = problem.HasHacking;
             SampleCases = problem.SampleCases;
+            Solved = false;
+            AcceptedSubmissions = TotalSubmissions = 0;
+        }
+
+        public ProblemViewDto(Problem problem, bool solved, int acceptedSubmissions, int totalSubmissions) :
+            this(problem)
+        {
+            Solved = solved;
+            AcceptedSubmissions = acceptedSubmissions;
+            TotalSubmissions = totalSubmissions;
         }
     }
 

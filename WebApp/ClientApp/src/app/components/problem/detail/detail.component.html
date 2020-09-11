@@ -1,17 +1,42 @@
-﻿<ng-container *ngIf="problem">
-  <h2>
+﻿<div id="problem-detail" *ngIf="problem">
+  <h2 id="problem-title">
     {{ problem.title }}
-    <span *ngIf="privileged" style="float: right;">
-      <small>
+    <span style="float: right;">
+      <button nz-button nzSize="small" nzShape="circle" style="margin-right: 0.5rem;"
+              [nzLoading]="loading" (click)="loadProblem()">
+        <i nz-icon nzType="sync"></i>
+      </button>
+      <nz-tag nzColor="purple" *ngIf="problem.hasSpecialJudge">
+        <i nz-icon nzType="coffee"></i><span>Special Judge</span>
+      </nz-tag>
+      <nz-tag nzColor="green" *ngIf="problem.solved">
+        <i nz-icon nzType="check"></i><span>Solved</span>
+      </nz-tag>
+      <small *ngIf="privileged">
         [<a nz-button nzType="link" nzDanger [routerLink]="['/admin/problem', problemId]">Edit</a>]
         [<a nz-button nzType="link" nzDanger [routerLink]="['/admin/problem', problemId, 'test-cases']">TestCases</a>]
       </small>
     </span>
   </h2>
-  <p *ngIf="problem.hasSpecialJudge">Special Judge</p>
-  <p>Base Time Limit: {{ problem.timeLimit }} ms</p>
-  <p>Memory Limit: {{ problem.memoryLimit / 1024 | number: "1.0-0" | noComma }} MiB</p>
-
+  <div nz-row id="problem-stats">
+    <div nz-col nzSpan="6">
+      <nz-statistic nzTitle="Base Time Limit" [nzValue]="problem.timeLimit" nzSuffix="ms"></nz-statistic>
+    </div>
+    <div nz-col nzSpan="6">
+      <nz-statistic nzTitle="Memory Limit" nzSuffix="MiB"
+                    [nzValue]="(problem.memoryLimit / 1024 | number: '1.0-0' | noComma)"
+      ></nz-statistic>
+    </div>
+    <div nz-col nzSpan="6">
+      <nz-statistic nzTitle="Accepted" [nzValue]="problem.acceptedSubmissions"
+                    [nzSuffix]="'of ' + problem.totalSubmissions"></nz-statistic>
+    </div>
+    <div nz-col nzSpan="6">
+      <nz-statistic nzTitle="AC Ratio" nzSuffix="%"
+                    [nzValue]="problem.totalSubmissions ? (problem.acceptedSubmissions / problem.totalSubmissions * 100 | number : '1.1-1') : '0.0'"
+      ></nz-statistic>
+    </div>
+  </div>
   <nz-divider nzText="Submissions" nzOrientation="left"></nz-divider>
   <app-submission-creator [problem]="problem"></app-submission-creator>
   <app-submission-timeline [problem]="problem"></app-submission-timeline>
@@ -52,4 +77,4 @@
     <nz-divider nzText="Foot Note" nzOrientation="left"></nz-divider>
     <markdown [data]="problem.footNote" katex></markdown>
   </ng-container>
-</ng-container>
+</div>
