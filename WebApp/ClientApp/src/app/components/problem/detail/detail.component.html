@@ -2,6 +2,10 @@
   <h2 id="problem-title">
     {{ problem.title }}
     <span style="float: right;">
+      <button nz-button nzSize="small" nzShape="circle" style="margin-right: 0.5rem;"
+              [nzLoading]="loading" (click)="loadProblem()">
+        <i nz-icon nzType="sync"></i>
+      </button>
       <nz-tag nzColor="purple" *ngIf="problem.hasSpecialJudge">
         <i nz-icon nzType="coffee"></i><span>Special Judge</span>
       </nz-tag>

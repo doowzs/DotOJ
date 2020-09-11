@@ -17,6 +17,7 @@ import { LanguageInfo } from '../../../consts/languages.consts';
 export class ProblemDetailComponent implements OnInit, OnDestroy {
   public user: IUser;
   public privileged = false;
+  public loading = false;
   public problemId: number;
   public problem: ProblemViewDto;
   public language: LanguageInfo;
@@ -56,10 +57,12 @@ export class ProblemDetailComponent implements OnInit, OnDestroy {
   }
 
   public loadProblem() {
+    this.loading = true;
     this.service.getSingle(this.problemId)
       .subscribe(problem => {
         this.problem = problem;
         this.title.setTitle(problem.title);
+        this.loading = false;
       });
   }
 }
