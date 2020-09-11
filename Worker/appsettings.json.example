@@ -4,12 +4,7 @@
   },
   "Judging": {
     "Name": "local",
-    "DataPath": "/var/www/judge-data",
-    "Instance": {
-      "Endpoint": "http://backend-server:3000",
-      "AuthUser": "judge1",
-      "AuthToken": "judge1"
-    }
+    "DataPath": "/var/www/judge-data"
   },
   "Notification": {
     "DingTalk": {
