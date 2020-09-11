@@ -30,6 +30,7 @@ namespace WebApp.Areas.Identity.Pages.Account.Manage
         public class InputModel
         {
             [Required]
+            [StringLength(20, ErrorMessage = "The {0} must be at most {1} characters long.")]
             [Display(Name = "Contestant Name")]
             public string ContestantName { get; set; }
         }

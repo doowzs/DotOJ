@@ -50,11 +50,13 @@ namespace WebApp.Areas.Identity.Pages.Account
             public string Email { get; set; }
 
             [Required]
+            [StringLength(50, ErrorMessage = "The {0} must be at most {1} characters long.")]
             [DataType(DataType.Text)]
             [Display(Name = "Contestant ID (NJUID)")]
             public string ContestantId { get; set; }
 
             [Required]
+            [StringLength(20, ErrorMessage = "The {0} must be at most {1} characters long.")]
             [DataType(DataType.Text)]
             [Display(Name = "Contestant Name (Nickname)")]
             public string ContestantName { get; set; }

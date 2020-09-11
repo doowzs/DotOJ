@@ -41,6 +41,16 @@ namespace WebApp.Services.Admin
             {
                 throw new ValidationException("Contestant ID already taken.");
             }
+
+            if (dto.ContestantId.Length > 50)
+            {
+                throw new ValidationException("Contestant ID must be shorter than 50 characters.");
+            }
+
+            if (dto.ContestantName.Length > 20)
+            {
+                throw new ValidationException("Contestant Name must be shorter than 20 characters.");
+            }
         }
 
         public async Task<PaginatedList<ApplicationUserInfoDto>> GetPaginatedUserInfosAsync(int? pageIndex)

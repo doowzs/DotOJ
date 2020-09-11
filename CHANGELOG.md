@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.1 - 2020-09-11
+## 1.0.2 - 2020-09-11
 
 ### Changed
 
@@ -10,6 +10,7 @@
 
 - Fixed multipart body size limit of uploading test cases and archives.
 - Fixed multiple worker conflict caused by not setting isolated box ID.
+- Fixed security issue where user can take a long contestant ID or name.
 
 ## 0.5.7 - 2020-09-11
 
