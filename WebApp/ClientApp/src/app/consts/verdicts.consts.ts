@@ -16,11 +16,11 @@ export interface VerdictInfo {
 export const Verdicts: VerdictInfo[] = [
   {
     code: -2, name: 'Voided', showCase: false, stage: VerdictStage.ERROR,
-    color: 'gray', explain: 'A newer submission has voided this one.'
+    color: 'gray', explain: 'This submission is voided by a newer submission or manually.'
   },
   {
     code: -1, name: 'Service Failed', showCase: false, stage: VerdictStage.ERROR,
-    color: 'gray', explain: 'An error occurred in the frontend judging service.'
+    color: 'gray', explain: 'An internal error occurred in the judging service.'
   },
   {
     code: 0, name: 'Pending', showCase: false, stage: VerdictStage.RUNNING,
@@ -32,7 +32,7 @@ export const Verdicts: VerdictInfo[] = [
   },
   {
     code: 2, name: 'Running', showCase: true, stage: VerdictStage.RUNNING,
-    color: 'blue', explain: 'Your program is running on a test case by the judging service.'
+    color: 'blue', explain: 'Your program is running on test cases by the judging service.'
   },
   {
     code: 3, name: 'Accepted', showCase: false, stage: VerdictStage.ACCEPTED,
@@ -57,9 +57,5 @@ export const Verdicts: VerdictInfo[] = [
   {
     code: 8, name: 'Runtime Error', showCase: true, stage: VerdictStage.REJECTED,
     color: 'red', explain: 'Your program did not exit normally with exit code 0.'
-  },
-  {
-    code: 9, name: 'Internal Error', showCase: false, stage: VerdictStage.ERROR,
-    color: 'gray', explain: 'An error occurred in the backend judging service.'
   }
 ];

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
 @Component({
-  selector: 'app-changelog',
+  selector: 'app-miscellaneous-changelog',
   templateUrl: './changelog.component.html'
 })
 export class ChangelogComponent {

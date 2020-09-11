@@ -3,6 +3,11 @@
     {{ title }}
   </nz-page-header-title>
   <nz-page-header-extra>
+    <button nz-button routerLink="/"
+            routerLinkActive #rla="routerLinkActive" [routerLinkActiveOptions]="{exact: true}"
+            [class.ant-btn-link]="rla.isActive" [class.ant-btn-text]="!rla.isActive">
+      <i nz-icon nzType="home"></i><span>Home</span>
+    </button>
     <ng-container *ngIf="(isAuthenticated | async) then authenticated else anonymous"></ng-container>
     <ng-template #anonymous>
       <button nz-button nzType="text" routerLink="/authentication/register">
@@ -13,11 +18,6 @@
       </button>
     </ng-template>
     <ng-template #authenticated>
-      <button nz-button routerLink="/"
-              routerLinkActive #rla="routerLinkActive" [routerLinkActiveOptions]="{exact: true}"
-              [class.ant-btn-link]="rla.isActive" [class.ant-btn-text]="!rla.isActive">
-        <i nz-icon nzType="home"></i><span>Home</span>
-      </button>
       <button nz-button routerLink="/contests"
               routerLinkActive #rlaContests="routerLinkActive" [routerLinkActiveOptions]="{exact: true}"
               [class.ant-btn-link]="rlaContests.isActive" [class.ant-btn-text]="!rlaContests.isActive">

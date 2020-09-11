@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.5.6 - 2020-09-11
+## 0.5.7 - 2020-09-11
 
 ### Added
 
@@ -10,6 +10,7 @@
 - Limit RO access to outer box when running contestant programs.
 - Added quick links for administrator to edit contest or problem.
 - Added progress bar and end of contest prompt in contest pages.
+- Added help page to show judging specs and available languages.
 
 ### Changed
 
