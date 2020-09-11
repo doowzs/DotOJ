@@ -1,2 +1,2 @@
 http://localhost
-reverse_proxy http://frontend-webapp
+reverse_proxy http://webapp

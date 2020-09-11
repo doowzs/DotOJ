@@ -1,14 +1,14 @@
-# Judge1 on Docker
+# DotOJ on Docker
 
-Docker files for running Judge1 service.
+Docker files for running dotOJ service.
 
 ## Configuration
 
 Rename `env-example` to `.env` and change configs in these files:
 
 - `caddy/Caddyfile`: Reverse proxy settings.
-- `webapp/appsettings.json`: Frontend settings.
-- `worker/appsettings.json`: Judge worker settings.
+- `webapp/appsettings.json`: Web application settings.
+- `worker/appsettings.json`: Judging service settings.
 
 ## Deployment
 

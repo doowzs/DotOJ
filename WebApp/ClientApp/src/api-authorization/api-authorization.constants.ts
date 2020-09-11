@@ -1,4 +1,4 @@
-export const ApplicationName = 'Judge1';
+export const ApplicationName = 'dotOJ';
 
 export const ReturnUrlType = 'returnUrl';
 

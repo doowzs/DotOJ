@@ -1,4 +1,4 @@
-FROM ccr.ccs.tencentyun.com/judge1/env AS build-env
+FROM ccr.ccs.tencentyun.com/dotoj/env AS build-env
 WORKDIR /src
 
 ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
@@ -15,7 +15,7 @@ COPY . ./
 COPY ./CHANGELOG.md /src/WebApp/wwwroot/changelog.md
 RUN dotnet publish WebApp -c Release -o /app/out
 
-FROM ccr.ccs.tencentyun.com/judge1/runtime:3.1
+FROM ccr.ccs.tencentyun.com/dotoj/runtime:3.1
 WORKDIR /app
 COPY --from=build-env /app/out .
 ENTRYPOINT ["dotnet", "WebApp.dll"]

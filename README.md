@@ -1,10 +1,12 @@
-﻿# Judge1
+﻿# DotOJ
 
-Yet another online judge.
+Also known as: .OJ, NTOJ, OJ Core, etc.
+
+Yet another online judge built on .NET Core tech stack, with ASP.NET, Angular and AntDesign.
 
 ## Dependencies
 
-Judge1 depends on multiple open-source projects:
+DotOJ depends on multiple open-source projects:
 
 - [.NET Core](https://dotnet.microsoft.com/)
 - [Ajax.org Cloud9 Editor](https://ace.c9.io/)
@@ -18,7 +20,9 @@ Judge1 depends on multiple open-source projects:
 
 ## Installation
 
-Application must run on GNU/Linux OS with cgroup enabled. Follow the steps to prepare a dev environment:
+**The judging service depends on control group of Linux kernels.** It is not possible to run workers on Windows or macOS, but the web application is cross-platform.
+
+Follow the steps to prepare a dev environment:
 
 ### 1. Install .NET Core SDK
 
@@ -37,7 +41,7 @@ You can verify that the EFCore tool is correctly installed with `dotnet ef`.
 
 ### 2. Install Node.js
 
-Visit (https://nodejs.org/)[https://nodejs.org/] and download the latest LTS version installer. After installation, you should check `node --version` and `npm --version` to make sure these two tools are working.
+Visit [https://nodejs.org/](https://nodejs.org/) and download the latest LTS version installer. After installation, you should check `node --version` and `npm --version` to make sure these two tools are working.
 
 We are not using Yarn for this project. If your Internet connection is not smooth, refer to [this page](https://developer.aliyun.com/mirror/NPM) to learn how to change registry for NPM.
 
@@ -59,7 +63,7 @@ Clone this repository and open the folder in a shell.
 
 We are using MySQL or MariaDB (preferred) as the data source. 
 
-Install DB server on your computer and update the connection string in `WebApp/appsettings.json`, then create a user called `judge1` with full access to database `judge1`. Tables will be created on the first run so there is no need for manual migrations.
+Install DB server on your computer and update the connection string in `WebApp/appsettings.json`, then create a user called `dotoj` with full access to database `dotoj`. Tables will be created on the first run so there is no need for manual migrations.
 
 ### 5. Run the application
 
@@ -75,7 +79,7 @@ Start `WebApp` and `Worker` with `dotnet run` and you should be able to visit th
 
 ### Docker Containers
 
-Docker containers are published in registry and namespace `ccr.ccs.tencentyun.com/judge1`. There are five contianers to build and run services:
+Docker containers are published in registry and namespace `ccr.ccs.tencentyun.com/dotoj`. There are five containers to build and run services:
 
 - `sdk`: .NET Core SDK.
 - `runtime`: ASP.NET runtime.
@@ -87,7 +91,7 @@ For more information on how to deploy with docker, refer to [Dockerize/README.md
 
 ### Scaling Application
 
-Each worker can only send judge requests to one Judge0 backend service, but one Judge0 backend service can accept requests from multiple workers. The application can be easily scaled by adding or removing workers and backend services.
+The application can be easily scaled by adding or removing workers.
 
 However, workers needs to share file system with web app in order to keep judge data updated. On the other hand, if judge data can be made read only, then workers can run on separate environments with connection to the same DB context.
 
@@ -95,7 +99,7 @@ However, workers needs to share file system with web app in order to keep judge 
 
 ```shell
 $ openssl req -x509 -newkey rsa:4096 -sha256 -nodes \
-  -subj "/CN=Judge1" -keyout identity.key -out identity.crt
+  -subj "/CN=DotOJ" -keyout identity.key -out identity.crt
 $ openssl pkcs12 -export -out out/identity.pfx -password pass:identity \
   -inkey identity.key -in identity.crt -certfile identity.crt
 ```

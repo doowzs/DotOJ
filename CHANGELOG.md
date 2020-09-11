@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.0 - 2020-09-11
+
+### Changed
+
+- Rename project to dotOJ (AKA. .OJ, NTOJ, OJ Core, etc.).
+
 ## 0.5.7 - 2020-09-11
 
 ### Added

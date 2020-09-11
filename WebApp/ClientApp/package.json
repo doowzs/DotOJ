@@ -1,12 +1,12 @@
 {
-  "name": "judge1",
+  "name": "dotoj",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "start:dotnet": "echo starting dotnet dev client && ng serve",
     "build": "ng build",
-    "build:ssr": "ng run judge1:server:dev",
+    "build:ssr": "ng run dotoj:server:dev",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
