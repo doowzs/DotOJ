@@ -1,10 +1,15 @@
 # Changelog
 
-## 1.0.0 - 2020-09-11
+## 1.0.1 - 2020-09-11
 
 ### Changed
 
 - Rename project to dotOJ (AKA. .OJ, NTOJ, OJ Core, etc.).
+
+### Fixed
+
+- Fixed multipart body size limit of uploading test cases and archives.
+- Fixed multiple worker conflict caused by not setting isolated box ID.
 
 ## 0.5.7 - 2020-09-11
 

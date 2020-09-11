@@ -124,6 +124,7 @@ namespace WebApp.Controllers.Api.v1.Admin
 
         [HttpPost("{id:int}/test-cases")]
         [RequestSizeLimit(300 * 1024 * 1024)]
+        [RequestFormLimits(MultipartBodyLengthLimit = 300 * 1024 * 1024)]
         [Consumes("multipart/form-data")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -147,6 +148,7 @@ namespace WebApp.Controllers.Api.v1.Admin
 
         [HttpPost("import")]
         [RequestSizeLimit(300 * 1024 * 1024)]
+        [RequestFormLimits(MultipartBodyLengthLimit = 300 * 1024 * 1024)]
         [Consumes("multipart/form-data")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]

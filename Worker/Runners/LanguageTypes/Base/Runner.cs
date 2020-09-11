@@ -26,6 +26,8 @@ namespace Worker.Runners.LanguageTypes.Base
 
         protected int MemoryLimit => Problem.MemoryLimit;
 
+        protected string BoxId => Options.Value?.BoxId ?? "0";
+
         protected readonly ApplicationDbContext Context;
         protected readonly IOptions<JudgingConfig> Options;
         protected ILogger Logger;
@@ -62,7 +64,7 @@ namespace Worker.Runners.LanguageTypes.Base
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "isolate",
-                    Arguments = "--cg --cleanup"
+                    Arguments = $"--cg -b {BoxId} --cleanup"
                 }
             };
             cleaner.Start();
@@ -73,7 +75,7 @@ namespace Worker.Runners.LanguageTypes.Base
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "isolate",
-                    Arguments = "--cg --init",
+                    Arguments = $"--cg -b {BoxId} --init",
                     RedirectStandardOutput = true
                 }
             };
@@ -108,7 +110,7 @@ namespace Worker.Runners.LanguageTypes.Base
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "isolate",
-                    Arguments = "--cg -s -E PATH=/usr/bin/ -i /dev/null -r compiler_output" +
+                    Arguments = $"--cg -b {BoxId} -s -E PATH=/usr/bin/ -i /dev/null -r compiler_output" +
                                 " -p120 -f 409600 --cg-timing -t 15.0 -x 0 -w 20.0 -k 128000 --cg-mem=512000" +
                                 " --run -- /usr/bin/g++ " +
                                 LanguageOptions.LanguageOptionsDict[Language.Cpp].CompilerOptions +
@@ -397,7 +399,7 @@ namespace Worker.Runners.LanguageTypes.Base
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "isolate",
-                    Arguments = "--cleanup",
+                    Arguments = $"-b {BoxId} --cleanup",
                     RedirectStandardOutput = true
                 }
             };

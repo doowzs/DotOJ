@@ -97,7 +97,7 @@ namespace Worker.Runners.LanguageTypes.Base
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "isolate",
-                    Arguments = "--cg -s -E PATH=/usr/bin/ -i /dev/null -r checker_message" +
+                    Arguments = $"--cg -b {BoxId} -s -E PATH=/usr/bin/ -i /dev/null -r checker_message" +
                                 $" -p1 -f 409600 --cg-timing -t {TimeLimit} -x 0 -w {TimeLimit + 3.0f} -k 128000 --cg-mem={MemoryLimit}" +
                                 " --run -- checker ./jail/input ./jail/output answer"
                 }
