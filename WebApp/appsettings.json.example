@@ -4,8 +4,8 @@
   },
   "Application": {
     "Host": "https://dotoj",
-    "Title": ".OJ",
-    "Author": ".OJ developers",
+    "Title": "dotOJ",
+    "Author": "dotOJ developers",
     "DataPath": "/var/www/judge-data",
     "AdminUser": {
       "Email": "admin@dotoj.local",
@@ -36,7 +36,7 @@
       "Password": "identity"
     },
     "Clients": {
-      "Judge1": {
+      "dotOJ": {
         "Profile": "IdentityServerSPA"
       }
     }
