@@ -15,7 +15,7 @@ namespace Worker.Runners.ContestModes
 
         public static Task<JudgeResult> OnRunFailedImpl(Contest contest, Problem problem, Submission submission, Run run)
         {
-            if (run.Inline || run.Verdict == Verdict.CompilationError || run.Verdict == Verdict.InternalError)
+            if (run.Inline || run.Verdict == Verdict.CompilationError)
             {
                 return Task.FromResult(new JudgeResult
                 {

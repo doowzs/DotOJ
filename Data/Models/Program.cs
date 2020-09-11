@@ -27,8 +27,7 @@ namespace Data.Models
         TimeLimitExceeded = 5,
         MemoryLimitExceeded = 6,
         CompilationError = 7,
-        RuntimeError = 8,
-        InternalError = 9
+        RuntimeError = 8
     }
 
     [NotMapped]
