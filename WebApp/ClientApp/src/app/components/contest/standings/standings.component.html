@@ -1,4 +1,12 @@
-﻿<h2>Standings</h2>
+﻿<h2>
+  Standings
+  <span style="float: right;">
+      <button nz-button nzSize="small" nzShape="circle" style="margin-right: 0.5rem;"
+              [nzLoading]="loading" (click)="loadRegistrations()">
+        <i nz-icon nzType="sync"></i>
+      </button>
+  </span>
+</h2>
 <nz-table #standingsTable *ngIf="contest && registrations"
           [nzFrontPagination]="false" [nzShowPagination]="false" [nzData]="registrations">
   <thead>

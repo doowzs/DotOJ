@@ -16,8 +16,8 @@ import { LanguageInfo } from '../../../consts/languages.consts';
 })
 export class ProblemDetailComponent implements OnInit, OnDestroy {
   public user: IUser;
+  public loading = true;
   public privileged = false;
-  public loading = false;
   public problemId: number;
   public problem: ProblemViewDto;
   public language: LanguageInfo;

@@ -30,6 +30,7 @@ export class SubmissionListComponent implements OnInit, OnDestroy {
   public problemFilterList: NzTableFilterList;
   public verdictFilterList: NzTableFilterList;
 
+  public loading = true;
   public problemId: number | null = null;
   public userId: string | null = null;
   public verdict: number | null = null;
@@ -103,8 +104,12 @@ export class SubmissionListComponent implements OnInit, OnDestroy {
   }
 
   public loadSubmissions() {
+    this.loading = true;
     this.service.getPaginatedList(this.contestId, this.problemId, this.userId, this.verdict, this.pageIndex)
-      .subscribe(list => this.list = list);
+      .subscribe(list => {
+        this.list = list;
+        this.loading = false;
+      });
   }
 
   private updatePendingSubmissions(): void {

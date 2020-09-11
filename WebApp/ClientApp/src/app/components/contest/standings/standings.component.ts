@@ -14,6 +14,7 @@ import { Title } from '@angular/platform-browser';
   styleUrls: ['./standings.component.css']
 })
 export class ContestStandingsComponent implements OnInit {
+  public loading = true;
   public contestId: number;
   public contest: ContestViewDto;
   public registrations: RegistrationInfoDto[];
@@ -31,15 +32,23 @@ export class ContestStandingsComponent implements OnInit {
       .subscribe(contest => {
         this.contest = contest;
         this.title.setTitle(contest.title + ' - Standings');
-        this.service.getRegistrations(this.contestId)
-          .subscribe(registrations => this.registrations = registrations.sort((a, b) => {
-            const scoreA = this.getTotalScore(a), scoreB = this.getTotalScore(b);
-            if (scoreA !== scoreB) {
-              return scoreB - scoreA; // descending in score order
-            } else {
-              return this.getTotalPenalties(a) - this.getTotalPenalties(b); // ascending in penalty order
-            }
-          }));
+        this.loadRegistrations();
+      });
+  }
+
+  public loadRegistrations() {
+    this.loading = true;
+    this.service.getRegistrations(this.contestId)
+      .subscribe(registrations => {
+        this.registrations = registrations.sort((a, b) => {
+          const scoreA = this.getTotalScore(a), scoreB = this.getTotalScore(b);
+          if (scoreA !== scoreB) {
+            return scoreB - scoreA; // descending in score order
+          } else {
+            return this.getTotalPenalties(a) - this.getTotalPenalties(b); // ascending in penalty order
+          }
+        });
+        this.loading = false;
       });
   }
 
