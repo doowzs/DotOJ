@@ -14,8 +14,6 @@ namespace Worker
         private readonly IServiceScopeFactory _factory;
         private readonly ILogger<Worker> _logger;
 
-        private readonly IList<ITrigger> _triggers = new List<ITrigger>();
-
         public Worker(IServiceProvider provider)
         {
             _factory = provider.GetRequiredService<IServiceScopeFactory>();
@@ -34,8 +32,11 @@ namespace Worker
                     continueWorking = false;
 
                     using var scope = _factory.CreateScope();
-                    _triggers.Add(new SubmissionRunnerTrigger(scope.ServiceProvider));
-                    foreach (var trigger in _triggers)
+                    var triggers = new List<ITrigger>
+                    {
+                        new SubmissionRunnerTrigger(scope.ServiceProvider)
+                    };
+                    foreach (var trigger in triggers)
                     {
                         try
                         {

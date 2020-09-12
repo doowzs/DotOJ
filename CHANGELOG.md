@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.4 - 2020-09-12
+## 1.0.5 - 2020-09-12
 
 ### Added
 
@@ -19,6 +19,8 @@
 - Fixed security issue where user can take a long contestant ID or name.
 - Fixed concurrency bug in standings page caused by using contest before loaded.
 - Fixed security issue of problem limits caused by DB caching in workers.
+- Fixed error of using a disposed ServiceScope in workers.
+- Fixed limitation of log files and size of Docker containers.
 
 ## 0.5.7 - 2020-09-11
 
