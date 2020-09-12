@@ -34,8 +34,7 @@ namespace WebApp.Services.Admin
 
         private async Task EnsureSubmissionExists(int id)
         {
-            var submission = await Context.Submissions.FindAsync(id);
-            if (submission == null)
+            if (!await Context.Submissions.AnyAsync(s => s.Id == id))
             {
                 throw new NotFoundException();
             }
@@ -131,15 +130,20 @@ namespace WebApp.Services.Admin
         public async Task DeleteSubmissionAsync(int id)
         {
             await EnsureSubmissionExists(id);
-            var submission = new Submission {Id = id};
-            Context.Submissions.Attach(submission);
+            var submission = await Context.Submissions.FindAsync(id);
+            var userId = submission.UserId;
+            var problemId = submission.ProblemId;
             Context.Submissions.Remove(submission);
             await Context.SaveChangesAsync();
 
-            var problem = await Context.Problems.FindAsync(submission.ProblemId);
-            var registration = await Context.Registrations.FindAsync(submission.UserId, problem.ContestId);
-            await registration.RebuildStatisticsAsync(Context);
-            await Context.SaveChangesAsync();
+            var problem = await Context.Problems.FindAsync(problemId);
+            var registration = await Context.Registrations.FindAsync(userId, problem.ContestId);
+            if (registration != null)
+            {
+                await registration.RebuildStatisticsAsync(Context);
+                await Context.SaveChangesAsync();
+            }
+
             await LogInformation($"DeleteSubmission Id={id}");
         }
 
