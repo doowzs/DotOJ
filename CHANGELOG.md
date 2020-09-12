@@ -11,6 +11,7 @@
 
 - Rename project to dotOJ (AKA. .OJ, NTOJ, OJ Core, etc.).
 - When API request failed with 401 Unauthorized, redirect user to login page.
+- When the user is unauthorized, return 401 error instead of 302 to login page.
 
 ### Fixed
 
