@@ -1,5 +1,6 @@
 ﻿import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import * as moment from 'moment';
 
 import { SubmissionEditDto } from '../../../../app/interfaces/submission.interfaces';
 import { Verdicts } from '../../../../app/consts/verdicts.consts';
@@ -38,25 +39,25 @@ export class AdminSubmissionFormComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
+    this.form.setValue({
+      userId: this.submission.userId,
+      problemId: this.submission.problemId,
+      language: this.submission.program.languageInfo.name,
+      code: this.submission.program.code,
+      verdict: this.submission.verdict,
+      time: this.submission.time,
+      memory: this.submission.memory,
+      failedOn: this.submission.failedOn,
+      score: this.submission.score,
+      message: this.submission.message,
+      judgedBy: this.submission.judgedBy,
+      judgedAt: (this.submission.judgedAt as moment.Moment).format("YYYY-MM-DD HH:mm"),
+      createdAt: (this.submission.createdAt as moment.Moment).format("YYYY-MM-DD HH:mm")
+    });
   }
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes.submission) {
-      this.form.setValue({
-        userId: changes.submission.currentValue.userId,
-        problemId: changes.submission.currentValue.problemId,
-        language: changes.submission.currentValue.program.languageInfo.name,
-        code: changes.submission.currentValue.program.code,
-        verdict: changes.submission.currentValue.verdict,
-        time: changes.submission.currentValue.time,
-        memory: changes.submission.currentValue.memory,
-        failedOn: changes.submission.currentValue.failedOn,
-        score: changes.submission.currentValue.score,
-        message: changes.submission.currentValue.message,
-        judgedBy: changes.submission.currentValue.judgedBy,
-        judgedAt: changes.submission.currentValue.judgedAt,
-        createdAt: changes.submission.currentValue.createdAt
-      });
     }
     if (changes.disabled) {
       if (changes.disabled.currentValue) {
@@ -97,5 +98,6 @@ export class AdminSubmissionFormComponent implements OnInit, OnChanges {
       judgedAt: null,
       createdAt: null
     });
+    this.submission.judgedAt = moment().format("YYYY-MM-DD HH:mm");
   }
 }

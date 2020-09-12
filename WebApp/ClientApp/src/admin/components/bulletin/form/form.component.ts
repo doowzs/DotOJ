@@ -32,8 +32,8 @@ export class AdminBulletinFormComponent implements OnInit, OnChanges {
         id: this.bulletin.id,
         weight: this.bulletin.weight,
         content: this.bulletin.content,
-        publishAt: (this.bulletin.publishAt as moment.Moment)?.format('YYYY-MM-DD HH:mm') ?? '',
-        expireAt: (this.bulletin.expireAt as moment.Moment)?.format('YYYY-MM-DD HH:mm') ?? ''
+        publishAt: (this.bulletin.publishAt as moment.Moment)?.toDate() ?? null,
+        expireAt: (this.bulletin.expireAt as moment.Moment)?.toDate() ?? null
       });
     }
     if (this.disabled) {
