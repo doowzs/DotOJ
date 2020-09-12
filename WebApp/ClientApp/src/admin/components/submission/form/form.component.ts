@@ -51,8 +51,8 @@ export class AdminSubmissionFormComponent implements OnInit, OnChanges {
       score: this.submission.score,
       message: this.submission.message,
       judgedBy: this.submission.judgedBy,
-      judgedAt: (this.submission.judgedAt as moment.Moment).format("YYYY-MM-DD HH:mm"),
-      createdAt: (this.submission.createdAt as moment.Moment).format("YYYY-MM-DD HH:mm")
+      judgedAt: (this.submission.judgedAt as moment.Moment).format('YYYY-MM-DD HH:mm'),
+      createdAt: (this.submission.createdAt as moment.Moment).format('YYYY-MM-DD HH:mm')
     });
   }
 
@@ -98,6 +98,6 @@ export class AdminSubmissionFormComponent implements OnInit, OnChanges {
       judgedAt: null,
       createdAt: null
     });
-    this.submission.judgedAt = moment().format("YYYY-MM-DD HH:mm");
+    this.form.get('judgedAt').setValue(moment().format('YYYY-MM-DD HH:mm'));
   }
 }
