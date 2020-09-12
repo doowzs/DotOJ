@@ -36,8 +36,8 @@ export class AdminContestFormComponent implements OnInit, OnChanges {
         isPublic: this.contest.isPublic.toString(),
         mode: this.contest.mode.toString(),
         period: [
-          (this.contest.beginTime as moment.Moment).format('YYYY-MM-DD HH:mm'),
-          (this.contest.endTime as moment.Moment).format('YYYY-MM-DD HH:mm')
+          (this.contest.beginTime as moment.Moment).toDate(),
+          (this.contest.endTime as moment.Moment).toDate()
         ]
       });
     }
