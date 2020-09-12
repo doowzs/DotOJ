@@ -9,7 +9,7 @@
 </h2>
 <nz-table #submissionsTable *ngIf="list"
           [nzData]="list.items" [nzFrontPagination]="false"
-          [nzTotal]="list.totalPages" [nzPageSize]="list.pageSize" [nzPageIndex]="pageIndex"
+          [nzTotal]="list.totalItems" [nzPageSize]="list.pageSize" [nzPageIndex]="pageIndex"
           (nzQueryParams)="onQueryParamsChange($event)">
   <thead>
   <tr>
