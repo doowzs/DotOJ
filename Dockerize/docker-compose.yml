@@ -1,4 +1,11 @@
-version: '3'
+version: '3.4'
+
+x-logging: &default-logging
+  logging:
+    driver: "json-file"
+    options:
+      max-file: 5
+      max-size: 100m
 
 networks:
   frontend:
@@ -23,6 +30,7 @@ services:
     volumes:
       - ./caddy:/etc/caddy
       - ${DATA_PATH_HOST}/caddy:/data
+    <<: *default-logging
     ports:
       - "${CADDY_HTTP_PORT}:80"
       - "${CADDY_HTTPS_PORT}:443"
@@ -37,6 +45,7 @@ services:
       - ./webapp/identity.pfx:/app/identity.pfx:ro
       - ./webapp/appsettings.json:/app/appsettings.json:ro
       - ${DATA_PATH_HOST}/judge-data:/var/www/judge-data
+    <<: *default-logging
     networks:
       - backend
 
@@ -46,6 +55,7 @@ services:
     volumes:
       - ./worker/appsettings.json:/app/appsettings.json:ro
       - ${DATA_PATH_HOST}/judge-data:/var/www/judge-data:ro
+    <<: *default-logging
     networks:
       - backend
 
@@ -56,6 +66,7 @@ services:
     volumes:
       - ${DATA_PATH_HOST}/mariadb:/var/lib/mysql
       - ./mariadb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    <<: *default-logging
     ports:
       - "${MARIADB_PORT}:3306"
     networks:
