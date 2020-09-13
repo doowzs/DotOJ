@@ -23,7 +23,7 @@
   <tbody>
   <tr *ngFor="let registration of standingsTable.data; index as index">
     <td>{{ index + 1 }}</td>
-    <td>{{ registration.contestantName }}</td>
+    <td><span nz-tooltip [nzTooltipTitle]="registration.contestantId">{{ registration.contestantName }}</span></td>
     <td *ngFor="let problem of contest.problems">
       <ng-container *ngIf="getProblemItem(registration, problem) as problemItem">
         <span>{{ problemItem[0] }}</span><br/><span>{{ problemItem[1] }}</span>
