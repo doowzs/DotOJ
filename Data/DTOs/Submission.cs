@@ -1,6 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Text;
+using System.Linq;
 using Data.Generics;
 using Data.Models;
 
@@ -24,13 +24,16 @@ namespace Data.DTOs
 
         public SubmissionInfoDto(Submission submission) : base(submission)
         {
+            var count = submission.Program.Code.Length;
+            var padding = submission.Program.Code.Substring(count - 2, 2).Count(c => c == '=');
+
             Id = submission.Id;
             UserId = submission.UserId;
             ContestantId = submission.User.ContestantId;
             ContestantName = submission.User.ContestantName;
             ProblemId = submission.ProblemId;
             Language = submission.Program.Language.GetValueOrDefault();
-            CodeBytes = Encoding.UTF8.GetByteCount(submission.Program.Code);
+            CodeBytes = 3 * count / 4 - padding;
             Verdict = submission.Verdict;
             Time = submission.Time;
             Memory = submission.Memory;
