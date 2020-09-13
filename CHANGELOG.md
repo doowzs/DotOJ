@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.7 - 2020-09-12
+## 1.0.8 - 2020-09-13
 
 ### Added
 
@@ -23,7 +23,8 @@
 - Fixed error of using a disposed ServiceScope in workers.
 - Fixed limitation of log files and size of Docker containers.
 - Fixed pagination of table on submission list page.
-- Fixed date input of updating data and null reference erro when deleting submissions.
+- Fixed date input of updating data and null reference error when deleting submissions.
+- Fixed wrong byte length of Base64 encoded source code calculated by server.
 
 ## 0.5.7 - 2020-09-11
 
