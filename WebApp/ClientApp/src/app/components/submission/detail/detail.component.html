@@ -1,7 +1,7 @@
 <nz-skeleton *ngIf="!submission"></nz-skeleton>
 <ng-container *ngIf="submission">
   <nz-descriptions>
-    <nz-descriptions-item nzTitle="Contestant">{{ submission.contestantName }}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Contestant">{{ submission.contestantId }}</nz-descriptions-item>
     <nz-descriptions-item nzTitle="Language">{{ submission.program.languageInfo.name }}</nz-descriptions-item>
     <nz-descriptions-item nzTitle="Length">{{ submission.codeBytes }} bytes</nz-descriptions-item>
     <nz-descriptions-item nzTitle="Verdict">
