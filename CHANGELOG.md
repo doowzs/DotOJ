@@ -1,12 +1,13 @@
 # Changelog
 
-## 1.0.8 - 2020-09-13
+## 1.0.9 - 2020-09-14
 
 ### Added
 
 - Add problem statistics to problem detail page.
 - Add reload button to problem detail, submissions and standings pages.
 - Show contestant ID in tooltip on contest standings page.
+- Set images to be horizontally centered and add width limit.
 
 ### Changed
 
