@@ -40,14 +40,28 @@ export class ContestStandingsComponent implements OnInit {
     this.loading = true;
     this.service.getRegistrations(this.contestId)
       .subscribe(registrations => {
-        this.registrations = registrations.sort((a, b) => {
-          const scoreA = this.getTotalScore(a), scoreB = this.getTotalScore(b);
-          if (scoreA !== scoreB) {
-            return scoreB - scoreA; // descending in score order
+        for (let i = 0; i < registrations.length; ++i) {
+          const registration = registrations[i];
+          registration.score = this.getTotalScore(registration);
+          registration.penalties = this.getTotalPenalties(registration);
+        }
+        registrations = registrations.sort((a, b) => {
+          if (a.isParticipant != b.isParticipant) {
+            return a.isParticipant ? -1 : 1;
+          } else if (a.score !== b.score) {
+            return b.score - a.score; // descending in score order
           } else {
-            return this.getTotalPenalties(a) - this.getTotalPenalties(b); // ascending in penalty order
+            return a.penalties - b.penalties; // ascending in penalty order
           }
         });
+        for (let i = 0, rank = 0; i < registrations.length; ++i) {
+          if (i === 0 || registrations[i].score !== registrations[i - 1].score ||
+            registrations[i].penalties !== registrations[i - 1].penalties) {
+            ++rank;
+          }
+          registrations[i].rank = registrations[i].isParticipant ? rank : -1;
+        }
+        this.registrations = registrations;
         this.loading = false;
       });
   }
