@@ -143,7 +143,7 @@ namespace WebApp.Controllers.Api.v1.Admin
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult> RemoveRegistrations(int id, [FromQuery(Name = "userId")] List<string> userIds)
+        public async Task<ActionResult> RemoveRegistrations(int id, [FromQuery(Name = "userIds")] List<string> userIds)
         {
             try
             {
