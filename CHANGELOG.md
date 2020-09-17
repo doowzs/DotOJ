@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.1.1 - 2020-09-17
+## 1.1.2 - 2020-09-17
 
 ### Added
 
@@ -11,6 +11,7 @@
 - Non-participate users will not have rank in standings page.
 - Update ranking calculation logic to allow same ranking of participants.
 - Disabled ASP.NET HTTPS redirection, which shall be handled by Caddy.
+- Set cookie policy to SameSiteMode.Lax for non-HTTPS support.
 
 ### Fixed
 
