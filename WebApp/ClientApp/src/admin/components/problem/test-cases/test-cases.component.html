@@ -19,7 +19,7 @@
     </button>
   </div>
 </div>
-<nz-divider></nz-divider>
+<nz-divider nzOrientation="left" nzText="Test Cases"></nz-divider>
 <div *ngIf="testCases">
   <nz-table #testCasesTable [nzData]="testCases" [nzFrontPagination]="false">
     <thead>
@@ -38,3 +38,22 @@
     </tbody>
   </nz-table>
 </div>
+<nz-divider nzOrientation="left" nzText="Submit a Test"></nz-divider>
+<nz-form-item>
+  <nz-form-label nzRequired>Language</nz-form-label>
+  <nz-form-control>
+    <nz-select nzPlaceHolder="Language" [(ngModel)]="language" style="width: 100%;">
+      <nz-option *ngFor="let language of Languages" [nzLabel]="language.name" [nzValue]="language.code"></nz-option>
+    </nz-select>
+  </nz-form-control>
+</nz-form-item>
+<nz-form-item>
+  <nz-form-label nzRequired>Source Code</nz-form-label>
+  <nz-form-control>
+    <textarea nz-input [(ngModel)]="code" rows="8"></textarea>
+  </nz-form-control>
+</nz-form-item>
+<button nz-button nzType="primary" nzBlock [disabled]="!language || !code"
+        [nzLoading]="submitting" (click)="submitCode()">
+  <i nz-icon nzType="check"></i><span>Submit</span>
+</button>

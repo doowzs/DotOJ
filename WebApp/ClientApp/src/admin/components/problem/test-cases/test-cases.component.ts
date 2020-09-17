@@ -1,8 +1,10 @@
 ﻿import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AdminProblemService } from '../../../services/problem.service';
 import { ProblemEditDto, TestCase } from '../../../../app/interfaces/problem.interfaces';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { HttpEventType } from '@angular/common/http';
+import { Languages } from '../../../../app/consts/languages.consts';
+import { AdminSubmissionService } from '../../../services/submission.service';
 
 @Component({
   selector: 'app-admin-problem-test-cases',
@@ -10,6 +12,7 @@ import { HttpEventType } from '@angular/common/http';
   styleUrls: ['./test-cases.component.css']
 })
 export class AdminProblemTestCasesComponent implements OnInit {
+  Languages = Languages;
   @ViewChild('zipFileInput') zipFileInput: ElementRef;
 
   public problemId: number;
@@ -18,9 +21,15 @@ export class AdminProblemTestCasesComponent implements OnInit {
   public file: File;
   public progress: number;
 
+  public submitting = false;
+  public language: number;
+  public code: string;
+
   constructor(
     private route: ActivatedRoute,
-    private service: AdminProblemService
+    private router: Router,
+    private service: AdminProblemService,
+    private submitter: AdminSubmissionService
   ) {
     this.problemId = this.route.snapshot.parent.params.problemId;
   }
@@ -51,5 +60,16 @@ export class AdminProblemTestCasesComponent implements OnInit {
           this.zipFileInput.nativeElement.value = '';
         }
       }, error => console.error(error));
+  }
+
+  public submitCode() {
+    this.submitting = true;
+    this.submitter.createSingle(this.problem.id, this.language, this.code)
+      .subscribe(() => {
+        this.router.navigate(['/admin/submission'])
+      }, error => {
+        console.error(error);
+        this.submitting = false;
+      });
   }
 }

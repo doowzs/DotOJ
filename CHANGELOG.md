@@ -2,6 +2,10 @@
 
 ## 1.1.0 - 2020-09-17
 
+### Added
+
+- Allow contest manager to create submission without registering.
+
 ### Changed
 
 - Non-participate users will not have rank in standings page.
