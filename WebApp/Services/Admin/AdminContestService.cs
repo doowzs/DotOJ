@@ -172,24 +172,12 @@ namespace WebApp.Services.Admin
         public async Task RemoveRegistrationsAsync(int id, IList<string> userIds)
         {
             await EnsureContestExistsAsync(id);
-            foreach (var userId in userIds)
-            {
-                var registered =
-                    await Context.Registrations.AnyAsync(r => r.ContestId == id && r.UserId == userId);
-                if (registered)
-                {
-                    var registration = new Registration
-                    {
-                        ContestId = id,
-                        UserId = userId,
-                    };
-                    Context.Registrations.Attach(registration);
-                    Context.Registrations.Remove(registration);
-                }
-            }
-
-            await LogInformation($"RemoveRegistrations Contest={id} Users={string.Join(",", userIds)}");
+            var registrations = await Context.Registrations
+                .Where(r => r.ContestId == id && userIds.Contains(r.UserId))
+                .ToListAsync();
+            Context.Registrations.RemoveRange(registrations);
             await Context.SaveChangesAsync();
+            await LogInformation($"RemoveRegistrations Contest={id} Users={string.Join(",", userIds)}");
         }
 
         public async Task<List<RegistrationInfoDto>> CopyRegistrationsAsync(int to, int from)
