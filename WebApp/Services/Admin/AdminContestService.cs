@@ -19,7 +19,10 @@ namespace WebApp.Services.Admin
         public Task<ContestEditDto> UpdateContestAsync(int id, ContestEditDto dto);
         public Task DeleteContestAsync(int id);
         public Task<List<RegistrationInfoDto>> GetRegistrationsAsync(int id);
-        public Task<List<RegistrationInfoDto>> AddRegistrationsAsync(int id, IList<string> userIds);
+
+        public Task<List<RegistrationInfoDto>> AddRegistrationsAsync
+            (int id, IList<string> userIds, bool isParticipant, bool isContestManager);
+
         public Task RemoveRegistrationsAsync(int id, IList<string> userIds);
         public Task<List<RegistrationInfoDto>> CopyRegistrationsAsync(int to, int from);
     }
@@ -133,40 +136,35 @@ namespace WebApp.Services.Admin
                 .ToListAsync();
         }
 
-        public async Task<List<RegistrationInfoDto>> AddRegistrationsAsync(int id, IList<string> userIds)
+        public async Task<List<RegistrationInfoDto>> AddRegistrationsAsync
+            (int id, IList<string> userIds, bool isParticipant, bool isContestManager)
         {
             await EnsureContestExistsAsync(id);
-            var registrations = new List<RegistrationInfoDto>();
-            foreach (var userId in userIds)
-            {
-                var registered =
-                    await Context.Registrations.AnyAsync(r => r.ContestId == id && r.UserId == userId);
-                if (registered)
-                {
-                    var registration = await Context.Registrations.FindAsync(userId, id);
-                    await Context.Entry(registration).Reference(r => r.User).LoadAsync();
-                    registrations.Add(new RegistrationInfoDto(registration));
-                }
-                else if (await Context.Users.AnyAsync(u => u.Id == userId))
-                {
-                    var registration = new Registration
-                    {
-                        ContestId = id,
-                        UserId = userId,
-                        IsContestManager = false,
-                        IsParticipant = true,
-                        Statistics = new List<ProblemStatistics>()
-                    };
-                    await Context.Registrations.AddAsync(registration);
 
-                    await Context.Entry(registration).Reference(r => r.User).LoadAsync();
-                    registrations.Add(new RegistrationInfoDto(registration));
-                }
+            var registrations = await Context.Registrations
+                .Where(r => r.ContestId == id && userIds.Contains(r.UserId))
+                .ToListAsync();
+            Context.Registrations.RemoveRange(registrations);
+            await Context.SaveChangesAsync();
+
+            registrations = userIds.Select(userId => new Registration
+            {
+                ContestId = id,
+                UserId = userId,
+                IsParticipant = isParticipant,
+                IsContestManager = isContestManager,
+                Statistics = new List<ProblemStatistics>()
+            }).ToList();
+            await Context.Registrations.AddRangeAsync(registrations);
+            foreach (var registration in registrations)
+            {
+                await registration.RebuildStatisticsAsync(Context);
+                await Context.Entry(registration).Reference(r => r.User).LoadAsync();
             }
 
             await Context.SaveChangesAsync();
             await LogInformation($"AddRegistrations Contest={id} Users={string.Join(",", userIds)}");
-            return registrations;
+            return registrations.Select(r => new RegistrationInfoDto(r)).ToList();
         }
 
         public async Task RemoveRegistrationsAsync(int id, IList<string> userIds)

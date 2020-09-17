@@ -21,6 +21,9 @@ export class AdminContestRegistrationsComponent implements OnInit {
   public contest: ContestEditDto;
   public registrations: RegistrationInfoDto[];
 
+  public isParticipant = true;
+  public isContestManager = false;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -54,12 +57,17 @@ export class AdminContestRegistrationsComponent implements OnInit {
     this.loadUsers();
   }
 
-  public isUserRegistered(userId: string): boolean {
-    return !!this.registrations.find(r => r.userId === userId);
+  public getUserRegistrationType(userId: string): string {
+    const registration = this.registrations.find(r => r.userId === userId);
+    if (!registration) {
+      return null;
+    } else {
+      return registration.isParticipant ? 'Participant' : (registration.isContestManager ? 'Manager*' : 'Observer*');
+    }
   }
 
   public addRegistration(userId: string) {
-    this.contestService.addRegistrations(this.contest.id, [userId])
+    this.contestService.addRegistrations(this.contest.id, [userId], this.isParticipant, this.isContestManager)
       .subscribe(registrations => {
         this.registrations = this.registrations.concat(registrations);
       });

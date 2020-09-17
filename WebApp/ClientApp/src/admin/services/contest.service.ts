@@ -53,8 +53,13 @@ export class AdminContestService {
     return this.http.get<RegistrationInfoDto[]>('/admin/contest/' + contestId.toString() + '/registrations');
   }
 
-  public addRegistrations(contestId: number, userIds: string[]): Observable<RegistrationInfoDto[]> {
-    return this.http.post<RegistrationInfoDto[]>('/admin/contest/' + contestId.toString() + '/registrations', userIds);
+  public addRegistrations(contestId: number, userIds: string[], isParticipant: boolean,
+                          isContestManager: boolean): Observable<RegistrationInfoDto[]> {
+    return this.http.post<RegistrationInfoDto[]>('/admin/contest/' + contestId.toString() + '/registrations', userIds, {
+      params: new HttpParams()
+        .append('isParticipant', isParticipant.toString())
+        .append('isContestManager', isContestManager.toString())
+    });
   }
 
   public removeRegistrations(contestId: number, userIds: string[]): Observable<any> {
