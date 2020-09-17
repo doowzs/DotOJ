@@ -18,6 +18,13 @@
   </div>
 </div>
 <nz-divider></nz-divider>
+<div nz-row>
+  <p>
+    Registration options: &nbsp;
+    <label nz-checkbox [(ngModel)]="isParticipant">Is Participant</label>
+    <label nz-checkbox [(ngModel)]="isContestManager">Is Contest Manager</label>
+  </p>
+</div>
 <nz-table #userTable *ngIf="list && registrations" [nzData]="list.items" [nzFrontPagination]="false"
           [nzPageIndex]="list.pageIndex" [nzPageSize]="list.pageSize" [nzTotal]="list.totalItems"
           (nzPageIndexChange)="onPageIndexChange($event)">
@@ -35,9 +42,9 @@
     <td>{{ user.email }}</td>
     <td>{{ user.contestantId }}</td>
     <td>{{ user.contestantName }}</td>
-    <td>{{ isUserRegistered(user.id) ? 'Yes' : '' }}</td>
+    <td>{{ getUserRegistrationType(user.id) }}</td>
     <td>
-      <button *ngIf="!isUserRegistered(user.id); else unregister"
+      <button *ngIf="!getUserRegistrationType(user.id); else unregister"
               nz-button nzType="link" (click)="addRegistration(user.id)">
         <i nz-icon nzType="plus"></i><span>Add</span>
       </button>

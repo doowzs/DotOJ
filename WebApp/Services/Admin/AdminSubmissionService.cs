@@ -19,6 +19,7 @@ namespace WebApp.Services.Admin
 
         public Task<List<SubmissionInfoDto>> GetBatchSubmissionInfosAsync(IEnumerable<int> ids);
         public Task<SubmissionEditDto> GetSubmissionEditAsync(int id);
+        public Task<SubmissionInfoDto> CreateSubmissionAsync(SubmissionCreateDto dto);
         public Task<SubmissionEditDto> UpdateSubmissionAsync(int id, SubmissionEditDto dto);
         public Task DeleteSubmissionAsync(int id);
         public Task<List<SubmissionInfoDto>> RejudgeSubmissionsAsync(int? contestId, int? problemId, int? submissionId);
@@ -37,6 +38,15 @@ namespace WebApp.Services.Admin
             if (!await Context.Submissions.AnyAsync(s => s.Id == id))
             {
                 throw new NotFoundException();
+            }
+        }
+
+        private async Task ValidateSubmissionCreateDtoAsync(SubmissionCreateDto dto)
+        {
+            var problem = await Context.Problems.FindAsync(dto.ProblemId);
+            if (problem is null)
+            {
+                throw new ValidationException("Invalid problem ID.");
             }
         }
 
@@ -98,6 +108,35 @@ namespace WebApp.Services.Admin
             var submission = await Context.Submissions.FindAsync(id);
             await Context.Entry(submission).Reference(s => s.User).LoadAsync();
             return new SubmissionEditDto(submission);
+        }
+
+        public async Task<SubmissionInfoDto> CreateSubmissionAsync(SubmissionCreateDto dto)
+        {
+            await ValidateSubmissionCreateDtoAsync(dto);
+
+            var submission = new Submission
+            {
+                UserId = Accessor.HttpContext.User.GetSubjectId(),
+                ProblemId = dto.ProblemId.GetValueOrDefault(),
+                Program = dto.Program,
+                Verdict = Verdict.Pending,
+                Time = null,
+                Memory = null,
+                FailedOn = null,
+                Score = null,
+                Progress = null,
+                Message = null,
+                JudgedBy = null,
+                JudgedAt = null
+            };
+            await Context.Submissions.AddAsync(submission);
+            await Context.SaveChangesAsync();
+
+            await Context.Entry(submission).Reference(s => s.User).LoadAsync();
+            var result = new SubmissionInfoDto(submission);
+            await LogInformation($"CreateSubmission [Admin] ProblemId={result.ProblemId} " +
+                                 $"Language={result.Language} Length={result.CodeBytes}");
+            return result;
         }
 
         public async Task<SubmissionEditDto> UpdateSubmissionAsync(int id, SubmissionEditDto dto)

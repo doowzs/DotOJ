@@ -129,12 +129,15 @@ namespace Worker.Triggers
 
                     #region Rebuild statistics of registration
 
-                    var registration = await Context.Registrations.FindAsync(user.Id, contest.Id);
-                    if (registration != null)
+                    if (submission.CreatedAt >= contest.BeginTime && submission.CreatedAt <= contest.EndTime)
                     {
-                        await registration.RebuildStatisticsAsync(Context);
-                        Context.Registrations.Update(registration);
-                        await Context.SaveChangesAsync();
+                        var registration = await Context.Registrations.FindAsync(user.Id, contest.Id);
+                        if (registration != null)
+                        {
+                            await registration.RebuildStatisticsAsync(Context);
+                            Context.Registrations.Update(registration);
+                            await Context.SaveChangesAsync();
+                        }
                     }
 
                     #endregion

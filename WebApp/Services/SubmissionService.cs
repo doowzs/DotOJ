@@ -189,7 +189,7 @@ namespace WebApp.Services
             await Context.Entry(submission).Reference(s => s.User).LoadAsync();
             var result = new SubmissionInfoDto(submission);
             await LogInformation($"CreateSubmission ProblemId={result.ProblemId} " +
-                                 $"Langauge={result.Language} Length={result.CodeBytes}");
+                                 $"Language={result.Language} Length={result.CodeBytes}");
             return result;
         }
     }

@@ -127,11 +127,12 @@ namespace WebApp.Controllers.Api.v1.Admin
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<List<RegistrationInfoDto>>> AddRegistrations(int id, List<string> userIds)
+        public async Task<ActionResult<List<RegistrationInfoDto>>> AddRegistrations
+            (int id, List<string> userIds, [FromQuery] bool isParticipant, [FromQuery] bool isContestManager)
         {
             try
             {
-                return Ok(await _service.AddRegistrationsAsync(id, userIds));
+                return Ok(await _service.AddRegistrationsAsync(id, userIds, isParticipant, isContestManager));
             }
             catch (NotFoundException e)
             {

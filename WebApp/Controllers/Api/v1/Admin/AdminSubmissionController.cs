@@ -63,6 +63,23 @@ namespace WebApp.Controllers.Api.v1.Admin
             }
         }
 
+        [HttpPost]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<SubmissionInfoDto>> CreateSubmission(SubmissionCreateDto dto)
+        {
+            try
+            {
+                return Ok(await _service.CreateSubmissionAsync(dto));
+            }
+            catch (ValidationException e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         [HttpPut("{id:int}")]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]

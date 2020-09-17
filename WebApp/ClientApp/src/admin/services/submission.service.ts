@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { Base64 } from 'js-base64';
 
 import { SubmissionEditDto, SubmissionInfoDto } from '../../app/interfaces/submission.interfaces';
@@ -48,6 +48,16 @@ export class AdminSubmissionService {
         }
         return list;
       }));
+  }
+
+  public createSingle(problemId: number, language: number, code: string): Observable<SubmissionInfoDto> {
+    return this.http.post<SubmissionInfoDto>('/admin/submission', {
+      problemId: problemId,
+      program: {
+        language: language,
+        code: Base64.encode(code)
+      }
+    }).pipe(map(mapSubmissionInfoDtoFields));
   }
 
   public updateSingle(submission: SubmissionEditDto): Observable<SubmissionEditDto> {

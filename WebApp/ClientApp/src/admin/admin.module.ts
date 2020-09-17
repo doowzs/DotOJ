@@ -177,7 +177,7 @@ import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
     NzRadioModule,
     NzBreadCrumbModule,
     NzDropDownModule,
-    FormsModule,
+    FormsModule
   ],
   declarations: [
     AdminComponent,
