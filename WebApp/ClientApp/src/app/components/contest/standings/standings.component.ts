@@ -54,10 +54,13 @@ export class ContestStandingsComponent implements OnInit {
             return a.penalties - b.penalties; // ascending in penalty order
           }
         });
-        for (let i = 0, rank = 0; i < registrations.length; ++i) {
+        for (let i = 0, rank = 0, delta = 1; i < registrations.length; ++i) {
           if (i === 0 || registrations[i].score !== registrations[i - 1].score ||
             registrations[i].penalties !== registrations[i - 1].penalties) {
-            ++rank;
+            rank += delta;
+            delta = 1;
+          } else {
+            ++delta;
           }
           registrations[i].rank = registrations[i].isParticipant ? rank : -1;
         }

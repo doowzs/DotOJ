@@ -1,6 +1,17 @@
 # Changelog
 
-## 1.0.10 - 2020-09-17
+## 1.1.0 - 2020-09-17
+
+### Changed
+
+- Non-participate users will not have rank in standings page.
+- Update ranking calculation logic to allow same ranking of participants.
+
+### Fixed
+
+- Fixed parameter name in handling deleting registrations.
+
+## 1.0.9 - 2020-09-14
 
 ### Added
 
@@ -28,7 +39,6 @@
 - Fixed pagination of table on submission list page.
 - Fixed date input of updating data and null reference error when deleting submissions.
 - Fixed wrong byte length of Base64 encoded source code calculated by server.
-- Fixed parameter name in handling deleting registrations.
 
 ## 0.5.7 - 2020-09-11
 
