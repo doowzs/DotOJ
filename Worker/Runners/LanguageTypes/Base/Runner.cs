@@ -342,9 +342,11 @@ namespace Worker.Runners.LanguageTypes.Base
                     runs.Add(run);
                     if (run.Verdict > Verdict.Accepted)
                     {
-                        Submission.Verdict = run.Verdict;
-                        Submission.FailedOn = run.Index;
-                        Context.Submissions.Update(Submission);
+                        if (Submission.Verdict <= Verdict.Accepted)
+                        {
+                            Submission.Verdict = run.Verdict;
+                            Submission.FailedOn = run.Index;
+                        }
 
                         if (OnRunFailedDelegate != null)
                         {
@@ -354,6 +356,7 @@ namespace Worker.Runners.LanguageTypes.Base
                     }
 
                     Submission.Progress = ++count * 100 / total;
+                    Context.Submissions.Update(Submission);
                     await Context.SaveChangesAsync();
                     if (result != null)
                     {
