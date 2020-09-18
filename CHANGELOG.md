@@ -17,6 +17,7 @@
 ### Fixed
 
 - Fixed parameter name in handling deleting registrations.
+- Fixed non-zero seconds and milliseconds of timestamps in submitted form data.
 
 ## 1.0.9 - 2020-09-14
 

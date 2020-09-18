@@ -61,8 +61,8 @@ export class AdminContestFormComponent implements OnInit, OnChanges {
       description: data.description,
       isPublic: data.isPublic,
       mode: data.mode,
-      beginTime: data.period[0],
-      endTime: data.period[1]
+      beginTime: moment(data.period[0]).seconds(0).milliseconds(0).toISOString(),
+      endTime: moment(data.period[1]).seconds(0).milliseconds(0).toISOString()
     });
   }
 }
