@@ -24,10 +24,6 @@ export class ProblemDetailComponent implements OnInit, OnDestroy {
 
   public destroy$ = new Subject();
 
-  copyToClipboard = (content: string): void => {
-    navigator.clipboard.writeText(content);
-  }
-
   constructor(
     private title: Title,
     private route: ActivatedRoute,
@@ -48,7 +44,7 @@ export class ProblemDetailComponent implements OnInit, OnDestroy {
       this.user = user;
       this.privileged = user.roles.indexOf('Administrator') >= 0
         || user.roles.indexOf('ContestManager') >= 0;
-    })
+    });
   }
 
   ngOnDestroy() {

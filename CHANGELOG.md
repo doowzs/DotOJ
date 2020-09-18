@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.1.2 - 2020-09-17
+## 1.1.3 - 2020-09-17
 
 ### Added
 
@@ -12,10 +12,12 @@
 - Update ranking calculation logic to allow same ranking of participants.
 - Disabled ASP.NET HTTPS redirection, which shall be handled by Caddy.
 - Set cookie policy to SameSiteMode.Lax for non-HTTPS support.
+- Use ngx-clipboard for copying test input/output data to clipboard.
 
 ### Fixed
 
 - Fixed parameter name in handling deleting registrations.
+- Fixed non-zero seconds and milliseconds of timestamps in submitted form data.
 
 ## 1.0.9 - 2020-09-14
 

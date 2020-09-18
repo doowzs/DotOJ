@@ -1,5 +1,6 @@
 ﻿import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import * as moment from 'moment';
 
 import { BulletinEditDto } from '../../../../app/interfaces/bulletin.interfaces';
 
@@ -54,8 +55,8 @@ export class AdminBulletinFormComponent implements OnInit, OnChanges {
       id: data.id,
       weight: data.weight,
       content: data.content,
-      publishAt: data.publishAt,
-      expireAt: data.expireAt
+      publishAt: moment(data.publishAt).seconds(0).milliseconds(0).toISOString(),
+      expireAt: moment(data.expireAt).seconds(0).milliseconds(0).toISOString()
     });
   }
 }

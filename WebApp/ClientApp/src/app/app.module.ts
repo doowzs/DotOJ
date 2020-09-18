@@ -61,6 +61,7 @@ import { NzBadgeModule } from 'ng-zorro-antd/badge';
 import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzProgressModule } from 'ng-zorro-antd/progress';
+import { ClipboardModule } from 'ngx-clipboard';
 
 const loadApplicationConfig = (service: ApplicationConfigService) => {
   return () => service.loadApplicationConfig();
@@ -90,55 +91,56 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     HelpComponent,
     ChangelogComponent
   ],
-  imports: [
-    BrowserAnimationsModule,
-    BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
-    FormsModule,
-    HttpClientModule,
-    RouterModule.forRoot([
-      { path: '', pathMatch: 'full', component: WelcomePageComponent },
-      { path: 'help', component: HelpComponent },
-      { path: 'changelog', component: ChangelogComponent },
-      { path: 'contests', component: ContestListComponent, canActivate: [AuthorizeGuard] },
-      {
-        path: 'contest/:contestId', component: ContestViewComponent, canActivate: [AuthorizeGuard],
-        children: [
-          { path: '', pathMatch: 'full', component: ContestDescriptionComponent },
-          { path: 'problem/:problemId', component: ProblemDetailComponent },
-          { path: 'submissions', component: SubmissionListComponent },
-          { path: 'standings', component: ContestStandingsComponent }
-        ]
-      }
-    ]),
-    AdminModule,
-    ApiAuthorizationModule,
-    MarkdownModule.forRoot(),
-    NzLayoutModule,
-    NzPageHeaderModule,
-    NzGridModule,
-    NzCardModule,
-    NzTagModule,
-    NzStatisticModule,
-    NzButtonModule,
-    NzDropDownModule,
-    NzListModule,
-    NzPaginationModule,
-    NzDividerModule,
-    NzDescriptionsModule,
-    NzIconModule,
-    NzSelectModule,
-    NzToolTipModule,
-    NzNotificationModule,
-    NzTimelineModule,
-    NzTableModule,
-    NzEmptyModule,
-    NzDrawerModule,
-    NzSkeletonModule,
-    NzBadgeModule,
-    NzModalModule,
-    NzInputModule,
-    NzProgressModule
-  ],
+    imports: [
+        BrowserAnimationsModule,
+        BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
+        FormsModule,
+        HttpClientModule,
+        RouterModule.forRoot([
+            { path: '', pathMatch: 'full', component: WelcomePageComponent },
+            { path: 'help', component: HelpComponent },
+            { path: 'changelog', component: ChangelogComponent },
+            { path: 'contests', component: ContestListComponent, canActivate: [AuthorizeGuard] },
+            {
+                path: 'contest/:contestId', component: ContestViewComponent, canActivate: [AuthorizeGuard],
+                children: [
+                    { path: '', pathMatch: 'full', component: ContestDescriptionComponent },
+                    { path: 'problem/:problemId', component: ProblemDetailComponent },
+                    { path: 'submissions', component: SubmissionListComponent },
+                    { path: 'standings', component: ContestStandingsComponent }
+                ]
+            }
+        ]),
+        AdminModule,
+        ApiAuthorizationModule,
+        MarkdownModule.forRoot(),
+        NzLayoutModule,
+        NzPageHeaderModule,
+        NzGridModule,
+        NzCardModule,
+        NzTagModule,
+        NzStatisticModule,
+        NzButtonModule,
+        NzDropDownModule,
+        NzListModule,
+        NzPaginationModule,
+        NzDividerModule,
+        NzDescriptionsModule,
+        NzIconModule,
+        NzSelectModule,
+        NzToolTipModule,
+        NzNotificationModule,
+        NzTimelineModule,
+        NzTableModule,
+        NzEmptyModule,
+        NzDrawerModule,
+        NzSkeletonModule,
+        NzBadgeModule,
+        NzModalModule,
+        NzInputModule,
+        NzProgressModule,
+        ClipboardModule
+    ],
   providers: [
     ApplicationConfigService,
     { provide: APP_INITIALIZER, useFactory: loadApplicationConfig, multi: true, deps: [ApplicationConfigService] },

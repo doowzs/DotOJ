@@ -60,7 +60,7 @@
       <span>Input</span>
       <button nz-button nzSize="small" nzType="link" style="float: right;"
               nz-tooltip nzTooltipTitle="Copied!" nzTooltipTrigger="click"
-              (click)="copyToClipboard(testCase.input)">
+              ngxClipboard [cbContent]="testCase.input">
         <i nz-icon nzType="copy"></i>
       </button>
     </ng-template>
@@ -68,7 +68,7 @@
       <span>Output</span>
       <button nz-button nzSize="small" nzType="link" style="float: right;"
               nz-tooltip nzTooltipTitle="Copied!" nzTooltipTrigger="click"
-              (click)="copyToClipboard(testCase.output)">
+              ngxClipboard [cbContent]="testCase.output">
         <i nz-icon nzType="copy"></i>
       </button>
     </ng-template>
