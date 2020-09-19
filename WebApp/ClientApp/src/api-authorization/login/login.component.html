@@ -1,7 +1,11 @@
 <div *ngIf="message | async">
   <nz-result nzTitle="An Error Occurred" nzStatus="error" [nzSubTitle]="message | async">
     <div nz-result-extra>
-      <button nz-button nzType="primary" routerLink="/">Back Home</button>
+      <p><strong>CHECK WHETHER SYSTEM TIME IS CORRECT</strong></p>
+      <p>If time is correct, press F12 to open developer console and report to system administrator.</p>
+      <p><strong>首先检查你的操作系统时间是否正确</strong></p>
+      <p>如果系统时间正确，按下F12打开开发者窗口，将控制台输出反馈给系统管理员</p>
+      <button nz-button nzType="primary" routerLink="/" style="margin-top: 2rem;">Back Home</button>
     </div>
   </nz-result>
 </div>
