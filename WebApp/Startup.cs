@@ -150,13 +150,13 @@ namespace WebApp
 
             app.UseRouting();
 
-            app.UseAuthentication();
+            app.UseAuthentication()
+                .UseCookiePolicy(new CookiePolicyOptions
+                {
+                    MinimumSameSitePolicy = SameSiteMode.Lax
+                });
             app.UseIdentityServer();
             app.UseAuthorization();
-            app.UseCookiePolicy(new CookiePolicyOptions
-            {
-                MinimumSameSitePolicy = SameSiteMode.Lax
-            });
 
             app.UseEndpoints(endpoints =>
             {
