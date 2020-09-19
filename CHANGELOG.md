@@ -1,10 +1,11 @@
 # Changelog
 
-## 1.1.5 - 2020-09-19
+## 1.1.6 - 2020-09-19
 
 ### Added
 
 - Allow contest manager to create submission without registering.
+- Add button to export standings page to an Excel workbook.
 
 ### Changed
 
