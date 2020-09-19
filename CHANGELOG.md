@@ -1,11 +1,12 @@
 # Changelog
 
-## 1.1.6 - 2020-09-19
+## 1.1.7 - 2020-09-19
 
 ### Added
 
 - Allow contest manager to create submission without registering.
 - Add button to export standings page to an Excel workbook.
+- If the program is killed by signal 11, will show SIGSEGV in message.
 
 ### Changed
 
@@ -23,6 +24,7 @@
 - Fixed updating a non-accepted verdict of submissions in worker.
 - Fixed rebuilding statistics after copying registrations.
 - Fixed not expiring cookie when logging out caused by `SameSite=None` in non-secure environment.
+- Fixed output file size limit to 2x of standard output.
 
 ## 1.0.9 - 2020-09-14
 
