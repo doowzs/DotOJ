@@ -16,6 +16,7 @@ export interface RegistrationInfoDto {
   isContestManager: boolean;
   statistics: ProblemStatistics[];
   rank?: number;
+  solved?: number;
   score?: number;
   penalties?: number;
 }
