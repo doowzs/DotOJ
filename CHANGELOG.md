@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.1.4 - 2020-09-19
+## 1.1.5 - 2020-09-19
 
 ### Added
 
@@ -13,6 +13,7 @@
 - Disabled ASP.NET HTTPS redirection, which shall be handled by Caddy.
 - Set cookie policy to SameSiteMode.Lax for non-HTTPS support.
 - Use ngx-clipboard for copying test input/output data to clipboard.
+- Users can now login with usernames instead of emails.
 
 ### Fixed
 
@@ -20,6 +21,7 @@
 - Fixed non-zero seconds and milliseconds of timestamps in submitted form data.
 - Fixed updating a non-accepted verdict of submissions in worker.
 - Fixed rebuilding statistics after copying registrations.
+- Fixed not expiring cookie when logging out caused by `SameSite=None` in non-secure environment.
 
 ## 1.0.9 - 2020-09-14
 
