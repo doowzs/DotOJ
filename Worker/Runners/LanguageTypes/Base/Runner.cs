@@ -178,7 +178,7 @@ namespace Worker.Runners.LanguageTypes.Base
             }
 
             await PrepareTestCaseAsync(inline, testCase);
-            await ExecuteProgramAsync(meta, bytes);
+            await ExecuteProgramAsync(meta, bytes * 2);
 
             var output = Path.Combine(Jail, "output");
             await using (var stream = new FileStream(output, FileMode.Open, FileAccess.Read))
@@ -224,7 +224,13 @@ namespace Worker.Runners.LanguageTypes.Base
                             }
                             else
                             {
-                                run.Message = $"Killed by signal {dict["exitsig"]}.";
+                                if (dict["exitsig"].Equals("11"))
+                                {
+                                    run.Message = $"Killed by signal {dict["exitsig"]} (SIGSEGV).";
+                                }
+                                else {
+                                    run.Message = $"Killed by signal {dict["exitsig"]}.";
+                                }
                                 goto case "RE"; // fall through
                             }
                         }
