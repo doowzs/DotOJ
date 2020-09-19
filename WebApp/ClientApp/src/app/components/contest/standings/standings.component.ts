@@ -1,12 +1,15 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { saveAs } from 'file-saver';
 import * as moment from 'moment';
+import * as excel from 'exceljs';
 
 import { ContestService } from '../../../services/contest.service';
 import { RegistrationInfoDto } from '../../../interfaces/registration.interfaces';
 import { ContestViewDto } from '../../../interfaces/contest.interfaces';
 import { ProblemInfoDto } from '../../../interfaces/problem.interfaces';
 import { Title } from '@angular/platform-browser';
+import { Column } from 'exceljs';
 
 @Component({
   selector: 'app-contest-standings',
@@ -42,6 +45,7 @@ export class ContestStandingsComponent implements OnInit {
       .subscribe(registrations => {
         for (let i = 0; i < registrations.length; ++i) {
           const registration = registrations[i];
+          registration.solved = this.getTotalSolved(registration);
           registration.score = this.getTotalScore(registration);
           registration.penalties = this.getTotalPenalties(registration);
         }
@@ -94,11 +98,49 @@ export class ContestStandingsComponent implements OnInit {
     }
   }
 
+  public getTotalSolved(registration: RegistrationInfoDto): number {
+    return registration.statistics.filter(s => s.acceptedAt != null).length;
+  }
+
   public getTotalScore(registration: RegistrationInfoDto): number {
     return registration.statistics.reduce((total, statistic) => total + statistic.score, 0);
   }
 
   public getTotalPenalties(registration: RegistrationInfoDto): number {
     return this.contest.problems.reduce((total, problem) => total + this.getProblemPenalty(registration, problem), 0);
+  }
+
+  public exportStandings() {
+    const workbook = new excel.Workbook();
+    const sheet = workbook.addWorksheet(this.contest.title);
+    sheet.columns = ([
+      { header: 'Rank', key: 'rank' },
+      { header: 'Contestant ID', key: 'id' },
+      { header: 'Contestant Name', key: 'name' },
+    ] as Array<Partial<Column>>).concat(this.contest.problems.map(p => {
+      return { header: p.label + ' - ' + p.title, key: p.label };
+    })).concat([
+      { header: 'Solved', key: 'solved' },
+      { header: 'Score', key: 'score' },
+      { header: 'Penalties', key: 'penalties' }
+    ]);
+    for (const registration of this.registrations) {
+      const row = {
+        rank: registration.rank,
+        id: registration.contestantId,
+        name: registration.contestantName + (registration.isParticipant ? '' : '*'),
+        solved: registration.solved,
+        score: registration.score,
+        penalties: registration.penalties
+      };
+      for (const problem of this.contest.problems) {
+        const item = this.getProblemItem(registration, problem);
+        row[problem.label] = item ? (item[0] + ' (' + item[1] + ')') : '';
+      }
+      sheet.addRow(row);
+    }
+    workbook.xlsx.writeBuffer().then(data => {
+      saveAs(new Blob([data]), this.contest.title + "-standings.xlsx");
+    });
   }
 }
