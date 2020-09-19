@@ -20,8 +20,9 @@ namespace WebApp.Areas.Identity.Pages.Account.Manage
             _signInManager = signInManager;
         }
 
+        public string Email { get; set; }
         public string Username { get; set; }
-        public string ContestantId { get; set; }
+        [Display(Name = "Contestant ID")] public string ContestantId { get; set; }
 
         [TempData] public string StatusMessage { get; set; }
 
@@ -35,18 +36,15 @@ namespace WebApp.Areas.Identity.Pages.Account.Manage
             public string ContestantName { get; set; }
         }
 
-        private async Task LoadAsync(ApplicationUser user)
+        private void LoadUser(ApplicationUser user)
         {
-            var userName = await _userManager.GetUserNameAsync(user);
-            var contestantId = user.ContestantId;
-            var contestantName = user.ContestantName;
-
-            Username = userName;
-            ContestantId = contestantId;
+            Email = user.Email;
+            Username = user.UserName;
+            ContestantId = user.ContestantId;
 
             Input = new InputModel
             {
-                ContestantName = contestantName
+                ContestantName = user.ContestantName
             };
         }
 
@@ -58,7 +56,7 @@ namespace WebApp.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            await LoadAsync(user);
+            LoadUser(user);
             return Page();
         }
 
@@ -72,7 +70,7 @@ namespace WebApp.Areas.Identity.Pages.Account.Manage
 
             if (!ModelState.IsValid)
             {
-                await LoadAsync(user);
+                LoadUser(user);
                 return Page();
             }
 
