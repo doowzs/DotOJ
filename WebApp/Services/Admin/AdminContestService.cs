@@ -206,8 +206,12 @@ namespace WebApp.Services.Admin
                 })
                 .ToListAsync();
             await Context.Registrations.AddRangeAsync(registrations);
-            await Context.SaveChangesAsync();
+            foreach (var registration in registrations)
+            {
+                await registration.RebuildStatisticsAsync(Context);
+            }
 
+            await Context.SaveChangesAsync();
             await LogInformation($"CopyRegistrations To={to} From={from} Copied={registrations.Count}");
 
             return await Context.Registrations

@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.1.3 - 2020-09-18
+## 1.1.4 - 2020-09-19
 
 ### Added
 
@@ -19,6 +19,7 @@
 - Fixed parameter name in handling deleting registrations.
 - Fixed non-zero seconds and milliseconds of timestamps in submitted form data.
 - Fixed updating a non-accepted verdict of submissions in worker.
+- Fixed rebuilding statistics after copying registrations.
 
 ## 1.0.9 - 2020-09-14
 
