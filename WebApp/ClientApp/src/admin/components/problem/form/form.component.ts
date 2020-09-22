@@ -113,7 +113,7 @@ export class AdminProblemFormComponent implements OnInit, OnChanges {
       memoryLimit: data.memoryLimit,
       hasSpecialJudge: data.hasSpecialJudge === 'true',
       specialJudgeProgram: data.hasSpecialJudge === 'true' ? {
-        language: Languages.find(l => l.name === 'C++').code,
+        language: Languages.find(l => l.name === 'C++ 17').code,
         code: btoa(data.specialJudgeCode)
       } : null,
       hasHacking: false,
