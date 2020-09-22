@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.1.7 - 2020-09-19
+## 1.1.8 - 2020-09-22
 
 ### Added
 
@@ -25,6 +25,7 @@
 - Fixed rebuilding statistics after copying registrations.
 - Fixed not expiring cookie when logging out caused by `SameSite=None` in non-secure environment.
 - Fixed output file size limit to 2x of standard output.
+- Fixed an error in admin problem form where C++ language is not found in list.
 
 ## 1.0.9 - 2020-09-14
 
