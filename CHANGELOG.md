@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.1.10 - 2020-09-24
+## 1.1.11 - 2020-09-25
 
 ### Added
 
@@ -28,6 +28,7 @@
 - Fixed not expiring cookie when logging out caused by `SameSite=None` in non-secure environment.
 - Fixed output file size limit to 2x of standard output.
 - Fixed an error in admin problem form where C++ language is not found in list.
+- Fixed copying checker in read-only file systems.
 
 ## 1.0.9 - 2020-09-14
 
