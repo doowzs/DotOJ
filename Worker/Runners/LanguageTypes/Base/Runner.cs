@@ -133,7 +133,11 @@ namespace Worker.Runners.LanguageTypes.Base
             }
             
             // Cache the binary file for later usage.
-            File.Copy(Path.Combine(Box, "checker"), binary);
+            var info = new DirectoryInfo(Path.Combine(Options.Value.DataPath, Problem.Id.ToString()));
+            if (!info.Attributes.HasFlag(FileAttributes.ReadOnly))
+            {
+                File.Copy(Path.Combine(Box, "checker"), binary);
+            }
         }
 
         private async Task PrepareTestCaseAsync(bool inline, TestCase testCase)
