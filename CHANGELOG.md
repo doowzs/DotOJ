@@ -1,12 +1,13 @@
 # Changelog
 
-## 1.1.8 - 2020-09-22
+## 1.1.9 - 2020-09-24
 
 ### Added
 
 - Allow contest manager to create submission without registering.
 - Add button to export standings page to an Excel workbook.
 - If the program is killed by signal 11, will show SIGSEGV in message.
+- Special judge checker will be cached after compiling until problem is updated.
 
 ### Changed
 
