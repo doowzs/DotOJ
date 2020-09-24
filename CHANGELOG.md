@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.1.11 - 2020-09-25
+## 1.1.12 - 2020-09-25
 
 ### Added
 
@@ -18,6 +18,7 @@
 - Use ngx-clipboard for copying test input/output data to clipboard.
 - Users can now login with usernames instead of emails.
 - Limit width of sample case data in problem pages.
+- Swap is now disabled in worker containers to allow precise memory control.
 
 ### Fixed
 
