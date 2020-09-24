@@ -49,7 +49,7 @@
   <markdown [data]="problem.outputFormat" katex></markdown>
   <nz-divider nzText="Sample Cases" nzOrientation="left"></nz-divider>
   <nz-descriptions *ngFor="let testCase of problem.sampleCases"
-                   nzBordered nzLayout="vertical" nzColumn="2">
+                   nzBordered nzLayout="vertical" [nzColumn]="{xs: 1, lg: 2}">
     <nz-descriptions-item [nzTitle]="inputTitle" nzSpan="1">
       <pre>{{ testCase.input }}</pre>
     </nz-descriptions-item>
