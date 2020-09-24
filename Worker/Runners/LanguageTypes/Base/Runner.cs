@@ -98,6 +98,14 @@ namespace Worker.Runners.LanguageTypes.Base
 
         private async Task PrepareCheckerAsync()
         {
+            // Check if a pre-compiled binary checker exists.
+            var binary = Path.Combine(Options.Value.DataPath, Problem.Id.ToString(), "checker");
+            if (File.Exists(binary) && File.GetLastWriteTimeUtc(binary) > Problem.UpdatedAt)
+            {
+                File.Copy(binary, Path.Combine(Box, "checker"));
+                return;
+            }
+        
             File.Copy("Resources/testlib.h", Path.Combine(Box, "testlib.h"));
             var checker = Path.Combine(Box, "checker.cpp");
             await using (var stream = new FileStream(checker, FileMode.Create, FileAccess.Write))
@@ -123,6 +131,9 @@ namespace Worker.Runners.LanguageTypes.Base
             {
                 throw new Exception($"Prepare checker error ExitCode={process.ExitCode}.");
             }
+            
+            // Cache the binary file for later usage.
+            File.Copy(Path.Combine(Box, "checker"), binary);
         }
 
         private async Task PrepareTestCaseAsync(bool inline, TestCase testCase)
