@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.1.9 - 2020-09-24
+## 1.1.10 - 2020-09-24
 
 ### Added
 
@@ -17,6 +17,7 @@
 - Set cookie policy to SameSiteMode.Lax for non-HTTPS support.
 - Use ngx-clipboard for copying test input/output data to clipboard.
 - Users can now login with usernames instead of emails.
+- Limit width of sample case data in problem pages.
 
 ### Fixed
 

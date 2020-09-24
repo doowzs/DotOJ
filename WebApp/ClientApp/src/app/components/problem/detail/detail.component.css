@@ -5,3 +5,9 @@
 nz-descriptions {
   margin-bottom: 1rem;
 }
+
+::ng-deep .ant-descriptions-view td {
+  width: 50%;
+  max-width: 1px;
+  overflow-x: hidden;
+}
