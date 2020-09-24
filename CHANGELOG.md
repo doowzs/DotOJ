@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.1.12 - 2020-09-25
+## 1.1.13 - 2020-09-25
 
 ### Added
 
@@ -30,6 +30,7 @@
 - Fixed output file size limit to 2x of standard output.
 - Fixed an error in admin problem form where C++ language is not found in list.
 - Fixed copying checker in read-only file systems.
+- Fixed failure percentage not showing for Memory Limit Exceeded verdict.
 
 ## 1.0.9 - 2020-09-14
 
