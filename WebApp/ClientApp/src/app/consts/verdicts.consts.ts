@@ -47,7 +47,7 @@ export const Verdicts: VerdictInfo[] = [
     color: 'red', explain: 'Your program did not terminate before hitting the time limit.'
   },
   {
-    code: 6, name: 'Memory Limit Exceeded', showCase: false, stage: VerdictStage.REJECTED,
+    code: 6, name: 'Memory Limit Exceeded', showCase: true, stage: VerdictStage.REJECTED,
     color: 'red', explain: 'Your program hit the memory limit.'
   },
   {
