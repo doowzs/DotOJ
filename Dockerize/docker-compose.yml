@@ -1,4 +1,4 @@
-version: '3.4'
+version: '2'
 
 x-logging: &default-logging
   logging:
@@ -52,6 +52,7 @@ services:
   worker:
     image: ccr.ccs.tencentyun.com/dotoj/worker:${JUDGE_VERSION}
     privileged: true
+    mem_swappiness: 0
     volumes:
       - ./worker/appsettings.json:/app/appsettings.json:ro
       - ${DATA_PATH_HOST}/judge-data:/var/www/judge-data:ro
