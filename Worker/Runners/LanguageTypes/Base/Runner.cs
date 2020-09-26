@@ -133,10 +133,13 @@ namespace Worker.Runners.LanguageTypes.Base
             }
             
             // Cache the binary file for later usage.
-            var info = new DirectoryInfo(Path.Combine(Options.Value.DataPath, Problem.Id.ToString()));
-            if (!info.Attributes.HasFlag(FileAttributes.ReadOnly))
+            try
             {
                 File.Copy(Path.Combine(Box, "checker"), binary);
+            }
+            catch (Exception e)
+            {
+                // Do nothing on a failed copy.
             }
         }
 
