@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.1.13 - 2020-09-25
+## 1.1.14 - 2020-09-26
 
 ### Added
 
@@ -29,8 +29,9 @@
 - Fixed not expiring cookie when logging out caused by `SameSite=None` in non-secure environment.
 - Fixed output file size limit to 2x of standard output.
 - Fixed an error in admin problem form where C++ language is not found in list.
-- Fixed copying checker in read-only file systems.
 - Fixed failure percentage not showing for Memory Limit Exceeded verdict.
+- Fixed handling error when copying checker in read-only file systems.
+- Fixed wrong pagination link in registration management table.
 
 ## 1.0.9 - 2020-09-14
 

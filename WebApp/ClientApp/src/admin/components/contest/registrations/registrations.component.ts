@@ -49,7 +49,7 @@ export class AdminContestRegistrationsComponent implements OnInit {
 
   public onPageIndexChange(value: number) {
     this.pageIndex = value;
-    this.router.navigate(['/admin/user'], {
+    this.router.navigate(['/admin/contest', this.contestId, 'registrations'], {
       queryParams: {
         pageIndex: value
       }
