@@ -162,10 +162,14 @@ namespace WebApp.Services
         {
             await ValidateSubmissionCreateDtoAsync(dto);
 
-            var lastSubmission = await Context.Submissions.OrderByDescending(s => s.Id).FirstOrDefaultAsync();
-            if (lastSubmission != null && (DateTime.Now.ToUniversalTime() - lastSubmission.CreatedAt).TotalSeconds < 15)
+            var user = await Manager.GetUserAsync(Accessor.HttpContext.User);
+            var lastSubmission = await Context.Submissions
+                .Where(s => s.UserId == user.Id)
+                .OrderByDescending(s => s.Id)
+                .FirstOrDefaultAsync();
+            if (lastSubmission != null && (DateTime.Now.ToUniversalTime() - lastSubmission.CreatedAt).TotalSeconds < 5)
             {
-                throw new TooManyRequestsException("Cannot submit twice between 15 seconds.");
+                throw new TooManyRequestsException("Cannot submit twice between 5 seconds.");
             }
 
             var submission = new Submission

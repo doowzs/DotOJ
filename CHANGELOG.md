@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.1.14 - 2020-09-26
+## 1.1.15 - 2020-09-27
 
 ### Added
 
@@ -32,6 +32,7 @@
 - Fixed failure percentage not showing for Memory Limit Exceeded verdict.
 - Fixed handling error when copying checker in read-only file systems.
 - Fixed wrong pagination link in registration management table.
+- Fixed wrong throttling of submission creation API.
 
 ## 1.0.9 - 2020-09-14
 
