@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { ContestMode } from '../../../interfaces/contest.interfaces';
+import { ContestMode } from '../../../../interfaces/contest.interfaces';
 
 @Component({
   selector: 'app-contest-rule',

@@ -1,5 +1,4 @@
 <app-header-contest></app-header-contest>
-<div class="container-fluid">
+<div class="container-fluid" [style]="'height: calc(100vh - ' + (ended ? 56 : 62) + 'px); overflow-y: auto;'">
   <router-outlet></router-outlet>
 </div>
-<app-footer-main></app-footer-main>

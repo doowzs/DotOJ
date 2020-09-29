@@ -1,18 +1,19 @@
-﻿<ng-container *ngIf="fullscreen; else contained">
+﻿<div [class.container]="!fullscreen">
   <div class="row">
-    <div class="col col-12 col-lg-6 my-5">
+    <div class="col col-12 py-5" [class.col-lg-6]="fullscreen" [class.px-5]="fullscreen"
+         [style]="fullscreen ? ('height: calc(100vh - ' + (ended ? 56 : 62) + 'px); overflow-y: auto;') : ''">
       <ng-container [ngTemplateOutlet]="problemDetail"></ng-container>
     </div>
+    <div class="col col-12 col-lg-6 p-0" [class.d-none]="!fullscreen"
+         [style]="'height: calc(100vh - ' + (ended ? 56 : 62) + 'px);'">
+      <editor [problemId]="problemId"></editor>
+    </div>
   </div>
-</ng-container>
-<ng-template #contained>
-  <div class="container my-5">
-    <ng-container [ngTemplateOutlet]="problemDetail"></ng-container>
-  </div>
-</ng-template>
+</div>
 <ng-template #problemDetail>
   <div *ngIf="contest">
-    <select class="form-control mb-5" [(ngModel)]="problemId" (ngModelChange)="onProblemChanged($event)">
+    <select class="form-control custom-select mb-5"
+            [(ngModel)]="problemId" (ngModelChange)="changeProblem($event)">
       <option *ngFor="let problem of contest.problems"
               [value]="problem.id" [label]="'Problem ' + problem.label + ' - ' + problem.title"
       ></option>
@@ -20,7 +21,7 @@
   </div>
   <div *ngIf="contest && problem">
     <div class="text-center">
-      <h2>{{ getProblemLabel(problem) }} - {{ problem.title }}</h2>
+      <h2>{{ problem.title }}</h2>
       <p>
         <span *ngIf="problem.hasSpecialJudge" class="m-1 badge badge-danger">
           <fa-icon [icon]="faCoffee"></fa-icon>
@@ -43,8 +44,14 @@
         </span>
       </p>
     </div>
-    <app-submission-creator [problem]="problem"></app-submission-creator>
-    <app-submission-timeline [problem]="problem"></app-submission-timeline>
+    <button class="btn my-3 w-100"
+            [class.btn-outline-danger]="fullscreen"
+            [class.btn-outline-success]="!fullscreen"
+            (click)="toggleFullscreen()">
+      <fa-icon [icon]="fullscreen ? faTimes : faColumns"></fa-icon>
+      <span *ngIf="fullscreen">Close Editor</span>
+      <span *ngIf="!fullscreen">Open Editor</span>
+    </button>
 
     <h3 class="mt-5">Description</h3>
     <markdown [data]="problem.description" katex></markdown>
@@ -53,44 +60,37 @@
     <h3 class="mt-5">Output Format</h3>
     <markdown [data]="problem.outputFormat" katex></markdown>
     <h3 class="mt-5">Sample Cases</h3>
-    <table *ngFor="let sample of problem.sampleCases" class="table table-bordered">
-      <thead>
-      <tr>
-        <th scope="col" style="width: 50%;">
-          <span>Input</span>
+    <div *ngFor="let sample of problem.sampleCases" class="row mx-1 my-3">
+      <div class="col col-12 col-md-6 border">
+        <h5 class="my-3">
+          Input
           <span class="float-right">
-            <a class="btn btn-sm" ngxClipboard [cbContent]="sample.input"
-               ngbTooltip="Copied!" triggers="click:blur">
+            <button class="btn btn-sm" ngxClipboard [cbContent]="sample.input"
+                    ngbTooltip="Copied!" triggers="click:blur">
               <fa-icon [icon]="faCopy" class="mr-0"></fa-icon>
-            </a>
+            </button>
           </span>
-        </th>
-        <th scope="col" style="width: 50%;">
-          <span>Output</span>
+        </h5>
+        <hr/>
+        <pre>{{ sample.input }}</pre>
+      </div>
+      <div class="col col-12 col-md-6 border">
+        <h5 class="my-3">
+          Output
           <span class="float-right">
-            <a class="btn btn-sm" ngxClipboard [cbContent]="sample.output"
-               ngbTooltip="Copied!" triggers="click:blur">
+            <button class="btn btn-sm" ngxClipboard [cbContent]="sample.output"
+                    ngbTooltip="Copied!" triggers="click:blur">
               <fa-icon [icon]="faCopy" class="mr-0"></fa-icon>
-            </a>
+            </button>
           </span>
-        </th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr>
-        <td>
-          <pre>{{ sample.input }}</pre>
-        </td>
-        <td>
-          <pre>{{ sample.output }}</pre>
-        </td>
-      </tr>
-      </tbody>
-    </table>
+        </h5>
+        <hr/>
+        <pre>{{ sample.output }}</pre>
+      </div>
+    </div>
     <ng-container *ngIf="problem.footNote">
       <h3 class="mt-5">Foot Note</h3>
       <markdown [data]="problem.footNote" katex></markdown>
     </ng-container>
   </div>
-
 </ng-template>

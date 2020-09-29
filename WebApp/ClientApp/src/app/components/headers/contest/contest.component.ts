@@ -1,22 +1,22 @@
 ﻿import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Observable, Subject, timer } from 'rxjs';
+import { interval, Observable, Subject, timer } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
 
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ContestViewDto } from '../../../../interfaces/contest.interfaces';
 import { AuthorizeService } from '../../../../api-authorization/authorize.service';
+import { ApplicationConfigService } from '../../../services/config.service';
 import { ContestService } from '../../../services/contest.service';
 import {
   faArrowLeft,
   faBars,
   faCog,
-  faIndent,
-  faListOl, faPaperPlane,
+  faPaperPlane,
   faSignOutAlt, faStream, faTrophy,
   faUser
 } from '@fortawesome/free-solid-svg-icons';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'app-header-contest',
@@ -39,6 +39,7 @@ export class ContestHeaderComponent implements OnInit, OnDestroy {
   public canViewAdminPages: Observable<boolean>;
   public contestId: number;
   public contest: ContestViewDto;
+  public now: moment.Moment;
   public ended = false;
   public progress = 0;
   public collapse = true;
@@ -49,6 +50,7 @@ export class ContestHeaderComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
+    private config: ApplicationConfigService,
     private auth: AuthorizeService,
     private service: ContestService,
     private modal: NgbModal,
@@ -56,13 +58,17 @@ export class ContestHeaderComponent implements OnInit, OnDestroy {
     this.username = this.auth.getUser().pipe(map(u => u && u.name));
     this.canViewAdminPages = this.auth.getUser().pipe(map(u => u && u.roles.length > 0));
     this.contestId = this.route.snapshot.params.contestId;
+    this.now = moment().add(config.diff, 'ms');
+    interval(1000).subscribe(() => {
+      this.now = this.now.add(1, 's');
+    });
   }
 
   ngOnInit() {
     this.service.getSingle(this.contestId)
       .subscribe(contest => {
         this.contest = contest;
-        this.ended = moment().isAfter(this.contest.endTime);
+        this.ended = this.now.isAfter(this.contest.endTime);
         if (this.ended) {
           this.progress = 100;
         } else {
@@ -79,15 +85,14 @@ export class ContestHeaderComponent implements OnInit, OnDestroy {
   }
 
   private updateProgress() {
-    const now = moment();
     const end = this.contest.endTime as moment.Moment;
-    if (now.isAfter(end)) {
+    if (this.now.isAfter(end)) {
       this.progress = 100;
       this.complete$.next();
       this.complete$.complete();
       this.modal.open(this.contestEndedModal).result.then(() => window.location.reload());
     } else {
-      const passed = moment.duration(now.diff(this.contest.beginTime)).asSeconds();
+      const passed = moment.duration(this.now.diff(this.contest.beginTime)).asSeconds();
       const total = moment.duration(end.diff(this.contest.beginTime)).asSeconds();
       this.progress = Math.min(100, passed / total * 100);
     }

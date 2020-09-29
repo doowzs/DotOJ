@@ -64,6 +64,7 @@ import { NzProgressModule } from 'ng-zorro-antd/progress';
 import { ClipboardModule } from 'ngx-clipboard';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { EditorModule } from '../lib/editor/editor.module';
 
 const loadApplicationConfig = (service: ApplicationConfigService) => {
   return () => service.loadApplicationConfig();
@@ -115,6 +116,7 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     ]),
     AdminModule,
     ApiAuthorizationModule,
+    EditorModule.forRoot(),
     MarkdownModule.forRoot(),
     NzLayoutModule,
     NzPageHeaderModule,

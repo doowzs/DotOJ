@@ -11,7 +11,15 @@ import { ContestViewDto } from '../../../../interfaces/contest.interfaces';
 import { AuthorizeService, IUser } from '../../../../api-authorization/authorize.service';
 import { ProblemService } from '../../../services/problem.service';
 import { ContestService } from '../../../services/contest.service';
-import { faCoffee, faCopy, faPaperPlane, faSdCard, faStopwatch } from '@fortawesome/free-solid-svg-icons';
+import {
+  faCoffee,
+  faColumns,
+  faCopy,
+  faPaperPlane,
+  faSdCard,
+  faStopwatch,
+  faTimes
+} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-problem-detail',
@@ -20,9 +28,11 @@ import { faCoffee, faCopy, faPaperPlane, faSdCard, faStopwatch } from '@fortawes
 })
 export class ProblemDetailComponent implements OnInit, OnDestroy {
   faCoffee = faCoffee;
+  faColumns = faColumns;
   faCopy = faCopy;
   faSdCard = faSdCard;
   faStopwatch = faStopwatch;
+  faTimes = faTimes;
   faPaperPlane = faPaperPlane;
 
   public user: IUser;
@@ -47,6 +57,7 @@ export class ProblemDetailComponent implements OnInit, OnDestroy {
     private auth: AuthorizeService
   ) {
     this.contestId = this.route.snapshot.parent.params.contestId;
+    this.fullscreen = this.route.snapshot.queryParams.fullscreen;
   }
 
   ngOnInit() {
@@ -74,16 +85,6 @@ export class ProblemDetailComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  public getProblemLabel(problem: ProblemViewDto): string {
-    return this.contest.problems.find(p => p.id == problem.id)?.label;
-  }
-
-  public onProblemChanged(problemId: number) {
-    this.problemId = problemId;
-    this.router.navigate(['/contest', this.contestId, 'problem', this.problemId]);
-    this.loadProblem();
-  }
-
   public loadProblem() {
     this.loading = true;
     this.problemService.getSingle(this.problemId)
@@ -92,6 +93,29 @@ export class ProblemDetailComponent implements OnInit, OnDestroy {
         this.title.setTitle(problem.title);
         this.loading = false;
       });
+  }
+
+  public getProblemLabel(problem: ProblemViewDto): string {
+    return this.contest.problems.find(p => p.id == problem.id)?.label;
+  }
+
+  public updateRoute() {
+    this.router.navigate(['/contest', this.contestId, 'problem', this.problemId], {
+      queryParams: {
+        fullscreen: this.fullscreen
+      }
+    });
+  }
+
+  public changeProblem(problemId: number) {
+    this.problemId = problemId;
+    this.updateRoute();
+    this.loadProblem();
+  }
+
+  public toggleFullscreen() {
+    this.fullscreen = !this.fullscreen;
+    this.updateRoute();
   }
 }
 

@@ -14,7 +14,7 @@
       <input class="form-control" placeholder="Contestant ID" [(ngModel)]="contestantId"/>
     </div>
     <div class="col col-12 col-lg-2">
-      <select class="form-control" [(ngModel)]="problemId">
+      <select class="form-control custom-select" [(ngModel)]="problemId">
         <option value="undefined" label="Any Problem"></option>
         <ng-container *ngIf="!!contest">
           <option *ngFor="let problem of contest.problems" [value]="problem.id"
@@ -24,7 +24,7 @@
       </select>
     </div>
     <div class="col col-12 col-lg-2">
-      <select class="form-control" [(ngModel)]="verdict">
+      <select class="form-control custom-select" [(ngModel)]="verdict">
         <option value="undefined" label="Any Verdict" selected></option>
         <option *ngFor="let verdict of Verdicts" [value]="verdict.code" [label]="verdict.name"></option>
       </select>
