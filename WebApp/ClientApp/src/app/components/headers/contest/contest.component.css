@@ -1,1 +1,3 @@
-﻿
+﻿::ng-deep .progress {
+  border-radius: 0;
+}
