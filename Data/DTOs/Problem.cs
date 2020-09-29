@@ -11,6 +11,8 @@ namespace Data.DTOs
         public int ContestId { get; }
         public string Title { get; }
         public bool Solved { get; }
+        public int AcceptedSubmissions { get; }
+        public int TotalSubmissions { get; }
 
         public ProblemInfoDto(Problem problem)
         {
@@ -20,9 +22,11 @@ namespace Data.DTOs
             Solved = false;
         }
 
-        public ProblemInfoDto(Problem problem, bool solved) : this(problem)
+        public ProblemInfoDto(Problem problem, bool solved, int acceptedSubmissions, int totalSubmissions) : this(problem)
         {
             Solved = solved;
+            AcceptedSubmissions = acceptedSubmissions;
+            TotalSubmissions = totalSubmissions;
         }
     }
 

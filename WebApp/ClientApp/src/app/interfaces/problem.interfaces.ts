@@ -11,6 +11,8 @@ export interface ProblemInfoDto {
   label: string; // added in client service
   title: string;
   solved: boolean;
+  acceptedSubmissions: number;
+  totalSubmissions: number;
 }
 
 export interface ProblemViewDto {
