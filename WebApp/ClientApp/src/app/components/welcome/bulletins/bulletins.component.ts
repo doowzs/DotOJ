@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BulletinService } from '../../../services/bulletin.service';
 import { BulletinInfoDto } from '../../../interfaces/bulletin.interfaces';
+import { faBoxOpen } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-welcome-bulletins',
@@ -8,6 +9,8 @@ import { BulletinInfoDto } from '../../../interfaces/bulletin.interfaces';
   styleUrls: ['./bulletins.component.css']
 })
 export class WelcomeBulletinsComponent implements OnInit {
+  faBoxOpen = faBoxOpen;
+
   public bulletins: BulletinInfoDto[];
 
   constructor(private service: BulletinService) {

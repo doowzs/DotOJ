@@ -4,6 +4,16 @@ import { map } from 'rxjs/operators';
 
 import { ApplicationConfigService } from '../../../services/config.service';
 import { AuthorizeService } from '../../../../api-authorization/authorize.service';
+import {
+  faBars,
+  faCalendar,
+  faCog,
+  faHome,
+  faSignInAlt,
+  faSignOutAlt,
+  faUser,
+  faUserPlus
+} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-header-main',
@@ -11,8 +21,18 @@ import { AuthorizeService } from '../../../../api-authorization/authorize.servic
   styleUrls: ['./main.component.css']
 })
 export class MainHeaderComponent {
+  faBars = faBars;
+  faCalendar = faCalendar;
+  faCog = faCog;
+  faHome = faHome;
+  faSignInAlt = faSignInAlt;
+  faSignOutAlt = faSignOutAlt;
+  faUser = faUser;
+  faUserPlus = faUserPlus;
+
   public title: string;
   public username: Observable<string>;
+  public collapse = true;
   public isAuthenticated: Observable<boolean>;
   public canViewAdminPages: Observable<boolean>;
 
