@@ -6,6 +6,8 @@ import { PaginatedList } from '../../../interfaces/pagination.interfaces';
 import { ContestInfoDto } from '../../../interfaces/contest.interfaces';
 import { ContestService } from '../../../services/contest.service';
 import { Title } from '@angular/platform-browser';
+import { faBoxOpen } from '@fortawesome/free-solid-svg-icons';
+import { ApplicationConfigService } from '../../../services/config.service';
 
 @Component({
   selector: 'app-contest-list',
@@ -13,6 +15,8 @@ import { Title } from '@angular/platform-browser';
   styleUrls: ['./list.component.css']
 })
 export class ContestListComponent implements OnInit {
+  faBoxOpen = faBoxOpen;
+
   public list: PaginatedList<ContestInfoDto>;
   public now: moment.Moment;
 
@@ -20,7 +24,8 @@ export class ContestListComponent implements OnInit {
     private title: Title,
     private route: ActivatedRoute,
     private router: Router,
-    private service: ContestService
+    private service: ContestService,
+    private config: ApplicationConfigService
   ) {
     this.title.setTitle('Contests');
   }
@@ -39,12 +44,8 @@ export class ContestListComponent implements OnInit {
   }
 
   private loadContests(pageIndex: number): void {
-    this.now = moment();
+    this.now = moment().add(this.config.diff, 'ms');
     this.service.getPaginatedList(pageIndex).subscribe(list => this.list = list);
-  }
-
-  public isContestRunning(contest: ContestInfoDto): boolean {
-    return this.now >= contest.beginTime && this.now <= contest.endTime;
   }
 
   public canEnterContest(contest: ContestInfoDto): boolean {
