@@ -1,19 +1,19 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Title } from '@angular/platform-browser';
 import { interval, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { NzDrawerRef, NzDrawerService } from 'ng-zorro-antd/drawer';
 import * as moment from 'moment';
 
+import { Verdicts, VerdictStage } from '../../../../consts/verdicts.consts';
+import { PaginatedList } from '../../../../interfaces/pagination.interfaces';
+import { ContestViewDto } from '../../../../interfaces/contest.interfaces';
+import { SubmissionInfoDto } from '../../../../interfaces/submission.interfaces';
 import { SubmissionService } from '../../../services/submission.service';
-import { PaginatedList } from '../../../interfaces/pagination.interfaces';
-import { SubmissionInfoDto } from '../../../interfaces/submission.interfaces';
 import { ContestService } from '../../../services/contest.service';
-import { ContestViewDto } from '../../../interfaces/contest.interfaces';
-import { Verdicts, VerdictStage } from '../../../consts/verdicts.consts';
 import { SubmissionDetailComponent } from '../detail/detail.component';
 import { AuthorizeService, IUser } from '../../../../api-authorization/authorize.service';
-import { Title } from '@angular/platform-browser';
 import { faSearch, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
 
 @Component({

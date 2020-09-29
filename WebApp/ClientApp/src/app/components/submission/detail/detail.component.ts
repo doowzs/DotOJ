@@ -1,6 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
+
+import { SubmissionViewDto } from '../../../../interfaces/submission.interfaces';
 import { SubmissionService } from '../../../services/submission.service';
-import { SubmissionViewDto } from '../../../interfaces/submission.interfaces';
 
 @Component({
   selector: 'app-submission-detail',

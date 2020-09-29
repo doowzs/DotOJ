@@ -1,9 +1,9 @@
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 
-import { LanguageInfo, Languages } from '../../../consts/languages.consts';
+import { Languages } from '../../../../consts/languages.consts';
+import { ProblemViewDto } from '../../../../interfaces/problem.interfaces';
 import { SubmissionService } from '../../../services/submission.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
-import { ProblemViewDto } from '../../../interfaces/problem.interfaces';
 
 @Component({
   selector: 'app-submission-creator',

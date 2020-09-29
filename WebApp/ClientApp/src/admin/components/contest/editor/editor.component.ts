@@ -1,8 +1,8 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { ContestEditDto } from '../../../../interfaces/contest.interfaces';
 import { AdminContestService } from '../../../services/contest.service';
-import { ContestEditDto } from '../../../../app/interfaces/contest.interfaces';
 
 @Component({
   selector: 'app-admin-contest-editor',

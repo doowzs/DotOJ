@@ -1,7 +1,8 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { AdminProblemService } from '../../../services/problem.service';
 import { HttpEventType } from '@angular/common/http';
 import { Router } from '@angular/router';
+
+import { AdminProblemService } from '../../../services/problem.service';
 
 @Component({
   selector: 'app-admin-problem-archive',

@@ -1,9 +1,9 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { PaginatedList } from '../../../../interfaces/pagination.interfaces';
+import { ProblemInfoDto } from '../../../../interfaces/problem.interfaces';
 import { AdminProblemService } from '../../../services/problem.service';
-import { PaginatedList } from '../../../../app/interfaces/pagination.interfaces';
-import { ProblemInfoDto } from '../../../../app/interfaces/problem.interfaces';
 
 @Component({
   selector: 'app-admin-problem-list',

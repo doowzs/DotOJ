@@ -2,14 +2,14 @@
 import { interval, Observable, Subject } from 'rxjs';
 import { map, take, takeUntil } from 'rxjs/operators';
 
-import { VerdictInfo, VerdictStage } from '../../../consts/verdicts.consts';
+import { PaginatedList } from '../../../../interfaces/pagination.interfaces';
+import { ProblemViewDto } from '../../../../interfaces/problem.interfaces';
+import { SubmissionInfoDto } from '../../../../interfaces/submission.interfaces';
+import { VerdictStage } from '../../../../consts/verdicts.consts';
 import { SubmissionService } from '../../../services/submission.service';
-import { PaginatedList } from '../../../interfaces/pagination.interfaces';
-import { SubmissionInfoDto } from '../../../interfaces/submission.interfaces';
 import { AuthorizeService } from '../../../../api-authorization/authorize.service';
 import { SubmissionDetailComponent } from '../detail/detail.component';
 import { NzDrawerRef, NzDrawerService } from 'ng-zorro-antd/drawer';
-import { ProblemViewDto } from '../../../interfaces/problem.interfaces';
 
 @Component({
   selector: 'app-submission-timeline',

@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { UserEditDto } from '../../../../app/interfaces/user.interfaces';
+import { UserEditDto } from '../../../../interfaces/user.interfaces';
 import { AdminUserService } from '../../../services/user.service';
 import { AuthorizeService } from '../../../../api-authorization/authorize.service';
 

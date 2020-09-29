@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { Verdicts } from '../../../consts/verdicts.consts';
+import { Verdicts } from '../../../../consts/verdicts.consts';
 
 @Component({
   selector: 'app-miscellaneous-help',

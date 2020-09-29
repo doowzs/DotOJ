@@ -1,16 +1,16 @@
-﻿import { Component, OnInit, OnDestroy, SimpleChanges } from '@angular/core';
+﻿import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import * as moment from 'moment';
 
+import { LanguageInfo } from '../../../../consts/languages.consts';
+import { ProblemViewDto } from '../../../../interfaces/problem.interfaces';
+import { ContestViewDto } from '../../../../interfaces/contest.interfaces';
 import { AuthorizeService, IUser } from '../../../../api-authorization/authorize.service';
 import { ProblemService } from '../../../services/problem.service';
-import { ProblemViewDto } from '../../../interfaces/problem.interfaces';
-import { LanguageInfo } from '../../../consts/languages.consts';
-import { ContestViewDto } from '../../../interfaces/contest.interfaces';
 import { ContestService } from '../../../services/contest.service';
-import * as moment from 'moment';
 import { faCoffee, faCopy, faPaperPlane, faSdCard, faStopwatch } from '@fortawesome/free-solid-svg-icons';
 
 @Component({

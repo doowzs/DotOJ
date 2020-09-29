@@ -3,8 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import * as moment from 'moment';
 
+import { ContestViewDto } from '../../../../interfaces/contest.interfaces';
 import { AuthorizeService, IUser } from '../../../../api-authorization/authorize.service';
-import { ContestViewDto } from '../../../interfaces/contest.interfaces';
 import { ContestService } from '../../../services/contest.service';
 import { faBoxOpen, faCheck, faEdit } from '@fortawesome/free-solid-svg-icons';
 

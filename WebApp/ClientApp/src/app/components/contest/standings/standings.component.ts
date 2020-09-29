@@ -1,18 +1,17 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { map } from 'rxjs/operators';
+import { Title } from '@angular/platform-browser';
 import { saveAs } from 'file-saver';
 import * as moment from 'moment';
 import * as excel from 'exceljs';
-
-import { ContestService } from '../../../services/contest.service';
-import { RegistrationInfoDto } from '../../../interfaces/registration.interfaces';
-import { ContestViewDto } from '../../../interfaces/contest.interfaces';
-import { ProblemInfoDto } from '../../../interfaces/problem.interfaces';
-import { Title } from '@angular/platform-browser';
 import { Column } from 'exceljs';
-import { faDownload, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
+
+import { ContestViewDto } from '../../../../interfaces/contest.interfaces';
+import { ProblemInfoDto } from '../../../../interfaces/problem.interfaces';
 import { AuthorizeService } from '../../../../api-authorization/authorize.service';
+import { ContestService } from '../../../services/contest.service';
+import { RegistrationInfoDto } from '../../../../interfaces/registration.interfaces';
+import { faDownload, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-contest-standings',

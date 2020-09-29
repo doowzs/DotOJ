@@ -2,7 +2,7 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import * as moment from 'moment';
 
-import { BulletinEditDto } from '../../../../app/interfaces/bulletin.interfaces';
+import { BulletinEditDto } from '../../../../interfaces/bulletin.interfaces';
 
 @Component({
   selector: 'app-admin-bulletin-form',

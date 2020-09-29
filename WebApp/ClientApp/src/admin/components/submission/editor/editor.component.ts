@@ -1,8 +1,8 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { SubmissionEditDto } from '../../../../interfaces/submission.interfaces';
 import { AdminSubmissionService } from '../../../services/submission.service';
-import { SubmissionEditDto } from '../../../../app/interfaces/submission.interfaces';
 
 @Component({
   selector: 'app-admin-submission-editor',

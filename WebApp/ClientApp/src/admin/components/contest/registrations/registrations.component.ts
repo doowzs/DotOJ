@@ -1,12 +1,12 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ContestEditDto } from '../../../../app/interfaces/contest.interfaces';
-import { RegistrationInfoDto } from '../../../../app/interfaces/registration.interfaces';
+import { PaginatedList } from '../../../../interfaces/pagination.interfaces';
+import { UserInfoDto } from '../../../../interfaces/user.interfaces';
+import { ContestEditDto } from '../../../../interfaces/contest.interfaces';
+import { RegistrationInfoDto } from '../../../../interfaces/registration.interfaces';
 import { AdminContestService } from '../../../services/contest.service';
 import { AdminUserService } from '../../../services/user.service';
-import { UserInfoDto } from '../../../../app/interfaces/user.interfaces';
-import { PaginatedList } from '../../../../app/interfaces/pagination.interfaces';
 
 @Component({
   selector: 'app-admin-contest-registrations',

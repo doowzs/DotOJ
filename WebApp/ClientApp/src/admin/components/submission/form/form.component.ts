@@ -2,8 +2,8 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import * as moment from 'moment';
 
-import { SubmissionEditDto } from '../../../../app/interfaces/submission.interfaces';
-import { Verdicts } from '../../../../app/consts/verdicts.consts';
+import { Verdicts } from '../../../../consts/verdicts.consts';
+import { SubmissionEditDto } from '../../../../interfaces/submission.interfaces';
 
 @Component({
   selector: 'app-admin-submission-form',

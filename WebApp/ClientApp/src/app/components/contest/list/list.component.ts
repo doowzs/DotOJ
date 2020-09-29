@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 
-import { PaginatedList } from '../../../interfaces/pagination.interfaces';
-import { ContestInfoDto } from '../../../interfaces/contest.interfaces';
+import { PaginatedList } from '../../../../interfaces/pagination.interfaces';
+import { ContestInfoDto } from '../../../../interfaces/contest.interfaces';
 import { ContestService } from '../../../services/contest.service';
 import { Title } from '@angular/platform-browser';
 import { faBoxOpen } from '@fortawesome/free-solid-svg-icons';

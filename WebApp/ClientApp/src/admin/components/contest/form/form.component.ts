@@ -2,7 +2,7 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import * as moment from 'moment';
 
-import { ContestEditDto } from '../../../../app/interfaces/contest.interfaces';
+import { ContestEditDto } from '../../../../interfaces/contest.interfaces';
 
 @Component({
   selector: 'app-admin-contest-form',

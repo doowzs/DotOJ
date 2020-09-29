@@ -1,8 +1,8 @@
 ﻿import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { BulletinEditDto } from '../../../../interfaces/bulletin.interfaces';
 import { AdminBulletinService } from '../../../services/bulletin.service';
-import { BulletinEditDto } from '../../../../app/interfaces/bulletin.interfaces';
 
 @Component({
   selector: 'app-admin-bulletin-creator',

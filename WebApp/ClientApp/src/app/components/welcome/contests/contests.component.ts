@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import * as moment from 'moment';
 
+import { ContestInfoDto } from '../../../../interfaces/contest.interfaces';
 import { ContestService } from '../../../services/contest.service';
-import { ContestInfoDto } from '../../../interfaces/contest.interfaces';
 import { faBoxOpen, faClock, faLock, faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 
 @Component({

@@ -1,8 +1,8 @@
 ﻿import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 
-import { ProblemEditDto, TestCase } from '../../../../app/interfaces/problem.interfaces';
-import { Languages } from '../../../../app/consts/languages.consts';
+import { Languages } from '../../../../consts/languages.consts';
+import { ProblemEditDto, TestCase } from '../../../../interfaces/problem.interfaces';
 
 @Component({
   selector: 'app-admin-problem-form',

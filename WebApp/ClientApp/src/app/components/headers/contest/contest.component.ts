@@ -4,9 +4,9 @@ import { Observable, Subject, timer } from 'rxjs';
 import { map, takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
 
+import { ContestViewDto } from '../../../../interfaces/contest.interfaces';
 import { AuthorizeService } from '../../../../api-authorization/authorize.service';
 import { ContestService } from '../../../services/contest.service';
-import { ContestViewDto } from '../../../interfaces/contest.interfaces';
 import {
   faArrowLeft,
   faBars,

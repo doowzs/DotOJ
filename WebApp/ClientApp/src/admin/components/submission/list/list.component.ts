@@ -3,10 +3,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { interval, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { PaginatedList } from '../../../../app/interfaces/pagination.interfaces';
-import { SubmissionInfoDto } from '../../../../app/interfaces/submission.interfaces';
+import { VerdictInfo, VerdictStage } from '../../../../consts/verdicts.consts';
+import { PaginatedList } from '../../../../interfaces/pagination.interfaces';
+import { SubmissionInfoDto } from '../../../../interfaces/submission.interfaces';
 import { AdminSubmissionService } from '../../../services/submission.service';
-import { VerdictInfo, VerdictStage } from '../../../../app/consts/verdicts.consts';
 
 @Component({
   selector: 'app-admin-submission-list',

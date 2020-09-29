@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { SubmissionInfoDto, SubmissionViewDto } from '../../../interfaces/submission.interfaces';
-import { VerdictStage } from '../../../consts/verdicts.consts';
+import { SubmissionInfoDto, SubmissionViewDto } from '../../../../interfaces/submission.interfaces';
+import { VerdictStage } from '../../../../consts/verdicts.consts';
 
 @Component({
   selector: 'app-submission-verdict',

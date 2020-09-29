@@ -1,9 +1,9 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { PaginatedList } from '../../../../interfaces/pagination.interfaces';
+import { ContestInfoDto, ContestMode } from '../../../../interfaces/contest.interfaces';
 import { AdminContestService } from '../../../services/contest.service';
-import { PaginatedList } from '../../../../app/interfaces/pagination.interfaces';
-import { ContestInfoDto, ContestMode } from '../../../../app/interfaces/contest.interfaces';
 
 @Component({
   selector: 'app-admin-contest-list',

@@ -1,8 +1,8 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { ProblemEditDto } from '../../../../interfaces/problem.interfaces';
 import { AdminProblemService } from '../../../services/problem.service';
-import { ProblemEditDto } from '../../../../app/interfaces/problem.interfaces';
 
 @Component({
   selector: 'app-admin-problem-editor',

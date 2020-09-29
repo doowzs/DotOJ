@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import * as moment from 'moment';
 
-import { ContestViewDto } from '../../../interfaces/contest.interfaces';
+import { ContestViewDto } from '../../../../interfaces/contest.interfaces';
 import { ContestService } from '../../../services/contest.service';
 
 @Component({

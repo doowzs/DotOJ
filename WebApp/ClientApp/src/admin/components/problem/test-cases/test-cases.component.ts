@@ -1,9 +1,10 @@
 ﻿import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { AdminProblemService } from '../../../services/problem.service';
-import { ProblemEditDto, TestCase } from '../../../../app/interfaces/problem.interfaces';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpEventType } from '@angular/common/http';
-import { Languages } from '../../../../app/consts/languages.consts';
+
+import { Languages } from '../../../../consts/languages.consts';
+import { ProblemEditDto, TestCase } from '../../../../interfaces/problem.interfaces';
+import { AdminProblemService } from '../../../services/problem.service';
 import { AdminSubmissionService } from '../../../services/submission.service';
 
 @Component({

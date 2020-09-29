@@ -1,9 +1,9 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { PaginatedList } from '../../../../interfaces/pagination.interfaces';
+import { BulletinInfoDto } from '../../../../interfaces/bulletin.interfaces';
 import { AdminBulletinService } from '../../../services/bulletin.service';
-import { PaginatedList } from '../../../../app/interfaces/pagination.interfaces';
-import { BulletinInfoDto } from '../../../../app/interfaces/bulletin.interfaces';
 
 @Component({
   selector: 'app-admin-bulletin-list',
