@@ -30,16 +30,16 @@
       </select>
     </div>
     <div class="col col-12 col-lg-2">
-      <a class="btn btn-outline-success w-100" [class.disabled]="loading" (click)="onQueryParamsChange()">
+      <button class="btn btn-outline-success w-100" [disabled]="loading" (click)="onQueryParamsChange()">
         <fa-icon [icon]="faSearch"></fa-icon>
         <span>Search</span>
-      </a>
+      </button>
     </div>
     <div class="col col-12 col-lg-2">
-      <a class="btn btn-outline-primary w-100" [class.disabled]="loading" (click)="loadSubmissions()">
+      <button class="btn btn-outline-primary w-100" [disabled]="loading" (click)="loadSubmissions()">
         <fa-icon [icon]="faSyncAlt"></fa-icon>
         <span>Refresh</span>
-      </a>
+      </button>
     </div>
   </div>
   <table class="table table-hover my-3">

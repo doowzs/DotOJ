@@ -1,5 +1,6 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { map } from 'rxjs/operators';
 import { saveAs } from 'file-saver';
 import * as moment from 'moment';
 import * as excel from 'exceljs';
@@ -10,6 +11,8 @@ import { ContestViewDto } from '../../../interfaces/contest.interfaces';
 import { ProblemInfoDto } from '../../../interfaces/problem.interfaces';
 import { Title } from '@angular/platform-browser';
 import { Column } from 'exceljs';
+import { faDownload, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
+import { AuthorizeService } from '../../../../api-authorization/authorize.service';
 
 @Component({
   selector: 'app-contest-standings',
@@ -17,7 +20,11 @@ import { Column } from 'exceljs';
   styleUrls: ['./standings.component.css']
 })
 export class ContestStandingsComponent implements OnInit {
+  faDownload = faDownload;
+  faSyncAlt = faSyncAlt;
+
   public loading = true;
+  public userId: string;
   public contestId: number;
   public contest: ContestViewDto;
   public registrations: RegistrationInfoDto[];
@@ -25,18 +32,22 @@ export class ContestStandingsComponent implements OnInit {
   constructor(
     private title: Title,
     private route: ActivatedRoute,
-    private service: ContestService
+    private service: ContestService,
+    private authorize: AuthorizeService
   ) {
     this.contestId = this.route.snapshot.parent.params.contestId;
   }
 
   ngOnInit() {
-    this.service.getSingle(this.contestId)
-      .subscribe(contest => {
-        this.contest = contest;
-        this.title.setTitle(contest.title + ' - Standings');
-        this.loadRegistrations();
-      });
+    this.authorize.getUser().subscribe(user => {
+      this.userId = user && user.sub;
+      this.service.getSingle(this.contestId)
+        .subscribe(contest => {
+          this.contest = contest;
+          this.title.setTitle(contest.title + ' - Standings');
+          this.loadRegistrations();
+        });
+    });
   }
 
   public loadRegistrations() {
@@ -69,6 +80,10 @@ export class ContestStandingsComponent implements OnInit {
           registrations[i].rank = registrations[i].isParticipant ? rank : -1;
         }
         this.registrations = registrations;
+        const myStanding = registrations.find(r => r.userId == this.userId);
+        if (!!myStanding) {
+          this.registrations.unshift(myStanding);
+        }
         this.loading = false;
       });
   }
@@ -77,7 +92,7 @@ export class ContestStandingsComponent implements OnInit {
     const statistic = registration.statistics.find(s => s.problemId === problem.id);
     if (statistic && statistic.acceptedAt) {
       const minutes = (statistic.acceptedAt as moment.Moment).diff(this.contest.beginTime, 'minutes');
-      return minutes + 20 * statistic.penalties;
+      return Math.max(0, minutes + 20 * statistic.penalties);
     } else {
       return 0;
     }
@@ -89,7 +104,7 @@ export class ContestStandingsComponent implements OnInit {
       if (statistic.acceptedAt) {
         const minutes = (statistic.acceptedAt as moment.Moment).diff(this.contest.beginTime, 'minutes');
         const penalties = statistic.penalties + 1;
-        return [minutes.toString(), penalties.toString() + ' ' + (penalties === 1 ? 'try' : 'tries')];
+        return [Math.max(0, minutes).toString(), penalties.toString() + ' ' + (penalties === 1 ? 'try' : 'tries')];
       } else {
         return ['-', (statistic.penalties).toString() + ' ' + (statistic.penalties === 1 ? 'try' : 'tries')];
       }
@@ -140,7 +155,7 @@ export class ContestStandingsComponent implements OnInit {
       sheet.addRow(row);
     }
     workbook.xlsx.writeBuffer().then(data => {
-      saveAs(new Blob([data]), this.contest.title + "-standings.xlsx");
+      saveAs(new Blob([data]), this.contest.title + '-standings.xlsx');
     });
   }
 }
