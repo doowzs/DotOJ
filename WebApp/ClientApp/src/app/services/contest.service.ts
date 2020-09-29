@@ -4,9 +4,9 @@ import { Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import * as moment from 'moment';
 
-import { PaginatedList } from '../interfaces/pagination.interfaces';
-import { ContestInfoDto, ContestViewDto } from '../interfaces/contest.interfaces';
-import { RegistrationInfoDto } from '../interfaces/registration.interfaces';
+import { PaginatedList } from '../../interfaces/pagination.interfaces';
+import { ContestInfoDto, ContestViewDto } from '../../interfaces/contest.interfaces';
+import { RegistrationInfoDto } from '../../interfaces/registration.interfaces';
 
 @Injectable({
   providedIn: 'root'

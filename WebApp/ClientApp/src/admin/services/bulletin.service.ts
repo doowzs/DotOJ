@@ -4,8 +4,8 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import * as moment from 'moment';
 
-import { BulletinEditDto, BulletinInfoDto } from '../../app/interfaces/bulletin.interfaces';
-import { PaginatedList } from '../../app/interfaces/pagination.interfaces';
+import { BulletinEditDto, BulletinInfoDto } from '../../interfaces/bulletin.interfaces';
+import { PaginatedList } from '../../interfaces/pagination.interfaces';
 
 @Injectable({
   providedIn: 'root'

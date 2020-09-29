@@ -4,10 +4,10 @@ import { Observable, Subject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { Base64 } from 'js-base64';
 
-import { SubmissionInfoDto, SubmissionViewDto } from '../interfaces/submission.interfaces';
+import { SubmissionInfoDto, SubmissionViewDto } from '../../interfaces/submission.interfaces';
 import { AuthorizeService } from '../../api-authorization/authorize.service';
-import { PaginatedList } from '../interfaces/pagination.interfaces';
-import { mapSubmissionInfoDtoFields, mapSubmissionViewDtoFields } from '../interfaces/submission.interfaces';
+import { PaginatedList } from '../../interfaces/pagination.interfaces';
+import { mapSubmissionInfoDtoFields, mapSubmissionViewDtoFields } from '../../interfaces/submission.interfaces';
 
 @Injectable({
   providedIn: 'root'

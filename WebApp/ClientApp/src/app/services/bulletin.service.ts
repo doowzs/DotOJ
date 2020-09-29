@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { BulletinInfoDto } from '../interfaces/bulletin.interfaces';
+
+import { BulletinInfoDto } from '../../interfaces/bulletin.interfaces';
 
 @Injectable({
   providedIn: 'root'

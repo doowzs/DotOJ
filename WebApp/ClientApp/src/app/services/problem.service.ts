@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Base64 } from 'js-base64';
 
-import { ProblemViewDto } from '../interfaces/problem.interfaces';
+import { ProblemViewDto } from '../../interfaces/problem.interfaces';
 
 @Injectable({
   providedIn: 'root'
