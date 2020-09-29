@@ -1,80 +1,97 @@
-﻿<div id="problem-detail" *ngIf="problem">
-  <h2 id="problem-title">
-    {{ problem.title }}
-    <span style="float: right;">
-      <button nz-button nzSize="small" nzShape="circle" style="margin-right: 0.5rem;"
-              [nzLoading]="loading" (click)="loadProblem()">
-        <i nz-icon nzType="sync"></i>
-      </button>
-      <nz-tag nzColor="purple" *ngIf="problem.hasSpecialJudge">
-        <i nz-icon nzType="coffee"></i><span>Special Judge</span>
-      </nz-tag>
-      <nz-tag nzColor="green" *ngIf="problem.solved">
-        <i nz-icon nzType="check"></i><span>Solved</span>
-      </nz-tag>
-      <small *ngIf="privileged">
-        [<a nz-button nzType="link" nzDanger [routerLink]="['/admin/problem', problemId]">Edit</a>]
-        [<a nz-button nzType="link" nzDanger [routerLink]="['/admin/problem', problemId, 'test-cases']">TestCases</a>]
-      </small>
-    </span>
-  </h2>
-  <div nz-row id="problem-stats">
-    <div nz-col nzSpan="6">
-      <nz-statistic nzTitle="Base Time Limit" [nzValue]="problem.timeLimit" nzSuffix="ms"></nz-statistic>
-    </div>
-    <div nz-col nzSpan="6">
-      <nz-statistic nzTitle="Memory Limit" nzSuffix="MiB"
-                    [nzValue]="(problem.memoryLimit / 1024 | number: '1.0-0' | noComma)"
-      ></nz-statistic>
-    </div>
-    <div nz-col nzSpan="6">
-      <nz-statistic nzTitle="Accepted" [nzValue]="problem.acceptedSubmissions"
-                    [nzSuffix]="'of ' + problem.totalSubmissions"></nz-statistic>
-    </div>
-    <div nz-col nzSpan="6">
-      <nz-statistic nzTitle="AC Ratio" nzSuffix="%"
-                    [nzValue]="problem.totalSubmissions ? (problem.acceptedSubmissions / problem.totalSubmissions * 100 | number : '1.1-1') : '0.0'"
-      ></nz-statistic>
+﻿<ng-container *ngIf="fullscreen; else contained">
+  <div class="row">
+    <div class="col col-12 col-lg-6 my-5">
+      <ng-container [ngTemplateOutlet]="problemDetail"></ng-container>
     </div>
   </div>
-  <nz-divider nzText="Submissions" nzOrientation="left"></nz-divider>
-  <app-submission-creator [problem]="problem"></app-submission-creator>
-  <app-submission-timeline [problem]="problem"></app-submission-timeline>
+</ng-container>
+<ng-template #contained>
+  <div class="container my-5">
+    <ng-container [ngTemplateOutlet]="problemDetail"></ng-container>
+  </div>
+</ng-template>
+<ng-template #problemDetail>
+  <div *ngIf="contest">
+    <select class="form-control mb-5" [(ngModel)]="problemId" (ngModelChange)="onProblemChanged($event)">
+      <option *ngFor="let problem of contest.problems"
+              [value]="problem.id" [label]="'Problem ' + problem.label + ' - ' + problem.title"
+      ></option>
+    </select>
+  </div>
+  <div *ngIf="contest && problem">
+    <div class="text-center">
+      <h2>{{ getProblemLabel(problem) }} - {{ problem.title }}</h2>
+      <p>
+        <span *ngIf="problem.hasSpecialJudge" class="m-1 badge badge-danger">
+          <fa-icon [icon]="faCoffee"></fa-icon>
+          <span>Special Judge</span>
+        </span>
+        <span class="m-1 badge badge-warning">
+          <fa-icon [icon]="faStopwatch"></fa-icon>
+          <span>{{ problem.timeLimit }}ms</span>
+        </span>
+        <span class="m-1 badge badge-warning">
+          <fa-icon [icon]="faSdCard"></fa-icon>
+          <span>{{ problem.memoryLimit }}KiB</span>
+        </span>
+        <span class="m-1 badge badge-success">
+          <fa-icon [icon]="faPaperPlane"></fa-icon>
+          <span>
+            {{ problem.acceptedSubmissions }}/{{ problem.totalSubmissions }}
+            = {{ problem.totalSubmissions ? (problem.acceptedSubmissions / problem.totalSubmissions * 100 | number : '1.1-1') : '0.0' }}
+            %
+          </span>
+        </span>
+      </p>
+    </div>
+    <app-submission-creator [problem]="problem"></app-submission-creator>
+    <app-submission-timeline [problem]="problem"></app-submission-timeline>
 
-  <nz-divider nzText="Description" nzOrientation="left"></nz-divider>
-  <markdown [data]="problem.description" katex></markdown>
-  <nz-divider nzText="Input Format" nzOrientation="left"></nz-divider>
-  <markdown [data]="problem.inputFormat" katex></markdown>
-  <nz-divider nzText="Output Format" nzOrientation="left"></nz-divider>
-  <markdown [data]="problem.outputFormat" katex></markdown>
-  <nz-divider nzText="Sample Cases" nzOrientation="left"></nz-divider>
-  <nz-descriptions *ngFor="let testCase of problem.sampleCases"
-                   nzBordered nzLayout="vertical" [nzColumn]="{xs: 1, lg: 2}">
-    <nz-descriptions-item [nzTitle]="inputTitle" nzSpan="1">
-      <pre>{{ testCase.input }}</pre>
-    </nz-descriptions-item>
-    <nz-descriptions-item [nzTitle]="outputTitle" nzSpan="1">
-      <pre>{{ testCase.output }}</pre>
-    </nz-descriptions-item>
-    <ng-template #inputTitle>
-      <span>Input</span>
-      <button nz-button nzSize="small" nzType="link" style="float: right;"
-              nz-tooltip nzTooltipTitle="Copied!" nzTooltipTrigger="click"
-              ngxClipboard [cbContent]="testCase.input">
-        <i nz-icon nzType="copy"></i>
-      </button>
-    </ng-template>
-    <ng-template #outputTitle>
-      <span>Output</span>
-      <button nz-button nzSize="small" nzType="link" style="float: right;"
-              nz-tooltip nzTooltipTitle="Copied!" nzTooltipTrigger="click"
-              ngxClipboard [cbContent]="testCase.output">
-        <i nz-icon nzType="copy"></i>
-      </button>
-    </ng-template>
-  </nz-descriptions>
-  <ng-container *ngIf="problem.footNote">
-    <nz-divider nzText="Foot Note" nzOrientation="left"></nz-divider>
-    <markdown [data]="problem.footNote" katex></markdown>
-  </ng-container>
-</div>
+    <h3 class="mt-5">Description</h3>
+    <markdown [data]="problem.description" katex></markdown>
+    <h3 class="mt-5">Input Format</h3>
+    <markdown [data]="problem.inputFormat" katex></markdown>
+    <h3 class="mt-5">Output Format</h3>
+    <markdown [data]="problem.outputFormat" katex></markdown>
+    <h3 class="mt-5">Sample Cases</h3>
+    <table *ngFor="let sample of problem.sampleCases" class="table table-bordered">
+      <thead>
+      <tr>
+        <th scope="col" style="width: 50%;">
+          <span>Input</span>
+          <span class="float-right">
+            <a class="btn btn-sm" ngxClipboard [cbContent]="sample.input"
+               ngbTooltip="Copied!" triggers="click:blur">
+              <fa-icon [icon]="faCopy" class="mr-0"></fa-icon>
+            </a>
+          </span>
+        </th>
+        <th scope="col" style="width: 50%;">
+          <span>Output</span>
+          <span class="float-right">
+            <a class="btn btn-sm" ngxClipboard [cbContent]="sample.output"
+               ngbTooltip="Copied!" triggers="click:blur">
+              <fa-icon [icon]="faCopy" class="mr-0"></fa-icon>
+            </a>
+          </span>
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>
+          <pre>{{ sample.input }}</pre>
+        </td>
+        <td>
+          <pre>{{ sample.output }}</pre>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+    <ng-container *ngIf="problem.footNote">
+      <h3 class="mt-5">Foot Note</h3>
+      <markdown [data]="problem.footNote" katex></markdown>
+    </ng-container>
+  </div>
+
+</ng-template>

@@ -41,7 +41,7 @@ export class ContestHeaderComponent implements OnInit, OnDestroy {
   public contest: ContestViewDto;
   public ended = false;
   public progress = 0;
-  public collapse = false;
+  public collapse = true;
 
   private complete$ = new Subject();
   private destroy$ = new Subject();
