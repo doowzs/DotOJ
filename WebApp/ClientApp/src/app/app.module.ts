@@ -62,6 +62,8 @@ import { NzModalModule } from 'ng-zorro-antd/modal';
 import { NzInputModule } from 'ng-zorro-antd/input';
 import { NzProgressModule } from 'ng-zorro-antd/progress';
 import { ClipboardModule } from 'ngx-clipboard';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 const loadApplicationConfig = (service: ApplicationConfigService) => {
   return () => service.loadApplicationConfig();
@@ -139,7 +141,9 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
         NzModalModule,
         NzInputModule,
         NzProgressModule,
-        ClipboardModule
+        ClipboardModule,
+        NgbModule,
+        FontAwesomeModule
     ],
   providers: [
     ApplicationConfigService,
