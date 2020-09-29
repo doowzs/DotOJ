@@ -17,7 +17,7 @@ namespace WebApp.Services
     public interface ISubmissionService
     {
         public Task<PaginatedList<SubmissionInfoDto>> GetPaginatedSubmissionsAsync
-            (int? contestId, int? problemId, string userId, Verdict? verdict, int? pageIndex);
+            (int? contestId, string userId, string contestantId, int? problemId, Verdict? verdict, int? pageIndex);
 
         public Task<List<SubmissionInfoDto>> GetBatchSubmissionInfosAsync(IEnumerable<int> ids);
         public Task<SubmissionInfoDto> GetSubmissionInfoAsync(int id);
@@ -92,7 +92,7 @@ namespace WebApp.Services
         }
 
         public async Task<PaginatedList<SubmissionInfoDto>> GetPaginatedSubmissionsAsync
-            (int? contestId, int? problemId, string userId, Verdict? verdict, int? pageIndex)
+            (int? contestId, string userId, string contestantId, int? problemId, Verdict? verdict, int? pageIndex)
         {
             var submissions = Context.Submissions.AsQueryable();
 
@@ -105,14 +105,27 @@ namespace WebApp.Services
                 submissions = submissions.Where(s => problemIds.Contains(s.ProblemId));
             }
 
-            if (problemId.HasValue)
-            {
-                submissions = submissions.Where(s => s.ProblemId == problemId.GetValueOrDefault());
-            }
-
             if (!string.IsNullOrEmpty(userId))
             {
                 submissions = submissions.Where(s => s.UserId == userId);
+            }
+
+            if (!string.IsNullOrEmpty(contestantId))
+            {
+                var user = await Context.Users.Where(u => u.ContestantId == contestantId).FirstOrDefaultAsync();
+                if (user == null)
+                {
+                    return new PaginatedList<SubmissionInfoDto>(0, 1, PageSize, new List<SubmissionInfoDto>());
+                }
+                else
+                {
+                    submissions = submissions.Where(s => s.UserId == user.Id);
+                }
+            }
+
+            if (problemId.HasValue)
+            {
+                submissions = submissions.Where(s => s.ProblemId == problemId.GetValueOrDefault());
             }
 
             if (verdict.HasValue)

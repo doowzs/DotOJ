@@ -1,3 +1,3 @@
 {{ submission.verdictInfo.name }}
-<span *ngIf="getSubmissionPct() as pct">{{ pct }}</span>
+<span *ngIf="getSubmissionPct() as pct"><br *ngIf="pct.length > 8"/>{{ pct }}</span>
 <span *ngIf="notAnValidAttempt()">*</span>

@@ -1,58 +1,82 @@
-<h2>
-  Submissions
-  <span style="float: right;">
-      <button nz-button nzSize="small" nzShape="circle" style="margin-right: 0.5rem;"
-              [nzLoading]="loading" (click)="loadSubmissions()">
-        <i nz-icon nzType="sync"></i>
-      </button>
-  </span>
-</h2>
-<nz-table #submissionsTable *ngIf="list"
-          [nzData]="list.items" [nzFrontPagination]="false"
-          [nzTotal]="list.totalItems" [nzPageSize]="list.pageSize" [nzPageIndex]="pageIndex"
-          (nzQueryParams)="onQueryParamsChange($event)">
-  <thead>
-  <tr>
-    <th nzColumnKey="id">ID</th>
-    <th nzColumnKey="contestantId">
-      Contestant
-    </th>
-    <th nzColumnKey="problemId" [nzFilters]="problemFilterList" [nzFilterMultiple]="false" [nzFilterFn]="true">
-      Problem
-    </th>
-    <th nzColumnKey="verdict" [nzFilters]="verdictFilterList" [nzFilterMultiple]="false" [nzFilterFn]="true">
-      Verdict
-    </th>
-    <th nzColumnKey="time">Time</th>
-    <th nzColumnKey="memory">Memory</th>
-    <th nzColumnKey="language">Language</th>
-    <th nzColumnKey="codeBytes">Bytes</th>
-    <th nzColumnKey="createdAt">Created At</th>
-    <th nzColumnKey="action">Action</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr *ngFor="let submission of submissionsTable.data">
-    <td>{{ submission.id }}</td>
-    <td>{{ submission.contestantId }}</td>
-    <td>{{ getProblemLabel(submission.problemId) }}</td>
-    <td>
-      <nz-tag [nzColor]="submission.verdictInfo.color">
-        <app-submission-verdict [submission]="submission"></app-submission-verdict>
-      </nz-tag>
-    </td>
-    <td>{{ submission.time }}</td>
-    <td>{{ submission.memory }}</td>
-    <td>{{ submission.languageInfo.name }}</td>
-    <td>{{ submission.codeBytes }}</td>
-    <td>{{ submission.createdAt.format('YYYY-MM-DD HH:mm') }}</td>
-    <td>
-      <button nz-button nzType="link" nzSize="small"
-              *ngIf="canViewSubmission(submission)"
-              (click)="viewSubmissionDetail(submission)">
-        View
-      </button>
-    </td>
-  </tr>
-  </tbody>
-</nz-table>
+<div class="container my-5">
+  <div class="text-center" *ngIf="contest">
+    <h2>
+      {{ contest.title }}
+    </h2>
+    <p>
+      {{ contest.beginTime.format('YYYY-MM-DD HH:mm') }}
+      - {{ contest.endTime.format('YYYY-MM-DD HH:mm') }}
+    </p>
+  </div>
+  <h2>Submissions</h2>
+  <div class="row">
+    <div class="col col-12 col-lg-4">
+      <input class="form-control" placeholder="Contestant ID" [(ngModel)]="contestantId"/>
+    </div>
+    <div class="col col-12 col-lg-2">
+      <select class="form-control" [(ngModel)]="problemId">
+        <option value="undefined" label="Any Problem"></option>
+        <ng-container *ngIf="!!contest">
+          <option *ngFor="let problem of contest.problems" [value]="problem.id"
+                  [label]="problem.label + ': ' + problem.title"
+          ></option>
+        </ng-container>
+      </select>
+    </div>
+    <div class="col col-12 col-lg-2">
+      <select class="form-control" [(ngModel)]="verdict">
+        <option value="undefined" label="Any Verdict" selected></option>
+        <option *ngFor="let verdict of Verdicts" [value]="verdict.code" [label]="verdict.name"></option>
+      </select>
+    </div>
+    <div class="col col-12 col-lg-2">
+      <a class="btn btn-outline-success w-100" [class.disabled]="loading" (click)="onQueryParamsChange()">
+        <fa-icon [icon]="faSearch"></fa-icon>
+        <span>Search</span>
+      </a>
+    </div>
+    <div class="col col-12 col-lg-2">
+      <a class="btn btn-outline-primary w-100" [class.disabled]="loading" (click)="loadSubmissions()">
+        <fa-icon [icon]="faSyncAlt"></fa-icon>
+        <span>Refresh</span>
+      </a>
+    </div>
+  </div>
+  <table class="table table-hover my-3">
+    <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Contestant</th>
+      <th scope="col">Problem</th>
+      <th scope="col">Verdict</th>
+      <th scope="col">Time</th>
+      <th scope="col">Memory</th>
+      <th scope="col">Language</th>
+      <th scope="col">Bytes</th>
+      <th scope="col">Submitted</th>
+    </tr>
+    </thead>
+    <tbody *ngIf="!!list">
+    <tr *ngFor="let submission of list.items">
+      <th scope="row">{{ submission.id }}</th>
+      <td>{{ submission.contestantId }}</td>
+      <td>{{ getProblemLabel(submission.problemId) }}</td>
+      <td>
+        <span [class]="'text-' + submission.verdictInfo.color">
+          <app-submission-verdict [submission]="submission"></app-submission-verdict>
+        </span>
+      </td>
+      <td>{{ submission.time }}</td>
+      <td>{{ submission.memory }}</td>
+      <td>{{ submission.languageInfo.name }}</td>
+      <td>{{ submission.codeBytes }}</td>
+      <td>{{ submission.createdAt.format('YYYY-MM-DD HH:mm') }}</td>
+    </tr>
+    </tbody>
+  </table>
+  <div *ngIf="!!list" class="d-flex justify-content-center">
+    <ngb-pagination [collectionSize]="list.totalItems" [page]="list.pageIndex"
+                    [pageSize]="list.pageSize" (pageChange)="onPageChange($event)">
+    </ngb-pagination>
+  </div>
+</div>

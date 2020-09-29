@@ -23,17 +23,20 @@ export class SubmissionService {
     this.userId = this.auth.getUser().pipe(map(u => u && u.sub));
   }
 
-  public getPaginatedList(contestId: number | null, problemId: number | null, userId: string | null, verdict: number | null,
-                          pageIndex: number | null): Observable<PaginatedList<SubmissionInfoDto>> {
+  public getPaginatedList(contestId: number | null, userId: string | null, contestantId: string | null, problemId: number | null,
+                          verdict: number | null, pageIndex: number | null): Observable<PaginatedList<SubmissionInfoDto>> {
     let params = new HttpParams();
     if (contestId) {
       params = params.set('contestId', contestId.toString());
     }
-    if (problemId) {
-      params = params.set('problemId', problemId.toString());
-    }
     if (userId) {
       params = params.set('userId', userId);
+    }
+    if (contestantId) {
+      params = params.set('contestantId', contestantId);
+    }
+    if (problemId) {
+      params = params.set('problemId', problemId.toString());
     }
     if (verdict) {
       params = params.set('verdict', verdict.toString());

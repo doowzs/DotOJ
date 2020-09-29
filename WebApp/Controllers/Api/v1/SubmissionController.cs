@@ -33,9 +33,11 @@ namespace WebApp.Controllers.Api.v1
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PaginatedList<SubmissionInfoDto>>>
-            ListSubmissions(int? contestId, int? problemId, string userId, Verdict? verdict, int? pageIndex)
+            ListSubmissions(int? contestId, string userId, string contestantId,
+                int? problemId, Verdict? verdict, int? pageIndex)
         {
-            return Ok(await _service.GetPaginatedSubmissionsAsync(contestId, problemId, userId, verdict, pageIndex));
+            return Ok(await _service
+                .GetPaginatedSubmissionsAsync(contestId, userId, contestantId, problemId, verdict, pageIndex));
         }
 
         [HttpGet("batch")]

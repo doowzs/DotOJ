@@ -64,7 +64,7 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
   private loadSubmissions(problem: ProblemViewDto): void {
     this.submissions = [];
     this.userId.pipe(take(1)).subscribe(userId => {
-      this.service.getPaginatedList(null, problem.id, userId, null, 1)
+      this.service.getPaginatedList(null, userId, null, problem.id, null, 1)
         .subscribe(list => {
           for (let i = 0; i < list.items.length; ++i) {
             this.submissions.unshift(list.items[i]);
