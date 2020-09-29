@@ -7,6 +7,15 @@ import * as moment from 'moment';
 import { AuthorizeService } from '../../../../api-authorization/authorize.service';
 import { ContestService } from '../../../services/contest.service';
 import { ContestViewDto } from '../../../interfaces/contest.interfaces';
+import {
+  faArrowLeft,
+  faBars,
+  faCog,
+  faIndent,
+  faListOl,
+  faSignOutAlt, faStream,
+  faUser
+} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-header-contest',
@@ -14,11 +23,21 @@ import { ContestViewDto } from '../../../interfaces/contest.interfaces';
   styleUrls: ['./contest.component.css']
 })
 export class ContestHeaderComponent implements OnInit {
+  faArrowLeft = faArrowLeft;
+  faBars = faBars;
+  faUser = faUser;
+  faSignOutAlt = faSignOutAlt;
+  faCog = faCog;
+  faIndent = faIndent;
+  faListOl = faListOl;
+  faStream = faStream;
+
   public username: Observable<string>;
   public canViewAdminPages: Observable<boolean>;
   public contestId: number;
   public contest: ContestViewDto;
-  public ended: boolean;
+  public ended = false;
+  public collapse = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -37,9 +56,5 @@ export class ContestHeaderComponent implements OnInit {
         this.contest = contest;
         this.ended = moment().isAfter(this.contest.endTime);
       });
-  }
-
-  public leaveContest() {
-    this.router.navigate(['/']);
   }
 }

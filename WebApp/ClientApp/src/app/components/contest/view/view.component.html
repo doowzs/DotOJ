@@ -1,42 +1,40 @@
-<nz-layout>
-  <app-header-contest></app-header-contest>
-  <nz-content class="outer-content">
-    <nz-progress *ngIf="ended === false" [nzPercent]="progress" nzSize="small"
-                 nzStrokeLinecap="square" nzStatus="normal" [nzShowInfo]="false"
-    ></nz-progress>
-    <nz-layout>
-      <nz-sider class="sidebar" nzWidth="20vw" nzTheme="light">
-        <ul nz-menu nzMode="inline" class="menu">
-          <li nz-menu-item [routerLink]="['/contest', contestId]"
-              [routerLinkActive]="['ant-menu-item-selected']"
-              [routerLinkActiveOptions]="{exact: true}">
-            Description
-          </li>
-          <li nz-submenu nzTitle="Problems" *ngIf="contest" nzOpen>
-            <ul>
-              <li nz-menu-item *ngFor="let problem of contest.problems"
-                  [routerLink]="['/contest', contestId, 'problem', problem.id]"
-                  [routerLinkActive]="['ant-menu-item-selected']">
-                {{ problem.label }}: {{ problem.title }}
-              </li>
-            </ul>
-          </li>
-          <li nz-menu-item [routerLink]="['/contest', contestId, 'submissions']"
-              [routerLinkActive]="['ant-menu-item-selected']">
-            Submissions
-          </li>
-          <li nz-menu-item [routerLink]="['/contest', contestId, 'standings']"
-              [routerLinkActive]="['ant-menu-item-selected']">
-            Standings
-          </li>
-        </ul>
-      </nz-sider>
-      <nz-content class="inner-content">
-        <nz-card>
-          <router-outlet></router-outlet>
-        </nz-card>
-      </nz-content>
-    </nz-layout>
-  </nz-content>
-  <app-footer-main></app-footer-main>
-</nz-layout>
+<app-header-contest></app-header-contest>
+<nz-content class="outer-content">
+  <nz-progress *ngIf="ended === false" [nzPercent]="progress" nzSize="small"
+               nzStrokeLinecap="square" nzStatus="normal" [nzShowInfo]="false"
+  ></nz-progress>
+  <nz-layout>
+    <nz-sider class="sidebar" nzWidth="20vw" nzTheme="light">
+      <ul nz-menu nzMode="inline" class="menu">
+        <li nz-menu-item [routerLink]="['/contest', contestId]"
+            [routerLinkActive]="['ant-menu-item-selected']"
+            [routerLinkActiveOptions]="{exact: true}">
+          Description
+        </li>
+        <li nz-submenu nzTitle="Problems" *ngIf="contest" nzOpen>
+          <ul>
+            <li nz-menu-item *ngFor="let problem of contest.problems"
+                [routerLink]="['/contest', contestId, 'problem', problem.id]"
+                [routerLinkActive]="['ant-menu-item-selected']">
+              {{ problem.label }}: {{ problem.title }}
+            </li>
+          </ul>
+        </li>
+        <li nz-menu-item [routerLink]="['/contest', contestId, 'submissions']"
+            [routerLinkActive]="['ant-menu-item-selected']">
+          Submissions
+        </li>
+        <li nz-menu-item [routerLink]="['/contest', contestId, 'standings']"
+            [routerLinkActive]="['ant-menu-item-selected']">
+          Standings
+        </li>
+      </ul>
+    </nz-sider>
+    <nz-content class="inner-content">
+      <nz-card>
+        <router-outlet></router-outlet>
+      </nz-card>
+    </nz-content>
+  </nz-layout>
+</nz-content>
+<app-footer-main></app-footer-main>
