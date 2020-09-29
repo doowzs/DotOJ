@@ -6,7 +6,7 @@ import * as moment from 'moment';
 import { ContestViewDto } from '../../../../interfaces/contest.interfaces';
 import { AuthorizeService, IUser } from '../../../../api-authorization/authorize.service';
 import { ContestService } from '../../../services/contest.service';
-import { faBoxOpen, faCheck, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faBoxOpen, faCheck, faEdit, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-contest-description',
@@ -17,6 +17,7 @@ export class ContestDescriptionComponent implements OnInit {
   faBoxOpen = faBoxOpen;
   faCheck = faCheck;
   faEdit = faEdit;
+  faTimes = faTimes;
 
   public user: IUser;
   public privileged = false;

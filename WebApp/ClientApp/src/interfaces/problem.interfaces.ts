@@ -10,6 +10,7 @@ export interface ProblemInfoDto {
   contestId: number;
   label: string; // added in client service
   title: string;
+  attempted: boolean;
   solved: boolean;
   acceptedSubmissions: number;
   totalSubmissions: number;

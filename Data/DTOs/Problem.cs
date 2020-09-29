@@ -10,6 +10,7 @@ namespace Data.DTOs
         public int Id { get; }
         public int ContestId { get; }
         public string Title { get; }
+        public bool Attempted { get; }
         public bool Solved { get; }
         public int AcceptedSubmissions { get; }
         public int TotalSubmissions { get; }
@@ -19,11 +20,14 @@ namespace Data.DTOs
             Id = problem.Id;
             ContestId = problem.ContestId;
             Title = problem.Title;
+            Attempted = false;
             Solved = false;
         }
 
-        public ProblemInfoDto(Problem problem, bool solved, int acceptedSubmissions, int totalSubmissions) : this(problem)
+        public ProblemInfoDto(Problem problem, bool attempted, bool solved,
+            int acceptedSubmissions, int totalSubmissions) : this(problem)
         {
+            Attempted = attempted;
             Solved = solved;
             AcceptedSubmissions = acceptedSubmissions;
             TotalSubmissions = totalSubmissions;
@@ -47,6 +51,7 @@ namespace Data.DTOs
         public bool HasHacking { get; }
         public List<TestCase> SampleCases { get; }
 
+        public bool Attempted { get; }
         public bool Solved { get; }
         public int AcceptedSubmissions { get; }
         public int TotalSubmissions { get; }
@@ -69,9 +74,10 @@ namespace Data.DTOs
             AcceptedSubmissions = TotalSubmissions = 0;
         }
 
-        public ProblemViewDto(Problem problem, bool solved, int acceptedSubmissions, int totalSubmissions) :
-            this(problem)
+        public ProblemViewDto(Problem problem, bool attempted, bool solved, 
+            int acceptedSubmissions, int totalSubmissions) : this(problem)
         {
+            Attempted = attempted;
             Solved = solved;
             AcceptedSubmissions = acceptedSubmissions;
             TotalSubmissions = totalSubmissions;

@@ -41,6 +41,9 @@
             <span *ngIf="problem.solved" class="text-success">
               <fa-icon [icon]="faCheck"></fa-icon><span>Solved</span>
             </span>
+            <span *ngIf="problem.attempted && !problem.solved" class="text-danger">
+              <fa-icon [icon]="faTimes"></fa-icon><span>Attempted</span>
+            </span>
           </td>
           <td>{{ problem.acceptedSubmissions }} / {{ problem.totalSubmissions }}</td>
         </tr>
