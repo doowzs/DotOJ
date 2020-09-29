@@ -48,7 +48,7 @@ export class ContestHeaderComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject();
 
   constructor(
-    private route: ActivatedRoute,
+    public route: ActivatedRoute,
     private router: Router,
     private config: ApplicationConfigService,
     private auth: AuthorizeService,

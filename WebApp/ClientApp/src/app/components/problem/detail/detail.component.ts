@@ -101,6 +101,7 @@ export class ProblemDetailComponent implements OnInit, OnDestroy {
 
   public updateRoute() {
     this.router.navigate(['/contest', this.contestId, 'problem', this.problemId], {
+      replaceUrl: true,
       queryParams: {
         fullscreen: this.fullscreen
       }

@@ -126,6 +126,7 @@ export class SubmissionListComponent implements OnInit, OnDestroy {
 
   public onQueryParamsChange() {
     this.router.navigate(['/contest', this.contestId, 'submissions'], {
+      replaceUrl: true,
       queryParams: {
         contestantId: this.contestantId,
         problemId: this.problemId,
