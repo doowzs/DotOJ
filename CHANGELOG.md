@@ -1,5 +1,18 @@
 # Changelog
 
+## 1.2.0 - 2020-10-01
+
+### Added
+
+- Redesign user experience with Bootstrap.
+- Add support for Ajax.org Cloud9 Editor for coding.
+- Add support for Vditor for Markdown editing.
+- All times in client are calculated and shifted to server time.
+
+### Removed
+
+- Dropped Ant Design support.
+
 ## 1.1.15 - 2020-09-27
 
 ### Added
