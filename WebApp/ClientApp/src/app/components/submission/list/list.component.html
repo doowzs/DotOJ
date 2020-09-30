@@ -1,5 +1,6 @@
+<app-header-main *ngIf="!inline"></app-header-main>
 <div class="container my-5">
-  <div class="text-center" *ngIf="contest">
+  <div class="text-center" *ngIf="inline && contest">
     <h2>
       {{ contest.title }}
     </h2>
@@ -14,7 +15,8 @@
       <input class="form-control" placeholder="Contestant ID" [(ngModel)]="contestantId"/>
     </div>
     <div class="col col-12 col-lg-2">
-      <select class="form-control custom-select" [(ngModel)]="problemId">
+      <input *ngIf="!inline" class="form-control" placeholder="Problem ID" [(ngModel)]="problemId"/>
+      <select *ngIf="inline && contest" class="form-control custom-select" [(ngModel)]="problemId">
         <option value="undefined" label="Any Problem"></option>
         <ng-container *ngIf="!!contest">
           <option *ngFor="let problem of contest.problems" [value]="problem.id"
@@ -60,7 +62,7 @@
     <tr *ngFor="let submission of list.items">
       <th scope="row">{{ submission.id }}</th>
       <td>{{ submission.contestantId }}</td>
-      <td>{{ getProblemLabel(submission.problemId) }}</td>
+      <td>{{ inline ? getProblemLabel(submission.problemId) : submission.problemId }}</td>
       <td>
         <span [class]="'text-' + submission.verdictInfo.color">
           <app-submission-verdict [submission]="submission"></app-submission-verdict>
@@ -75,8 +77,9 @@
     </tbody>
   </table>
   <div *ngIf="!!list" class="d-flex justify-content-center">
-    <ngb-pagination [collectionSize]="list.totalItems" [page]="list.pageIndex"
+    <ngb-pagination [collectionSize]="list.totalItems" [page]="list.pageIndex" [rotate]="true" [maxSize]="5"
                     [pageSize]="list.pageSize" (pageChange)="onPageChange($event)">
     </ngb-pagination>
   </div>
 </div>
+<app-footer-main *ngIf="!inline"></app-footer-main>

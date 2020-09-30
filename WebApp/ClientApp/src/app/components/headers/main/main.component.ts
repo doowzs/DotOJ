@@ -8,7 +8,7 @@ import {
   faBars,
   faCalendar,
   faCog,
-  faHome,
+  faHome, faPaperPlane,
   faSignInAlt,
   faSignOutAlt,
   faUser,
@@ -25,6 +25,7 @@ export class MainHeaderComponent {
   faCalendar = faCalendar;
   faCog = faCog;
   faHome = faHome;
+  faPaperPlane = faPaperPlane;
   faSignInAlt = faSignInAlt;
   faSignOutAlt = faSignOutAlt;
   faUser = faUser;

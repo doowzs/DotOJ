@@ -65,6 +65,7 @@ import { ClipboardModule } from 'ngx-clipboard';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { EditorModule } from '../lib/editor/editor.module';
+import { ContestSubmissionsComponent } from './components/contest/submissions/submissions.component';
 
 const loadApplicationConfig = (service: ApplicationConfigService) => {
   return () => service.loadApplicationConfig();
@@ -84,6 +85,7 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     ContestViewComponent,
     ContestRuleComponent,
     ContestDescriptionComponent,
+    ContestSubmissionsComponent,
     ContestStandingsComponent,
     ProblemDetailComponent,
     SubmissionListComponent,
@@ -109,9 +111,12 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
         children: [
           { path: '', pathMatch: 'full', component: ContestDescriptionComponent },
           { path: 'problem/:problemId', component: ProblemDetailComponent },
-          { path: 'submissions', component: SubmissionListComponent },
+          { path: 'submissions', component: ContestSubmissionsComponent },
           { path: 'standings', component: ContestStandingsComponent }
         ]
+      },
+      {
+        path: 'submissions', component: SubmissionListComponent, canActivate: [AuthorizeGuard]
       }
     ]),
     AdminModule,
