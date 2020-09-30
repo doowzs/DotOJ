@@ -25,9 +25,10 @@ export class MainFooterComponent implements OnDestroy {
 
     interval(1000)
       .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.now.add(1, 's');
-      });
+      .subscribe(() => this.now.add(1, 's'));
+    interval(60000)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.now = moment().add(config.diff, 'ms'));
   }
 
   ngOnDestroy() {

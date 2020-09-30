@@ -60,9 +60,13 @@ export class ContestHeaderComponent implements OnInit, OnDestroy {
     this.canViewAdminPages = this.auth.getUser().pipe(map(u => u && u.roles.length > 0));
     this.contestId = this.route.snapshot.params.contestId;
     this.now = moment().add(config.diff, 'ms');
-    interval(1000).subscribe(() => {
-      this.now.add(1, 's');
-    });
+
+    interval(1000)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.now.add(1, 's'));
+    interval(60000)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.now = moment().add(config.diff, 'ms'));
   }
 
   ngOnInit() {
