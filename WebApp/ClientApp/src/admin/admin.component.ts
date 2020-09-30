@@ -2,6 +2,16 @@
 import { Title } from '@angular/platform-browser';
 
 import { AuthorizeService, IUser } from '../api-authorization/authorize.service';
+import {
+  faBars,
+  faCalendar,
+  faCog,
+  faHome, faPaperPlane,
+  faSignInAlt,
+  faSignOutAlt,
+  faUser,
+  faUserPlus
+} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-admin-root',
@@ -9,10 +19,21 @@ import { AuthorizeService, IUser } from '../api-authorization/authorize.service'
   styleUrls: ['./admin.component.css']
 })
 export class AdminComponent implements OnInit {
+  faBars = faBars;
+  faCalendar = faCalendar;
+  faCog = faCog;
+  faHome = faHome;
+  faPaperPlane = faPaperPlane;
+  faSignInAlt = faSignInAlt;
+  faSignOutAlt = faSignOutAlt;
+  faUser = faUser;
+  faUserPlus = faUserPlus;
+
   public user: IUser;
+  public collapse = true;
 
   constructor(
-    private title: Title,
+    public title: Title,
     private auth: AuthorizeService
   ) {
     this.title.setTitle('Administration');

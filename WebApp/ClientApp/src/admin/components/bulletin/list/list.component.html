@@ -1,27 +1,34 @@
-﻿<h2>List Bulletins</h2>
-<nz-table #bulletinTable *ngIf="list" [nzData]="list.items" [nzFrontPagination]="false"
-          [nzPageIndex]="list.pageIndex" [nzPageSize]="list.pageSize" [nzTotal]="list.totalItems"
-          (nzPageIndexChange)="onPageIndexChange($event)">
+﻿<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a routerLink="/admin">Dashboard</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Bulletins</li>
+  </ol>
+</nav>
+<h2>List Bulletins</h2>
+<table *ngIf="!!list" class="table table-hover">
   <thead>
   <tr>
-    <th>ID</th>
-    <th>Weight</th>
-    <th>Content</th>
-    <th>Publish At</th>
-    <th>Expire At</th>
-    <th>Action</th>
+    <th scope="col">#</th>
+    <th scope="col">Weight</th>
+    <th scope="col">Content</th>
+    <th scope="col">Publish At</th>
+    <th scope="col">Expire At</th>
+    <th scope="col">Action</th>
   </tr>
   </thead>
   <tbody>
-  <tr *ngFor="let bulletin of bulletinTable.data">
+  <tr *ngFor="let bulletin of list.items">
     <td>{{ bulletin.id }}</td>
     <td>{{ bulletin.weight }}</td>
     <td>{{ bulletin.content.substr(0, 20) }}...</td>
     <td>{{ bulletin.publishAt?.format('YYYY-MM-DD HH:mm') }}</td>
     <td>{{ bulletin.expireAt?.format('YYYY-MM-DD HH:mm') }}</td>
-    <td>
-      <button nz-button nzType="default" [routerLink]="['/admin/bulletin', bulletin.id]">View</button>
-    </td>
+    <td><a [routerLink]="['/admin/bulletin', bulletin.id]">View</a></td>
   </tr>
   </tbody>
-</nz-table>
+</table>
+<div *ngIf="!!list" class="d-flex justify-content-end">
+  <ngb-pagination [collectionSize]="list.totalItems" [page]="list.pageIndex" [rotate]="true" [maxSize]="5"
+                  [pageSize]="list.pageSize" (pageChange)="onPageIndexChange($event)">
+  </ngb-pagination>
+</div>

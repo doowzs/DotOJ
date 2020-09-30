@@ -53,6 +53,10 @@ import { NzTagModule } from 'ng-zorro-antd/tag';
 import { NzRadioModule } from 'ng-zorro-antd/radio';
 import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { VditorModule } from '../lib/vditor/vditor.module';
+import { DatetimeModule } from '../lib/datetime/datetime.module';
 
 @NgModule({
   imports: [
@@ -158,7 +162,9 @@ import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
       }
     ]),
     ApiAuthorizationModule,
+    VditorModule.forRoot(),
     MarkdownModule.forRoot(),
+    DatetimeModule.forRoot(),
     NzLayoutModule,
     NzMenuModule,
     NzCardModule,
@@ -177,7 +183,9 @@ import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
     NzRadioModule,
     NzBreadCrumbModule,
     NzDropDownModule,
-    FormsModule
+    FormsModule,
+    NgbModule,
+    FontAwesomeModule
   ],
   declarations: [
     AdminComponent,

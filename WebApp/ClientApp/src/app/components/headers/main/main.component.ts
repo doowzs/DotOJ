@@ -10,7 +10,7 @@ import {
   faCog,
   faHome, faPaperPlane,
   faSignInAlt,
-  faSignOutAlt,
+  faSignOutAlt, faTools,
   faUser,
   faUserPlus
 } from '@fortawesome/free-solid-svg-icons';
@@ -28,6 +28,7 @@ export class MainHeaderComponent {
   faPaperPlane = faPaperPlane;
   faSignInAlt = faSignInAlt;
   faSignOutAlt = faSignOutAlt;
+  faTools = faTools;
   faUser = faUser;
   faUserPlus = faUserPlus;
 

@@ -1,117 +1,74 @@
-﻿<nz-layout *ngIf="user">
-  <nz-header>
-    <span class="header-title">Administration</span>
-    <div class="header-extra">
-      <button nz-button nzType="text" nzDanger routerLink="/">
-        <i nz-icon nzType="logout"></i><span>Exit</span>
+﻿<ng-container *ngIf="user">
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" routerLink="/admin">Administration</a>
+      <button class="navbar-toggler" type="button" (click)="collapse = !collapse">
+        <fa-icon [icon]="faBars" class="mr-0"></fa-icon>
       </button>
-      <button nz-button nzType="text" class="header-content" nz-dropdown [nzDropdownMenu]="userMenu">
-        <i nz-icon nzType="user"></i><span>{{ user.name }}</span>
-      </button>
-      <nz-dropdown-menu #userMenu>
-        <ul nz-menu>
-          <li nz-menu-item routerLink="/authentication/profile">
-            <i nz-icon nzType="user"></i><span>Account</span>
+      <div class="navbar-collapse" [class.collapse]="collapse">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item mr-2" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <a class="nav-link" routerLink="/">
+              <fa-icon [icon]="faHome"></fa-icon>
+              <span>Home</span>
+            </a>
           </li>
-          <li nz-menu-item routerLink="/authentication/logout" [state]="{ local: true }">
-            <i nz-icon nzType="logout"></i><span>Logout</span>
+          <li class="nav-item" ngbDropdown>
+            <a class="nav-link" ngbDropdownToggle>
+              <fa-icon [icon]="faUser"></fa-icon>
+              <span>{{ user.name }}</span>
+            </a>
+            <div ngbDropdownMenu class="dropdown-menu-right">
+              <a ngbDropdownItem routerLink="/authentication/profile">
+                <fa-icon [icon]="faCog"></fa-icon>
+                <span>Account</span>
+              </a>
+              <a ngbDropdownItem class="text-danger"
+                 routerLink="/authentication/logout" [state]="{'local': true}">
+                <fa-icon [icon]="faSignOutAlt"></fa-icon>
+                <span>Logout</span>
+              </a>
+            </div>
           </li>
         </ul>
-      </nz-dropdown-menu>
-    </div>
-  </nz-header>
-  <nz-content class="outer-content">
-    <nz-layout>
-      <nz-sider nzWidth="20vw">
-        <ul nz-menu nzMode="inline" nzTheme="dark">
-          <li nz-menu-item routerLink="/admin"
-              [routerLinkActive]="['ant-menu-item-selected']"
-              [routerLinkActiveOptions]="{exact: true}">
+      </div>
+    </nav>
+  </header>
+  <div class="container-fluid" style="height: calc(100vh - 56px);">
+    <div class="row">
+      <div class="col col-12 col-lg-2 border-right py-3"
+           style="height: calc(100vh - 56px); overflow-y: auto;">
+        <h4>Navigation</h4>
+        <div class="nav flex-column nav-pills">
+          <a class="nav-link" routerLink="/admin" routerLinkActive="active"
+             [routerLinkActiveOptions]="{exact: true}">
             Dashboard
-          </li>
-          <li *ngIf="hasAnyRole(['Administrator'])"
-              nz-submenu nzTitle="Bulletins" nzOpen>
-            <ul>
-              <li nz-menu-item routerLink="/admin/bulletin"
-                  [routerLinkActive]="['ant-menu-item-selected']"
-                  [routerLinkActiveOptions]="{exact: true}">
-                List
-              </li>
-              <li nz-menu-item routerLink="/admin/bulletin/new"
-                  [routerLinkActive]="['ant-menu-item-selected']"
-                  [routerLinkActiveOptions]="{exact: true}">
-                Create
-              </li>
-            </ul>
-          </li>
-          <li *ngIf="hasAnyRole(['Administrator', 'UserManager'])"
-              nz-submenu nzTitle="Users" nzOpen>
-            <ul>
-              <li nz-menu-item routerLink="/admin/user"
-                  [routerLinkActive]="['ant-menu-item-selected']"
-                  [routerLinkActiveOptions]="{exact: true}">
-                List
-              </li>
-            </ul>
-          </li>
-          <li *ngIf="hasAnyRole(['Administrator', 'ContestManager'])"
-              nz-submenu nzTitle="Contests" nzOpen>
-            <ul>
-              <li nz-menu-item routerLink="/admin/contest"
-                  [routerLinkActive]="['ant-menu-item-selected']"
-                  [routerLinkActiveOptions]="{exact: true}">
-                List
-              </li>
-              <li nz-menu-item routerLink="/admin/contest/new"
-                  [routerLinkActive]="['ant-menu-item-selected']">
-                Create
-              </li>
-            </ul>
-          </li>
-          <li *ngIf="hasAnyRole(['Administrator', 'ContestManager'])"
-              nz-submenu nzTitle="Problems" nzOpen>
-            <ul>
-              <li nz-menu-item routerLink="/admin/problem"
-                  [routerLinkActive]="['ant-menu-item-selected']"
-                  [routerLinkActiveOptions]="{exact: true}">
-                List
-              </li>
-              <li nz-menu-item routerLink="/admin/problem/new"
-                  [routerLinkActive]="['ant-menu-item-selected']">
-                Create
-              </li>
-              <li nz-menu-item routerLink="/admin/problem/archive"
-                  [routerLinkActive]="['ant-menu-item-selected']">
-                Archive
-              </li>
-            </ul>
-          </li>
-          <li *ngIf="hasAnyRole(['Administrator', 'SubmissionManager'])"
-              nz-submenu nzTitle="Submissions" nzOpen>
-            <ul>
-              <li nz-menu-item routerLink="/admin/submission"
-                  [routerLinkActive]="['ant-menu-item-selected']"
-                  [routerLinkActiveOptions]="{exact: true}">
-                List
-              </li>
-              <li nz-menu-item routerLink="/admin/submission/rejudge"
-                  [routerLinkActive]="['ant-menu-item-selected']">
-                Rejudge
-              </li>
-            </ul>
-          </li>
-        </ul>
-      </nz-sider>
-      <nz-content class="inner-content">
-        <div nz-row>
-          <div nz-col nzSpan="24" style="padding: 1rem 1rem;">
-            <nz-breadcrumb [nzAutoGenerate]="true"></nz-breadcrumb>
-          </div>
+          </a>
+          <a *ngIf="hasAnyRole(['Administrator'])" class="nav-link"
+             routerLink="/admin/bulletin" routerLinkActive="active">
+            Bulletins
+          </a>
+          <a *ngIf="hasAnyRole(['Administrator', 'UserManager'])" class="nav-link"
+             routerLink="/admin/user" routerLinkActive="active">
+            Users
+          </a>
+          <a *ngIf="hasAnyRole(['Administrator', 'ContestManager'])" class="nav-link"
+             routerLink="/admin/contest" routerLinkActive="active">
+            Contests
+          </a>
+          <a *ngIf="hasAnyRole(['Administrator', 'ContestManager'])" class="nav-link"
+             routerLink="/admin/problem" routerLinkActive="active">
+            Problems
+          </a>
+          <a *ngIf="hasAnyRole(['Administrator', 'SubmissionManager'])" class="nav-link"
+             routerLink="/admin/submission" routerLinkActive="active">
+            Submissions
+          </a>
         </div>
-        <nz-card>
-          <router-outlet></router-outlet>
-        </nz-card>
-      </nz-content>
-    </nz-layout>
-  </nz-content>
-</nz-layout>
+      </div>
+      <div class="col col-12 col-lg-10 py-3" style="height: calc(100vh - 56px); overflow-y: auto;">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
+</ng-container>

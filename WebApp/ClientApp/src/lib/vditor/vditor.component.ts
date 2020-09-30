@@ -10,16 +10,16 @@ import Vditor from 'vditor';
 })
 export class VditorComponent implements OnInit, ControlValueAccessor {
   private vditor: Vditor;
+  private disabled: boolean;
+  private value: string;
+  private input: any;
+  private blur: any;
 
   constructor(@Self() @Optional() private control: NgControl) {
     if (this.control) {
       this.control.valueAccessor = this;
     }
   }
-
-  private value: any;
-  private input: any;
-  private blur: any;
 
   ngOnInit() {
     this.vditor = new Vditor('vditor', {
@@ -33,13 +33,17 @@ export class VditorComponent implements OnInit, ControlValueAccessor {
         // https://github.com/Vanessa219/vditor/issues/273
         if (this.value) {
           this.vditor.setValue(this.value);
-          this.value = undefined;
         }
+        if (this.disabled) {
+          this.vditor.disabled();
+        }
+        this.value = undefined;
+        this.disabled = undefined;
       }
     });
   }
 
-  writeValue(value: any) {
+  writeValue(value: string) {
     // If vditor is not initialized, save the value first.
     if (this.vditor) {
       this.vditor.setValue(value);
@@ -57,10 +61,14 @@ export class VditorComponent implements OnInit, ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean) {
-    if (isDisabled) {
-      this.vditor.disabled();
+    if (this.vditor) {
+      if (isDisabled) {
+        this.vditor.disabled();
+      } else {
+        this.vditor.enable();
+      }
     } else {
-      this.vditor.enable();
+      this.disabled = isDisabled;
     }
   }
 }
