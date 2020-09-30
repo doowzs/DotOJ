@@ -60,6 +60,7 @@ import { DatetimeModule } from '../lib/datetime/datetime.module';
 import { AdminContestViewComponent } from './components/contest/view/view.component';
 import { AdminProblemViewComponent } from './components/problem/view/view.component';
 import { EditorModule } from '../lib/editor/editor.module';
+import { AdminProblemExportComponent } from './components/problem/export/export.component';
 
 @NgModule({
   imports: [
@@ -136,11 +137,8 @@ import { EditorModule } from '../lib/editor/editor.module';
                 component: AdminProblemViewComponent,
                 children: [
                   { path: '', pathMatch: 'full', component: AdminProblemEditorComponent },
-                  {
-                    path: 'tests',
-                    component: AdminProblemTestsComponent,
-                    data: { breadcrumb: 'Test Cases' }
-                  }
+                  { path: 'tests', component: AdminProblemTestsComponent },
+                  { path: 'export', component: AdminProblemExportComponent }
                 ]
               }
             ]
@@ -216,6 +214,7 @@ import { EditorModule } from '../lib/editor/editor.module';
     AdminProblemArchiveComponent,
     AdminProblemEditorComponent,
     AdminProblemTestsComponent,
+    AdminProblemExportComponent,
     AdminSubmissionListComponent,
     AdminSubmissionFormComponent,
     AdminSubmissionEditorComponent,
