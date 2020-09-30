@@ -36,12 +36,12 @@
     "katex": "^0.12.0",
     "marked": "^1.1.1",
     "moment": "^2.27.0",
-    "ng-zorro-antd": "10.0.0-beta.4",
     "ngx-clipboard": "14.0.0-beta01",
     "oidc-client": "^1.9.1",
     "rxjs": "^6.6.2",
     "tslib": "^2.0.1",
     "typeface-ubuntu-mono": "0.0.72",
+    "vditor": "^3.5.4",
     "zone.js": "~0.10.2"
   },
   "devDependencies": {

@@ -24,6 +24,7 @@ import { ContestListComponent } from './components/contest/list/list.component';
 import { ContestViewComponent } from './components/contest/view/view.component';
 import { ContestRuleComponent } from './components/contest/rule/rule.component';
 import { ContestDescriptionComponent } from './components/contest/description/description.component';
+import { ContestSubmissionsComponent } from './components/contest/submissions/submissions.component';
 import { ContestStandingsComponent } from './components/contest/standings/standings.component';
 import { ProblemDetailComponent } from './components/problem/detail/detail.component';
 import { SubmissionListComponent } from './components/submission/list/list.component';
@@ -34,38 +35,11 @@ import { SubmissionDetailComponent } from './components/submission/detail/detail
 import { HelpComponent } from './components/miscellaneous/help/help.component';
 import { ChangelogComponent } from './components/miscellaneous/changelog/changelog.component';
 
-import { MarkdownModule } from '../lib/markdown/markdown.module';
-import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
-import { NzLayoutModule } from 'ng-zorro-antd/layout';
-import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
-import { NzGridModule } from 'ng-zorro-antd/grid';
-import { NzCardModule } from 'ng-zorro-antd/card';
-import { NzTagModule } from 'ng-zorro-antd/tag';
-import { NzStatisticModule } from 'ng-zorro-antd/statistic';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
-import { NzListModule } from 'ng-zorro-antd/list';
-import { NzPaginationModule } from 'ng-zorro-antd/pagination';
-import { NzDividerModule } from 'ng-zorro-antd/divider';
-import { NzDescriptionsModule } from 'ng-zorro-antd/descriptions';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzSelectModule } from 'ng-zorro-antd/select';
-import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
-import { NzNotificationModule } from 'ng-zorro-antd/notification';
-import { NzTimelineModule } from 'ng-zorro-antd/timeline';
-import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzEmptyModule } from 'ng-zorro-antd/empty';
-import { NzDrawerModule } from 'ng-zorro-antd/drawer';
-import { NzSkeletonModule } from 'ng-zorro-antd/skeleton';
-import { NzBadgeModule } from 'ng-zorro-antd/badge';
-import { NzModalModule } from 'ng-zorro-antd/modal';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzProgressModule } from 'ng-zorro-antd/progress';
 import { ClipboardModule } from 'ngx-clipboard';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { MarkdownModule } from '../lib/markdown/markdown.module';
 import { EditorModule } from '../lib/editor/editor.module';
-import { ContestSubmissionsComponent } from './components/contest/submissions/submissions.component';
 
 const loadApplicationConfig = (service: ApplicationConfigService) => {
   return () => service.loadApplicationConfig();
@@ -120,43 +94,17 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     ]),
     AdminModule,
     ApiAuthorizationModule,
-    EditorModule.forRoot(),
-    MarkdownModule.forRoot(),
-    NzLayoutModule,
-    NzPageHeaderModule,
-    NzGridModule,
-    NzCardModule,
-    NzTagModule,
-    NzStatisticModule,
-    NzButtonModule,
-    NzDropDownModule,
-    NzListModule,
-    NzPaginationModule,
-    NzDividerModule,
-    NzDescriptionsModule,
-    NzIconModule,
-    NzSelectModule,
-    NzToolTipModule,
-    NzNotificationModule,
-    NzTimelineModule,
-    NzTableModule,
-    NzEmptyModule,
-    NzDrawerModule,
-    NzSkeletonModule,
-    NzBadgeModule,
-    NzModalModule,
-    NzInputModule,
-    NzProgressModule,
     ClipboardModule,
     NgbModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    EditorModule.forRoot(),
+    MarkdownModule.forRoot()
   ],
   providers: [
     ApplicationConfigService,
     { provide: APP_INITIALIZER, useFactory: loadApplicationConfig, multi: true, deps: [ApplicationConfigService] },
     { provide: HTTP_INTERCEPTORS, useClass: ApplicationApiInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true },
-    { provide: NZ_I18N, useValue: en_US }
   ],
   bootstrap: [AppComponent]
 })

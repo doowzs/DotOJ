@@ -5,10 +5,6 @@ import { LogoutComponent } from './logout/logout.component';
 import { RouterModule } from '@angular/router';
 import { ApplicationPaths } from './api-authorization.constants';
 import { HttpClientModule } from '@angular/common/http';
-import { NzSpinModule } from 'ng-zorro-antd/spin';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzResultModule } from 'ng-zorro-antd/result';
-import { NzButtonModule } from 'ng-zorro-antd/button';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
@@ -27,10 +23,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
         { path: ApplicationPaths.LogOutCallback, component: LogoutComponent }
       ]
     ),
-    NzSpinModule,
-    NzIconModule,
-    NzResultModule,
-    NzButtonModule,
     FontAwesomeModule
   ],
   declarations: [LoginComponent, LogoutComponent],

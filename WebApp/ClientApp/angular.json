@@ -27,7 +27,9 @@
             "styles": [
               "src/style.less",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/katex/dist/katex.min.css"
+              "node_modules/typeface-ubuntu-mono/index.css",
+              "node_modules/katex/dist/katex.min.css",
+              "node_modules/vditor/dist/index.css"
             ],
             "scripts": [
               "node_modules/marked/lib/marked.js",
@@ -90,7 +92,10 @@
             ],
             "styles": [
               "src/style.less",
-              "node_modules/katex/dist/katex.min.css"
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/typeface-ubuntu-mono/index.css",
+              "node_modules/katex/dist/katex.min.css",
+              "node_modules/vditor/dist/index.css"
             ],
             "scripts": [
               "node_modules/marked/lib/marked.js",
