@@ -2,6 +2,7 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { UserEditDto } from '../../../../interfaces/user.interfaces';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-admin-user-form',
@@ -9,6 +10,8 @@ import { UserEditDto } from '../../../../interfaces/user.interfaces';
   styleUrls: ['./form.component.css']
 })
 export class AdminUserFormComponent implements OnInit, OnChanges {
+  faCheck = faCheck;
+
   @Input() public user: UserEditDto;
   @Input() public disabled = false;
   @Output() public formSubmit: EventEmitter<UserEditDto> = new EventEmitter();

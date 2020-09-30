@@ -12,7 +12,7 @@
     </a>
   </span>
 </h2>
-<table *ngIf="!!list" class="table table-hover">
+<table class="table table-hover">
   <thead>
   <tr>
     <th scope="col">#</th>
@@ -23,7 +23,7 @@
     <th scope="col">Action</th>
   </tr>
   </thead>
-  <tbody>
+  <tbody *ngIf="!!list">
   <tr *ngFor="let bulletin of list.items">
     <td>{{ bulletin.id }}</td>
     <td>{{ bulletin.weight }}</td>

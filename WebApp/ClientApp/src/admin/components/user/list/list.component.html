@@ -1,23 +1,32 @@
-﻿<h2>List Users</h2>
-<nz-table #userTable *ngIf="list" [nzData]="list.items" [nzFrontPagination]="false"
-          [nzPageIndex]="list.pageIndex" [nzPageSize]="list.pageSize" [nzTotal]="list.totalItems"
-          (nzPageIndexChange)="onPageIndexChange($event)">
+﻿<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a routerLink="/admin">Dashboard</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Users</li>
+  </ol>
+</nav>
+<h2>List Users</h2>
+<table class="table table-hover">
   <thead>
   <tr>
-    <th>Email</th>
     <th>Contestant ID</th>
     <th>Contestant Name</th>
+    <th>Email</th>
     <th>Actions</th>
   </tr>
   </thead>
-  <tbody>
-  <tr *ngFor="let user of userTable.data">
-    <td>{{ user.email }}</td>
+  <tbody *ngIf="!!list">
+  <tr *ngFor="let user of list.items">
     <td>{{ user.contestantId }}</td>
     <td>{{ user.contestantName }}</td>
+    <td>{{ user.email }}</td>
     <td>
-      <button nz-button nzType="default" [routerLink]="['/admin/user', user.id]">View</button>
+      <a [routerLink]="['/admin/user', user.id]">View</a>
     </td>
   </tr>
   </tbody>
-</nz-table>
+</table>
+<div *ngIf="!!list" class="d-flex justify-content-end">
+  <ngb-pagination [collectionSize]="list.totalItems" [page]="list.pageIndex" [rotate]="true" [maxSize]="5"
+                  [pageSize]="list.pageSize" (pageChange)="onPageIndexChange($event)">
+  </ngb-pagination>
+</div>
