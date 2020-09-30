@@ -3,10 +3,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { interval, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
-import { VerdictInfo, VerdictStage } from '../../../../consts/verdicts.consts';
+import { VerdictStage } from '../../../../consts/verdicts.consts';
 import { PaginatedList } from '../../../../interfaces/pagination.interfaces';
 import { SubmissionInfoDto } from '../../../../interfaces/submission.interfaces';
 import { AdminSubmissionService } from '../../../services/submission.service';
+import { faRedo } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-admin-submission-list',
@@ -14,6 +15,8 @@ import { AdminSubmissionService } from '../../../services/submission.service';
   styleUrls: ['./list.component.css']
 })
 export class AdminSubmissionListComponent implements OnInit, OnDestroy {
+  faRedo = faRedo;
+
   public pageIndex: number;
   public list: PaginatedList<SubmissionInfoDto>;
   private destroy$ = new Subject();

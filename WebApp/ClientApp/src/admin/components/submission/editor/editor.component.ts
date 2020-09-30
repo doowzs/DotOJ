@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { SubmissionEditDto } from '../../../../interfaces/submission.interfaces';
 import { AdminSubmissionService } from '../../../services/submission.service';
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-admin-submission-editor',
@@ -10,6 +11,9 @@ import { AdminSubmissionService } from '../../../services/submission.service';
   styleUrls: ['./editor.component.css']
 })
 export class AdminSubmissionEditorComponent implements OnInit {
+  faEdit = faEdit;
+  faTrash = faTrash;
+
   public edit: boolean;
   public submissionId: number;
   public submission: SubmissionEditDto;
@@ -44,8 +48,10 @@ export class AdminSubmissionEditorComponent implements OnInit {
   }
 
   public deleteSubmission() {
-    this.service.deleteSingle(this.submissionId).subscribe(() => {
-      this.router.navigate(['/admin/submission']);
-    }, error => console.error(error));
+    if (confirm(`Are you sure to delete submission #${this.submission}?`)) {
+      this.service.deleteSingle(this.submissionId).subscribe(() => {
+        this.router.navigate(['/admin/submission']);
+      }, error => console.error(error));
+    }
   }
 }

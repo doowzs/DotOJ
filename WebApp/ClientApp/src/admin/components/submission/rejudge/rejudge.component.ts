@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { AdminSubmissionService } from '../../../services/submission.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { faRedo } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-admin-submission-rejudge',
@@ -9,6 +10,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./rejudge.component.css']
 })
 export class AdminSubmissionRejudgeComponent {
+  faRedo = faRedo;
+
   public form: FormGroup;
 
   constructor(
@@ -33,9 +36,12 @@ export class AdminSubmissionRejudgeComponent {
   }
 
   public submitForm(data: any) {
-    this.service.rejudge(data.contestId, data.problemId, data.submissionId)
-      .subscribe(() => {
-        this.router.navigate(['/admin/submission']);
-      });
+    if (confirm(`Are you sure to rejudge all specified submissions where contest=${data.contestId}`
+      + ` problem=${data.problemId} submission=${data.submissionId}?`)) {
+      this.service.rejudge(data.contestId, data.problemId, data.submissionId)
+        .subscribe(() => {
+          this.router.navigate(['/admin/submission']);
+        });
+    }
   }
 }

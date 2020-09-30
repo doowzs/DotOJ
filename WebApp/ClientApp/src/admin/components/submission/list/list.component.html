@@ -1,37 +1,53 @@
-﻿<h2>List Submissions</h2>
-<nz-table #submissionTable *ngIf="list" [nzData]="list.items" [nzFrontPagination]="false"
-          [nzPageIndex]="list.pageIndex" [nzPageSize]="list.pageSize" [nzTotal]="list.totalItems"
-          (nzPageIndexChange)="onPageIndexChange($event)">
+﻿<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a routerLink="/admin">Dashboard</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Submissions</li>
+  </ol>
+</nav>
+<h2>
+  List Submissions
+  <span class="float-right">
+    <a class="btn btn-warning" routerLink="/admin/submission/rejudge">
+      <fa-icon [icon]="faRedo"></fa-icon><span>Rejudge</span>
+    </a>
+  </span>
+</h2>
+<table class="table table-hover">
   <thead>
   <tr>
-    <th>ID</th>
-    <th>Contestant</th>
-    <th>Problem</th>
-    <th>Verdict</th>
-    <th>Time</th>
-    <th>Memory</th>
-    <th>Language</th>
-    <th>Length</th>
-    <th>Created At</th>
-    <th>Actions</th>
+    <th scope="col">ID</th>
+    <th scope="col">Contestant</th>
+    <th scope="col">Problem</th>
+    <th scope="col">Verdict</th>
+    <th scope="col">Time</th>
+    <th scope="col">Memory</th>
+    <th scope="col">Language</th>
+    <th scope="col">Length</th>
+    <th scope="col">Submitted</th>
+    <th scope="col">Actions</th>
   </tr>
   </thead>
-  <tbody>
-  <tr *ngFor="let submission of submissionTable.data">
-    <td>{{ submission.id }}</td>
+  <tbody *ngIf="list">
+  <tr *ngFor="let submission of list.items">
+    <th scope="row">{{ submission.id }}</th>
     <td>
-      <button nz-button nzType="link" [routerLink]="['/admin/user', submission.userId]">
+      <a [routerLink]="['/admin/user', submission.userId]">
         {{ submission.contestantId }}
-      </button>
+      </a>
     </td>
     <td>{{ submission.problemId }}</td>
-    <td><nz-tag [nzColor]="submission.verdictInfo.color">{{ submission.verdictInfo.name }}</nz-tag></td>
+    <td><span [class]="'text-' + submission.verdictInfo.color">{{ submission.verdictInfo.name }}</span></td>
     <td>{{ submission.time }}</td>
     <td>{{ submission.memory }}</td>
     <td>{{ submission.languageInfo.name }}</td>
-    <td>{{ submission.codeBytes }} bytes</td>
+    <td>{{ submission.codeBytes }}</td>
     <td>{{ submission.createdAt.format('YYYY-MM-DD HH:mm') }}</td>
-    <td><button nz-button nzType="default" [routerLink]="['/admin/submission', submission.id]">View</button></td>
+    <td><a [routerLink]="['/admin/submission', submission.id]">View</a></td>
   </tr>
   </tbody>
-</nz-table>
+</table>
+<div *ngIf="!!list" class="d-flex justify-content-end">
+  <ngb-pagination [collectionSize]="list.totalItems" [page]="list.pageIndex" [rotate]="true" [maxSize]="5"
+                  [pageSize]="list.pageSize" (pageChange)="onPageIndexChange($event)">
+  </ngb-pagination>
+</div>

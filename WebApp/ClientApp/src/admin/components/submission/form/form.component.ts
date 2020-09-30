@@ -4,6 +4,7 @@ import * as moment from 'moment';
 
 import { Verdicts } from '../../../../consts/verdicts.consts';
 import { SubmissionEditDto } from '../../../../interfaces/submission.interfaces';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-admin-submission-form',
@@ -11,6 +12,7 @@ import { SubmissionEditDto } from '../../../../interfaces/submission.interfaces'
   styleUrls: ['./form.component.css']
 })
 export class AdminSubmissionFormComponent implements OnInit, OnChanges {
+  faCheck = faCheck;
   Verdicts = Verdicts;
 
   @Input() public submission: SubmissionEditDto;
@@ -99,5 +101,6 @@ export class AdminSubmissionFormComponent implements OnInit, OnChanges {
       createdAt: null
     });
     this.form.get('judgedAt').setValue(moment().format('YYYY-MM-DD HH:mm'));
+    this.form.get('judgedBy').setValue('manual');
   }
 }
