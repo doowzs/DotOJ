@@ -6,8 +6,8 @@
   </ol>
 </nav>
 <h2>
-  {{ edit ? 'Edit' : 'View' }} Bulletin <span *ngIf="bulletin">#{{ bulletin.id }}</span>
-  <span style="float: right;">
+  {{ edit ? 'Edit' : 'View' }} Bulletin #{{ bulletinId }}
+  <span class="float-right">
     <button *ngIf="!edit" class="btn btn-primary mr-2" (click)="editBulletin()">
       <fa-icon [icon]="faEdit"></fa-icon><span>Edit</span>
     </button>

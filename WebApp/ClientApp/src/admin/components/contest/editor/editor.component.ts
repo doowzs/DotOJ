@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { ContestEditDto } from '../../../../interfaces/contest.interfaces';
 import { AdminContestService } from '../../../services/contest.service';
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-admin-contest-editor',
@@ -10,6 +11,9 @@ import { AdminContestService } from '../../../services/contest.service';
   styleUrls: ['./editor.component.css']
 })
 export class AdminContestEditorComponent implements OnInit {
+  faEdit = faEdit;
+  faTrash = faTrash;
+
   public edit: boolean;
   public contestId: number;
   public contest: ContestEditDto;

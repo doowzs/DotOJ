@@ -1,2 +1,9 @@
-﻿<h2>Create Contest</h2>
+﻿<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a routerLink="/admin">Dashboard</a></li>
+    <li class="breadcrumb-item"><a routerLink="/admin/contest">Contests</a></li>
+    <li class="breadcrumb-item active" aria-current="page">New</li>
+  </ol>
+</nav>
+<h2>Create Contest</h2>
 <app-admin-contest-form (formSubmit)="createContest($event)"></app-admin-contest-form>

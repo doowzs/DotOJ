@@ -1,45 +1,53 @@
-﻿<form nz-form [formGroup]="form" (ngSubmit)="submitForm(form.value)">
-  <nz-form-item>
-    <nz-form-label nzRequired nzFor="title">Title</nz-form-label>
-    <nz-form-control>
-      <input nz-input formControlName="title" id="title"/>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-label nzRequired nzFor="description">Description</nz-form-label>
-    <nz-form-control>
-      <textarea nz-input formControlName="description" id="description" rows="5"></textarea>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-label nzRequired nzFor="accessibility">Accessibility</nz-form-label>
-    <nz-form-control>
-      <nz-select formControlName="isPublic" id="accessibility" nzPlaceHolder="Accessibility">
-        <nz-option nzValue="true" nzLabel="Public Access"></nz-option>
-        <nz-option nzValue="false" nzLabel="Private Access - Requires registration"></nz-option>
-      </nz-select>
-    </nz-form-control>
-    <span style="width: 1rem;"></span>
-    <nz-form-label nzRequired nzFor="mode">Mode</nz-form-label>
-    <nz-form-control>
-      <nz-select formControlName="mode" id="mode" nzPlaceHolder="Mode">
-        <nz-option nzValue="0" nzLabel="Practice/Exam"></nz-option>
-        <nz-option nzValue="1" nzLabel="One Shot (ICPC Mode)"></nz-option>
-        <nz-option nzValue="2" nzLabel="Until Fail (OI Mode)"></nz-option>
-        <nz-option nzValue="3" nzLabel="Samples Only (CF Mode)"></nz-option>
-      </nz-select>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-label nzRequired nzFor="period">Period</nz-form-label>
-    <nz-range-picker [nzShowTime]="{ nzFormat: 'HH:mm' }" nzFormat="yyyy-MM-dd HH:mm"
-                     [nzPlaceHolder]="['Begin Time', 'End Time']" formControlName="period"
-    ></nz-range-picker>
-  </nz-form-item>
-  <div nz-row>
-    <div nz-col nzSpan="24">
-      <button nz-button nzType="primary" nzBlock [disabled]="!form.valid" type="submit">
-        <i nz-icon nzType="check"></i><span>Submit</span>
+﻿<form class="my-3" [formGroup]="form" (ngSubmit)="submitForm(form.value)">
+  <div class="form-group row">
+    <label for="title" class="col col-md-1 col-form-label">Title *</label>
+    <div class="col col-md-11">
+      <input class="form-control" id="title" formControlName="title"/>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="description" class="col col-md-1 col-form-label">Descriotion *</label>
+    <div class="col col-md-11">
+      <vditor id="description" formControlName="description"></vditor>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="type" class="col col-md-1 col-form-label">Type *</label>
+    <div class="col col-md-11">
+      <select class="form-control custom-select" id="type" formControlName="isPublic">
+        <option value="true" label="Public Access"></option>
+        <option value="false" label="Private Access - Requires registration"></option>
+      </select>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="mode" class="col col-md-1 col-form-label">Mode *</label>
+    <div class="col col-md-11">
+      <select class="form-control custom-select" id="mode" formControlName="mode">
+        <option value="0" label="Practice/Exam"></option>
+        <option value="1" label="One Shot (ICPC Mode)"></option>
+        <option value="2" label="Until Fail (OI Mode)"></option>
+        <option value="3" label="Samples Only (CF Mode)"></option>
+      </select>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="begin-time" class="col col-md-1 col-form-label">Begins *</label>
+    <div class="col col-md-11">
+      <datetime id="begin-time" formControlName="beginTime"></datetime>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="end-time" class="col col-md-1 col-form-label">Ends *</label>
+    <div class="col col-md-11">
+      <datetime id="end-time" formControlName="endTime"></datetime>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <button class="btn btn-success w-100" [disabled]="!form.valid" type="submit">
+        <fa-icon [icon]="faCheck"></fa-icon>
+        <span>Submit</span>
       </button>
     </div>
   </div>

@@ -25,7 +25,7 @@
   </thead>
   <tbody *ngIf="!!list">
   <tr *ngFor="let bulletin of list.items">
-    <td>{{ bulletin.id }}</td>
+    <th scope="row">{{ bulletin.id }}</th>
     <td>{{ bulletin.weight }}</td>
     <td>{{ bulletin.content.substr(0, 20) }}...</td>
     <td>{{ bulletin.publishAt?.format('YYYY-MM-DD HH:mm') }}</td>

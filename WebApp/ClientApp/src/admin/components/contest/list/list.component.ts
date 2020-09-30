@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PaginatedList } from '../../../../interfaces/pagination.interfaces';
 import { ContestInfoDto, ContestMode } from '../../../../interfaces/contest.interfaces';
 import { AdminContestService } from '../../../services/contest.service';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-admin-contest-list',
@@ -11,6 +12,7 @@ import { AdminContestService } from '../../../services/contest.service';
   styleUrls: ['./list.component.css']
 })
 export class AdminContestListComponent implements OnInit {
+  faPlus = faPlus;
   ContestMode = ContestMode;
 
   public pageIndex: number;

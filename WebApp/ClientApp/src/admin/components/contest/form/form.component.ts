@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import * as moment from 'moment';
 
 import { ContestEditDto } from '../../../../interfaces/contest.interfaces';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-admin-contest-form',
@@ -10,6 +11,8 @@ import { ContestEditDto } from '../../../../interfaces/contest.interfaces';
   styleUrls: ['./form.component.css']
 })
 export class AdminContestFormComponent implements OnInit, OnChanges {
+  faCheck = faCheck;
+
   @Input() public contest: ContestEditDto;
   @Input() public disabled = false;
   @Output() public formSubmit: EventEmitter<ContestEditDto> = new EventEmitter();
@@ -23,7 +26,8 @@ export class AdminContestFormComponent implements OnInit, OnChanges {
       description: [null, [Validators.required, Validators.maxLength(10000)]],
       isPublic: [null, [Validators.required]],
       mode: [null, [Validators.required]],
-      period: [null, Validators.required]
+      beginTime: [null, [Validators.required]],
+      endTime: [null, [Validators.required]]
     });
   }
 
@@ -35,10 +39,8 @@ export class AdminContestFormComponent implements OnInit, OnChanges {
         description: this.contest.description,
         isPublic: this.contest.isPublic.toString(),
         mode: this.contest.mode.toString(),
-        period: [
-          (this.contest.beginTime as moment.Moment).toDate(),
-          (this.contest.endTime as moment.Moment).toDate()
-        ]
+        beginTime: this.contest.beginTime as moment.Moment,
+        endTime: this.contest.endTime as moment.Moment
       });
     }
     if (this.disabled) {
@@ -61,8 +63,8 @@ export class AdminContestFormComponent implements OnInit, OnChanges {
       description: data.description,
       isPublic: data.isPublic,
       mode: data.mode,
-      beginTime: moment(data.period[0]).seconds(0).milliseconds(0).toISOString(),
-      endTime: moment(data.period[1]).seconds(0).milliseconds(0).toISOString()
+      beginTime: moment(data.beginTime).seconds(0).milliseconds(0).toISOString(),
+      endTime: moment(data.endTime).seconds(0).milliseconds(0).toISOString()
     });
   }
 }

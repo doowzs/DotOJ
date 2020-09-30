@@ -8,15 +8,15 @@
 <table class="table table-hover">
   <thead>
   <tr>
-    <th>Contestant ID</th>
-    <th>Contestant Name</th>
-    <th>Email</th>
-    <th>Actions</th>
+    <th scope="col">Contestant ID</th>
+    <th scope="col">Contestant Name</th>
+    <th scope="col">Email</th>
+    <th scope="col">Actions</th>
   </tr>
   </thead>
   <tbody *ngIf="!!list">
   <tr *ngFor="let user of list.items">
-    <td>{{ user.contestantId }}</td>
+    <th scope="row">{{ user.contestantId }}</th>
     <td>{{ user.contestantName }}</td>
     <td>{{ user.email }}</td>
     <td>
