@@ -4,7 +4,7 @@ import { Observable, Subject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { Base64 } from 'js-base64';
 
-import { SubmissionInfoDto, SubmissionViewDto } from '../../interfaces/submission.interfaces';
+import { Program, SubmissionInfoDto, SubmissionViewDto } from '../../interfaces/submission.interfaces';
 import { AuthorizeService } from '../../api-authorization/authorize.service';
 import { PaginatedList } from '../../interfaces/pagination.interfaces';
 import { mapSubmissionInfoDtoFields, mapSubmissionViewDtoFields } from '../../interfaces/submission.interfaces';
@@ -82,13 +82,10 @@ export class SubmissionService {
       .pipe(map(mapSubmissionViewDtoFields));
   }
 
-  public createSingle(problemId: number, language: number, code: string): Observable<SubmissionInfoDto> {
+  public createSingle(problemId: number, program: Program): Observable<SubmissionInfoDto> {
     return this.http.post<SubmissionInfoDto>('/submission', {
       problemId: problemId,
-      program: {
-        language: language,
-        code: Base64.encode(code)
-      }
+      program: program
     }).pipe(map(mapSubmissionInfoDtoFields), tap(data => this.newSubmission.next(data)));
   }
 }

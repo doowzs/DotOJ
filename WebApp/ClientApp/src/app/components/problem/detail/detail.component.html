@@ -6,7 +6,7 @@
     </div>
     <div class="col col-12 col-lg-6 p-0" [class.d-none]="!fullscreen"
          [style]="'height: calc(100vh - ' + (ended ? 56 : 62) + 'px);'">
-      <editor [problemId]="problemId"></editor>
+      <app-submission-creator [problemId]="problemId"></app-submission-creator>
     </div>
   </div>
 </div>

@@ -21,7 +21,8 @@ import 'ace-builds/src-noconflict/mode-haskell';
 import 'ace-builds/src-noconflict/mode-java';
 import 'ace-builds/src-noconflict/mode-python';
 import 'ace-builds/src-noconflict/mode-rust';
-import { faFolderOpen, faUpload } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faFolderOpen, faUpload } from '@fortawesome/free-solid-svg-icons';
+import { Base64 } from 'js-base64';
 
 const EditorLanguageKey: string = 'editor-language';
 const EditorCodeKey = (problemId: number): string => 'editor-code-' + problemId.toString();
@@ -31,20 +32,20 @@ const EditorCodeKey = (problemId: number): string => 'editor-code-' + problemId.
   templateUrl: './editor.component.html'
 })
 export class EditorComponent implements OnInit, AfterViewChecked, OnChanges, OnDestroy {
+  faCheck = faCheck;
   faFolderOpen = faFolderOpen;
   faUpload = faUpload;
   Languages = Languages;
 
   @Input() problemId: number;
+  @Input() submissionId: number;
   @Input() program: Program;
-  @Input() readonly: boolean;
   @Input() disabled: boolean;
 
   @Output() submit = new EventEmitter<Program>();
 
   private editor: ace.Ace.Editor;
   private language: LanguageInfo;
-  private code: string;
 
   constructor() {
   }
@@ -123,10 +124,10 @@ export class EditorComponent implements OnInit, AfterViewChecked, OnChanges, OnD
   }
 
   public submitCode() {
-    if (this.disabled || !this.language || !this.code) return;
+    if (this.disabled || !this.language || !this.editor.getValue()) return;
     this.submit.next({
       language: this.language.code,
-      code: this.code
-    })
+      code: Base64.encode(this.editor.getValue())
+    });
   }
 }
