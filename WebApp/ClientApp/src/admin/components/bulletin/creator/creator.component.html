@@ -1,2 +1,9 @@
-﻿<h2>Create Bulletin</h2>
+﻿<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a routerLink="/admin">Dashboard</a></li>
+    <li class="breadcrumb-item"><a routerLink="/admin/bulletin">Bulletins</a></li>
+    <li class="breadcrumb-item active" aria-current="page">New</li>
+  </ol>
+</nav>
+<h2>Create Bulletin</h2>
 <app-admin-bulletin-form (formSubmit)="createBulletin($event)"></app-admin-bulletin-form>

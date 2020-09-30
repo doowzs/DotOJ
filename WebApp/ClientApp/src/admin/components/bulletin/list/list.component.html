@@ -4,7 +4,14 @@
     <li class="breadcrumb-item active" aria-current="page">Bulletins</li>
   </ol>
 </nav>
-<h2>List Bulletins</h2>
+<h2>
+  List Bulletins
+  <span class="float-right">
+    <a routerLink="/admin/bulletin/new" class="btn btn-primary">
+      <fa-icon [icon]="faPlus"></fa-icon><span>Create</span>
+    </a>
+  </span>
+</h2>
 <table *ngIf="!!list" class="table table-hover">
   <thead>
   <tr>

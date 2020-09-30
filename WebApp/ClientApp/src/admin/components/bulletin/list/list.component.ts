@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PaginatedList } from '../../../../interfaces/pagination.interfaces';
 import { BulletinInfoDto } from '../../../../interfaces/bulletin.interfaces';
 import { AdminBulletinService } from '../../../services/bulletin.service';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-admin-bulletin-list',
@@ -11,6 +12,8 @@ import { AdminBulletinService } from '../../../services/bulletin.service';
   styleUrls: ['./list.component.css']
 })
 export class AdminBulletinListComponent implements OnInit {
+  faPlus = faPlus;
+
   public pageIndex: number;
   public list: PaginatedList<BulletinInfoDto>;
 
