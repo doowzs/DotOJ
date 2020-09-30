@@ -61,7 +61,7 @@ export class ContestHeaderComponent implements OnInit, OnDestroy {
     this.contestId = this.route.snapshot.params.contestId;
     this.now = moment().add(config.diff, 'ms');
     interval(1000).subscribe(() => {
-      this.now = this.now.add(1, 's');
+      this.now.add(1, 's');
     });
   }
 
