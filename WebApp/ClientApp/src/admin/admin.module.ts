@@ -26,7 +26,6 @@ import { AdminContestRegistrationsComponent } from './components/contest/registr
 import { AdminProblemListComponent } from './components/problem/list/list.component';
 import { AdminProblemFormComponent } from './components/problem/form/form.component';
 import { AdminProblemCreatorComponent } from './components/problem/creator/creator.component';
-import { AdminProblemArchiveComponent } from './components/problem/archive/archive.component';
 import { AdminProblemEditorComponent } from './components/problem/editor/editor.component';
 import { AdminProblemTestsComponent } from './components/problem/tests/tests.component';
 import { AdminSubmissionListComponent } from './components/submission/list/list.component';
@@ -128,11 +127,6 @@ import { AdminProblemExportComponent } from './components/problem/export/export.
               { path: '', pathMatch: 'full', component: AdminProblemListComponent },
               { path: 'new', component: AdminProblemCreatorComponent, data: { breadcrumb: 'Create' } },
               {
-                path: 'archive',
-                component: AdminProblemArchiveComponent,
-                data: { breadcrumb: 'Archive' }
-              },
-              {
                 path: ':problemId', data: { breadcrumb: 'View' },
                 component: AdminProblemViewComponent,
                 children: [
@@ -211,7 +205,6 @@ import { AdminProblemExportComponent } from './components/problem/export/export.
     AdminProblemViewComponent,
     AdminProblemFormComponent,
     AdminProblemCreatorComponent,
-    AdminProblemArchiveComponent,
     AdminProblemEditorComponent,
     AdminProblemTestsComponent,
     AdminProblemExportComponent,

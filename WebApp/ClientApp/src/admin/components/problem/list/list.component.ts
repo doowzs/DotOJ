@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PaginatedList } from '../../../../interfaces/pagination.interfaces';
 import { ProblemInfoDto } from '../../../../interfaces/problem.interfaces';
 import { AdminProblemService } from '../../../services/problem.service';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-admin-problem-list',
@@ -11,6 +12,8 @@ import { AdminProblemService } from '../../../services/problem.service';
   styleUrls: ['./list.component.css']
 })
 export class AdminProblemListComponent implements OnInit {
+  faPlus = faPlus;
+
   public pageIndex: number;
   public list: PaginatedList<ProblemInfoDto>;
 

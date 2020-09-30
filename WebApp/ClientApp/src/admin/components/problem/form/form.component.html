@@ -1,13 +1,13 @@
 ﻿<form class="my-3" [formGroup]="form" (ngSubmit)="submitForm(form.value)">
   <div class="form-group row">
-    <label for="contest-id" class="col col-md-1 col-form-label">Contest ID *</label>
-    <div class="col col-md-11">
+    <label for="contest-id" class="col col-md-2 col-form-label">Contest ID *</label>
+    <div class="col col-md-10">
       <input class="form-control" id="contest-id" formControlName="contestId"/>
     </div>
   </div>
   <div class="form-group row">
-    <label for="title" class="col col-md-1 col-form-label">Title *</label>
-    <div class="col col-md-11">
+    <label for="title" class="col col-md-2 col-form-label">Title *</label>
+    <div class="col col-md-10">
       <input class="form-control" id="title" formControlName="title"/>
     </div>
   </div>
@@ -93,7 +93,7 @@
   <ng-container *ngFor="let control of sampleCaseControls; index as index">
     <h4 class="my-3">
       Sample #{{ index + 1 }}
-      <span class="float-right">
+      <span *ngIf="sampleCaseControls.length > 1" class="float-right">
           <button class="btn btn-sm text-danger" type="button"
                   [disabled]="disabled" (click)="removeSampleCase(control)">
             <fa-icon [icon]="faTimes"></fa-icon><span>Delete #{{ index + 1 }}</span>
