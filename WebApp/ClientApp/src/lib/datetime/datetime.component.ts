@@ -1,7 +1,6 @@
 import { Component, Optional, Self, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import * as moment from 'moment';
-import { NgbDatepicker } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'datetime',
@@ -13,8 +12,6 @@ export class DatetimeComponent implements ControlValueAccessor {
   public disabled: boolean;
   private input: any;
   private blur: any;
-
-  @ViewChild('picker') picker: NgbDatepicker;
 
   constructor(@Self() @Optional() private control: NgControl) {
     if (this.control) {
@@ -32,7 +29,9 @@ export class DatetimeComponent implements ControlValueAccessor {
   }
 
   writeValue(value: moment.Moment) {
-    this.value = value.format('YYYY-MM-DD HH:mm');
+    if (value) {
+      this.value = value.format('YYYY-MM-DD HH:mm');
+    }
   }
 
   registerOnChange(fn: any) {
