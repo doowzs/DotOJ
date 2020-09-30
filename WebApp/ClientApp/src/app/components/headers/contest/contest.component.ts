@@ -12,7 +12,7 @@ import { ContestService } from '../../../services/contest.service';
 import {
   faArrowLeft,
   faBars,
-  faCog,
+  faCog, faHome,
   faPaperPlane,
   faSignOutAlt, faStream, faTrophy,
   faUser
@@ -26,12 +26,13 @@ import {
 export class ContestHeaderComponent implements OnInit, OnDestroy {
   faArrowLeft = faArrowLeft;
   faBars = faBars;
-  faUser = faUser;
-  faSignOutAlt = faSignOutAlt;
   faCog = faCog;
+  faHome = faHome;
   faPaperPlane = faPaperPlane;
-  faTrophy = faTrophy;
+  faSignOutAlt = faSignOutAlt;
   faStream = faStream;
+  faTrophy = faTrophy;
+  faUser = faUser;
 
   @ViewChild('contestEndedModal') contestEndedModal;
 

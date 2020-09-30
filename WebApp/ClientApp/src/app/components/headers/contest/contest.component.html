@@ -39,6 +39,10 @@
               <span>{{ username | async }}</span>
             </a>
             <div ngbDropdownMenu class="dropdown-menu-right">
+              <a ngbDropdownItem routerLink="/">
+                <fa-icon [icon]="faHome"></fa-icon>
+                <span>Home</span>
+              </a>
               <a ngbDropdownItem routerLink="/authentication/profile">
                 <fa-icon [icon]="faCog"></fa-icon>
                 <span>Account</span>
