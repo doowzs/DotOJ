@@ -13,7 +13,20 @@
     <div *ngIf="submission" class="m-3">
       <p>Contestant: {{ submission.contestantId }} ({{ submission.contestantName }})</p>
       <p>Submitted: {{ submission.createdAtMoment.format('YYYY-MM-DD HH:mm:ss') }}</p>
-      <p>Language: {{ submission.program.languageInfo.name }}, &nbsp; {{ submission.codeBytes }} bytes</p>
+      <p>
+        Language:
+        <span class="mx-2">{{ submission.program.languageInfo.name }}</span>
+        <span>{{ submission.codeBytes }}bytes</span>
+      </p>
+      <p *ngIf="!!submission.time && !!submission.memory">
+        Statistics:
+        <span class="mx-2">{{ submission.time }}ms</span>
+        <span>{{ submission.memory }}KiB</span>
+      </p>
+      <div *ngIf="!!submission.message">
+        <h3>Message</h3>
+        <pre>{{ submission.message }}</pre>
+      </div>
     </div>
   </div>
   <div class="card-body p-0" *ngIf="submission">
