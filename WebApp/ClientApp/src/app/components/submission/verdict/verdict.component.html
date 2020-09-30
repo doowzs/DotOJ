@@ -1,3 +1,5 @@
-{{ submission.verdictInfo.name }}
-<span *ngIf="getSubmissionPct() as pct"><br *ngIf="pct.length > 8"/>{{ pct }}</span>
-<span *ngIf="notAnValidAttempt()">*</span>
+<span [class]="(badge ? 'badge badge-' : 'text-') + submission.verdictInfo.color">
+  {{ submission.verdictInfo.name }}
+  <span *ngIf="getSubmissionPct() as pct"><br *ngIf="pct.length > 8"/>{{ pct }}</span>
+  <span *ngIf="notAnValidAttempt()">*</span>
+</span>

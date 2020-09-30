@@ -115,9 +115,8 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
           { path: 'standings', component: ContestStandingsComponent }
         ]
       },
-      {
-        path: 'submissions', component: SubmissionListComponent, canActivate: [AuthorizeGuard]
-      }
+      { path: 'submissions', component: SubmissionListComponent, canActivate: [AuthorizeGuard] },
+      { path: 'submission/:submissionId', component: SubmissionDetailComponent, canActivate: [AuthorizeGuard] }
     ]),
     AdminModule,
     ApiAuthorizationModule,

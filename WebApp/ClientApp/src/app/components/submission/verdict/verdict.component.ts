@@ -8,6 +8,7 @@ import { VerdictStage } from '../../../../consts/verdicts.consts';
   styleUrls: ['./verdict.component.css']
 })
 export class SubmissionVerdictComponent {
+  @Input() badge: boolean = false;
   @Input() submission: SubmissionInfoDto | SubmissionViewDto;
 
   constructor() {

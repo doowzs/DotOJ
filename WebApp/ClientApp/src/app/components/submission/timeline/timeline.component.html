@@ -21,13 +21,16 @@
       <tr *ngFor="let submission of submissions">
         <th scope="row">{{ submission.id }}</th>
         <td>
-        <span [class]="'text-' + submission.verdictInfo.color">
           <app-submission-verdict [submission]="submission"></app-submission-verdict>
-        </span>
         </td>
-        <td>{{ submission.languageInfo.name }}</td>
+        <td>
+          <a [href]="'/submission/' + submission.id"
+             (click)="$event.preventDefault(); viewSubmissionPopup(submission)">
+            {{ submission.languageInfo.name }}
+          </a>
+        </td>
         <td>{{ submission.codeBytes }}</td>
-        <td>{{ submission.createdAt.format('YYYY-MM-DD HH:mm') }}</td>
+        <td>{{ submission.createdAtMoment.format('YYYY-MM-DD HH:mm') }}</td>
       </tr>
       </tbody>
     </table>

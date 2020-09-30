@@ -112,4 +112,8 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
         }
       });
   }
+
+  public viewSubmissionPopup(submission: SubmissionInfoDto): void {
+    window.open('/submission/' + submission.id, '', 'width=930,height=690');
+  }
 }

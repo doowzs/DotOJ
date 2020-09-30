@@ -145,6 +145,14 @@ export class SubmissionListComponent implements OnInit, OnDestroy {
   }
 
   public canViewSubmission(submission: SubmissionInfoDto): boolean {
-    return (moment().isAfter(this.contest.endTime)) || (this.user && submission.userId === this.user.sub);
+    if (this.contest) {
+      return (moment().isAfter(this.contest.endTime)) || (this.user && submission.userId === this.user.sub);
+    } else {
+      return false;
+    }
+  }
+
+  public viewSubmissionPopup(submission: SubmissionInfoDto): void {
+    window.open('/submission/' + submission.id, '', 'width=930,height=690');
   }
 }

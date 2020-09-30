@@ -23,6 +23,7 @@ import 'ace-builds/src-noconflict/mode-python';
 import 'ace-builds/src-noconflict/mode-rust';
 import { faCheck, faFolderOpen, faUpload } from '@fortawesome/free-solid-svg-icons';
 import { Base64 } from 'js-base64';
+import { Title } from '@angular/platform-browser';
 
 const EditorLanguageKey: string = 'editor-language';
 const EditorCodeKey = (problemId: number): string => 'editor-code-' + problemId.toString();
@@ -44,22 +45,33 @@ export class EditorComponent implements OnInit, AfterViewChecked, OnChanges, OnD
 
   @Output() submit = new EventEmitter<Program>();
 
-  private editor: ace.Ace.Editor;
-  private language: LanguageInfo;
+  public editor: ace.Ace.Editor;
+  public language: LanguageInfo;
 
-  constructor() {
+  constructor(private title: Title) {
+    if (this.program) {
+      this.title.setTitle('Submission #' + this.submissionId);
+    }
   }
 
   ngOnInit() {
     this.editor = ace.edit('editor', { useWorker: false, wrap: true });
-    if (!!localStorage.getItem(EditorLanguageKey)) {
-      this.language = JSON.parse(localStorage.getItem(EditorLanguageKey));
-    }
-    if (this.language) {
+    if (this.program) {
+      this.language = Languages.find(l => l.code === this.program.language);
       this.editor.getSession().setMode('ace/mode/' + this.language.mode);
-    }
-    if (this.problemId) {
-      this.loadCode(this.problemId);
+      this.editor.setValue(this.program.code);
+      this.editor.setReadOnly(true);
+      this.editor.clearSelection();
+    } else {
+      if (!!localStorage.getItem(EditorLanguageKey)) {
+        this.language = JSON.parse(localStorage.getItem(EditorLanguageKey));
+        if (this.language) {
+          this.editor.getSession().setMode('ace/mode/' + this.language.mode);
+        }
+      }
+      if (this.problemId) {
+        this.loadCode(this.problemId);
+      }
     }
   }
 

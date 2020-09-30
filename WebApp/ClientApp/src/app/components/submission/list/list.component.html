@@ -64,15 +64,20 @@
       <td>{{ submission.contestantId }}</td>
       <td>{{ inline ? getProblemLabel(submission.problemId) : submission.problemId }}</td>
       <td>
-        <span [class]="'text-' + submission.verdictInfo.color">
-          <app-submission-verdict [submission]="submission"></app-submission-verdict>
-        </span>
+        <app-submission-verdict [submission]="submission"></app-submission-verdict>
       </td>
       <td>{{ submission.time }}</td>
       <td>{{ submission.memory }}</td>
-      <td>{{ submission.languageInfo.name }}</td>
+      <td>
+        <a *ngIf="canViewSubmission(submission); else cannotView"
+           [href]="'/submission/' + submission.id"
+           (click)="$event.preventDefault(); viewSubmissionPopup(submission)">
+          {{ submission.languageInfo.name }}
+        </a>
+        <ng-template #cannotView>{{ submission.languageInfo.name }}</ng-template>
+      </td>
       <td>{{ submission.codeBytes }}</td>
-      <td>{{ submission.createdAt.format('YYYY-MM-DD HH:mm') }}</td>
+      <td>{{ submission.createdAtMoment.format('YYYY-MM-DD HH:mm') }}</td>
     </tr>
     </tbody>
   </table>

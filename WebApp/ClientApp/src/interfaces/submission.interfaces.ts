@@ -26,7 +26,9 @@ export interface SubmissionInfoDto {
   score: number;
   progress: number;
   judgedAt: moment.Moment | string;
+  judgedAtMoment?: moment.Moment;
   createdAt: moment.Moment | string;
+  createdAtMoment?: moment.Moment;
 }
 
 export interface SubmissionViewDto {
@@ -47,7 +49,9 @@ export interface SubmissionViewDto {
   message: string;
   judgedBy: string;
   judgedAt: moment.Moment | string;
+  judgedAtMoment?: moment.Moment;
   createdAt: moment.Moment | string;
+  createdAtMoment?: moment.Moment;
 }
 
 export interface SubmissionEditDto {
@@ -66,14 +70,20 @@ export interface SubmissionEditDto {
   message: string;
   judgedBy: string;
   judgedAt: moment.Moment | string;
+  judgedAtMoment?: moment.Moment;
   createdAt: moment.Moment | string;
+  createdAtMoment?: moment.Moment;
 }
 
 export const mapSubmissionInfoDtoFields = (submission: SubmissionInfoDto): SubmissionInfoDto => {
   submission.verdictInfo = Verdicts.find(v => v.code === submission.verdict);
   submission.languageInfo = Languages.find(l => l.code === submission.language);
   submission.createdAt = moment.utc(submission.createdAt).local();
-  submission.judgedAt = moment.utc(submission.judgedAt).local();
+  submission.createdAtMoment = moment.utc(submission.createdAt).local();
+  if (submission.judgedAt) {
+    submission.judgedAt = moment.utc(submission.judgedAt).local();
+    submission.judgedAtMoment = moment.utc(submission.judgedAt).local();
+  }
   return submission;
 };
 
@@ -84,8 +94,10 @@ export const mapSubmissionViewDtoFields = (submission: SubmissionViewDto): Submi
   submission.codeBytes = new Blob([submission.program.code]).size;
   submission.message = Base64.decode(submission.message ?? '');
   submission.createdAt = moment.utc(submission.createdAt).local();
+  submission.createdAtMoment = moment.utc(submission.createdAt).local();
   if (submission.judgedAt) {
     submission.judgedAt = moment.utc(submission.judgedAt).local();
+    submission.judgedAtMoment = moment.utc(submission.judgedAt).local();
   }
   return submission;
 };
@@ -96,8 +108,10 @@ export const mapSubmissionEditDtoFields = (submission: SubmissionEditDto): Submi
   submission.program.code = Base64.decode(submission.program.code);
   submission.message = Base64.decode(submission.message ?? '');
   submission.createdAt = moment.utc(submission.createdAt).local();
+  submission.createdAtMoment = moment.utc(submission.createdAt).local();
   if (submission.judgedAt) {
     submission.judgedAt = moment.utc(submission.judgedAt).local();
+    submission.judgedAtMoment = moment.utc(submission.judgedAt).local();
   }
   return submission;
 };
