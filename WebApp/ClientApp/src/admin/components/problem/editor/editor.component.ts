@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 import { ProblemEditDto } from '../../../../interfaces/problem.interfaces';
 import { AdminProblemService } from '../../../services/problem.service';
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-admin-problem-editor',
@@ -10,6 +11,9 @@ import { AdminProblemService } from '../../../services/problem.service';
   styleUrls: ['./editor.component.css']
 })
 export class AdminProblemEditorComponent implements OnInit {
+  faEdit = faEdit;
+  faTrash = faTrash;
+
   public edit: boolean;
   public problemId: number;
   public problem: ProblemEditDto;
@@ -43,8 +47,10 @@ export class AdminProblemEditorComponent implements OnInit {
   }
 
   public deleteProblem() {
-    this.service.deleteSingle(this.problemId).subscribe(() => {
-      this.router.navigate(['/admin/problem']);
-    }, error => console.error(error));
+    if (confirm(`Are you sure to delete problem #${this.problemId}: '${this.problem.title}'?`)) {
+      this.service.deleteSingle(this.problemId).subscribe(() => {
+        this.router.navigate(['/admin/problem']);
+      }, error => console.error(error));
+    }
   }
 }

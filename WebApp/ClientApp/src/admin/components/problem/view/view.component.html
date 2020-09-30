@@ -1,0 +1,28 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a routerLink="/admin">Dashboard</a></li>
+    <li class="breadcrumb-item"><a routerLink="/admin/problem">Problems</a></li>
+    <li class="breadcrumb-item active" aria-current="page">#{{ problemId }}</li>
+  </ol>
+</nav>
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" [routerLink]="['/admin/problem', problemId]"
+       routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <fa-icon [icon]="faEdit"></fa-icon><span>View / Edit</span>
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" [routerLink]="['/admin/problem', problemId, 'tests']" routerLinkActive="active">
+      <fa-icon [icon]="faBoxes"></fa-icon><span>Test Cases</span>
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" [routerLink]="['/admin/problem', problemId, 'export']" routerLinkActive="active">
+      <fa-icon [icon]="faArchive"></fa-icon><span>Export</span>
+    </a>
+  </li>
+</ul>
+<div class="m-3">
+  <router-outlet></router-outlet>
+</div>

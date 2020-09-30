@@ -28,7 +28,7 @@ import { AdminProblemFormComponent } from './components/problem/form/form.compon
 import { AdminProblemCreatorComponent } from './components/problem/creator/creator.component';
 import { AdminProblemArchiveComponent } from './components/problem/archive/archive.component';
 import { AdminProblemEditorComponent } from './components/problem/editor/editor.component';
-import { AdminProblemTestCasesComponent } from './components/problem/test-cases/test-cases.component';
+import { AdminProblemTestsComponent } from './components/problem/tests/tests.component';
 import { AdminSubmissionListComponent } from './components/submission/list/list.component';
 import { AdminSubmissionFormComponent } from './components/submission/form/form.component';
 import { AdminSubmissionEditorComponent } from './components/submission/editor/editor.component';
@@ -58,6 +58,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { VditorModule } from '../lib/vditor/vditor.module';
 import { DatetimeModule } from '../lib/datetime/datetime.module';
 import { AdminContestViewComponent } from './components/contest/view/view.component';
+import { AdminProblemViewComponent } from './components/problem/view/view.component';
+import { EditorModule } from '../lib/editor/editor.module';
 
 @NgModule({
   imports: [
@@ -131,11 +133,12 @@ import { AdminContestViewComponent } from './components/contest/view/view.compon
               },
               {
                 path: ':problemId', data: { breadcrumb: 'View' },
+                component: AdminProblemViewComponent,
                 children: [
                   { path: '', pathMatch: 'full', component: AdminProblemEditorComponent },
                   {
-                    path: 'test-cases',
-                    component: AdminProblemTestCasesComponent,
+                    path: 'tests',
+                    component: AdminProblemTestsComponent,
                     data: { breadcrumb: 'Test Cases' }
                   }
                 ]
@@ -187,7 +190,8 @@ import { AdminContestViewComponent } from './components/contest/view/view.compon
     NzDropDownModule,
     FormsModule,
     NgbModule,
-    FontAwesomeModule
+    FontAwesomeModule,
+    EditorModule
   ],
   declarations: [
     AdminComponent,
@@ -206,11 +210,12 @@ import { AdminContestViewComponent } from './components/contest/view/view.compon
     AdminContestEditorComponent,
     AdminContestRegistrationsComponent,
     AdminProblemListComponent,
+    AdminProblemViewComponent,
     AdminProblemFormComponent,
     AdminProblemCreatorComponent,
     AdminProblemArchiveComponent,
     AdminProblemEditorComponent,
-    AdminProblemTestCasesComponent,
+    AdminProblemTestsComponent,
     AdminSubmissionListComponent,
     AdminSubmissionFormComponent,
     AdminSubmissionEditorComponent,

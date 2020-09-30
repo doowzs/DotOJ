@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } fro
 
 import { Languages } from '../../../../consts/languages.consts';
 import { ProblemEditDto, TestCase } from '../../../../interfaces/problem.interfaces';
+import { faCheck, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-admin-problem-form',
@@ -10,6 +11,10 @@ import { ProblemEditDto, TestCase } from '../../../../interfaces/problem.interfa
   styleUrls: ['./form.component.css']
 })
 export class AdminProblemFormComponent implements OnInit, OnChanges {
+  faCheck = faCheck;
+  faPlus = faPlus;
+  faTimes = faTimes;
+
   @Input() public problem: ProblemEditDto;
   @Input() public disabled = false;
   @Output() public formSubmit: EventEmitter<ProblemEditDto> = new EventEmitter();

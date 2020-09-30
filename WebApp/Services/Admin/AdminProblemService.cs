@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Threading.Tasks;
 using Data.Configs;
 using Data.DTOs;
@@ -89,7 +90,21 @@ namespace WebApp.Services.Admin
 
         public async Task<PaginatedList<ProblemInfoDto>> GetPaginatedProblemInfosAsync(int? pageIndex)
         {
-            return await Context.Problems.PaginateAsync(p => new ProblemInfoDto(p), pageIndex ?? 1, PageSize);
+            var problems = await Context.Problems
+                .OrderByDescending(p => p.Id)
+                .PaginateAsync(pageIndex ?? 1, PageSize);
+
+            var problemInfos = new List<ProblemInfoDto>();
+            foreach (var problem in problems.Items)
+            {
+                var query = Context.Submissions.Where(s => s.ProblemId == problem.Id);
+                var acceptedSubmissions = await query.CountAsync(s => s.Verdict == Verdict.Accepted);
+                var totalSubmissions = await query.CountAsync();
+                problemInfos.Add(new ProblemInfoDto(problem, false, false, acceptedSubmissions, totalSubmissions));
+            }
+
+            return new PaginatedList<ProblemInfoDto>
+                (problems.TotalItems, problems.PageIndex, problems.PageSize, problemInfos);
         }
 
         public async Task<ProblemEditDto> GetProblemEditAsync(int id)

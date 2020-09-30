@@ -1,0 +1,42 @@
+﻿<h2>Test Cases of Problem <span *ngIf="problem">#{{ problem.id }}</span></h2>
+<div class="row my-3">
+  <div class="col col-md-10">
+    <input #zipFileInput type="file" accept="application/zip" (change)="selectZipFile($event)"/>
+    <button class="btn btn-outline-secondary w-100" (click)="zipFileInput.click()">
+      {{ file ? file.name : 'Select Zip File' }}
+    </button>
+  </div>
+  <div class="col col-md-2">
+    <button class="btn btn-primary w-100" [disabled]="!file || progress" (click)="updateTestCases()">
+      <ng-container *ngIf="!progress; else uploadProgress">
+        <fa-icon [icon]="faUpload"></fa-icon>
+        <span>Upload</span>
+      </ng-container>
+      <ng-template #uploadProgress>
+        {{ progress }}%
+      </ng-template>
+    </button>
+  </div>
+</div>
+<div *ngIf="testCases">
+  <table class="table table-sm table-hover">
+    <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Input</th>
+      <th scope="col">Output</th>
+    </tr>
+    </thead>
+    <tbody *ngIf="testCases">
+    <tr *ngFor="let test of testCases; index as index">
+      <th scope="row">{{ index + 1 }}</th>
+      <td><span class="monospace">{{ test.input }}</span></td>
+      <td><span class="monospace">{{ test.output }}</span></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<h2>Submit a Test</h2>
+<div style="height: 50vh;">
+  <editor [problemId]="problemId" (submit)="submitCode($event)"></editor>
+</div>

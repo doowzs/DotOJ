@@ -59,7 +59,7 @@ export class EditorComponent implements AfterViewInit, AfterViewChecked, OnChang
   }
 
   ngAfterViewInit() {
-    this.editor = ace.edit('editor', { useWorker: false, wrap: true });
+    this.editor = ace.edit(this.instanceId, { useWorker: false, wrap: true });
     if (this.program) {
       this.language = Languages.find(l => l.code === this.program.language);
       this.editor.getSession().setMode('ace/mode/' + this.language.mode);

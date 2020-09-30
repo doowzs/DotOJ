@@ -2,18 +2,20 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpEventType } from '@angular/common/http';
 
-import { Languages } from '../../../../consts/languages.consts';
 import { ProblemEditDto, TestCase } from '../../../../interfaces/problem.interfaces';
 import { AdminProblemService } from '../../../services/problem.service';
 import { AdminSubmissionService } from '../../../services/submission.service';
+import { faUpload } from '@fortawesome/free-solid-svg-icons';
+import { Program } from '../../../../interfaces/submission.interfaces';
 
 @Component({
-  selector: 'app-admin-problem-test-cases',
-  templateUrl: './test-cases.component.html',
-  styleUrls: ['./test-cases.component.css']
+  selector: 'app-admin-problem-tests',
+  templateUrl: './tests.component.html',
+  styleUrls: ['./tests.component.css']
 })
-export class AdminProblemTestCasesComponent implements OnInit {
-  Languages = Languages;
+export class AdminProblemTestsComponent implements OnInit {
+  faUpload = faUpload;
+
   @ViewChild('zipFileInput') zipFileInput: ElementRef;
 
   public problemId: number;
@@ -51,21 +53,24 @@ export class AdminProblemTestCasesComponent implements OnInit {
   }
 
   public updateTestCases() {
-    this.service.uploadTestCases(this.problem.id, this.file)
-      .subscribe(event => {
-        if (event.type === HttpEventType.UploadProgress) {
-          this.progress = Math.round(100 * event.loaded / event.total);
-        } else if (event.type === HttpEventType.Response) {
-          this.testCases = event.body;
-          this.file = this.progress = null;
-          this.zipFileInput.nativeElement.value = '';
-        }
-      }, error => console.error(error));
+    if (confirm(`Are you sure to upload new test cases archive?`
+      + ` This will override all tests of problem #${this.problemId}.`)) {
+      this.service.uploadTestCases(this.problem.id, this.file)
+        .subscribe(event => {
+          if (event.type === HttpEventType.UploadProgress) {
+            this.progress = Math.round(100 * event.loaded / event.total);
+          } else if (event.type === HttpEventType.Response) {
+            this.testCases = event.body;
+            this.file = this.progress = null;
+            this.zipFileInput.nativeElement.value = '';
+          }
+        }, error => console.error(error));
+    }
   }
 
-  public submitCode() {
+  public submitCode(program: Program) {
     this.submitting = true;
-    this.submitter.createSingle(this.problem.id, this.language, this.code)
+    this.submitter.createSingle(this.problemId, program)
       .subscribe(() => {
         this.router.navigate(['/admin/submission'])
       }, error => {
