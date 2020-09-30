@@ -19,19 +19,19 @@
         </span>
         <ul class="navbar-nav ml-auto">
           <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
-            <a class="nav-link mr-3" [routerLink]="['/contest', contestId]">
+            <a class="nav-link mr-2" [routerLink]="['/contest', contestId]">
               <fa-icon [icon]="faStream"></fa-icon>
               <span>Index</span>
             </a>
           </li>
           <li class="nav-item" routerLinkActive="active">
-            <a class="nav-link mr-3" [routerLink]="['/contest', contestId, 'submissions']">
+            <a class="nav-link mr-2" [routerLink]="['/contest', contestId, 'submissions']">
               <fa-icon [icon]="faPaperPlane"></fa-icon>
               <span>Submissions</span>
             </a>
           </li>
           <li class="nav-item" routerLinkActive="active">
-            <a class="nav-link mr-3" [routerLink]="['/contest', contestId, 'standings']">
+            <a class="nav-link mr-2" [routerLink]="['/contest', contestId, 'standings']">
               <fa-icon [icon]="faTrophy"></fa-icon>
               <span>Standings</span>
             </a>

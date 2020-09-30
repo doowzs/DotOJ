@@ -8,7 +8,7 @@
 
       <div class="navbar-collapse" [class.collapse]="collapse">
         <ul class="navbar-nav ml-auto">
-          <li class="nav-item mr-3" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          <li class="nav-item mr-2" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
             <a class="nav-link" routerLink="/">
               <fa-icon [icon]="faHome"></fa-icon>
               <span>Home</span>
@@ -16,27 +16,27 @@
           </li>
           <ng-container *ngIf="(isAuthenticated | async) then authenticated else anonymous"></ng-container>
           <ng-template #anonymous>
-            <li class="nav-item mr-3">
+            <li class="nav-item">
               <a class="nav-link" routerLink="/authentication/register">
                 <fa-icon [icon]="faUserPlus"></fa-icon>
                 <span>Register</span>
               </a>
             </li>
-            <li class="nav-item mr-3">
-              <a class="nav-link" class="text-success" routerLink="/authentication/login">
+            <li class="nav-item">
+              <a class="nav-link text-success" routerLink="/authentication/login">
                 <fa-icon [icon]="faSignInAlt"></fa-icon>
                 <span>Login</span>
               </a>
             </li>
           </ng-template>
           <ng-template #authenticated>
-            <li class="nav-item mr-3" routerLinkActive="active">
+            <li class="nav-item mr-2" routerLinkActive="active">
               <a class="nav-link" routerLink="/contests">
                 <fa-icon [icon]="faCalendar"></fa-icon>
                 <span>Contests</span>
               </a>
             </li>
-            <li class="nav-item mr-3" routerLinkActive="active">
+            <li class="nav-item mr-2" routerLinkActive="active">
               <a class="nav-link" routerLink="/submissions">
                 <fa-icon [icon]="faPaperPlane"></fa-icon>
                 <span>Submissions</span>

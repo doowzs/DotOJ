@@ -1,8 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AuthorizeService, AuthenticationResultStatus } from '../authorize.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, interval, Subject } from 'rxjs';
+import * as moment from 'moment';
+
 import { LoginActions, QueryParameterNames, ApplicationPaths, ReturnUrlType } from '../api-authorization.constants';
+import { faClock, faExclamationCircle, faHome } from '@fortawesome/free-solid-svg-icons';
+import { ApplicationConfigService } from '../../app/services/config.service';
+import { takeUntil } from 'rxjs/operators';
 
 // The main responsibility of this component is to handle the user's login process.
 // This is the starting point for the login process. Any component that needs to authenticate
@@ -13,13 +18,31 @@ import { LoginActions, QueryParameterNames, ApplicationPaths, ReturnUrlType } fr
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
+  faClock = faClock;
+  faExclamationCircle = faExclamationCircle;
+  faHome = faHome;
+
   public message = new BehaviorSubject<string>(null);
+  public localNow: moment.Moment;
+  public serverNow: moment.Moment;
+  public destroy$ = new Subject();
 
   constructor(
     private authorizeService: AuthorizeService,
     private activatedRoute: ActivatedRoute,
-    private router: Router) { }
+    private router: Router,
+    private config: ApplicationConfigService
+  ) {
+    this.localNow = moment();
+    this.serverNow = moment().add(config.diff, 'ms');
+    interval(1000)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.localNow.add(1, 's');
+        this.serverNow.add(1, 's');
+      });
+  }
 
   async ngOnInit() {
     const action = this.activatedRoute.snapshot.url[1];
@@ -43,6 +66,11 @@ export class LoginComponent implements OnInit {
       default:
         throw new Error(`Invalid action '${action}'`);
     }
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
 

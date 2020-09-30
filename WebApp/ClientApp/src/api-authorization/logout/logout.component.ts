@@ -1,9 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AuthenticationResultStatus, AuthorizeService } from '../authorize.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, interval, Subject } from 'rxjs';
 import { ActivatedRoute, Router } from '@angular/router';
-import { take } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 import { LogoutActions, ApplicationPaths, ReturnUrlType } from '../api-authorization.constants';
+import { faClock, faExclamationCircle, faHome } from '@fortawesome/free-solid-svg-icons';
+import * as moment from 'moment';
+import { ApplicationConfigService } from '../../app/services/config.service';
 
 // The main responsibility of this component is to handle the user's logout process.
 // This is the starting point for the logout process, which is usually initiated when a
@@ -13,13 +16,31 @@ import { LogoutActions, ApplicationPaths, ReturnUrlType } from '../api-authoriza
   templateUrl: './logout.component.html',
   styleUrls: ['./logout.component.css']
 })
-export class LogoutComponent implements OnInit {
+export class LogoutComponent implements OnInit, OnDestroy {
+  faClock = faClock;
+  faExclamationCircle = faExclamationCircle;
+  faHome = faHome;
+
   public message = new BehaviorSubject<string>(null);
+  public localNow: moment.Moment;
+  public serverNow: moment.Moment;
+  public destroy$ = new Subject();
 
   constructor(
     private authorizeService: AuthorizeService,
     private activatedRoute: ActivatedRoute,
-    private router: Router) { }
+    private router: Router,
+    private config: ApplicationConfigService
+  ) {
+    this.localNow = moment();
+    this.serverNow = moment().add(config.diff, 'ms');
+    interval(1000)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.localNow.add(1, 's');
+        this.serverNow.add(1, 's');
+      });
+  }
 
   async ngOnInit() {
     const action = this.activatedRoute.snapshot.url[1];
@@ -43,6 +64,11 @@ export class LogoutComponent implements OnInit {
       default:
         throw new Error(`Invalid action '${action}'`);
     }
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private async logout(returnUrl: string): Promise<void> {
