@@ -1,8 +1,13 @@
 <h2>Bulletins</h2>
-<nz-skeleton *ngIf="bulletins == null; else bulletinsLoaded"></nz-skeleton>
+<div *ngIf="bulletins == null; else bulletinsLoaded" class="spinner-border" role="status"></div>
 <ng-template #bulletinsLoaded>
   <ng-template #bulletinsEmpty>
-    <nz-empty></nz-empty>
+    <div class="text-center">
+      <h3 class="text-secondary">
+        <fa-icon [icon]="faBoxOpen"></fa-icon>
+      </h3>
+      <p>No bulletins.</p>
+    </div>
   </ng-template>
   <ng-container *ngIf="bulletins.length > 0; else bulletinsEmpty">
     <ul>

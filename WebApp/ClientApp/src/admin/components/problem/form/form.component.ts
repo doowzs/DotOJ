@@ -1,8 +1,9 @@
 ﻿import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 
-import { ProblemEditDto, TestCase } from '../../../../app/interfaces/problem.interfaces';
-import { Languages } from '../../../../app/consts/languages.consts';
+import { Languages } from '../../../../consts/languages.consts';
+import { ProblemEditDto, TestCase } from '../../../../interfaces/problem.interfaces';
+import { faCheck, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-admin-problem-form',
@@ -10,6 +11,10 @@ import { Languages } from '../../../../app/consts/languages.consts';
   styleUrls: ['./form.component.css']
 })
 export class AdminProblemFormComponent implements OnInit, OnChanges {
+  faCheck = faCheck;
+  faPlus = faPlus;
+  faTimes = faTimes;
+
   @Input() public problem: ProblemEditDto;
   @Input() public disabled = false;
   @Output() public formSubmit: EventEmitter<ProblemEditDto> = new EventEmitter();

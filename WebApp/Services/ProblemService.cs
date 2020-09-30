@@ -70,9 +70,12 @@ namespace WebApp.Services
             var infos = new List<ProblemInfoDto>();
             foreach (var problem in problems.Items)
             {
-                var solved = await Context.Submissions
-                    .AnyAsync(s => s.ProblemId == problem.Id && s.UserId == userId && s.Verdict == Verdict.Accepted);
-                infos.Add(new ProblemInfoDto(problem, solved));
+                var query = Context.Submissions.Where(s => s.ProblemId == problem.Id);
+                var attempted = await query.AnyAsync(s => s.UserId == userId);
+                var solved = await query.AnyAsync(s => s.UserId == userId && s.Verdict == Verdict.Accepted);
+                var acceptedSubmissions = await query.CountAsync(s => s.Verdict == Verdict.Accepted);
+                var totalSubmissions = await query.CountAsync();
+                infos.Add(new ProblemInfoDto(problem, attempted, solved, acceptedSubmissions, totalSubmissions));
             }
 
             return new PaginatedList<ProblemInfoDto>(problems.TotalItems, pageIndex ?? 1, PageSize, infos);
@@ -82,14 +85,15 @@ namespace WebApp.Services
         {
             await EnsureProblemExistsAsync(id);
             await EnsureUserCanViewProblemAsync(id);
-            
+
             var userId = Accessor.HttpContext.User.GetSubjectId();
             var problem = await Context.Problems.FindAsync(id);
             await Context.Entry(problem).Collection(p => p.Submissions).LoadAsync();
+            var attempted = problem.Submissions.Any(s => s.UserId == userId);
             var solved = problem.Submissions.Any(s => s.UserId == userId && s.Verdict == Verdict.Accepted);
             var acceptedSubmissions = problem.Submissions.Count(s => s.Verdict == Verdict.Accepted);
             var totalSubmissions = problem.Submissions.Count;
-            return new ProblemViewDto(problem, solved, acceptedSubmissions, totalSubmissions);
+            return new ProblemViewDto(problem, attempted, solved, acceptedSubmissions, totalSubmissions);
         }
     }
 }

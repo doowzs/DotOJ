@@ -5,6 +5,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { MarkdownModule } from '../lib/markdown/markdown.module';
+import { DatetimeModule } from '../lib/datetime/datetime.module';
+import { EditorModule } from '../lib/editor/editor.module';
+import { VditorModule } from '../lib/vditor/vditor.module';
+
 import { AuthorizeGuard } from '../api-authorization/authorize.guard';
 import { ApiAuthorizationModule } from '../api-authorization/api-authorization.module';
 
@@ -19,94 +26,70 @@ import { AdminUserListComponent } from './components/user/list/list.component';
 import { AdminUserFormComponent } from './components/user/form/form.component';
 import { AdminUserEditorComponent } from './components/user/editor/editor.component';
 import { AdminContestListComponent } from './components/contest/list/list.component';
+import { AdminContestViewComponent } from './components/contest/view/view.component';
 import { AdminContestFormComponent } from './components/contest/form/form.component';
 import { AdminContestCreatorComponent } from './components/contest/creator/creator.component';
 import { AdminContestEditorComponent } from './components/contest/editor/editor.component';
 import { AdminContestRegistrationsComponent } from './components/contest/registrations/registrations.component';
 import { AdminProblemListComponent } from './components/problem/list/list.component';
+import { AdminProblemViewComponent } from './components/problem/view/view.component';
 import { AdminProblemFormComponent } from './components/problem/form/form.component';
 import { AdminProblemCreatorComponent } from './components/problem/creator/creator.component';
-import { AdminProblemArchiveComponent } from './components/problem/archive/archive.component';
 import { AdminProblemEditorComponent } from './components/problem/editor/editor.component';
-import { AdminProblemTestCasesComponent } from './components/problem/test-cases/test-cases.component';
+import { AdminProblemTestsComponent } from './components/problem/tests/tests.component';
+import { AdminProblemExportComponent } from './components/problem/export/export.component';
 import { AdminSubmissionListComponent } from './components/submission/list/list.component';
 import { AdminSubmissionFormComponent } from './components/submission/form/form.component';
 import { AdminSubmissionEditorComponent } from './components/submission/editor/editor.component';
 import { AdminSubmissionRejudgeComponent } from './components/submission/rejudge/rejudge.component';
-
-import { MarkdownModule } from '../lib/markdown/markdown.module';
-import { NzLayoutModule } from 'ng-zorro-antd/layout';
-import { NzMenuModule } from 'ng-zorro-antd/menu';
-import { NzCardModule } from 'ng-zorro-antd/card';
-import { NzPageHeaderModule } from 'ng-zorro-antd/page-header';
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzIconModule } from 'ng-zorro-antd/icon';
-import { NzFormModule } from 'ng-zorro-antd/form';
-import { NzInputModule } from 'ng-zorro-antd/input';
-import { NzSelectModule } from 'ng-zorro-antd/select';
-import { NzDatePickerModule } from 'ng-zorro-antd/date-picker';
-import { NzCheckboxModule } from 'ng-zorro-antd/checkbox';
-import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzPopconfirmModule } from 'ng-zorro-antd/popconfirm';
-import { NzDividerModule } from 'ng-zorro-antd/divider';
-import { NzTagModule } from 'ng-zorro-antd/tag';
-import { NzRadioModule } from 'ng-zorro-antd/radio';
-import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
-import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
 
 @NgModule({
   imports: [
     CommonModule,
     BrowserModule,
     BrowserAnimationsModule,
+    FormsModule,
     ReactiveFormsModule,
     RouterModule.forChild([
       {
         path: 'admin',
         component: AdminComponent,
         canActivate: [AuthorizeGuard, AdminGuard],
-        data: { roles: ['*'], breadcrumb: 'Admin' },
+        data: { roles: ['*'] },
         children: [
           { path: '', pathMatch: 'full', component: AdminDashboardComponent },
           {
             path: 'bulletin',
             canActivate: [AdminGuard],
-            data: { roles: ['Administrator'], breadcrumb: 'Bulletins' },
+            data: { roles: ['Administrator'] },
             children: [
               { path: '', pathMatch: 'full', component: AdminBulletinListComponent },
-              { path: 'new', component: AdminBulletinCreatorComponent, data: { breadcrumb: 'Create' } },
-              {
-                path: ':bulletinId',
-                component: AdminBulletinEditorComponent,
-                data: { breadcrumb: 'View' }
-              },
+              { path: 'new', component: AdminBulletinCreatorComponent },
+              { path: ':bulletinId', component: AdminBulletinEditorComponent },
             ]
           },
           {
             path: 'user',
             canActivate: [AdminGuard],
-            data: { roles: ['Administrator', 'UserManager'], breadcrumb: 'Users' },
+            data: { roles: ['Administrator', 'UserManager'] },
             children: [
               { path: '', pathMatch: 'full', component: AdminUserListComponent },
-              { path: ':userId', component: AdminUserEditorComponent, data: { breadcrumb: 'View' } }
+              { path: ':userId', component: AdminUserEditorComponent }
             ]
           },
           {
             path: 'contest',
             canActivate: [AdminGuard],
-            data: { roles: ['Administrator', 'ContestManager'], breadcrumb: 'Contests' },
+            data: { roles: ['Administrator', 'ContestManager'] },
             children: [
               { path: '', pathMatch: 'full', component: AdminContestListComponent },
-              { path: 'new', component: AdminContestCreatorComponent, data: { breadcrumb: 'Create' } },
+              { path: 'new', component: AdminContestCreatorComponent },
               {
-                path: ':contestId', data: { breadcrumb: 'View' },
+                path: ':contestId',
+                component: AdminContestViewComponent,
                 children: [
                   { path: '', pathMatch: 'full', component: AdminContestEditorComponent },
-                  {
-                    path: 'registrations',
-                    component: AdminContestRegistrationsComponent,
-                    data: { breadcrumb: 'Registrations' }
-                  }
+                  { path: 'registrations', component: AdminContestRegistrationsComponent }
                 ]
               }
             ]
@@ -114,24 +97,17 @@ import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
           {
             path: 'problem',
             canActivate: [AdminGuard],
-            data: { roles: ['Administrator', 'ContestManager'], breadcrumb: 'Problems' },
+            data: { roles: ['Administrator', 'ContestManager'] },
             children: [
               { path: '', pathMatch: 'full', component: AdminProblemListComponent },
-              { path: 'new', component: AdminProblemCreatorComponent, data: { breadcrumb: 'Create' } },
+              { path: 'new', component: AdminProblemCreatorComponent },
               {
-                path: 'archive',
-                component: AdminProblemArchiveComponent,
-                data: { breadcrumb: 'Archive' }
-              },
-              {
-                path: ':problemId', data: { breadcrumb: 'View' },
+                path: ':problemId',
+                component: AdminProblemViewComponent,
                 children: [
                   { path: '', pathMatch: 'full', component: AdminProblemEditorComponent },
-                  {
-                    path: 'test-cases',
-                    component: AdminProblemTestCasesComponent,
-                    data: { breadcrumb: 'Test Cases' }
-                  }
+                  { path: 'tests', component: AdminProblemTestsComponent },
+                  { path: 'export', component: AdminProblemExportComponent }
                 ]
               }
             ]
@@ -139,45 +115,23 @@ import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
           {
             path: 'submission',
             canActivate: [AdminGuard],
-            data: { roles: ['Administrator', 'SubmissionManager'], breadcrumb: 'Submissions' },
+            data: { roles: ['Administrator', 'SubmissionManager'] },
             children: [
               { path: '', pathMatch: 'full', component: AdminSubmissionListComponent },
-              {
-                path: 'rejudge',
-                component: AdminSubmissionRejudgeComponent,
-                data: { breadcrumb: 'Rejudge' }
-              },
-              {
-                path: ':submissionId',
-                component: AdminSubmissionEditorComponent,
-                data: { breadcrumb: 'View' }
-              }
+              { path: 'rejudge', component: AdminSubmissionRejudgeComponent },
+              { path: ':submissionId', component: AdminSubmissionEditorComponent }
             ]
           }
         ]
       }
     ]),
     ApiAuthorizationModule,
+    NgbModule,
+    FontAwesomeModule,
     MarkdownModule.forRoot(),
-    NzLayoutModule,
-    NzMenuModule,
-    NzCardModule,
-    NzPageHeaderModule,
-    NzButtonModule,
-    NzIconModule,
-    NzFormModule,
-    NzInputModule,
-    NzSelectModule,
-    NzDatePickerModule,
-    NzCheckboxModule,
-    NzTableModule,
-    NzPopconfirmModule,
-    NzDividerModule,
-    NzTagModule,
-    NzRadioModule,
-    NzBreadCrumbModule,
-    NzDropDownModule,
-    FormsModule
+    DatetimeModule.forRoot(),
+    EditorModule.forRoot(),
+    VditorModule.forRoot(),
   ],
   declarations: [
     AdminComponent,
@@ -190,16 +144,18 @@ import { NzDropDownModule } from 'ng-zorro-antd/dropdown';
     AdminUserFormComponent,
     AdminUserEditorComponent,
     AdminContestListComponent,
+    AdminContestViewComponent,
     AdminContestFormComponent,
     AdminContestCreatorComponent,
     AdminContestEditorComponent,
     AdminContestRegistrationsComponent,
     AdminProblemListComponent,
+    AdminProblemViewComponent,
     AdminProblemFormComponent,
     AdminProblemCreatorComponent,
-    AdminProblemArchiveComponent,
     AdminProblemEditorComponent,
-    AdminProblemTestCasesComponent,
+    AdminProblemTestsComponent,
+    AdminProblemExportComponent,
     AdminSubmissionListComponent,
     AdminSubmissionFormComponent,
     AdminSubmissionEditorComponent,

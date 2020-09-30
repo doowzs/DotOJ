@@ -1,47 +1,61 @@
-<nz-layout>
-  <app-header-main></app-header-main>
-  <nz-content>
-    <div class="container" *ngIf="list">
-      <h2>Contests</h2>
-      <div id="contests">
-        <nz-list nzItemLayout="horizontal">
-          <nz-list-item *ngFor="let contest of list.items">
-            <nz-list-item-meta>
-              <nz-list-item-meta-title><nz-tag>#{{ contest.id }}</nz-tag> {{ contest.title }}</nz-list-item-meta-title>
-            </nz-list-item-meta>
-            <span style="margin-right: 0.5rem">
-              <nz-tag nzColor="volcano" *ngIf="isContestRunning(contest)">Running</nz-tag>
-              <nz-tag nzColor="green" *ngIf="contest.isPublic">Public</nz-tag>
-              <nz-tag nzColor="red" *ngIf="!contest.isPublic && !contest.registered">Private</nz-tag>
-              <nz-tag nzColor="blue" *ngIf="!contest.isPublic && contest.registered">Registered</nz-tag>
-            </span>
-            <span>
-              {{ contest.beginTime.format('YYYY-MM-DD HH:mm') }}
-              -
-              {{ contest.endTime.format('YYYY-MM-DD HH:mm') }}
-            </span>
-            <ul nz-list-item-actions>
-              <nz-list-item-action>
-                <button nz-button [disabled]="!canEnterContest(contest)"
-                        [nzType]="isContestRunning(contest) ? 'primary' : 'default'"
-                        [routerLink]="['/contest', contest.id]">
-                  Enter
-                </button>
-              </nz-list-item-action>
-            </ul>
-          </nz-list-item>
-        </nz-list>
-      </div>
-      <div nz-row nzJustify="end">
-        <nz-pagination [nzPageIndex]="list.pageIndex" [nzPageSize]="list.pageSize"
-                       [nzTotal]="list.totalItems" [nzShowTotal]="paginationTotal"
-                       (nzPageIndexChange)="onPageIndexChange($event)"
-        ></nz-pagination>
-        <ng-template #paginationTotal let-range="range" let-total>
-          <span>{{ range[0] }} - {{ range[1] }} of {{ total }} items</span>
-        </ng-template>
-      </div>
+<app-header-main></app-header-main>
+<div class="container my-5">
+  <h2>Contests</h2>
+  <div *ngIf="list == null; else contestsLoaded" class="spinner-border" role="status"></div>
+  <ng-template #contestsLoaded>
+    <div *ngIf="list.items.length > 0; else noContests">
+      <table class="table">
+        <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Title</th>
+          <th scope="col">Type</th>
+          <th scope="col">Status</th>
+          <th scope="col">Period</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let contest of list.items">
+          <th scope="row">{{ contest.id }}</th>
+          <td>
+            <a *ngIf="canEnterContest(contest); else contestTitle" [routerLink]="['/contest', contest.id]">
+              {{ contest.title }}
+            </a>
+            <ng-template #contestTitle>
+              <span>{{ contest.title }}</span>
+            </ng-template>
+          </td>
+          <td>
+            <span *ngIf="contest.isPublic" class="text-success">Public</span>
+            <span *ngIf="!contest.isPublic" class="text-danger">Private</span>
+          </td>
+          <td>
+            <span *ngIf="now < contest.beginTime; else contestStarted" class="text-info">Pending</span>
+            <ng-template #contestStarted>
+              <span *ngIf="now <= contest.endTime" class="text-success">Running</span>
+              <span *ngIf="now > contest.endTime">Ended</span>
+            </ng-template>
+          </td>
+          <td>
+            {{ contest.beginTime.format('YYYY-MM-DD HH:mm') }}
+            - {{ contest.endTime.format('YYYY-MM-DD HH:mm') }}
+          </td>
+        </tr>
+        </tbody>
+      </table>
     </div>
-  </nz-content>
-  <app-footer-main></app-footer-main>
-</nz-layout>
+    <ng-template #noContests>
+      <div class="text-center">
+        <h3 class="text-secondary">
+          <fa-icon [icon]="faBoxOpen"></fa-icon>
+        </h3>
+        <p>No contests.</p>
+      </div>
+    </ng-template>
+    <ngb-pagination class="d-flex justify-content-center" [maxSize]="3" [rotate]="true"
+                    [collectionSize]="list.totalItems" [page]="list.pageIndex" [pageSize]="list.pageSize"
+                    [boundaryLinks]="false" (pageChange)="onPageIndexChange($event)"
+    ></ngb-pagination>
+  </ng-template>
+</div>
+<app-footer-main></app-footer-main>

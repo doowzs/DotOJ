@@ -1,32 +1,35 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a routerLink="/admin">Dashboard</a></li>
+    <li class="breadcrumb-item"><a routerLink="/admin/submission">Submissions</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Rejudge</li>
+  </ol>
+</nav>
 <h2>Rejudge Submissions</h2>
-<nz-divider></nz-divider>
 <p>Fill at least one of three fields:</p>
-<form nz-form [formGroup]="form" (ngSubmit)="submitForm(form.value)">
-  <nz-form-item>
-    <nz-form-label nzFor="contestId">Contest ID</nz-form-label>
-    <nz-form-control>
-      <input nz-input formControlName="contestId" id="contestId"/>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-label nzFor="problemId">Problem ID</nz-form-label>
-    <nz-form-control>
-      <input nz-input formControlName="problemId" id="problemId"/>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-label nzFor="submissionId">Submission ID</nz-form-label>
-    <nz-form-control>
-      <input nz-input formControlName="submissionId" id="submissionId"/>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-divider></nz-divider>
-  <div nz-row>
-    <div nz-col nzSpan="24">
-      <button nz-button nzType="primary" nzBlock [disabled]="!form.valid" type="button"
-              nz-popconfirm nzPopconfirmTitle="This will rejudge all specified submissions. Continue?"
-              (nzOnConfirm)="submitForm(form.value)">
-        <i nz-icon nzType="check"></i><span>Submit</span>
+<form class="my-3" [formGroup]="form" (ngSubmit)="submitForm(form.value)">
+  <div class="form-group row">
+    <label for="contest-id" class="col col-md-2 col-form-label">Contest ID</label>
+    <div class="col col-md-10">
+      <input class="form-control" id="contest-id" formControlName="contestId"/>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="problem-id" class="col col-md-2 col-form-label">Problem ID</label>
+    <div class="col col-md-10">
+      <input class="form-control" id="problem-id" formControlName="problemId"/>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="submission-id" class="col col-md-2 col-form-label">Submission ID</label>
+    <div class="col col-md-10">
+      <input class="form-control" id="submission-id" formControlName="submissionId"/>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-12">
+      <button class="btn btn-warning w-100" [disabled]="!form.valid">
+        <fa-icon [icon]="faRedo"></fa-icon><span>Rejudge</span>
       </button>
     </div>
   </div>

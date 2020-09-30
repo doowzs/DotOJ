@@ -3,9 +3,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { UserEditDto } from '../../../../app/interfaces/user.interfaces';
+import { UserEditDto } from '../../../../interfaces/user.interfaces';
 import { AdminUserService } from '../../../services/user.service';
 import { AuthorizeService } from '../../../../api-authorization/authorize.service';
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 
 @Component({
@@ -14,6 +15,9 @@ import { AuthorizeService } from '../../../../api-authorization/authorize.servic
   styleUrls: ['./editor.component.css']
 })
 export class AdminUserEditorComponent implements OnInit {
+  faEdit = faEdit;
+  faTrash = faTrash;
+
   public edit: boolean;
   public userId: string;
   public user: UserEditDto;
@@ -35,9 +39,10 @@ export class AdminUserEditorComponent implements OnInit {
       .subscribe(user => this.user = user);
   }
 
-  public editProblem() {
+  public editUser() {
     this.edit = true;
     this.router.navigate(['/admin/user', this.userId], {
+      replaceUrl: true,
       queryParams: { edit: true }
     });
   }
@@ -45,13 +50,15 @@ export class AdminUserEditorComponent implements OnInit {
   public updateUser(user: UserEditDto) {
     this.service.updateSingle(this.userId, user).subscribe(() => {
       this.edit = false;
-      this.router.navigate(['/admin/user', this.userId]);
+      this.router.navigate(['/admin/user', this.userId], { replaceUrl: true });
     }, error => console.error(error));
   }
 
   public deleteUser() {
-    this.service.deleteSingle(this.userId).subscribe(() => {
-      this.router.navigate(['/admin/user']);
-    }, error => console.error(error));
+    if (this.user && confirm('Are you sure to delete user ' + this.user.email + '?')) {
+      this.service.deleteSingle(this.userId).subscribe(() => {
+        this.router.navigate(['/admin/user']);
+      }, error => console.error(error));
+    }
   }
 }

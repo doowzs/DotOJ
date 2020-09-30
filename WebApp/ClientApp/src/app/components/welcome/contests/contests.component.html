@@ -1,39 +1,44 @@
 <h2>Current Contests</h2>
-<nz-skeleton *ngIf="contests == null; else contestsLoaded"></nz-skeleton>
+<div *ngIf="contests == null; else contestsLoaded" class="spinner-border" role="status"></div>
 <ng-template #contestsLoaded>
   <ng-template #contestsEmpty>
-    <nz-empty></nz-empty>
+    <div class="text-center">
+      <h3 class="text-secondary">
+        <fa-icon [icon]="faBoxOpen"></fa-icon>
+      </h3>
+      <p>No contests now.</p>
+    </div>
   </ng-template>
   <ng-container *ngIf="contests.length; else contestsEmpty">
-    <nz-card *ngFor="let contest of contests"
-             [nzTitle]="contestCardTitle"
-             [nzExtra]="contestCardExtra">
-      <div style="text-align: center;">
-        <nz-countdown *ngIf="now < contest.beginTime"
-                      [nzTitle]="'Before Start'"
-                      [nzValue]="contest.beginTime.unix() * 1000"
-        ></nz-countdown>
-        <nz-countdown *ngIf="now >= contest.beginTime && now < contest.endTime"
-                      [nzTitle]="'Until End'"
-                      [nzValue]="contest.endTime.unix() * 1000"
-        ></nz-countdown>
-        {{ contest.beginTime.format('MM-DD HH:mm') }} - {{ contest.endTime.format('MM-DD HH:mm') }}
+    <div *ngFor="let contest of contests" class="card text-center mt-3">
+      <div class="card-body">
+        <h5 class="card-title">{{ contest.title }}</h5>
+        <p class="mb-2">
+          <ng-container #contestIsRunning *ngIf="now >= contest.beginTime; else contestIsPending">
+            <ng-container *ngIf="(contest.isPublic || contest.registered); else contestIsPrivate">
+              <a class="btn btn-sm btn-success" [routerLink]="['/contest', contest.id]">
+                <fa-icon [icon]="faSignInAlt"></fa-icon><span>Enter</span>
+              </a>
+            </ng-container>
+            <ng-template #contestIsPrivate>
+              <a class="btn btn-sm btn-outline-danger disabled">
+                <fa-icon [icon]="faLock"></fa-icon><span>Private</span>
+              </a>
+            </ng-template>
+          </ng-container>
+          <ng-template #contestIsPending>
+            <a class="btn btn-sm btn-outline-secondary disabled">
+              <fa-icon [icon]="faClock"></fa-icon><span>Pending</span>
+            </a>
+          </ng-template>
+        </p>
+        <p class="mb-0">
+          <small>
+            {{ contest.beginTime.format('YYYY-MM-DD HH:mm') }}
+            - {{ contest.endTime.format('YYYY-MM-DD HH:mm') }}
+          </small>
+        </p>
       </div>
-      <ng-template #contestCardTitle>
-        <a *ngIf="canEnterContest(contest); else cannotEnterCardTitle"
-           [routerLink]="['/contest', contest.id]">
-          #{{ contest.id }}: {{ contest.title }}
-        </a>
-        <ng-template #cannotEnterCardTitle>
-          #{{ contest.id }}: {{ contest.title }}
-        </ng-template>
-      </ng-template>
-      <ng-template #contestCardExtra>
-        <nz-tag nzColor="volcano" *ngIf="now > contest.beginTime">Running</nz-tag>
-        <nz-tag nzColor="green" *ngIf="contest.isPublic">Public</nz-tag>
-        <nz-tag nzColor="red" *ngIf="!contest.isPublic && !contest.registered">Private</nz-tag>
-        <nz-tag nzColor="blue" *ngIf="!contest.isPublic && contest.registered">Registered</nz-tag>
-      </ng-template>
-    </nz-card>
+    </div>
   </ng-container>
 </ng-template>

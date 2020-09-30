@@ -36,6 +36,7 @@ namespace Data.Generics
             (this IQueryable<T> source, int pageIndex, int pageSize)
             where T : class
         {
+            if (pageIndex <= 0) pageIndex = 1;
             var total = source.Count();
             var items = source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
             return new PaginatedList<T>(total, pageIndex, pageSize, items);
@@ -45,6 +46,7 @@ namespace Data.Generics
             (this IQueryable<T> source, int pageIndex, int pageSize)
             where T : class
         {
+            if (pageIndex <= 0) pageIndex = 1;
             var total = await source.CountAsync();
             var items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
             return new PaginatedList<T>(total, pageIndex, pageSize, items);
@@ -54,6 +56,7 @@ namespace Data.Generics
             (this IQueryable<TE> source, Expression<Func<TE, TR>> selector, int pageIndex, int pageSize)
             where TE : class where TR : class
         {
+            if (pageIndex <= 0) pageIndex = 1;
             var total = source.Count();
             var items = source
                 .Skip((pageIndex - 1) * pageSize)
@@ -67,6 +70,7 @@ namespace Data.Generics
             (this IQueryable<TE> source, Expression<Func<TE, TR>> selector, int pageIndex, int pageSize)
             where TE : class where TR : class
         {
+            if (pageIndex <= 0) pageIndex = 1;
             var total = await source.CountAsync();
             var items = await source
                 .Skip((pageIndex - 1) * pageSize)
@@ -80,6 +84,7 @@ namespace Data.Generics
             Expression<Func<TE, TI>> include, Expression<Func<TE, TR>> selector, int pageIndex, int pageSize)
             where TE : class where TI : class where TR : class
         {
+            if (pageIndex <= 0) pageIndex = 1;
             var total = source.Count();
             var items = source
                 .Skip((pageIndex - 1) * pageSize)
@@ -94,6 +99,7 @@ namespace Data.Generics
             Expression<Func<TE, TI>> include, Expression<Func<TE, TR>> selector, int pageIndex, int pageSize)
             where TE : class where TI : class where TR : class
         {
+            if (pageIndex <= 0) pageIndex = 1;
             var total = await source.CountAsync();
             var items = await source
                 .Skip((pageIndex - 1) * pageSize)

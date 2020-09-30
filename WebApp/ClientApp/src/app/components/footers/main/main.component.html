@@ -1,5 +1,10 @@
-﻿<nz-footer>
-  {{ title }} {{ year }}, {{ author }} all rights reserved.
-  <a nz-button nzType="link" routerLink="/help">Help</a>
-  <a nz-button nzType="link" routerLink="/changelog">Changelog</a>
-</nz-footer>
+﻿<div class="mt-3 text-small text-center">
+  <p class="mb-2">
+    Server Time: {{ now.format('YYYY-MM-DD HH:mm:ss') }}
+  </p>
+  <p>
+    {{ title }} {{ year }}, {{ author }} all rights reserved.
+    <a class="ml-3" routerLink="/help">Help</a>
+    <a class="ml-3" routerLink="/changelog">Changelog</a>
+  </p>
+</div>

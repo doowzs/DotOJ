@@ -1,8 +1,9 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { SubmissionEditDto } from '../../../../interfaces/submission.interfaces';
 import { AdminSubmissionService } from '../../../services/submission.service';
-import { SubmissionEditDto } from '../../../../app/interfaces/submission.interfaces';
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-admin-submission-editor',
@@ -10,6 +11,9 @@ import { SubmissionEditDto } from '../../../../app/interfaces/submission.interfa
   styleUrls: ['./editor.component.css']
 })
 export class AdminSubmissionEditorComponent implements OnInit {
+  faEdit = faEdit;
+  faTrash = faTrash;
+
   public edit: boolean;
   public submissionId: number;
   public submission: SubmissionEditDto;
@@ -31,6 +35,7 @@ export class AdminSubmissionEditorComponent implements OnInit {
   public editSubmission() {
     this.edit = true;
     this.router.navigate(['/admin/submission', this.submissionId], {
+      replaceUrl: true,
       queryParams: { edit: true }
     });
   }
@@ -39,13 +44,15 @@ export class AdminSubmissionEditorComponent implements OnInit {
     this.service.updateSingle(submission).subscribe(updated => {
       this.edit = false;
       this.submission = updated;
-      this.router.navigate(['/admin/submission', this.submissionId]);
+      this.router.navigate(['/admin/submission', this.submissionId], { replaceUrl: true });
     }, error => console.error(error));
   }
 
   public deleteSubmission() {
-    this.service.deleteSingle(this.submissionId).subscribe(() => {
-      this.router.navigate(['/admin/submission']);
-    }, error => console.error(error));
+    if (confirm(`Are you sure to delete submission #${this.submission}?`)) {
+      this.service.deleteSingle(this.submissionId).subscribe(() => {
+        this.router.navigate(['/admin/submission']);
+      }, error => console.error(error));
+    }
   }
 }

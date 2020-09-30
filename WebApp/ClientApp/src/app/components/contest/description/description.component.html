@@ -1,42 +1,54 @@
-<div id="contest-description" *ngIf="contest">
-  <h2>
-    {{ contest.title }}
-    <span *ngIf="privileged" style="float: right;">
-      <small>
-        [<a nz-button nzType="link" nzDanger [routerLink]="['/admin/contest', contestId]">Edit</a>]
-      </small>
-    </span>
-  </h2>
-  <ng-container *ngIf="ended === false">
-    <nz-countdown nzTitle="Running" [nzValue]="contest.endTime.unix() * 1000"></nz-countdown>
+<div class="container my-5">
+  <ng-container *ngIf="contest">
+    <div class="text-center">
+      <h2>
+        {{ contest.title }}
+      </h2>
+      <p>
+        {{ contest.beginTime.format('YYYY-MM-DD HH:mm') }}
+        - {{ contest.endTime.format('YYYY-MM-DD HH:mm') }}
+      </p>
+      <span *ngIf="privileged" style="float: right;">
+        <a class="btn btn-sm btn-outline-danger" [routerLink]="['/admin/contest', contestId]">
+          <fa-icon [icon]="faEdit"></fa-icon><span>Edit Contest</span>
+        </a>
+      </span>
+    </div>
+    <markdown [data]="contest.description" katex></markdown>
+    <div *ngIf="contest.problems.length === 0; else contestProblems">
+      <div class="text-center">
+        <h3 class="text-secondary">
+          <fa-icon [icon]="faBoxOpen"></fa-icon>
+        </h3>
+        <p>This contest has no problem.</p>
+      </div>
+    </div>
+    <ng-template #contestProblems>
+      <table class="table my-3">
+        <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Title</th>
+          <th scope="col">Status</th>
+          <th scope="col">Statistics</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let problem of contest.problems">
+          <th scope="row">{{ problem.label }}</th>
+          <td><a [routerLink]="['/contest', contestId, 'problem', problem.id]">{{ problem.title }}</a></td>
+          <td>
+            <span *ngIf="problem.solved" class="text-success">
+              <fa-icon [icon]="faCheck"></fa-icon><span>Solved</span>
+            </span>
+            <span *ngIf="problem.attempted && !problem.solved" class="text-danger">
+              <fa-icon [icon]="faTimes"></fa-icon><span>Attempted</span>
+            </span>
+          </td>
+          <td>{{ problem.acceptedSubmissions }} / {{ problem.totalSubmissions }}</td>
+        </tr>
+        </tbody>
+      </table>
+    </ng-template>
   </ng-container>
-  <p>
-    {{ contest.beginTime.format('YYYY-MM-DD HH:mm') }} -
-    {{ contest.endTime.format('YYYY-MM-DD HH:mm') }}
-  </p>
-  <nz-divider nzText="Description" nzOrientation="left"></nz-divider>
-  <markdown [data]="contest.description" katex></markdown>
-  <nz-divider nzText="Rules" nzOrientation="left"></nz-divider>
-  <app-contest-rule [mode]="contest.mode"></app-contest-rule>
-  <nz-divider [nzText]="'Problems (' + contest.problems.length.toString() + ')'" nzOrientation="left"></nz-divider>
-  <nz-empty *ngIf="contest.problems.length === 0; else contestProblems"></nz-empty>
-  <ng-template #contestProblems>
-    <nz-list>
-      <nz-list-item *ngFor="let problem of contest.problems">
-        <nz-list-item-meta>
-          <nz-list-item-meta-title>
-            <nz-tag [nzColor]="problem.solved ? 'green' : null">{{ problem.label }}</nz-tag>
-            {{ problem.title }}
-          </nz-list-item-meta-title>
-        </nz-list-item-meta>
-        <nz-tag *ngIf="problem.solved" nzColor="green">Solved</nz-tag>
-        <nz-list-item-extra>
-          <button nz-button nzType="default"
-                  [routerLink]="['/contest', contestId, 'problem', problem.id]">
-            View
-          </button>
-        </nz-list-item-extra>
-      </nz-list-item>
-    </nz-list>
-  </ng-template>
 </div>

@@ -1,8 +1,9 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { ContestEditDto } from '../../../../interfaces/contest.interfaces';
 import { AdminContestService } from '../../../services/contest.service';
-import { ContestEditDto } from '../../../../app/interfaces/contest.interfaces';
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-admin-contest-editor',
@@ -10,6 +11,9 @@ import { ContestEditDto } from '../../../../app/interfaces/contest.interfaces';
   styleUrls: ['./editor.component.css']
 })
 export class AdminContestEditorComponent implements OnInit {
+  faEdit = faEdit;
+  faTrash = faTrash;
+
   public edit: boolean;
   public contestId: number;
   public contest: ContestEditDto;
@@ -31,6 +35,7 @@ export class AdminContestEditorComponent implements OnInit {
   public editContest() {
     this.edit = true;
     this.router.navigate(['/admin/contest', this.contestId], {
+      replaceUrl: true,
       queryParams: { edit: true }
     });
   }
@@ -38,7 +43,7 @@ export class AdminContestEditorComponent implements OnInit {
   public updateContest(contest: ContestEditDto) {
     this.service.updateSingle(contest).subscribe(() => {
       this.edit = false;
-      this.router.navigate(['/admin/contest', this.contestId]);
+      this.router.navigate(['/admin/contest', this.contestId], { replaceUrl: false });
     }, error => console.error(error));
   }
 

@@ -1,0 +1,23 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a routerLink="/admin">Dashboard</a></li>
+    <li class="breadcrumb-item"><a routerLink="/admin/contest">Contests</a></li>
+    <li class="breadcrumb-item active" aria-current="page">#{{ contestId }}</li>
+  </ol>
+</nav>
+<ul class="nav nav-tabs">
+  <li class="nav-item">
+    <a class="nav-link" [routerLink]="['/admin/contest', contestId]"
+       routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <fa-icon [icon]="faEdit"></fa-icon><span>View / Edit</span>
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" [routerLink]="['/admin/contest', contestId, 'registrations']" routerLinkActive="active">
+      <fa-icon [icon]="faUsers"></fa-icon><span>Registrations</span>
+    </a>
+  </li>
+</ul>
+<div class="m-3">
+  <router-outlet></router-outlet>
+</div>

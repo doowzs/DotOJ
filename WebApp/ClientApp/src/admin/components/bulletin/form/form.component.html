@@ -1,37 +1,33 @@
-﻿<form nz-form [formGroup]="form" (ngSubmit)="submitForm(form.value)">
-  <nz-form-item>
-    <nz-form-label nzRequired nzFor="weight">Weight</nz-form-label>
-    <nz-form-control>
-      <input nz-input formControlName="weight" id="weight"/>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-label nzRequired nzFor="content">Content</nz-form-label>
-    <nz-form-control>
-      <textarea nz-input formControlName="content" id="content" rows="10"></textarea>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-label nzFor="publishAt">Publish At</nz-form-label>
-    <nz-form-control>
-      <nz-date-picker nzFormat="yyyy-MM-dd HH:mm" [nzShowTime]="{ nzFormat: 'HH:mm' }"
-                      formControlName="publishAt" id="publishAt"
-      ></nz-date-picker>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-label nzFor="expireAt">Expire At</nz-form-label>
-    <nz-form-control>
-      <nz-date-picker nzFormat="yyyy-MM-dd HH:mm" [nzShowTime]="{ nzFormat: 'HH:mm' }"
-                      formControlName="expireAt" id="expireAt"
-      ></nz-date-picker>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-divider></nz-divider>
-  <div nz-row>
-    <div nz-col nzSpan="24">
-      <button nz-button nzType="primary" nzBlock [disabled]="!form.valid" type="submit">
-        <i nz-icon nzType="check"></i><span>Submit</span>
+﻿<form class="my-3" [formGroup]="form" (ngSubmit)="submitForm(form.value)">
+  <div class="form-group row">
+    <label for="weight" class="col col-md-1 col-form-label">Weight *</label>
+    <div class="col col-md-11">
+      <input class="form-control" id="weight" formControlName="weight"/>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="content" class="col col-md-1 col-form-label">Content *</label>
+    <div class="col col-md-11">
+      <vditor id="content" formControlName="content"></vditor>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="publishAt" class="col col-md-1 col-form-label">Publish</label>
+    <div class="col col-md-11">
+      <datetime id="publishAt" formControlName="publishAt"></datetime>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="expireAt" class="col col-md-1 col-form-label">Expires</label>
+    <div class="col col-md-11">
+      <datetime id="expireAt" formControlName="expireAt"></datetime>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+      <button class="btn btn-success w-100" [disabled]="!form.valid" type="submit">
+        <fa-icon [icon]="faCheck"></fa-icon>
+        <span>Submit</span>
       </button>
     </div>
   </div>

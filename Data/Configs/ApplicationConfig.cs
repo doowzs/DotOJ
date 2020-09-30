@@ -1,3 +1,4 @@
+using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.Configs
@@ -16,11 +17,13 @@ namespace Data.Configs
     {
         public string Title { get; }
         public string Author { get; }
+        public DateTime ServerTime { get; }
 
         public ApplicationConfigDto(ApplicationConfig config)
         {
             Title = config.Title;
             Author = config.Author;
+            ServerTime = DateTime.Now.ToUniversalTime();
         }
     }
 }

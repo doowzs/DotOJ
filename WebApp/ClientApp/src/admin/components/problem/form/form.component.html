@@ -1,113 +1,124 @@
-﻿<form nz-form [formGroup]="form" (ngSubmit)="submitForm(form.value)">
-  <nz-form-item>
-    <nz-form-label nzRequired nzFor="contest-id">Contest</nz-form-label>
-    <nz-form-control>
-      <input nz-input formControlName="contestId" id="contest-id"/>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-label nzRequired nzFor="title">Title</nz-form-label>
-    <nz-form-control>
-      <input nz-input formControlName="title" id="title"/>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-label nzRequired nzFor="description">Description</nz-form-label>
-    <nz-form-control>
-      <textarea nz-input formControlName="description" id="description" rows="8"></textarea>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-label nzRequired nzFor="input-format">Input Format</nz-form-label>
-    <nz-form-control>
-      <textarea nz-input formControlName="inputFormat" id="input-format" rows="5"></textarea>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-label nzRequired nzFor="output-format">Output Format</nz-form-label>
-    <nz-form-control>
-      <textarea nz-input formControlName="outputFormat" id="output-format" rows="5"></textarea>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-label nzFor="footnote">Footnote</nz-form-label>
-    <nz-form-control>
-      <textarea nz-input formControlName="footNote" id="footnote" rows="3"></textarea>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-label nzRequired nzFor="time-limit">Time Limit</nz-form-label>
-    <nz-form-control>
-      <nz-input-group nzSuffix="ms">
-        <input nz-input formControlName="timeLimit" id="time-limit"/>
-      </nz-input-group>
-    </nz-form-control>
-    <span style="width: 1rem;"></span>
-    <nz-form-label nzRequired nzFor="memory-limit">Memory Limit</nz-form-label>
-    <nz-form-control>
-      <nz-input-group nzSuffix="KiB">
-        <input nz-input formControlName="memoryLimit" id="memory-limit"/>
-      </nz-input-group>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-label nzRequired nzFor="hasSpecialJudge">Special Judge</nz-form-label>
-    <nz-form-control>
-      <nz-radio-group formControlName="hasSpecialJudge">
-        <label nz-radio nzValue="false">No</label>
-        <label nz-radio nzValue="true">Yes (C++17 with <code>testlib.h</code>)</label>
-      </nz-radio-group>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item *ngIf="form.get('hasSpecialJudge').value === 'true'">
-    <nz-form-label nzRequired nzFor="specialJudgeCode">SPJ Code</nz-form-label>
-    <nz-form-control>
-      <textarea nz-input formControlName="specialJudgeCode" id="specialJudgeCode" rows="10"></textarea>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-divider></nz-divider>
-  <ng-container *ngFor="let control of sampleCaseControls; index as index">
-    <div nz-row>
-      <div nz-col nzSpan="12">
-        <h4>Sample #{{ index + 1 }}</h4>
-      </div>
-      <div nz-col nzSpan="12" style="text-align: right;">
-        <button style="float: right;" *ngIf="sampleCaseControls.length > 1"
-                nz-button nzType="link" type="button" nzDanger [disabled]="disabled"
-                nz-popconfirm nzPopconfirmTitle="Are you sure?" (nzOnConfirm)="removeSampleCase(control)">
-          <i nz-icon nzType="delete"></i><span>Remove</span>
-        </button>
-      </div>
-    </div>
-    <nz-form-item>
-      <nz-form-label nzRequired [nzFor]="control.instances[0]">Input</nz-form-label>
-      <nz-form-control>
-        <textarea nz-input [formControlName]="control.instances[0]"
-                  [attr.id]="control.instances[0]" rows="5" class="monospace"
-        ></textarea>
-      </nz-form-control>
-      <span style="width: 1rem;"></span>
-      <nz-form-label nzRequired [nzFor]="control.instances[1]">Output</nz-form-label>
-      <nz-form-control>
-        <textarea nz-input [formControlName]="control.instances[1]"
-                  [attr.id]="control.instances[1]" rows="5" class="monospace"
-        ></textarea>
-      </nz-form-control>
-    </nz-form-item>
-  </ng-container>
-  <div nz-row>
-    <div nz-col nzSpan="24">
-      <button nz-button nzType="default" type="button" style="width: 100%;"
-              [disabled]="disabled" (click)="addSampleCase()">
-        <i nz-icon nzType="plus"></i><span>Add Sample Case</span>
-      </button>
+﻿<form class="my-3" [formGroup]="form" (ngSubmit)="submitForm(form.value)">
+  <div class="form-group row">
+    <label for="contest-id" class="col col-md-2 col-form-label">Contest ID *</label>
+    <div class="col col-md-10">
+      <input class="form-control" id="contest-id" formControlName="contestId"/>
     </div>
   </div>
-  <nz-divider></nz-divider>
-  <div nz-row>
-    <div nz-col nzSpan="24">
-      <button nz-button nzType="primary" nzBlock [disabled]="!form.valid" type="submit">
-        <i nz-icon nzType="check"></i><span>Submit</span>
+  <div class="form-group row">
+    <label for="title" class="col col-md-2 col-form-label">Title *</label>
+    <div class="col col-md-10">
+      <input class="form-control" id="title" formControlName="title"/>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="description" class="col col-md-2 col-form-label">Description *</label>
+    <div class="col col-md-10">
+      <vditor id="description" formControlName="description"></vditor>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="input-format" class="col col-md-2 col-form-label">Input Format *</label>
+    <div class="col col-md-10">
+      <vditor id="input-format" formControlName="inputFormat"></vditor>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="output-format" class="col col-md-2 col-form-label">Output Format *</label>
+    <div class="col col-md-10">
+      <vditor id="output-format" formControlName="outputFormat"></vditor>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="foot-note" class="col col-md-2 col-form-label">Foot Note</label>
+    <div class="col col-md-10">
+      <vditor id="foot-note" formControlName="footNote"></vditor>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="time-limit" class="col col-md-2 col-form-label">Time Limit *</label>
+    <div class="col col-md-10">
+      <div class="input-group">
+        <input id="time-limit" class="form-control" formControlName="timeLimit"/>
+        <div class="input-group-append">
+          <span class="input-group-text">ms</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="memory-limit" class="col col-md-2 col-form-label">Memory Limit *</label>
+    <div class="col col-md-10">
+      <div class="input-group">
+        <input id="memory-limit" class="form-control" formControlName="memoryLimit"/>
+        <div class="input-group-append">
+          <span class="input-group-text">KiB</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label class="col col-md-2 col-form-label">Special Judge *</label>
+    <div class="col col-md-10 py-2">
+      <div class="input-group">
+        <div class="custom-control custom-radio custom-control-inline">
+          <input type="radio" id="special-judge-no" class="custom-control-input"
+                 formControlName="hasSpecialJudge" value="false">
+          <label class="custom-control-label" for="special-judge-no">No</label>
+        </div>
+        <div class="custom-control custom-radio custom-control-inline">
+          <input type="radio" id="special-judge-testlib" class="custom-control-input"
+                 formControlName="hasSpecialJudge" value="true">
+          <label class="custom-control-label" for="special-judge-testlib">Yes (C++17 with <code>testlib</code>)</label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="form-group row" *ngIf="form.get('hasSpecialJudge').value === 'true'">
+    <label class="col col-md-2 col-form-label"></label>
+    <div class="col col-md-10">
+      <textarea class="form-control monospace" id="special-judge-code"
+                formControlName="specialJudgeCode" rows="10"></textarea>
+    </div>
+  </div>
+  <hr/>
+  <h3>
+    Sample Cases
+    <span class="float-right">
+      <button class="btn btn-success" type="button" [disabled]="disabled" (click)="addSampleCase()">
+        <fa-icon [icon]="faPlus"></fa-icon><span>Add Sample Case</span>
+      </button>
+    </span>
+  </h3>
+  <ng-container *ngFor="let control of sampleCaseControls; index as index">
+    <h4 class="my-3">
+      Sample #{{ index + 1 }}
+      <span *ngIf="sampleCaseControls.length > 1" class="float-right">
+          <button class="btn btn-sm text-danger" type="button"
+                  [disabled]="disabled" (click)="removeSampleCase(control)">
+            <fa-icon [icon]="faTimes"></fa-icon><span>Delete #{{ index + 1 }}</span>
+          </button>
+        </span>
+    </h4>
+    <div class="row">
+      <div class="col col-6">
+        <label [for]="control.instances[0]">Input</label>
+        <textarea class="form-control monospace" [formControlName]="control.instances[0]"
+                  [attr.id]="control.instances[0]" rows="5"></textarea>
+      </div>
+      <div class="col col-6">
+        <label [for]="control.instances[1]">Output</label>
+        <textarea class="form-control monospace" [formControlName]="control.instances[1]"
+                  [attr.id]="control.instances[1]" rows="5"></textarea>
+      </div>
+    </div>
+  </ng-container>
+  <hr/>
+  <div class="row">
+    <div class="col">
+      <button class="btn btn-success w-100" [disabled]="!form.valid" type="submit">
+        <fa-icon [icon]="faCheck"></fa-icon>
+        <span>Submit</span>
       </button>
     </div>
   </div>

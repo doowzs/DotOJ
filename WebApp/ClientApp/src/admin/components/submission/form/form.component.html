@@ -1,94 +1,105 @@
-﻿<form nz-form [formGroup]="form" (ngSubmit)="submitForm(form.value)">
-  <nz-form-item>
-    <nz-form-label nzFor="userId">User ID</nz-form-label>
-    <nz-form-control>
-      <input nz-input formControlName="userId" id="userId"/>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-label nzFor="problemId">Problem ID</nz-form-label>
-    <nz-form-control>
-      <input nz-input formControlName="problemId" id="problemId"/>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-label nzFor="language">Language</nz-form-label>
-    <nz-form-control>
-      <input nz-input formControlName="language" id="language"/>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-label nzFor="code">Code</nz-form-label>
-    <nz-form-control>
-      <textarea nz-input formControlName="code" id="code" rows="10" class="monospace"></textarea>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-label nzFor="verdict" nzRequired>Verdict</nz-form-label>
-    <nz-form-control>
-      <nz-select formControlName="verdict" id="verdict" nzPlaceHolder="Verdict">
-        <nz-option *ngFor="let verdict of Verdicts"
-                   [nzValue]="verdict.code" [nzLabel]="'[' + verdict.code + '] - ' + verdict.name">
-          <span>[{{ verdict.code }}] - {{ verdict.name }}</span>
-        </nz-option>
-      </nz-select>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-label nzFor="time">Time</nz-form-label>
-    <nz-form-control>
-      <nz-input-group nzSuffix="ms">
-        <input nz-input formControlName="time" id="time"/>
-      </nz-input-group>
-    </nz-form-control>
-    <span style="width: 1rem;"></span>
-    <nz-form-label nzFor="memory">Memory</nz-form-label>
-    <nz-form-control>
-      <nz-input-group nzSuffix="KiB">
-        <input nz-input formControlName="memory" id="memory"/>
-      </nz-input-group>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-label nzFor="failedOn">Failed On</nz-form-label>
-    <nz-form-control>
-      <input nz-input formControlName="failedOn" id="failedOn"/>
-    </nz-form-control>
-    <span style="width: 1rem;"></span>
-    <nz-form-label nzFor="score">Score</nz-form-label>
-    <nz-form-control>
-      <nz-input-group nzSuffix="%">
-        <input nz-input formControlName="score" id="score"/>
-      </nz-input-group>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-label nzFor="message" nzRequired>Message</nz-form-label>
-    <nz-form-control>
-      <textarea nz-input formControlName="message" id="message" rows="5" class="monospace"></textarea>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-label nzFor="createdAt">Created At</nz-form-label>
-    <nz-form-control>
-      <input nz-input formControlName="createdAt" id="createdAt"/>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-form-item>
-    <nz-form-label nzFor="judgedAt">Judged At</nz-form-label>
-    <nz-form-control>
-      <input nz-input formControlName="judgedAt" id="judgedAt"/>
-    </nz-form-control>
-    <nz-form-label nzFor="judgedBy">Judged By</nz-form-label>
-    <nz-form-control>
-      <input nz-input formControlName="judgedBy" id="judgedBy"/>
-    </nz-form-control>
-  </nz-form-item>
-  <nz-divider></nz-divider>
-  <div nz-row>
-    <div nz-col nzSpan="24">
-      <button nz-button nzType="primary" nzBlock [disabled]="!form.valid" type="submit">
-        <i nz-icon nzType="check"></i><span>Submit</span>
+﻿<form class="my-3" [formGroup]="form" (ngSubmit)="submitForm(form.value)">
+  <div class="form-group row">
+    <label for="user-id" class="col col-md-2 col-form-label">User ID</label>
+    <div class="col col-md-10">
+      <input class="form-control" id="user-id" formControlName="userId" [disabled]="true"/>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="problem-id" class="col col-md-2 col-form-label">Problem ID</label>
+    <div class="col col-md-10">
+      <input class="form-control" id="problem-id" formControlName="problemId" [disabled]="true"/>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="language" class="col col-md-2 col-form-label">Langauge</label>
+    <div class="col col-md-10">
+      <input class="form-control" id="language" formControlName="language" [disabled]="true"/>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label class="col col-md-2 col-form-label">Code</label>
+    <div class="col col-md-10" style="height: 50vh;">
+      <editor [program]="submission.program"></editor>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="verdict" class="col col-md-2 col-form-label">Verdict *</label>
+    <div class="col col-md-10">
+      <select id="verdict" class="custom-control custom-select" formControlName="verdict">
+        <option *ngFor="let verdict of Verdicts"
+                [value]="verdict.code" [label]="'[' + verdict.code + '] - ' + verdict.name">
+        </option>
+      </select>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="time" class="col col-md-2 col-form-label">Time</label>
+    <div class="col col-md-10">
+      <div class="input-group">
+        <input id="time" class="form-control" formControlName="time"/>
+        <div class="input-group-append">
+          <span class="input-group-text">ms</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="memory" class="col col-md-2 col-form-label">Memory</label>
+    <div class="col col-md-10">
+      <div class="input-group">
+        <input id="memory" class="form-control" formControlName="memory" [disabled]="true"/>
+        <div class="input-group-append">
+          <span class="input-group-text">KiB</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="failed-on" class="col col-md-2 col-form-label">Failed On</label>
+    <div class="col col-md-10">
+      <input class="form-control" id="failed-on" formControlName="failedOn" [disabled]="true"/>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="score" class="col col-md-2 col-form-label">Score</label>
+    <div class="col col-md-10">
+      <div class="input-group">
+        <input id="score" class="form-control" formControlName="score" [disabled]="true"/>
+        <div class="input-group-append">
+          <span class="input-group-text">%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="message" class="col col-md-2 col-form-label">Message</label>
+    <div class="col col-md-10">
+      <textarea id="message" class="form-control monospace" formControlName="message" rows="5"></textarea>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="created-at" class="col col-md-2 col-form-label">Created At</label>
+    <div class="col col-md-10">
+      <input class="form-control" id="created-at" formControlName="createdAt" [disabled]="true"/>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="judged-at" class="col col-md-2 col-form-label">Judged At</label>
+    <div class="col col-md-10">
+      <input class="form-control" id="judged-at" formControlName="judgedAt" [disabled]="true"/>
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="judged-by" class="col col-md-2 col-form-label">Judged By</label>
+    <div class="col col-md-10">
+      <input class="form-control" id="judged-by" formControlName="judgedBy" [disabled]="true"/>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-12">
+      <button class="btn btn-success w-100" [disabled]="!form.valid" type="submit">
+        <fa-icon [icon]="faCheck"></fa-icon><span>Submit</span>
       </button>
     </div>
   </div>

@@ -1,9 +1,9 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { PaginatedList } from '../../../../interfaces/pagination.interfaces';
+import { UserInfoDto } from '../../../../interfaces/user.interfaces';
 import { AdminUserService } from '../../../services/user.service';
-import { PaginatedList } from '../../../../app/interfaces/pagination.interfaces';
-import { UserInfoDto } from '../../../../app/interfaces/user.interfaces';
 
 @Component({
   selector: 'app-admin-user-list',

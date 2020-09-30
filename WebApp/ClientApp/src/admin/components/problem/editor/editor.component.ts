@@ -1,8 +1,9 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { ProblemEditDto } from '../../../../interfaces/problem.interfaces';
 import { AdminProblemService } from '../../../services/problem.service';
-import { ProblemEditDto } from '../../../../app/interfaces/problem.interfaces';
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-admin-problem-editor',
@@ -10,6 +11,9 @@ import { ProblemEditDto } from '../../../../app/interfaces/problem.interfaces';
   styleUrls: ['./editor.component.css']
 })
 export class AdminProblemEditorComponent implements OnInit {
+  faEdit = faEdit;
+  faTrash = faTrash;
+
   public edit: boolean;
   public problemId: number;
   public problem: ProblemEditDto;
@@ -31,6 +35,7 @@ export class AdminProblemEditorComponent implements OnInit {
   public editProblem() {
     this.edit = true;
     this.router.navigate(['/admin/problem', this.problemId], {
+      replaceUrl: true,
       queryParams: { edit: true }
     });
   }
@@ -38,13 +43,15 @@ export class AdminProblemEditorComponent implements OnInit {
   public updateProblem(problem: ProblemEditDto) {
     this.service.updateSingle(problem).subscribe(() => {
       this.edit = false;
-      this.router.navigate(['/admin/problem', this.problemId]);
+      this.router.navigate(['/admin/problem', this.problemId], { replaceUrl: true });
     }, error => console.error(error));
   }
 
   public deleteProblem() {
-    this.service.deleteSingle(this.problemId).subscribe(() => {
-      this.router.navigate(['/admin/problem']);
-    }, error => console.error(error));
+    if (confirm(`Are you sure to delete problem #${this.problemId}: '${this.problem.title}'?`)) {
+      this.service.deleteSingle(this.problemId).subscribe(() => {
+        this.router.navigate(['/admin/problem']);
+      }, error => console.error(error));
+    }
   }
 }

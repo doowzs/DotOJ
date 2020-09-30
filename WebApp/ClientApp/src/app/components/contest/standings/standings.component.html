@@ -1,42 +1,52 @@
-﻿<h2>
-  Standings
-  <span style="float: right;">
-      <button nz-button nzSize="small" nzShape="circle" style="margin-right: 0.5rem;"
-              [disabled]="loading" (click)="exportStandings()">
-        <i nz-icon nzType="download"></i>
+﻿<div class="container my-5">
+  <div class="text-center" *ngIf="contest">
+    <h2>
+      {{ contest.title }}
+    </h2>
+    <p>
+      {{ contest.beginTime.format('YYYY-MM-DD HH:mm') }}
+      - {{ contest.endTime.format('YYYY-MM-DD HH:mm') }}
+    </p>
+  </div>
+  <h2>
+    Standings
+    <span class="float-right">
+      <button class="btn btn-outline-success mr-3" [disabled]="loading" (click)="exportStandings()">
+        <fa-icon [icon]="faDownload"></fa-icon><span>Export</span>
       </button>
-      <button nz-button nzSize="small" nzShape="circle" style="margin-right: 0.5rem;"
-              [nzLoading]="loading" (click)="loadRegistrations()">
-        <i nz-icon nzType="sync"></i>
+      <button class="btn btn-outline-primary" [disabled]="loading" (click)="loadRegistrations()">
+        <fa-icon [icon]="faSyncAlt"></fa-icon><span>Refresh</span>
       </button>
-  </span>
-</h2>
-<nz-table #standingsTable *ngIf="contest && registrations"
-          [nzFrontPagination]="false" [nzShowPagination]="false" [nzData]="registrations">
-  <thead>
-  <tr>
-    <th>Rank</th>
-    <th>Contestant</th>
-    <th *ngFor="let problem of contest.problems">
-      {{ problem.label }}
-    </th>
-    <th>Score</th>
-    <th>Penalties</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr *ngFor="let registration of standingsTable.data">
-    <td>{{ registration.rank === -1 ? '-' : registration.rank.toString() }}</td>
-    <td><span nz-tooltip [nzTooltipTitle]="registration.contestantId">
-      {{ registration.contestantName + (registration.isParticipant ? '' : '*') }}
-    </span></td>
-    <td *ngFor="let problem of contest.problems">
-      <ng-container *ngIf="getProblemItem(registration, problem) as problemItem">
-        <span>{{ problemItem[0] }}</span><br/><span>{{ problemItem[1] }}</span>
-      </ng-container>
-    </td>
-    <td>{{ registration.score }}</td>
-    <td>{{ registration.penalties }}</td>
-  </tr>
-  </tbody>
-</nz-table>
+    </span>
+  </h2>
+  <table class="table table-hover my-3">
+    <thead>
+    <tr>
+      <th>Rank</th>
+      <th>Contestant</th>
+      <th *ngFor="let problem of contest.problems">
+        {{ problem.label }}
+      </th>
+      <th>Score</th>
+      <th>Penalties</th>
+    </tr>
+    </thead>
+    <tbody *ngIf="contest && registrations">
+    <tr *ngFor="let registration of registrations">
+      <td style="vertical-align: middle;">{{ registration.rank === -1 ? '-' : registration.rank.toString() }}</td>
+      <td style="vertical-align: middle;">
+        <span nz-tooltip [nzTooltipTitle]="registration.contestantId">
+          {{ registration.contestantName + (registration.isParticipant ? '' : '*') }}
+        </span>
+      </td>
+      <td *ngFor="let problem of contest.problems">
+        <ng-container *ngIf="getProblemItem(registration, problem) as problemItem">
+          <span>{{ problemItem[0] }}</span><br/><span>{{ problemItem[1] }}</span>
+        </ng-container>
+      </td>
+      <td style="vertical-align: middle;">{{ registration.score }}</td>
+      <td style="vertical-align: middle;">{{ registration.penalties }}</td>
+    </tr>
+    </tbody>
+  </table>
+</div>

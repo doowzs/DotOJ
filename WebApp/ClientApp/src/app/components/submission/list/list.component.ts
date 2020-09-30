@@ -1,20 +1,18 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Title } from '@angular/platform-browser';
 import { interval, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { NzTableFilterList, NzTableQueryParams } from 'ng-zorro-antd/table';
-import { NzDrawerRef, NzDrawerService } from 'ng-zorro-antd/drawer';
 import * as moment from 'moment';
 
-import { SubmissionService } from '../../../services/submission.service';
-import { PaginatedList } from '../../../interfaces/pagination.interfaces';
-import { SubmissionInfoDto } from '../../../interfaces/submission.interfaces';
-import { ContestService } from '../../../services/contest.service';
-import { ContestViewDto } from '../../../interfaces/contest.interfaces';
-import { VerdictInfo, Verdicts, VerdictStage } from '../../../consts/verdicts.consts';
-import { SubmissionDetailComponent } from '../detail/detail.component';
+import { Verdicts, VerdictStage } from '../../../../consts/verdicts.consts';
+import { PaginatedList } from '../../../../interfaces/pagination.interfaces';
+import { ContestViewDto } from '../../../../interfaces/contest.interfaces';
+import { SubmissionInfoDto } from '../../../../interfaces/submission.interfaces';
 import { AuthorizeService, IUser } from '../../../../api-authorization/authorize.service';
-import { Title } from '@angular/platform-browser';
+import { ContestService } from '../../../services/contest.service';
+import { SubmissionService } from '../../../services/submission.service';
+import { faSearch, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-submission-list',
@@ -23,20 +21,21 @@ import { Title } from '@angular/platform-browser';
 })
 export class SubmissionListComponent implements OnInit, OnDestroy {
   Verdicts = Verdicts;
+  faSearch = faSearch;
+  faSyncAlt = faSyncAlt;
+
+  @Input() inline: boolean = false;
 
   public user: IUser;
   public contestId: number | null = null;
   public contest: ContestViewDto;
-  public problemFilterList: NzTableFilterList;
-  public verdictFilterList: NzTableFilterList;
 
   public loading = true;
-  public problemId: number | null = null;
-  public userId: string | null = null;
-  public verdict: number | null = null;
+  public contestantId: string = '';
+  public problemId: string = '';
+  public verdict: string = '';
   public pageIndex: number;
   public list: PaginatedList<SubmissionInfoDto>;
-  public submissionDrawer: NzDrawerRef;
   private destroy$ = new Subject();
 
   constructor(
@@ -45,43 +44,27 @@ export class SubmissionListComponent implements OnInit, OnDestroy {
     private router: Router,
     private service: SubmissionService,
     private contestService: ContestService,
-    private drawer: NzDrawerService,
     private auth: AuthorizeService
   ) {
     this.contestId = this.route.snapshot.parent.params.contestId;
+    this.contestantId = this.route.snapshot.queryParams.contestantId;
     this.problemId = this.route.snapshot.queryParams.problemId;
-    this.userId = this.route.snapshot.queryParams.userId;
     this.verdict = this.route.snapshot.queryParams.verdict;
     this.pageIndex = this.route.snapshot.queryParams.pageIndex ?? 1;
-
-    this.verdictFilterList = [];
-    for (let i = 0; i < Verdicts.length; ++i) {
-      const verdict = Verdicts[i];
-      this.verdictFilterList.push({
-        text: verdict.name,
-        value: verdict.code,
-        byDefault: verdict.code === Number(this.verdict)
-      });
-    }
   }
 
   ngOnInit() {
     this.auth.getUser().subscribe(user => this.user = user);
-    this.contestService.getSingle(this.contestId)
-      .subscribe(contest => {
-        this.contest = contest;
-        this.title.setTitle(contest.title + ' - Submissions');
-        this.problemFilterList = [];
-        for (let i = 0; i < contest.problems.length; ++i) {
-          const problem = contest.problems[i];
-          this.problemFilterList.push({
-            text: this.getProblemLabel(problem.id) + ': ' + problem.title,
-            value: problem.id,
-            byDefault: problem.id === Number(this.problemId)
-          });
-        }
-        this.loadSubmissions();
-      });
+    if (this.contestId) {
+      this.contestService.getSingle(this.contestId)
+        .subscribe(contest => {
+          this.contest = contest;
+          this.title.setTitle(contest.title + ' - Submissions');
+          this.loadSubmissions();
+        });
+    } else {
+      this.loadSubmissions();
+    }
     interval(2000)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
@@ -100,12 +83,18 @@ export class SubmissionListComponent implements OnInit, OnDestroy {
   }
 
   public getProblemLabel(problemId: number): string {
-    return this.contest.problems.find(p => p.id === problemId).label;
+    if (this.contest) {
+      return this.contest.problems.find(p => p.id === problemId).label;
+    } else {
+      return undefined;
+    }
   }
 
   public loadSubmissions() {
     this.loading = true;
-    this.service.getPaginatedList(this.contestId, this.problemId, this.userId, this.verdict, this.pageIndex)
+    const problemId = this.problemId === '' ? null : Number(this.problemId);
+    const verdict = this.verdict === '' ? null : Number(this.verdict);
+    this.service.getPaginatedList(this.contestId, null, this.contestantId, problemId, verdict, null, this.pageIndex)
       .subscribe(list => {
         this.list = list;
         this.loading = false;
@@ -136,36 +125,34 @@ export class SubmissionListComponent implements OnInit, OnDestroy {
       });
   }
 
-  public onQueryParamsChange(params: NzTableQueryParams) {
-    const isInit = this.route.snapshot.queryParams.pageIndex == null;
-    this.problemId = params.filter.find(f => f.key === 'problemId').value;
-    this.verdict = params.filter.find(f => f.key === 'verdict').value;
-    this.pageIndex = params.pageIndex;
-    this.router.navigate(['/contest', this.contestId, 'submissions'], {
-      queryParams: {
-        problemId: this.problemId,
-        userId: this.userId,
-        verdict: this.verdict,
-        pageIndex: this.pageIndex
-      }
-    });
-    if (!isInit) {
-      this.loadSubmissions();
-    }
+  public onPageChange(pageIndex: number) {
+    this.pageIndex = pageIndex;
+    this.onQueryParamsChange();
+  }
+
+  public onQueryParamsChange() {
+    this.router.navigate(this.inline ? ['/contest', this.contestId, 'submissions'] : ['/submissions'],
+      {
+        replaceUrl: true,
+        queryParams: {
+          contestantId: this.contestantId,
+          problemId: this.problemId,
+          verdict: this.verdict,
+          pageIndex: this.pageIndex
+        }
+      });
+    this.loadSubmissions();
   }
 
   public canViewSubmission(submission: SubmissionInfoDto): boolean {
-    return (moment().isAfter(this.contest.endTime)) || (this.user && submission.userId === this.user.sub);
+    if (this.contest) {
+      return (moment().isAfter(this.contest.endTime)) || (this.user && submission.userId === this.user.sub);
+    } else {
+      return false;
+    }
   }
 
-  public viewSubmissionDetail(submission: SubmissionInfoDto) {
-    this.submissionDrawer = this.drawer.create<SubmissionDetailComponent>({
-      nzWidth: '50vw',
-      nzTitle: 'Submission #' + submission.id.toString(),
-      nzContent: SubmissionDetailComponent,
-      nzContentParams: {
-        submissionId: submission.id
-      }
-    });
+  public viewSubmissionPopup(submission: SubmissionInfoDto): void {
+    window.open('/submission/' + submission.id, '', 'width=930,height=690');
   }
 }

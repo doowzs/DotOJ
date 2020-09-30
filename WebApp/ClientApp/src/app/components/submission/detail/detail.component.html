@@ -1,32 +1,37 @@
-<nz-skeleton *ngIf="!submission"></nz-skeleton>
-<ng-container *ngIf="submission">
-  <nz-descriptions>
-    <nz-descriptions-item nzTitle="Contestant">{{ submission.contestantId }}</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Language">{{ submission.program.languageInfo.name }}</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Length">{{ submission.codeBytes }} bytes</nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Verdict">
-      <nz-badge [nzColor]="submission.verdictInfo.color"></nz-badge>
-      <app-submission-verdict [submission]="submission"></app-submission-verdict>
-    </nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Time">
-      <ng-container *ngIf="submission.time">{{ submission.time }} ms</ng-container>
-    </nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Memory">
-      <ng-container *ngIf="submission.memory">{{ submission.memory }} KiB</ng-container>
-    </nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Created At">
-      {{ submission.createdAt.format('YYYY-MM-DD HH:mm') }}
-    </nz-descriptions-item>
-    <nz-descriptions-item nzTitle="Judged At" nzSpan="2" *ngIf="submission.judgedAt">
-      {{ submission.judgedAt.format('YYYY-MM-DD HH:mm') }} by {{ submission.judgedBy }}
-    </nz-descriptions-item>
-  </nz-descriptions>
-  <ng-container *ngIf="submission.message">
-    <nz-divider></nz-divider>
-    <h3>Message</h3>
-    <pre>{{ submission.message }}</pre>
-  </ng-container>
-  <nz-divider></nz-divider>
-  <h3>Source Code</h3>
-  <pre [attr.lang]="submission.program.languageInfo.name">{{ submission.program.code }}</pre>
-</ng-container>
+<div class="card">
+  <div class="card-header">
+    <h2 class="d-flex">
+      Submission #{{ submissionId }}
+    </h2>
+    <h2 *ngIf="submission" class="text-right" style="position: fixed; top:0.5rem; right: 0.5rem; z-index: 1200;">
+      <app-submission-verdict [submission]="submission" [badge]="true"></app-submission-verdict>
+      <span class="badge badge-warning ml-1 d-none d-md-inline-block">Problem #{{ submission.problemId }}</span><br/>
+      <span *ngIf="submission.judgedAt" class="badge badge-info d-none d-md-inline-block">
+          {{ submission.judgedAtMoment.format('YYYY-MM-DD HH:mm:ss') }} @ {{ submission.judgedBy }}
+        </span>
+    </h2>
+    <div *ngIf="submission" class="m-3">
+      <p>Contestant: {{ submission.contestantId }} ({{ submission.contestantName }})</p>
+      <p>Submitted: {{ submission.createdAtMoment.format('YYYY-MM-DD HH:mm:ss') }}</p>
+      <p>
+        Language:
+        <span class="mx-2">{{ submission.program.languageInfo.name }}</span>
+        <span>{{ submission.codeBytes }}bytes</span>
+      </p>
+      <p *ngIf="!!submission.time && !!submission.memory">
+        Statistics:
+        <span class="mx-2">{{ submission.time }}ms</span>
+        <span>{{ submission.memory }}KiB</span>
+      </p>
+      <div *ngIf="!!submission.message">
+        <h3>Message</h3>
+        <pre>{{ submission.message }}</pre>
+      </div>
+    </div>
+  </div>
+  <div class="card-body p-0" *ngIf="submission">
+    <div class="vh-100">
+      <editor [disabled]="true" [submissionId]="submissionId" [program]="submission.program"></editor>
+    </div>
+  </div>
+</div>

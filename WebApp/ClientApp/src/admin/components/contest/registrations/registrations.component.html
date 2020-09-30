@@ -1,59 +1,72 @@
 ﻿<h2>Registrations of Contest <span *ngIf="contest">#{{ contest.id }}</span></h2>
-<nz-divider></nz-divider>
-<div nz-row [nzGutter]="20">
-  <div nz-col [nzSpan]="16">
-    <nz-form-item>
-      <nz-form-label nzFor="contestId" nzRequired>Contest ID</nz-form-label>
-      <nz-form-control>
-        <input #copyInput nz-input placeholder="Contest ID" id="contestId"/>
-      </nz-form-control>
-    </nz-form-item>
+<hr/>
+<form>
+  <div class="form-group row">
+    <label for="contest-id" class="col col-md-2 col-form-label">Copy From Contest *</label>
+    <div class="col col-md-8">
+      <input #copyInput id="contest-id" class="form-control" placeholder="Another Contest ID"/>
+    </div>
+    <div class="col col-md-2">
+      <button class="btn btn-primary w-100" [disabled]="!copyInput.value"
+              (click)="copyRegistrations(copyInput.value)">
+        <fa-icon [icon]="faCopy"></fa-icon>
+        <span>Copy</span>
+      </button>
+    </div>
   </div>
-  <div nz-col [nzSpan]="8">
-    <button nz-button nzType="primary" style="width: 100%;"
-            nz-popconfirm nzPopconfirmTitle="This will override all registrations of this contest. Continue?"
-            (nzOnConfirm)="copyRegistrations(copyInput.value)">
-      <i nz-icon nzType="copy"></i><span>Copy from contest</span>
-    </button>
+</form>
+<hr/>
+<div class="form-group row">
+  <label class="col col-md-2 col-form-label">Registration options</label>
+  <div class="col col-md-10 py-2">
+    <div class="form-check form-check-inline">
+      <input type="checkbox" class="form-check-input" id="is-participant" [(ngModel)]="isParticipant">
+      <label class="form-check-label" for="is-participant">As Participant</label>
+    </div>
+    <div class="form-check form-check-inline">
+      <input type="checkbox" class="form-check-input" id="is-contest-manager" [(ngModel)]="isContestManager">
+      <label class="form-check-label" for="is-contest-manager">As Contest Manager</label>
+    </div>
   </div>
 </div>
-<nz-divider></nz-divider>
-<div nz-row>
-  <p>
-    Registration options: &nbsp;
-    <label nz-checkbox [(ngModel)]="isParticipant">Is Participant</label>
-    <label nz-checkbox [(ngModel)]="isContestManager">Is Contest Manager</label>
-  </p>
-</div>
-<nz-table #userTable *ngIf="list && registrations" [nzData]="list.items" [nzFrontPagination]="false"
-          [nzPageIndex]="list.pageIndex" [nzPageSize]="list.pageSize" [nzTotal]="list.totalItems"
-          (nzPageIndexChange)="onPageIndexChange($event)">
+<table class="table table-sm table-hover">
   <thead>
   <tr>
-    <th>Email</th>
-    <th>Contestant ID</th>
-    <th>Contestant Name</th>
-    <th>Registered</th>
-    <th>Actions</th>
+    <th scope="col">Contestant ID</th>
+    <th scope="col">Contestant Name</th>
+    <th scope="col">Registered</th>
+    <th scope="col">Actions</th>
   </tr>
   </thead>
-  <tbody>
-  <tr *ngFor="let user of userTable.data">
-    <td>{{ user.email }}</td>
-    <td>{{ user.contestantId }}</td>
+  <tbody *ngIf="list">
+  <tr *ngFor="let user of list.items">
+    <th scope="row">
+      <a [routerLink]="['/admin/user', user.id]">{{ user.contestantId }}</a>
+    </th>
     <td>{{ user.contestantName }}</td>
-    <td>{{ getUserRegistrationType(user.id) }}</td>
-    <td>
-      <button *ngIf="!getUserRegistrationType(user.id); else unregister"
-              nz-button nzType="link" (click)="addRegistration(user.id)">
-        <i nz-icon nzType="plus"></i><span>Add</span>
-      </button>
-      <ng-template #unregister>
-        <button nz-button nzType="link" nzDanger (click)="removeRegistration(user.id)">
-          <i nz-icon nzType="close"></i><span>Remove</span>
-        </button>
-      </ng-template>
-    </td>
+    <ng-container *ngIf="getUserRegistrationType(user.id) as type; else notRegistered">
+      <td><span [class]="type[0]">{{ type[1] }}</span></td>
+      <td>
+        <a class="text-danger" (click)="removeRegistration(user.id)">
+          <fa-icon [icon]="faTimes"></fa-icon>
+          <span>Remove</span>
+        </a>
+      </td>
+    </ng-container>
+    <ng-template #notRegistered>
+      <td></td>
+      <td>
+        <a class="text-success" (click)="addRegistration(user.id)">
+          <fa-icon [icon]="faPlus"></fa-icon>
+          <span>Add</span>
+        </a>
+      </td>
+    </ng-template>
   </tr>
   </tbody>
-</nz-table>
+</table>
+<div *ngIf="!!list" class="d-flex justify-content-end">
+  <ngb-pagination [collectionSize]="list.totalItems" [page]="list.pageIndex" [rotate]="true" [maxSize]="5"
+                  [pageSize]="list.pageSize" (pageChange)="onPageIndexChange($event)">
+  </ngb-pagination>
+</div>

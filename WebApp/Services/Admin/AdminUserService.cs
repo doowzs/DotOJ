@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
 using Data.DTOs;
 using Data.Generics;
@@ -55,7 +56,9 @@ namespace WebApp.Services.Admin
 
         public async Task<PaginatedList<ApplicationUserInfoDto>> GetPaginatedUserInfosAsync(int? pageIndex)
         {
-            return await Manager.Users.PaginateAsync(u => new ApplicationUserInfoDto(u), pageIndex ?? 1, PageSize);
+            return await Manager.Users
+                .OrderBy(u => u.ContestantId)
+                .PaginateAsync(u => new ApplicationUserInfoDto(u), pageIndex ?? 1, PageSize);
         }
 
         public async Task<ApplicationUserEditDto> GetUserEditAsync(string id)

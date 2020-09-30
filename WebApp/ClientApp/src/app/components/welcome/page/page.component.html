@@ -1,14 +1,12 @@
-﻿<nz-layout>
-  <app-header-main></app-header-main>
-  <nz-content>
-    <div nz-row>
-      <div nz-col nzSpan="16">
-        <app-welcome-bulletins></app-welcome-bulletins>
-      </div>
-      <div nz-col nzSpan="8">
-        <app-welcome-contests></app-welcome-contests>
-      </div>
+﻿<app-header-main></app-header-main>
+<div class="container my-5">
+  <div class="row">
+    <div class="col col-12 col-xl-8">
+      <app-welcome-bulletins></app-welcome-bulletins>
     </div>
-  </nz-content>
-  <app-footer-main></app-footer-main>
-</nz-layout>
+    <div class="col col-12 col-xl-4">
+      <app-welcome-contests></app-welcome-contests>
+    </div>
+  </div>
+</div>
+<app-footer-main></app-footer-main>

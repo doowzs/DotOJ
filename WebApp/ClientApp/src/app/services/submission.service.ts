@@ -4,10 +4,10 @@ import { Observable, Subject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 import { Base64 } from 'js-base64';
 
-import { SubmissionInfoDto, SubmissionViewDto } from '../interfaces/submission.interfaces';
+import { Program, SubmissionInfoDto, SubmissionViewDto } from '../../interfaces/submission.interfaces';
 import { AuthorizeService } from '../../api-authorization/authorize.service';
-import { PaginatedList } from '../interfaces/pagination.interfaces';
-import { mapSubmissionInfoDtoFields, mapSubmissionViewDtoFields } from '../interfaces/submission.interfaces';
+import { PaginatedList } from '../../interfaces/pagination.interfaces';
+import { mapSubmissionInfoDtoFields, mapSubmissionViewDtoFields } from '../../interfaces/submission.interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -23,20 +23,26 @@ export class SubmissionService {
     this.userId = this.auth.getUser().pipe(map(u => u && u.sub));
   }
 
-  public getPaginatedList(contestId: number | null, problemId: number | null, userId: string | null, verdict: number | null,
-                          pageIndex: number | null): Observable<PaginatedList<SubmissionInfoDto>> {
+  public getPaginatedList(contestId: number | null, userId: string | null, contestantId: string | null, problemId: number | null,
+                          verdict: number | null, pageSize: number | null, pageIndex: number | null): Observable<PaginatedList<SubmissionInfoDto>> {
     let params = new HttpParams();
     if (contestId) {
       params = params.set('contestId', contestId.toString());
     }
-    if (problemId) {
-      params = params.set('problemId', problemId.toString());
-    }
     if (userId) {
       params = params.set('userId', userId);
     }
+    if (contestantId) {
+      params = params.set('contestantId', contestantId);
+    }
+    if (problemId) {
+      params = params.set('problemId', problemId.toString());
+    }
     if (verdict) {
       params = params.set('verdict', verdict.toString());
+    }
+    if (pageSize) {
+      params = params.set('pageSize', pageSize.toString());
     }
     if (pageIndex) {
       params = params.set('pageIndex', pageIndex.toString());
@@ -79,13 +85,10 @@ export class SubmissionService {
       .pipe(map(mapSubmissionViewDtoFields));
   }
 
-  public createSingle(problemId: number, language: number, code: string): Observable<SubmissionInfoDto> {
+  public createSingle(problemId: number, program: Program): Observable<SubmissionInfoDto> {
     return this.http.post<SubmissionInfoDto>('/submission', {
       problemId: problemId,
-      program: {
-        language: language,
-        code: Base64.encode(code)
-      }
+      program: program
     }).pipe(map(mapSubmissionInfoDtoFields), tap(data => this.newSubmission.next(data)));
   }
 }

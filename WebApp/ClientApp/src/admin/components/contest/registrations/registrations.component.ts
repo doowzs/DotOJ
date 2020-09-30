@@ -1,12 +1,13 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ContestEditDto } from '../../../../app/interfaces/contest.interfaces';
-import { RegistrationInfoDto } from '../../../../app/interfaces/registration.interfaces';
+import { PaginatedList } from '../../../../interfaces/pagination.interfaces';
+import { UserInfoDto } from '../../../../interfaces/user.interfaces';
+import { ContestEditDto } from '../../../../interfaces/contest.interfaces';
+import { RegistrationInfoDto } from '../../../../interfaces/registration.interfaces';
 import { AdminContestService } from '../../../services/contest.service';
 import { AdminUserService } from '../../../services/user.service';
-import { UserInfoDto } from '../../../../app/interfaces/user.interfaces';
-import { PaginatedList } from '../../../../app/interfaces/pagination.interfaces';
+import { faCopy, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-admin-contest-registrations',
@@ -14,6 +15,10 @@ import { PaginatedList } from '../../../../app/interfaces/pagination.interfaces'
   styleUrls: ['./registrations.component.css']
 })
 export class AdminContestRegistrationsComponent implements OnInit {
+  faCopy = faCopy;
+  faPlus = faPlus;
+  faTimes = faTimes;
+
   public list: PaginatedList<UserInfoDto>;
   public pageIndex: number;
 
@@ -57,12 +62,13 @@ export class AdminContestRegistrationsComponent implements OnInit {
     this.loadUsers();
   }
 
-  public getUserRegistrationType(userId: string): string {
+  public getUserRegistrationType(userId: string): string[] {
     const registration = this.registrations.find(r => r.userId === userId);
     if (!registration) {
       return null;
     } else {
-      return registration.isParticipant ? 'Participant' : (registration.isContestManager ? 'Manager*' : 'Observer*');
+      return registration.isParticipant ? ['text-primary', 'Participant']
+        : (registration.isContestManager ? ['text-danger', 'Manager'] : ['text-secondary', 'Observer']);
     }
   }
 
@@ -81,9 +87,12 @@ export class AdminContestRegistrationsComponent implements OnInit {
   }
 
   public copyRegistrations(fromId: string) {
-    this.contestService.copyRegistrations(this.contestId, Number(fromId))
-      .subscribe(registrations => {
-        this.registrations = registrations;
-      });
+    if (confirm(`Are you sure to copy registrations from contest #${fromId} to #${this.contestId}?`
+      + ` This will override all existing registrations.`)) {
+      this.contestService.copyRegistrations(this.contestId, Number(fromId))
+        .subscribe(registrations => {
+          this.registrations = registrations;
+        });
+    }
   }
 }

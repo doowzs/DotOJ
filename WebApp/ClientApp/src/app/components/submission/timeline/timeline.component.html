@@ -1,25 +1,43 @@
-﻿<nz-skeleton *ngIf="!submissions"></nz-skeleton>
-<div id="submission-timeline" *ngIf="submissions">
-  <ng-template #noSubmission>
-    <nz-empty nzNotFoundImage="simple"></nz-empty>
-  </ng-template>
-  <nz-timeline nzReverse="reverse" *ngIf="submissions.length; else noSubmission">
-    <ng-template #submissionTimeLineItem let-submission="submission">
-      <nz-timeline-item [nzColor]="submission.verdictInfo.color">
-        <nz-tag>#{{ submission.id }}</nz-tag>
-        <nz-tag [nzColor]="submission.verdictInfo.color"
-                nz-tooltip [nzTooltipTitle]="submission.verdictInfo.explain">
-          <app-submission-verdict [submission]="submission"></app-submission-verdict>
-        </nz-tag>
-        <span style="float: right;">
-          <nz-tag>{{ submission.languageInfo.name }}</nz-tag>
-          <nz-tag>{{ submission.createdAt.format('YYYY-MM-DD HH:mm') }}</nz-tag>
-          <button nz-button nzType="link" nzSize="small" (click)="viewSubmissionDetail(submission)">View</button>
-        </span>
-      </nz-timeline-item>
-    </ng-template>
-    <ng-container *ngFor="let submission of submissions">
-      <ng-container *ngTemplateOutlet="submissionTimeLineItem; context: {submission: submission}"></ng-container>
-    </ng-container>
-  </nz-timeline>
+﻿<div *ngIf="submissions.length === 0; else submissionsTable" class="text-center text-secondary my-3">
+  <h3>
+    <fa-icon [icon]="faBoxOpen"></fa-icon>
+  </h3>
+  <p>You haven't tried this problem.</p>
 </div>
+<ng-template #submissionsTable>
+  <div class="my-3">
+
+    <table class="table table-sm table-hover">
+      <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Verdict</th>
+        <th scope="col">Language</th>
+        <th scope="col">Bytes</th>
+        <th scope="col">Submitted</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let submission of submissions">
+        <th scope="row">{{ submission.id }}</th>
+        <td>
+          <app-submission-verdict [submission]="submission"></app-submission-verdict>
+        </td>
+        <td>
+          <a [href]="'/submission/' + submission.id"
+             (click)="$event.preventDefault(); viewSubmissionPopup(submission)">
+            {{ submission.languageInfo.name }}
+          </a>
+        </td>
+        <td>{{ submission.codeBytes }}</td>
+        <td>{{ submission.createdAtMoment.format('YYYY-MM-DD HH:mm') }}</td>
+      </tr>
+      </tbody>
+    </table>
+    <div *ngIf="totalPages > 1" class="d-flex justify-content-end">
+      <ngb-pagination [collectionSize]="totalItems" [page]="pageIndex"
+                      [pageSize]="5" (pageChange)="changePage($event)">
+      </ngb-pagination>
+    </div>
+  </div>
+</ng-template>

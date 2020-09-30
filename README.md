@@ -12,11 +12,15 @@ DotOJ depends on multiple open-source projects:
 - [Ajax.org Cloud9 Editor](https://ace.c9.io/)
 - [Angular 10](https://angular.io/)
 - [ASP.NET Core](https://github.com/dotnet/aspnetcore)
+- [Bootstrap 4](https://getbootstrap.com/)
 - [Entity Framework Core](https://github.com/dotnet/efcore)
 - [Identity Server](https://identityserver.io/)
+- [Isolate](https://github.com/ioi/isolate)
+- [ng-bootstrap](https://ng-bootstrap.github.io/)
+- [ngx-markdown](https://github.com/jfcere/ngx-markdown)
 - [Node.js](https://nodejs.org/)
-- [Ng-Zorro](https://ng.ant.design/)
 - [MariaDB](https://mariadb.org/)
+- [Vditor](https://github.com/Vanessa219/vditor)
 
 ## Installation
 

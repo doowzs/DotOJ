@@ -2,7 +2,8 @@
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import * as moment from 'moment';
 
-import { BulletinEditDto } from '../../../../app/interfaces/bulletin.interfaces';
+import { BulletinEditDto } from '../../../../interfaces/bulletin.interfaces';
+import { faCalendar, faCheck } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-admin-bulletin-form',
@@ -10,6 +11,9 @@ import { BulletinEditDto } from '../../../../app/interfaces/bulletin.interfaces'
   styleUrls: ['./form.component.css']
 })
 export class AdminBulletinFormComponent implements OnInit, OnChanges {
+  faCalendar = faCalendar;
+  faCheck = faCheck;
+
   @Input() public bulletin: BulletinEditDto;
   @Input() public disabled = false;
   @Output() public formSubmit: EventEmitter<BulletinEditDto> = new EventEmitter();
@@ -33,8 +37,8 @@ export class AdminBulletinFormComponent implements OnInit, OnChanges {
         id: this.bulletin.id,
         weight: this.bulletin.weight,
         content: this.bulletin.content,
-        publishAt: (this.bulletin.publishAt as moment.Moment)?.toDate() ?? null,
-        expireAt: (this.bulletin.expireAt as moment.Moment)?.toDate() ?? null
+        publishAt: this.bulletin.publishAt as moment.Moment,
+        expireAt: this.bulletin.expireAt as moment.Moment
       });
     }
     if (this.disabled) {

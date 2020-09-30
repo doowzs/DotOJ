@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Base64 } from 'js-base64';
 
-import { SubmissionEditDto, SubmissionInfoDto } from '../../app/interfaces/submission.interfaces';
-import { PaginatedList } from '../../app/interfaces/pagination.interfaces';
-import { mapSubmissionEditDtoFields, mapSubmissionInfoDtoFields } from '../../app/interfaces/submission.interfaces';
+import { Program, SubmissionEditDto, SubmissionInfoDto } from '../../interfaces/submission.interfaces';
+import { PaginatedList } from '../../interfaces/pagination.interfaces';
+import { mapSubmissionEditDtoFields, mapSubmissionInfoDtoFields } from '../../interfaces/submission.interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -50,13 +50,10 @@ export class AdminSubmissionService {
       }));
   }
 
-  public createSingle(problemId: number, language: number, code: string): Observable<SubmissionInfoDto> {
+  public createSingle(problemId: number, program: Program): Observable<SubmissionInfoDto> {
     return this.http.post<SubmissionInfoDto>('/admin/submission', {
       problemId: problemId,
-      program: {
-        language: language,
-        code: Base64.encode(code)
-      }
+      program: program
     }).pipe(map(mapSubmissionInfoDtoFields));
   }
 

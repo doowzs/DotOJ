@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { SubmissionInfoDto, SubmissionViewDto } from '../../../interfaces/submission.interfaces';
-import { VerdictStage } from '../../../consts/verdicts.consts';
+import { SubmissionInfoDto, SubmissionViewDto } from '../../../../interfaces/submission.interfaces';
+import { VerdictStage } from '../../../../consts/verdicts.consts';
 
 @Component({
   selector: 'app-submission-verdict',
@@ -8,6 +8,7 @@ import { VerdictStage } from '../../../consts/verdicts.consts';
   styleUrls: ['./verdict.component.css']
 })
 export class SubmissionVerdictComponent {
+  @Input() badge: boolean = false;
   @Input() submission: SubmissionInfoDto | SubmissionViewDto;
 
   constructor() {

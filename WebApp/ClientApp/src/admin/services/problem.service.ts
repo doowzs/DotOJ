@@ -4,8 +4,8 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Base64 } from 'js-base64';
 
-import { ProblemEditDto, ProblemInfoDto, TestCase } from '../../app/interfaces/problem.interfaces';
-import { PaginatedList } from '../../app/interfaces/pagination.interfaces';
+import { ProblemEditDto, ProblemInfoDto, TestCase } from '../../interfaces/problem.interfaces';
+import { PaginatedList } from '../../interfaces/pagination.interfaces';
 
 @Injectable({
   providedIn: 'root'

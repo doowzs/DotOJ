@@ -3,9 +3,10 @@ import { ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import * as moment from 'moment';
 
+import { ContestViewDto } from '../../../../interfaces/contest.interfaces';
 import { AuthorizeService, IUser } from '../../../../api-authorization/authorize.service';
-import { ContestViewDto } from '../../../interfaces/contest.interfaces';
 import { ContestService } from '../../../services/contest.service';
+import { faBoxOpen, faCheck, faEdit, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-contest-description',
@@ -13,6 +14,11 @@ import { ContestService } from '../../../services/contest.service';
   styleUrls: ['./description.component.css']
 })
 export class ContestDescriptionComponent implements OnInit {
+  faBoxOpen = faBoxOpen;
+  faCheck = faCheck;
+  faEdit = faEdit;
+  faTimes = faTimes;
+
   public user: IUser;
   public privileged = false;
   public contestId: number;

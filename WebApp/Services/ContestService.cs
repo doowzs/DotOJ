@@ -136,10 +136,12 @@ namespace WebApp.Services
                 problemInfos = new List<ProblemInfoDto>();
                 foreach (var problem in contest.Problems)
                 {
-                    var solved = await Context.Submissions
-                        .AnyAsync(s =>
-                            s.ProblemId == problem.Id && s.UserId == userId && s.Verdict == Verdict.Accepted);
-                    problemInfos.Add(new ProblemInfoDto(problem, solved));
+                    var query = Context.Submissions.Where(s => s.ProblemId == problem.Id);
+                    var attempted = await query.AnyAsync(s => s.UserId == userId);
+                    var solved = await query.AnyAsync(s => s.UserId == userId && s.Verdict == Verdict.Accepted);
+                    var acceptedSubmissions = await query.CountAsync(s => s.Verdict == Verdict.Accepted);
+                    var totalSubmissions = await query.CountAsync();
+                    problemInfos.Add(new ProblemInfoDto(problem, attempted, solved, acceptedSubmissions, totalSubmissions));
                 }
             }
             else

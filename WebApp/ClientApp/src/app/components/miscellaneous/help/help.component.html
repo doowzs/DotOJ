@@ -1,72 +1,71 @@
-<nz-layout>
-  <app-header-main></app-header-main>
-  <nz-content>
-    <div style="margin: 5vh 5vh">
-      <h1>Help</h1>
-      <!-- Judge Specification -->
-      <h2>Judge Specification</h2>
+<app-header-main></app-header-main>
+<div class="container my-5">
+  <h1>Help Page</h1>
+  <hr/>
+  <!-- Judge Specification -->
+  <h2>Judge Specification</h2>
+  <ul>
+    <li>Environment: Your code will run on Debian Buster in Docker (amd64 architecture).</li>
+    <li>Output checker: For non-special-judge problems, your ourput is compared line by line, omitting trailing
+      space and new lines.
+    </li>
+    <li> Available verdicts: (a star sign <code>*</code> indicates failure on sample case)
       <ul>
-        <li>Environment: Your code will run on Debian Buster in Docker (amd64 architecture).</li>
-        <li>Output checker: For non-special-judge problems, your ourput is compared line by line, omitting trailing
-          space and new lines.
-        </li>
-        <li> Available verdicts: (a star sign <code>*</code> indicates failure on sample case)
-          <ul>
-            <li *ngFor="let verdict of Vercicts">
-              <nz-tag [nzColor]="verdict.color">{{ verdict.name }}</nz-tag>
-              :
-              <span>{{ verdict.explain }}</span>
-            </li>
-          </ul>
+        <li *ngFor="let verdict of Vercicts">
+          <span [class]="'badge badge-' + verdict.color">{{ verdict.name }}</span>
+          :
+          <span>{{ verdict.explain }}</span>
         </li>
       </ul>
-      <!-- Available Languages -->
-      <h2>Available Languages</h2>
-      <div nz-row>
-        <div nz-col nzSpan="12">
-          <h3>C</h3>
-          <ul>
-            <li>Environment: GCC 9</li>
-            <li>Standard: GNU C 11</li>
-            <li>
-              Example:
-              <pre lang="c">#include &lt;stdio.h&gt;
+    </li>
+  </ul>
+  <!-- Available Languages -->
+  <h2>Available Languages</h2>
+  <div class="row">
+    <div class="col col-12 col-lg-6">
+      <h3>C</h3>
+      <ul>
+        <li>Environment: GCC 9</li>
+        <li>Standard: GNU C 11</li>
+        <li>
+          Example:
+          <pre lang="c">#include &lt;stdio.h&gt;
 int main() &#123;
     int a, b;
     scanf("%d%d", &a, &b);
     printf("%d\n", a + b);
     return 0;
 &#125;</pre>
-            </li>
-          </ul>
-        </div>
-        <div nz-col nzSpan="12">
-          <h3>C++</h3>
-          <ul>
-            <li>Environment: GCC 9</li>
-            <li>Standard: GNU C++ 17</li>
-            <li>
-              Example:
-              <pre lang="cpp">#include &lt;iostream&gt;
+        </li>
+      </ul>
+    </div>
+    <div class="col col-12 col-lg-6">
+      <h3>C++</h3>
+      <ul>
+        <li>Environment: GCC 9</li>
+        <li>Standard: GNU C++ 17</li>
+        <li>
+          Example:
+          <pre lang="cpp">#include &lt;iostream&gt;
 int main() &#123;
     int a, b;
     std::cin >> a >> b;
     std::cout << a + b << std::endl;
     return 0;
 &#125;</pre>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div nz-row>
-        <div nz-col nzSpan="12">
-          <h3>Java 11</h3>
-          <ul>
-            <li>Environment: AdoptOpenJDK 11</li>
-            <li>Requirement: Class must be <code>Main</code>.</li>
-            <li>
-              Example:
-              <pre lang="java">import java.io.*;
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-12 col-lg-6">
+      <h3>Java 11</h3>
+      <ul>
+        <li>Environment: AdoptOpenJDK 11</li>
+        <li>Requirement: Class must be <code>Main</code>.</li>
+        <li>
+          Example:
+          <pre lang="java">import java.io.*;
 import java.util.*;
 
 public class Main &#123;
@@ -80,17 +79,17 @@ public class Main &#123;
         out.flush();
     &#125;
 &#125;</pre>
-            </li>
-          </ul>
-        </div>
-        <div nz-col nzSpan="12">
-          <h3>C# 8.0</h3>
-          <ul>
-            <li>Environment: .NET Core 3 (Roslyn)</li>
-            <li>Compiled with: <code>csc.exe</code> with <code>mscorlib.dll</code></li>
-            <li>
-              Example:
-              <pre lang="c#">using System;
+        </li>
+      </ul>
+    </div>
+    <div class="col col-12 col-lg-6">
+      <h3>C# 8.0</h3>
+      <ul>
+        <li>Environment: .NET Core 3 (Roslyn)</li>
+        <li>Compiled with: <code>csc.exe</code> with <code>mscorlib.dll</code></li>
+        <li>
+          Example:
+          <pre lang="c#">using System;
 
 public class Solution &#123;
     private static void Main() &#123;
@@ -99,18 +98,18 @@ public class Solution &#123;
     &#125;
 &#125;
               </pre>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div nz-row>
-        <div nz-col nzSpan="12">
-          <h3>Golang</h3>
-          <ul>
-            <li>Environment: Go 1.13+</li>
-            <li>
-              Example:
-              <pre lang="go">package main
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col col-12 col-lg-6">
+      <h3>Golang</h3>
+      <ul>
+        <li>Environment: Go 1.13+</li>
+        <li>
+          Example:
+          <pre lang="go">package main
 import "fmt"
 
 func main() &#123;
@@ -118,16 +117,16 @@ func main() &#123;
     fmt.Scanf("%d%d", &a, &b)
     fmt.Printf("%d\n", a + b)
 &#125;</pre>
-            </li>
-          </ul>
-        </div>
-        <div nz-col nzSpan="12">
-          <h3>Rust</h3>
-          <ul>
-            <li>Environment: Rustc 1.43+</li>
-            <li>
-              Example:
-              <pre lang="rust">use std::io;
+        </li>
+      </ul>
+    </div>
+    <div class="col col-12 col-lg-6">
+      <h3>Rust</h3>
+      <ul>
+        <li>Environment: Rustc 1.43+</li>
+        <li>
+          Example:
+          <pre lang="rust">use std::io;
 
 fn main() &#123;
     let mut input = String::new();
@@ -139,33 +138,31 @@ fn main() &#123;
     let b: i32 = b_str.parse().unwrap();
     println!("&#123;&#125;", a + b);
 &#125;</pre>
-            </li>
-          </ul>
-        </div>
-      </div>
-      <div nz-row>
-        <div nz-col nzSpan="12">
-          <h3>Python 3</h3>
-          <ul>
-            <li>Environment: Python 3.8+</li>
-            <li>
-              Example:
-              <pre lang="python">print(sum(int(x) for x in input().split(' ')))</pre>
-            </li>
-          </ul>
-        </div>
-        <div nz-col nzSpan="12">
-          <h3>Haskell</h3>
-          <ul>
-            <li>Environment: GHC 8.6+</li>
-            <li>
-              Example:
-              <pre lang="haskell">main = interact $ show . sum . map read . words</pre>
-            </li>
-          </ul>
-        </div>
-      </div>
+        </li>
+      </ul>
     </div>
-  </nz-content>
-  <app-footer-main></app-footer-main>
-</nz-layout>
+  </div>
+  <div class="row">
+    <div class="col col-12 col-lg-6">
+      <h3>Python 3</h3>
+      <ul>
+        <li>Environment: Python 3.8+</li>
+        <li>
+          Example:
+          <pre lang="python">print(sum(int(x) for x in input().split(' ')))</pre>
+        </li>
+      </ul>
+    </div>
+    <div class="col col-12 col-lg-6">
+      <h3>Haskell</h3>
+      <ul>
+        <li>Environment: GHC 8.6+</li>
+        <li>
+          Example:
+          <pre lang="haskell">main = interact $ show . sum . map read . words</pre>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+<app-footer-main></app-footer-main>
