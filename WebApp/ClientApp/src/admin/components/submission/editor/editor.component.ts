@@ -35,6 +35,7 @@ export class AdminSubmissionEditorComponent implements OnInit {
   public editSubmission() {
     this.edit = true;
     this.router.navigate(['/admin/submission', this.submissionId], {
+      replaceUrl: true,
       queryParams: { edit: true }
     });
   }
@@ -43,7 +44,7 @@ export class AdminSubmissionEditorComponent implements OnInit {
     this.service.updateSingle(submission).subscribe(updated => {
       this.edit = false;
       this.submission = updated;
-      this.router.navigate(['/admin/submission', this.submissionId]);
+      this.router.navigate(['/admin/submission', this.submissionId], { replaceUrl: true });
     }, error => console.error(error));
   }
 

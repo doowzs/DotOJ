@@ -35,6 +35,7 @@ export class AdminProblemEditorComponent implements OnInit {
   public editProblem() {
     this.edit = true;
     this.router.navigate(['/admin/problem', this.problemId], {
+      replaceUrl: true,
       queryParams: { edit: true }
     });
   }
@@ -42,7 +43,7 @@ export class AdminProblemEditorComponent implements OnInit {
   public updateProblem(problem: ProblemEditDto) {
     this.service.updateSingle(problem).subscribe(() => {
       this.edit = false;
-      this.router.navigate(['/admin/problem', this.problemId]);
+      this.router.navigate(['/admin/problem', this.problemId], { replaceUrl: true });
     }, error => console.error(error));
   }
 
