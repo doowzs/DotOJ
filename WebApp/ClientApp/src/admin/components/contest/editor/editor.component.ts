@@ -35,6 +35,7 @@ export class AdminContestEditorComponent implements OnInit {
   public editContest() {
     this.edit = true;
     this.router.navigate(['/admin/contest', this.contestId], {
+      replaceUrl: true,
       queryParams: { edit: true }
     });
   }
@@ -42,7 +43,7 @@ export class AdminContestEditorComponent implements OnInit {
   public updateContest(contest: ContestEditDto) {
     this.service.updateSingle(contest).subscribe(() => {
       this.edit = false;
-      this.router.navigate(['/admin/contest', this.contestId]);
+      this.router.navigate(['/admin/contest', this.contestId], { replaceUrl: false });
     }, error => console.error(error));
   }
 

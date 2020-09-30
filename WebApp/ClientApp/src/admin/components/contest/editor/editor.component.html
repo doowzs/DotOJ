@@ -1,11 +1,4 @@
-﻿<nav aria-label="breadcrumb">
-  <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a routerLink="/admin">Dashboard</a></li>
-    <li class="breadcrumb-item"><a routerLink="/admin/contest">Contests</a></li>
-    <li class="breadcrumb-item active" aria-current="page">#{{ contestId }}</li>
-  </ol>
-</nav>
-<h2>
+﻿<h2>
   {{ edit ? 'Edit' : 'View' }} Contest #{{ contestId }}
   <span class="float-right">
     <button *ngIf="!edit" class="btn btn-primary mr-2" (click)="editContest()">

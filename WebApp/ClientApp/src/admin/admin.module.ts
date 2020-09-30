@@ -57,6 +57,7 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { VditorModule } from '../lib/vditor/vditor.module';
 import { DatetimeModule } from '../lib/datetime/datetime.module';
+import { AdminContestViewComponent } from './components/contest/view/view.component';
 
 @NgModule({
   imports: [
@@ -104,6 +105,7 @@ import { DatetimeModule } from '../lib/datetime/datetime.module';
               { path: 'new', component: AdminContestCreatorComponent, data: { breadcrumb: 'Create' } },
               {
                 path: ':contestId', data: { breadcrumb: 'View' },
+                component: AdminContestViewComponent,
                 children: [
                   { path: '', pathMatch: 'full', component: AdminContestEditorComponent },
                   {
@@ -198,6 +200,7 @@ import { DatetimeModule } from '../lib/datetime/datetime.module';
     AdminUserFormComponent,
     AdminUserEditorComponent,
     AdminContestListComponent,
+    AdminContestViewComponent,
     AdminContestFormComponent,
     AdminContestCreatorComponent,
     AdminContestEditorComponent,
