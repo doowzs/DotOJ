@@ -8,8 +8,7 @@ import { SubmissionInfoDto } from '../../../../interfaces/submission.interfaces'
 import { VerdictStage } from '../../../../consts/verdicts.consts';
 import { SubmissionService } from '../../../services/submission.service';
 import { AuthorizeService } from '../../../../api-authorization/authorize.service';
-import { SubmissionDetailComponent } from '../detail/detail.component';
-import { NzDrawerRef, NzDrawerService } from 'ng-zorro-antd/drawer';
+import { faBoxOpen } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-submission-timeline',
@@ -17,18 +16,21 @@ import { NzDrawerRef, NzDrawerService } from 'ng-zorro-antd/drawer';
   styleUrls: ['./timeline.component.css']
 })
 export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy {
-  @Input() public problem: ProblemViewDto;
+  faBoxOpen = faBoxOpen;
+
+  @Input() public problemId: number;
 
   public userId: Observable<string>;
+  public pageIndex: number = 1;
+  public totalItems: number = 0;
+  public totalPages: number = 1;
   public list: PaginatedList<SubmissionInfoDto>;
-  public submissions: SubmissionInfoDto[];
-  public submissionDrawer: NzDrawerRef;
+  public submissions: SubmissionInfoDto[] = [];
   private destroy$ = new Subject();
 
   constructor(
     private auth: AuthorizeService,
-    private service: SubmissionService,
-    private drawer: NzDrawerService
+    private service: SubmissionService
   ) {
     this.userId = this.auth.getUser().pipe(map(u => u && u.sub));
   }
@@ -46,13 +48,23 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
       });
     this.service.newSubmission
       .pipe(takeUntil(this.destroy$))
-      .subscribe(submission => this.submissions.unshift(submission));
+      .subscribe(submission => {
+        this.submissions.unshift(submission);
+        if (this.submissions.length > 5) {
+          this.submissions.pop();
+          this.totalItems++;
+          this.totalPages = (this.totalItems + 4) / 5;
+        }
+      });
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.problem) {
+    if (changes.problemId) {
+      this.pageIndex = 1;
+      this.totalItems = 0;
+      this.totalPages = 1;
       this.submissions = null;
-      this.loadSubmissions(changes.problem.currentValue);
+      this.loadSubmissions(changes.problemId.currentValue);
     }
   }
 
@@ -61,14 +73,18 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
     this.destroy$.complete();
   }
 
-  private loadSubmissions(problem: ProblemViewDto): void {
-    this.submissions = [];
+  public changePage(pageIndex: number): void {
+    this.pageIndex = pageIndex;
+    this.loadSubmissions(this.problemId);
+  }
+
+  private loadSubmissions(problemId: number): void {
     this.userId.pipe(take(1)).subscribe(userId => {
-      this.service.getPaginatedList(null, userId, null, problem.id, null, 1)
+      this.service.getPaginatedList(null, userId, null, problemId, null, 5, this.pageIndex)
         .subscribe(list => {
-          for (let i = 0; i < list.items.length; ++i) {
-            this.submissions.unshift(list.items[i]);
-          }
+          this.totalItems = list.totalItems;
+          this.totalPages = list.totalPages;
+          this.submissions = list.items;
         });
     });
   }
@@ -95,16 +111,5 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
           }
         }
       });
-  }
-
-  public viewSubmissionDetail(submission: SubmissionInfoDto) {
-    this.submissionDrawer = this.drawer.create<SubmissionDetailComponent>({
-      nzWidth: '50vw',
-      nzTitle: 'Submission #' + submission.id.toString(),
-      nzContent: SubmissionDetailComponent,
-      nzContentParams: {
-        submissionId: submission.id
-      }
-    });
   }
 }

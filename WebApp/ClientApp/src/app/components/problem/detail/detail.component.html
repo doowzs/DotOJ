@@ -1,5 +1,5 @@
 ﻿<div [class.container]="!fullscreen">
-  <div class="row">
+  <div class="row overflow-hidden">
     <div class="col col-12 py-5" [class.col-lg-6]="fullscreen" [class.px-5]="fullscreen"
          [style]="fullscreen ? ('height: calc(100vh - ' + (ended ? 56 : 62) + 'px); overflow-y: auto;') : ''">
       <ng-container [ngTemplateOutlet]="problemDetail"></ng-container>
@@ -52,6 +52,7 @@
       <span *ngIf="fullscreen">Close Editor</span>
       <span *ngIf="!fullscreen">Open Editor</span>
     </button>
+    <app-submission-timeline [problemId]="problemId"></app-submission-timeline>
 
     <h3 class="mt-5">Description</h3>
     <markdown [data]="problem.description" katex></markdown>

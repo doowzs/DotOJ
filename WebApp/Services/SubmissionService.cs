@@ -16,8 +16,8 @@ namespace WebApp.Services
 {
     public interface ISubmissionService
     {
-        public Task<PaginatedList<SubmissionInfoDto>> GetPaginatedSubmissionsAsync
-            (int? contestId, string userId, string contestantId, int? problemId, Verdict? verdict, int? pageIndex);
+        public Task<PaginatedList<SubmissionInfoDto>> GetPaginatedSubmissionsAsync(int? contestId, string userId,
+            string contestantId, int? problemId, Verdict? verdict, int? pageSize, int? pageIndex);
 
         public Task<List<SubmissionInfoDto>> GetBatchSubmissionInfosAsync(IEnumerable<int> ids);
         public Task<SubmissionInfoDto> GetSubmissionInfoAsync(int id);
@@ -91,8 +91,8 @@ namespace WebApp.Services
             }
         }
 
-        public async Task<PaginatedList<SubmissionInfoDto>> GetPaginatedSubmissionsAsync
-            (int? contestId, string userId, string contestantId, int? problemId, Verdict? verdict, int? pageIndex)
+        public async Task<PaginatedList<SubmissionInfoDto>> GetPaginatedSubmissionsAsync(int? contestId, string userId,
+            string contestantId, int? problemId, Verdict? verdict, int? pageSize, int? pageIndex)
         {
             var submissions = Context.Submissions.AsQueryable();
 
@@ -115,7 +115,8 @@ namespace WebApp.Services
                 var user = await Context.Users.Where(u => u.ContestantId == contestantId).FirstOrDefaultAsync();
                 if (user == null)
                 {
-                    return new PaginatedList<SubmissionInfoDto>(0, 1, PageSize, new List<SubmissionInfoDto>());
+                    return new PaginatedList<SubmissionInfoDto>(0, 1,
+                        pageSize ?? PageSize, new List<SubmissionInfoDto>());
                 }
                 else
                 {
@@ -134,7 +135,7 @@ namespace WebApp.Services
             }
 
             return await submissions.OrderByDescending(s => s.Id)
-                .PaginateAsync(s => s.User, s => new SubmissionInfoDto(s), pageIndex ?? 1, PageSize);
+                .PaginateAsync(s => s.User, s => new SubmissionInfoDto(s), pageIndex ?? 1, pageSize ?? PageSize);
         }
 
         public async Task<List<SubmissionInfoDto>> GetBatchSubmissionInfosAsync(IEnumerable<int> ids)

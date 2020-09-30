@@ -34,10 +34,10 @@ namespace WebApp.Controllers.Api.v1
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<PaginatedList<SubmissionInfoDto>>>
             ListSubmissions(int? contestId, string userId, string contestantId,
-                int? problemId, Verdict? verdict, int? pageIndex)
+                int? problemId, Verdict? verdict, int? pageSize, int? pageIndex)
         {
-            return Ok(await _service
-                .GetPaginatedSubmissionsAsync(contestId, userId, contestantId, problemId, verdict, pageIndex));
+            return Ok(await _service.GetPaginatedSubmissionsAsync(contestId, userId,
+                contestantId, problemId, verdict, pageSize, pageIndex));
         }
 
         [HttpGet("batch")]
