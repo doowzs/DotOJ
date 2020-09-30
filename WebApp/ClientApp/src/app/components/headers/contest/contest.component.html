@@ -13,7 +13,10 @@
       </button>
 
       <div class="navbar-collapse" [class.collapse]="collapse">
-        <span class="ml-auto text-info">{{ now.format('YYYY-MM-DD HH:mm:ss') }}</span>
+        <span class="ml-auto text-info">
+          <fa-icon [icon]="faClock"></fa-icon>
+          {{ now.format('YYYY-MM-DD HH:mm:ss') }}
+        </span>
         <ul class="navbar-nav ml-auto">
           <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
             <a class="nav-link mr-3" [routerLink]="['/contest', contestId]">

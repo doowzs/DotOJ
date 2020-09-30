@@ -11,7 +11,7 @@ import { ApplicationConfigService } from '../../../services/config.service';
 import { ContestService } from '../../../services/contest.service';
 import {
   faArrowLeft,
-  faBars,
+  faBars, faClock,
   faCog, faHome,
   faPaperPlane,
   faSignOutAlt, faStream, faTrophy,
@@ -26,6 +26,7 @@ import {
 export class ContestHeaderComponent implements OnInit, OnDestroy {
   faArrowLeft = faArrowLeft;
   faBars = faBars;
+  faClock = faClock;
   faCog = faCog;
   faHome = faHome;
   faPaperPlane = faPaperPlane;
