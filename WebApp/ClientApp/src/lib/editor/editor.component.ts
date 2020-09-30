@@ -1,11 +1,10 @@
 import {
-  AfterViewChecked,
+  AfterViewChecked, AfterViewInit,
   Component,
   EventEmitter,
   Input,
   OnChanges,
   OnDestroy,
-  OnInit,
   Output,
   SimpleChanges
 } from '@angular/core';
@@ -32,11 +31,15 @@ const EditorCodeKey = (problemId: number): string => 'editor-code-' + problemId.
   selector: 'editor',
   templateUrl: './editor.component.html'
 })
-export class EditorComponent implements OnInit, AfterViewChecked, OnChanges, OnDestroy {
+export class EditorComponent implements AfterViewInit, AfterViewChecked, OnChanges, OnDestroy {
   faCheck = faCheck;
   faFolderOpen = faFolderOpen;
   faUpload = faUpload;
   Languages = Languages;
+
+  static globalId: number = 0;
+
+  public instanceId: string;
 
   @Input() problemId: number;
   @Input() submissionId: number;
@@ -49,12 +52,13 @@ export class EditorComponent implements OnInit, AfterViewChecked, OnChanges, OnD
   public language: LanguageInfo;
 
   constructor(private title: Title) {
+    this.instanceId = 'editor-' + (++EditorComponent.globalId).toString();
     if (this.program) {
       this.title.setTitle('Submission #' + this.submissionId);
     }
   }
 
-  ngOnInit() {
+  ngAfterViewInit() {
     this.editor = ace.edit('editor', { useWorker: false, wrap: true });
     if (this.program) {
       this.language = Languages.find(l => l.code === this.program.language);

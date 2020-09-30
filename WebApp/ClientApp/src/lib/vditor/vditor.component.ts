@@ -1,5 +1,5 @@
 // Read https://ritchiejacobs.be/angular-custom-form-component on how to implement form control.
-import { Component, OnInit, Optional, Self } from '@angular/core';
+import { AfterViewInit, Component, Optional, Self } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import Vditor from 'vditor';
 
@@ -8,7 +8,10 @@ import Vditor from 'vditor';
   templateUrl: './vditor.component.html',
   styleUrls: ['./vditor.component.css']
 })
-export class VditorComponent implements OnInit, ControlValueAccessor {
+export class VditorComponent implements AfterViewInit, ControlValueAccessor {
+  static globalId: number = 0;
+
+  public instanceId: string;
   private vditor: Vditor;
   private disabled: boolean;
   private value: string;
@@ -16,13 +19,14 @@ export class VditorComponent implements OnInit, ControlValueAccessor {
   private blur: any;
 
   constructor(@Self() @Optional() private control: NgControl) {
+    this.instanceId = 'vditor-' + (++VditorComponent.globalId).toString();
     if (this.control) {
       this.control.valueAccessor = this;
     }
   }
 
-  ngOnInit() {
-    this.vditor = new Vditor('vditor', {
+  ngAfterViewInit() {
+    this.vditor = new Vditor(this.instanceId, {
       input: this.input,
       blur: this.blur,
       height: 300,

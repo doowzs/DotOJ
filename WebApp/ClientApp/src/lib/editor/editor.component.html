@@ -1,4 +1,4 @@
-<div id="editor" shortcutResponsive (ctrlS)="saveCode(problemId)"
+<div [id]="instanceId" shortcutResponsive (ctrlS)="saveCode(problemId)"
      [style]="'width: 100%; height: calc(100% - ' + (!!program ? 0 : 56) + 'px); font-size: 18px;'">
   <div class="spinner-border"></div>
   <p>Loading editor...</p>
