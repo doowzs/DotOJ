@@ -17,12 +17,14 @@ namespace Data.Configs
     {
         public string Title { get; }
         public string Author { get; }
+        public string Version { get; }
         public DateTime ServerTime { get; }
 
         public ApplicationConfigDto(ApplicationConfig config)
         {
             Title = config.Title;
             Author = config.Author;
+            Version = "latest"; // injected in Dockerfile.webapp
             ServerTime = DateTime.Now.ToUniversalTime();
         }
     }

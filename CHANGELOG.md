@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.2.2 - 2020-10-01
+## 1.2.3 - 2020-10-01
 
 ### Added
 
@@ -9,6 +9,7 @@
 - Add support for Vditor for Markdown editing.
 - All times in client are calculated and shifted to server time.
 - Contest and problems are only fetched once using shareReplay.
+- WebApp version is now displayed in footer of pages.
 
 ### Fixed
 

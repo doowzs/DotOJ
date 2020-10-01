@@ -6,6 +6,7 @@ import * as moment from 'moment';
 export class ApplicationConfigService {
   public title: string;
   public author: string;
+  public version: string;
   public serverTime: string;
   public diff: number;
 
