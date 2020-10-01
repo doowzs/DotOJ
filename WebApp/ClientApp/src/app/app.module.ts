@@ -29,7 +29,6 @@ import { ContestStandingsComponent } from './components/contest/standings/standi
 import { ProblemDetailComponent } from './components/problem/detail/detail.component';
 import { SubmissionListComponent } from './components/submission/list/list.component';
 import { SubmissionCreatorComponent } from './components/submission/creator/creator.component';
-import { SubmissionVerdictComponent } from './components/submission/verdict/verdict.component';
 import { SubmissionTimelineComponent } from './components/submission/timeline/timeline.component';
 import { SubmissionDetailComponent } from './components/submission/detail/detail.component';
 import { HelpComponent } from './components/miscellaneous/help/help.component';
@@ -40,6 +39,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { MarkdownModule } from '../lib/markdown/markdown.module';
 import { EditorModule } from '../lib/editor/editor.module';
+import { VerdictModule } from '../lib/verdict/verdict.module';
 
 const loadApplicationConfig = (service: ApplicationConfigService) => {
   return () => service.loadApplicationConfig();
@@ -64,7 +64,6 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     ProblemDetailComponent,
     SubmissionListComponent,
     SubmissionCreatorComponent,
-    SubmissionVerdictComponent,
     SubmissionTimelineComponent,
     SubmissionDetailComponent,
     HelpComponent,
@@ -98,7 +97,8 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     NgbModule,
     FontAwesomeModule,
     EditorModule.forRoot(),
-    MarkdownModule.forRoot()
+    MarkdownModule.forRoot(),
+    VerdictModule.forRoot()
   ],
   providers: [
     ApplicationConfigService,

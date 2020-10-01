@@ -4,7 +4,7 @@
       Submission #{{ submissionId }}
     </h2>
     <h2 *ngIf="submission" class="text-right" style="position: fixed; top:0.5rem; right: 0.5rem; z-index: 1200;">
-      <app-submission-verdict [submission]="submission" [badge]="true"></app-submission-verdict>
+      <verdict [submission]="submission" [badge]="true"></verdict>
       <span class="badge badge-warning ml-1 d-none d-md-inline-block">Problem #{{ submission.problemId }}</span><br/>
       <span *ngIf="submission.judgedAt" class="badge badge-info d-none d-md-inline-block">
           {{ submission.judgedAtMoment.format('YYYY-MM-DD HH:mm:ss') }} @ {{ submission.judgedBy }}

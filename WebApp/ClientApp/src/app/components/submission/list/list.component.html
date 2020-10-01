@@ -64,7 +64,7 @@
       <td>{{ submission.contestantId }}</td>
       <td>{{ inline ? getProblemLabel(submission.problemId) : submission.problemId }}</td>
       <td>
-        <app-submission-verdict [submission]="submission"></app-submission-verdict>
+        <verdict [submission]="submission"></verdict>
       </td>
       <td>{{ submission.time }}</td>
       <td>{{ submission.memory }}</td>
