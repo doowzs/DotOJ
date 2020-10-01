@@ -1,13 +1,13 @@
 import { Component, Input } from '@angular/core';
-import { SubmissionInfoDto, SubmissionViewDto } from '../../../../interfaces/submission.interfaces';
-import { VerdictStage } from '../../../../consts/verdicts.consts';
+import { VerdictStage } from '../../consts/verdicts.consts';
+import { SubmissionInfoDto, SubmissionViewDto } from '../../interfaces/submission.interfaces';
 
 @Component({
-  selector: 'app-submission-verdict',
+  selector: 'verdict',
   templateUrl: './verdict.component.html',
   styleUrls: ['./verdict.component.css']
 })
-export class SubmissionVerdictComponent {
+export class VerdictComponent {
   @Input() badge: boolean = false;
   @Input() submission: SubmissionInfoDto | SubmissionViewDto;
 

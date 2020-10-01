@@ -36,7 +36,7 @@
       </a>
     </td>
     <td>{{ submission.problemId }}</td>
-    <td><span [class]="'text-' + submission.verdictInfo.color">{{ submission.verdictInfo.name }}</span></td>
+    <td><verdict [submission]="submission"></verdict></td>
     <td>{{ submission.time }}</td>
     <td>{{ submission.memory }}</td>
     <td>{{ submission.languageInfo.name }}</td>

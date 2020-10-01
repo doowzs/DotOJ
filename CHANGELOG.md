@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.2.6 - 2020-10-01
+## 1.2.7 - 2020-10-02
 
 ### Added
 
@@ -14,6 +14,7 @@
 ### Changed
 
 - Administrators and contest managers can submit to any problems before contest begins.
+- Move submission verdict component to be a dedicated component and module.
 
 ### Fixed
 

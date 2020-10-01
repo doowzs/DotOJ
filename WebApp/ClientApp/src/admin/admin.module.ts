@@ -42,6 +42,7 @@ import { AdminSubmissionListComponent } from './components/submission/list/list.
 import { AdminSubmissionFormComponent } from './components/submission/form/form.component';
 import { AdminSubmissionEditorComponent } from './components/submission/editor/editor.component';
 import { AdminSubmissionRejudgeComponent } from './components/submission/rejudge/rejudge.component';
+import { VerdictModule } from '../lib/verdict/verdict.module';
 
 @NgModule({
   imports: [
@@ -128,10 +129,11 @@ import { AdminSubmissionRejudgeComponent } from './components/submission/rejudge
     ApiAuthorizationModule,
     NgbModule,
     FontAwesomeModule,
-    MarkdownModule.forRoot(),
-    DatetimeModule.forRoot(),
-    EditorModule.forRoot(),
-    VditorModule.forRoot(),
+    MarkdownModule.forChild(),
+    DatetimeModule.forChild(),
+    EditorModule.forChild(),
+    VditorModule.forChild(),
+    VerdictModule.forChild()
   ],
   declarations: [
     AdminComponent,

@@ -21,7 +21,7 @@
         <tr *ngFor="let submission of submissions">
           <th scope="row">{{ submission.id }}</th>
           <td>
-            <app-submission-verdict [submission]="submission"></app-submission-verdict>
+            <verdict [submission]="submission"></verdict>
           </td>
           <td>
             <a [href]="'/submission/' + submission.id"
