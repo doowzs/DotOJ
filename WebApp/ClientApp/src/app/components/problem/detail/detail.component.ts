@@ -2,7 +2,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
 
 import { LanguageInfo } from '../../../../consts/languages.consts';
@@ -61,12 +61,13 @@ export class ProblemDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.auth
-      .getUser().subscribe(user => {
-      this.user = user;
-      this.privileged = user.roles.indexOf('Administrator') >= 0
-        || user.roles.indexOf('ContestManager') >= 0;
-    });
+    this.auth.getUser()
+      .pipe(take(1))
+      .subscribe(user => {
+        this.user = user;
+        this.privileged = user.roles.indexOf('Administrator') >= 0
+          || user.roles.indexOf('ContestManager') >= 0;
+      });
     this.contestService.getSingle(this.contestId)
       .subscribe(contest => {
         this.contest = contest;

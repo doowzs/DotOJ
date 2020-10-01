@@ -1,7 +1,7 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 
 import { UserEditDto } from '../../../../interfaces/user.interfaces';
 import { AdminUserService } from '../../../services/user.service';
@@ -31,7 +31,7 @@ export class AdminUserEditorComponent implements OnInit {
   ) {
     this.edit = this.route.snapshot.queryParams.edit ?? false;
     this.userId = this.route.snapshot.params.userId;
-    this.sub = this.auth.getUser().pipe(map(u => u && u.sub));
+    this.sub = this.auth.getUser().pipe(take(1), map(u => u && u.sub));
   }
 
   ngOnInit() {

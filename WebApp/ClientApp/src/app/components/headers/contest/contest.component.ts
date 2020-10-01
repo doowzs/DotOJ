@@ -1,7 +1,7 @@
 ﻿import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { interval, Observable, Subject, timer } from 'rxjs';
-import { map, takeUntil } from 'rxjs/operators';
+import { map, take, takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -57,8 +57,8 @@ export class ContestHeaderComponent implements OnInit, OnDestroy {
     private service: ContestService,
     private modal: NgbModal,
   ) {
-    this.username = this.auth.getUser().pipe(map(u => u && u.name));
-    this.canViewAdminPages = this.auth.getUser().pipe(map(u => u && u.roles.length > 0));
+    this.username = this.auth.getUser().pipe(take(1), map(u => u && u.name));
+    this.canViewAdminPages = this.auth.getUser().pipe(take(1), map(u => u && u.roles.length > 0));
     this.contestId = this.route.snapshot.params.contestId;
     this.now = moment().add(config.diff, 'ms');
 

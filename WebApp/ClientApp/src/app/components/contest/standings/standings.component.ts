@@ -12,6 +12,7 @@ import { AuthorizeService } from '../../../../api-authorization/authorize.servic
 import { ContestService } from '../../../services/contest.service';
 import { RegistrationInfoDto } from '../../../../interfaces/registration.interfaces';
 import { faDownload, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-contest-standings',
@@ -38,15 +39,17 @@ export class ContestStandingsComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.authorize.getUser().subscribe(user => {
-      this.userId = user && user.sub;
-      this.service.getSingle(this.contestId)
-        .subscribe(contest => {
-          this.contest = contest;
-          this.title.setTitle(contest.title + ' - Standings');
-          this.loadRegistrations();
-        });
-    });
+    this.authorize.getUser()
+      .pipe(take(1))
+      .subscribe(user => {
+        this.userId = user && user.sub;
+        this.service.getSingle(this.contestId)
+          .subscribe(contest => {
+            this.contest = contest;
+            this.title.setTitle(contest.title + ' - Standings');
+            this.loadRegistrations();
+          });
+      });
   }
 
   public loadRegistrations() {

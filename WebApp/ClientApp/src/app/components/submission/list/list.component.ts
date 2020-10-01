@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { interval, Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
 
 import { Verdicts, VerdictStage } from '../../../../consts/verdicts.consts';
@@ -54,7 +54,7 @@ export class SubmissionListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.auth.getUser().subscribe(user => this.user = user);
+    this.auth.getUser().pipe(take(1)).subscribe(user => this.user = user);
     if (this.contestId) {
       this.contestService.getSingle(this.contestId)
         .subscribe(contest => {

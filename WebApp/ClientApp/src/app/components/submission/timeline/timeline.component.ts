@@ -32,7 +32,7 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
     private auth: AuthorizeService,
     private service: SubmissionService
   ) {
-    this.userId = this.auth.getUser().pipe(map(u => u && u.sub));
+    this.userId = this.auth.getUser().pipe(take(1), map(u => u && u.sub));
   }
 
   ngOnInit() {

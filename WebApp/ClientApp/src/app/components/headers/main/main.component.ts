@@ -1,6 +1,6 @@
 ﻿import { Component } from '@angular/core';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 
 import { ApplicationConfigService } from '../../../services/config.service';
 import { AuthorizeService } from '../../../../api-authorization/authorize.service';
@@ -43,8 +43,8 @@ export class MainHeaderComponent {
     private config: ApplicationConfigService
   ) {
     this.title = config.title;
-    this.username = this.auth.getUser().pipe(map(u => u && u.name));
+    this.username = this.auth.getUser().pipe(take(1), map(u => u && u.name));
     this.isAuthenticated = this.auth.isAuthenticated();
-    this.canViewAdminPages = this.auth.getUser().pipe(map(u => u && u.roles.length > 0));
+    this.canViewAdminPages = this.auth.getUser().pipe(take(1), map(u => u && u.roles.length > 0));
   }
 }
