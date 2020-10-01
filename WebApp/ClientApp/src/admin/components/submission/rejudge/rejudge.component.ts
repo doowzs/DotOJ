@@ -21,7 +21,7 @@ export class AdminSubmissionRejudgeComponent {
   ) {
     this.form = this.builder.group({
       contestId: [null, []],
-      problemId: [null, []],
+      problemId: [window.history.state.problemId, []],
       submissionId: [null, []],
     }, {
       validators: [this.validateAtLeastOneField]

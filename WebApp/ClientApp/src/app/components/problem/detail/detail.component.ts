@@ -12,10 +12,11 @@ import { AuthorizeService, IUser } from '../../../../api-authorization/authorize
 import { ProblemService } from '../../../services/problem.service';
 import { ContestService } from '../../../services/contest.service';
 import {
+  faBoxes,
   faCoffee,
   faColumns,
-  faCopy,
-  faPaperPlane,
+  faCopy, faEdit,
+  faPaperPlane, faRedo,
   faSdCard,
   faStopwatch,
   faTimes
@@ -27,9 +28,12 @@ import {
   styleUrls: ['./detail.component.css']
 })
 export class ProblemDetailComponent implements OnInit, OnDestroy {
+  faBoxes = faBoxes;
   faCoffee = faCoffee;
   faColumns = faColumns;
   faCopy = faCopy;
+  faEdit = faEdit;
+  faRedo = faRedo;
   faSdCard = faSdCard;
   faStopwatch = faStopwatch;
   faTimes = faTimes;

@@ -11,13 +11,27 @@
   </div>
 </div>
 <ng-template #problemDetail>
-  <div *ngIf="contest">
-    <select class="form-control custom-select mb-5"
+  <div *ngIf="contest" class="mb-5">
+    <select class="form-control custom-select"
             [(ngModel)]="problemId" (ngModelChange)="changeProblem($event)">
       <option *ngFor="let problem of contest.problems"
               [value]="problem.id" [label]="'Problem ' + problem.label + ' - ' + problem.title"
       ></option>
     </select>
+    <p *ngIf="privileged" class="text-right mt-2">
+      <a class="btn btn-sm btn-outline-danger mr-2" [routerLink]="['/admin/problem/', problemId]">
+        <fa-icon [icon]="faEdit"></fa-icon>
+        <span>Edit Problem</span>
+      </a>
+      <a class="btn btn-sm btn-outline-danger mr-2" [routerLink]="['/admin/problem/', problemId, 'tests']">
+        <fa-icon [icon]="faBoxes"></fa-icon>
+        <span>Test Cases</span>
+      </a>
+      <a class="btn btn-sm btn-outline-warning" routerLink="/admin/submission/rejudge" [state]="{problemId: problemId}">
+        <fa-icon [icon]="faRedo"></fa-icon>
+        <span>Rejudge</span>
+      </a>
+    </p>
   </div>
   <div *ngIf="contest && problem">
     <div class="text-center">

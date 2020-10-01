@@ -42,9 +42,9 @@
               <span>{{ username | async }}</span>
             </a>
             <div ngbDropdownMenu class="dropdown-menu-right">
-              <a ngbDropdownItem routerLink="/">
-                <fa-icon [icon]="faHome"></fa-icon>
-                <span>Home</span>
+              <a *ngIf="canViewAdminPages" ngbDropdownItem routerLink="/admin">
+                <fa-icon [icon]="faTools"></fa-icon>
+                <span>Admin</span>
               </a>
               <a ngbDropdownItem routerLink="/authentication/profile">
                 <fa-icon [icon]="faCog"></fa-icon>

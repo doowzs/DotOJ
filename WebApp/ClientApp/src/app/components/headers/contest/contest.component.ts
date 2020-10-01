@@ -12,9 +12,9 @@ import { ContestService } from '../../../services/contest.service';
 import {
   faArrowLeft,
   faBars, faClock,
-  faCog, faHome,
+  faCog,
   faPaperPlane,
-  faSignOutAlt, faStream, faTrophy,
+  faSignOutAlt, faStream, faTools, faTrophy,
   faUser
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -28,10 +28,10 @@ export class ContestHeaderComponent implements OnInit, OnDestroy {
   faBars = faBars;
   faClock = faClock;
   faCog = faCog;
-  faHome = faHome;
   faPaperPlane = faPaperPlane;
   faSignOutAlt = faSignOutAlt;
   faStream = faStream;
+  faTools = faTools;
   faTrophy = faTrophy;
   faUser = faUser;
 
