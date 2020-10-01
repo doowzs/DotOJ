@@ -40,17 +40,19 @@ services:
       - backend
 
   webapp:
-    image: ccr.ccs.tencentyun.com/dotoj/webapp:${JUDGE_VERSION}
+    image: ccr.ccs.tencentyun.com/dotoj/webapp:${WEBAPP_VERSION}
     volumes:
       - ./webapp/identity.pfx:/app/identity.pfx:ro
       - ./webapp/appsettings.json:/app/appsettings.json:ro
+      - ${DATA_PATH_HOST}/aspnet:/root/.aspnet
+      - ${DATA_PATH_HOST}/static:/app/wwwroot/static
       - ${DATA_PATH_HOST}/judge-data:/var/www/judge-data
     <<: *default-logging
     networks:
       - backend
 
   worker:
-    image: ccr.ccs.tencentyun.com/dotoj/worker:${JUDGE_VERSION}
+    image: ccr.ccs.tencentyun.com/dotoj/worker:${WORKER_VERSION}
     privileged: true
     mem_swappiness: 0
     volumes:

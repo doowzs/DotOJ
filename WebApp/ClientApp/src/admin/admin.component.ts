@@ -12,6 +12,7 @@ import {
   faUser,
   faUserPlus
 } from '@fortawesome/free-solid-svg-icons';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-admin-root',
@@ -40,7 +41,7 @@ export class AdminComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.auth.getUser().subscribe(u => this.user = u);
+    this.auth.getUser().pipe(take(1)).subscribe(u => this.user = u);
   }
 
   public hasAnyRole(roles: string[]): boolean {

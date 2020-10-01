@@ -7,6 +7,7 @@ import { ContestViewDto } from '../../../../interfaces/contest.interfaces';
 import { AuthorizeService, IUser } from '../../../../api-authorization/authorize.service';
 import { ContestService } from '../../../services/contest.service';
 import { faBoxOpen, faCheck, faEdit, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'app-contest-description',
@@ -35,11 +36,13 @@ export class ContestDescriptionComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.auth.getUser().subscribe(user => {
-      this.user = user;
-      this.privileged = user.roles.indexOf('Administrator') >= 0
-        || user.roles.indexOf('ContestManager') >= 0;
-    })
+    this.auth.getUser()
+      .pipe(take(1))
+      .subscribe(user => {
+        this.user = user;
+        this.privileged = user.roles.indexOf('Administrator') >= 0
+          || user.roles.indexOf('ContestManager') >= 0;
+      })
     this.service.getSingle(this.contestId)
       .subscribe(contest => {
         this.contest = contest;

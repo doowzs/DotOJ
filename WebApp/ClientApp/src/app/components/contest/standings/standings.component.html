@@ -19,7 +19,7 @@
       </button>
     </span>
   </h2>
-  <table class="table table-hover my-3">
+  <table *ngIf="contest" class="table table-hover my-3">
     <thead>
     <tr>
       <th>Rank</th>
@@ -35,7 +35,7 @@
     <tr *ngFor="let registration of registrations">
       <td style="vertical-align: middle;">{{ registration.rank === -1 ? '-' : registration.rank.toString() }}</td>
       <td style="vertical-align: middle;">
-        <span nz-tooltip [nzTooltipTitle]="registration.contestantId">
+        <span [ngbTooltip]="registration.contestantId">
           {{ registration.contestantName + (registration.isParticipant ? '' : '*') }}
         </span>
       </td>

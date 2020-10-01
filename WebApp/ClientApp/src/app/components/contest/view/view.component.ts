@@ -26,7 +26,7 @@ export class ContestViewComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.service.getSingle(this.contestId)
+    this.service.getSingle(this.contestId, true)
       .subscribe(contest => {
         this.contest = contest;
         this.ended = moment().isAfter(this.contest.endTime);

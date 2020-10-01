@@ -1,4 +1,6 @@
 JUDGE_VERSION=
+WEBAPP_VERSION=${JUDGE_VERSION}
+WORKER_VERSION=${JUDGE_VERSION}
 
 ### Paths ##################################################
 
