@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.2.0 - 2020-10-01
+## 1.2.1 - 2020-10-01
 
 ### Added
 
@@ -8,6 +8,11 @@
 - Add support for Ajax.org Cloud9 Editor for coding.
 - Add support for Vditor for Markdown editing.
 - All times in client are calculated and shifted to server time.
+- Contest and problems are only fetched once using shareReplay.
+
+### Fixed
+
+- Fixed subscribing on user subject in destroyed component instances.
 
 ### Removed
 
