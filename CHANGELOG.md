@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.2.1 - 2020-10-01
+## 1.2.2 - 2020-10-01
 
 ### Added
 
@@ -13,6 +13,9 @@
 ### Fixed
 
 - Fixed subscribing on user subject in destroyed component instances.
+- Fixed value changed after check error in code editor.
+- Fixed setting fullscreen query parameter in problem view page.
+- Fixed null reference in submission timeline component.
 
 ### Removed
 

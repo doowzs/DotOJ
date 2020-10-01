@@ -51,6 +51,9 @@ export class SubmissionListComponent implements OnInit, OnDestroy {
     this.problemId = this.route.snapshot.queryParams.problemId;
     this.verdict = this.route.snapshot.queryParams.verdict;
     this.pageIndex = this.route.snapshot.queryParams.pageIndex ?? 1;
+    if (!this.contestId && !this.inline) {
+      this.title.setTitle('Submissions');
+    }
   }
 
   ngOnInit() {

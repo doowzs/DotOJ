@@ -2,7 +2,7 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
       <span class="navbar-brand ml-0">
-        <a onClick="history.back(-1)" class="d-none d-lg-inline text-dark">
+        <a routerLink="/contests" class="d-none d-lg-inline text-dark">
           <fa-icon [icon]="faArrowLeft"></fa-icon>
         </a>
         {{ contest == null ? "Loading..." : contest.title }}
@@ -42,9 +42,9 @@
               <span>{{ username | async }}</span>
             </a>
             <div ngbDropdownMenu class="dropdown-menu-right">
-              <a ngbDropdownItem routerLink="/">
-                <fa-icon [icon]="faHome"></fa-icon>
-                <span>Home</span>
+              <a *ngIf="canViewAdminPages" ngbDropdownItem routerLink="/admin">
+                <fa-icon [icon]="faTools"></fa-icon>
+                <span>Admin</span>
               </a>
               <a ngbDropdownItem routerLink="/authentication/profile">
                 <fa-icon [icon]="faCog"></fa-icon>
