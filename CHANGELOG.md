@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.2.3 - 2020-10-01
+## 1.2.4 - 2020-10-01
 
 ### Added
 
@@ -17,6 +17,7 @@
 - Fixed value changed after check error in code editor.
 - Fixed setting fullscreen query parameter in problem view page.
 - Fixed null reference in submission timeline component.
+- Fixed a performance issue caused by repeatedly force resizing code editor.
 
 ### Removed
 

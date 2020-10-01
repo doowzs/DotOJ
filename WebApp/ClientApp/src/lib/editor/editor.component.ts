@@ -85,7 +85,7 @@ export class EditorComponent implements AfterViewInit, AfterViewChecked, OnChang
   ngAfterViewChecked() {
     // Container of the editor will not be ready in ngOnInit.
     // We need a force resize to avoid layout issues of the editor.
-    this.editor.resize(true);
+    this.editor.resize(false);
     this.cdRef.detectChanges();
   }
 
