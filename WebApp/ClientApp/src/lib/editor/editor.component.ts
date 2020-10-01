@@ -1,5 +1,5 @@
 import {
-  AfterViewChecked, AfterViewInit,
+  AfterViewChecked, AfterViewInit, ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -51,7 +51,10 @@ export class EditorComponent implements AfterViewInit, AfterViewChecked, OnChang
   public editor: ace.Ace.Editor;
   public language: LanguageInfo;
 
-  constructor(private title: Title) {
+  constructor(
+    private title: Title,
+    private cdRef: ChangeDetectorRef
+  ) {
     this.instanceId = 'editor-' + (++EditorComponent.globalId).toString();
     if (this.program) {
       this.title.setTitle('Submission #' + this.submissionId);
@@ -83,6 +86,7 @@ export class EditorComponent implements AfterViewInit, AfterViewChecked, OnChang
     // Container of the editor will not be ready in ngOnInit.
     // We need a force resize to avoid layout issues of the editor.
     this.editor.resize(true);
+    this.cdRef.detectChanges();
   }
 
   ngOnChanges(changes: SimpleChanges) {

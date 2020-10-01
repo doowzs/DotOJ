@@ -1,5 +1,5 @@
 <div [id]="instanceId" shortcutResponsive (ctrlS)="saveCode(problemId)"
-     [style]="'width: 100%; height: calc(100% - ' + (!!program ? 0 : 56) + 'px); font-size: 18px;'">
+     [style]="'width: 100%; height: calc(100% - ' + (!!program ? 0 : 56) + 'px); font-size: 1.5rem;'">
   <div class="spinner-border"></div>
   <p>Loading editor...</p>
 </div>
@@ -9,7 +9,7 @@
       <select class="form-control custom-select"
               [ngModel]="language == null ? undefined : language.code"
               (ngModelChange)="changeLanguage($event)">
-        <option disabled value="undefined">Language</option>
+        <option disabled selected [value]="undefined" label="Language"></option>
         <option *ngFor="let lang of Languages" [value]="lang.code" [label]="lang.name"></option>
       </select>
     </div>
