@@ -21,7 +21,7 @@ fi
 case "$ACTION" in
 "env" | "webapp" | "worker")
   echo "Building $ACTION as $NAME:$TAG..."
-  docker build --force-rm --no-cache -f "Dockerfile.$ACTION" -t "$NAME:$TAG" .
+  docker build --force-rm --no-cache -f "Dockerfile.$ACTION" --build-arg VERSION="$TAG" -t "$NAME:$TAG" .
   docker image push "$NAME:$TAG"
   ;;
 "package")
