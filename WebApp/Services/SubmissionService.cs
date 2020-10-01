@@ -55,11 +55,16 @@ namespace WebApp.Services
                 throw new ValidationException("Invalid problem ID.");
             }
 
-            var userId = Accessor.HttpContext.User.GetSubjectId();
+            var user = await Manager.GetUserAsync(Accessor.HttpContext.User);
             var contest = await Context.Contests.FindAsync(problem.ContestId);
             var registered = await Context.Registrations
-                .AnyAsync(r => r.ContestId == contest.Id && r.UserId == userId);
-            if (DateTime.Now.ToUniversalTime() < contest.BeginTime)
+                .AnyAsync(r => r.ContestId == contest.Id && r.UserId == user.Id);
+            if (await Manager.IsInRoleAsync(user, ApplicationRoles.Administrator) ||
+                await Manager.IsInRoleAsync(user, ApplicationRoles.ContestManager))
+            {
+                // Administrator and contest manager can submit to any problem.
+            }
+            else if (DateTime.Now.ToUniversalTime() < contest.BeginTime)
             {
                 throw new UnauthorizedAccessException("Cannot submit until contest has begun.");
             }
@@ -70,7 +75,7 @@ namespace WebApp.Services
                     // Automatically register for user if it is submitting during contest.
                     var registration = new Registration
                     {
-                        UserId = userId,
+                        UserId = user.Id,
                         ContestId = contest.Id,
                         IsParticipant = true,
                         IsContestManager = false,
