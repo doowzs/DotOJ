@@ -1,7 +1,7 @@
 ﻿import { Injectable } from '@angular/core';
 import { HttpClient, } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, shareReplay } from 'rxjs/operators';
 import { Base64 } from 'js-base64';
 
 import { ProblemViewDto } from '../../interfaces/problem.interfaces';
@@ -16,8 +16,8 @@ export class ProblemService {
   constructor(private http: HttpClient) {
   }
 
-  public getSingle(problemId: number): Observable<ProblemViewDto> {
-    if (this.cachedId === problemId && this.cachedData) {
+  public getSingle(problemId: number, force: boolean = false): Observable<ProblemViewDto> {
+    if (!force && this.cachedId === problemId && this.cachedData) {
       return this.cachedData;
     } else {
       this.cachedId = problemId;
@@ -30,7 +30,7 @@ export class ProblemService {
             sampleCase.output = Base64.decode(sampleCase.output);
           }
           return data;
-        }));
+        }), shareReplay(1));
     }
   }
 }

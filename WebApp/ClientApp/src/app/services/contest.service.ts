@@ -1,7 +1,7 @@
 ﻿import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { Observable } from 'rxjs';
+import { map, shareReplay } from 'rxjs/operators';
 import * as moment from 'moment';
 
 import { PaginatedList } from '../../interfaces/pagination.interfaces';
@@ -43,8 +43,8 @@ export class ContestService {
     }));
   }
 
-  public getSingle(contestId: number): Observable<ContestViewDto> {
-    if (this.cachedId === contestId && this.cachedData) {
+  public getSingle(contestId: number, force: boolean = false): Observable<ContestViewDto> {
+    if (!force && this.cachedId === contestId && this.cachedData) {
       return this.cachedData;
     } else {
       this.cachedId = contestId;
@@ -57,7 +57,7 @@ export class ContestService {
           data.beginTime = moment.utc(data.beginTime).local();
           data.endTime = moment.utc(data.endTime).local();
           return data;
-        }));
+        }), shareReplay(1));
     }
   }
 

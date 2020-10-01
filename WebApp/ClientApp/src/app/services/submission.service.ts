@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
-import { Base64 } from 'js-base64';
+import { map, take, tap } from 'rxjs/operators';
 
 import { Program, SubmissionInfoDto, SubmissionViewDto } from '../../interfaces/submission.interfaces';
 import { AuthorizeService } from '../../api-authorization/authorize.service';
@@ -13,14 +12,14 @@ import { mapSubmissionInfoDtoFields, mapSubmissionViewDtoFields } from '../../in
   providedIn: 'root'
 })
 export class SubmissionService {
-  public userId: Observable<string>; // TODO: used for query
+  public userId: Observable<string>;
   public newSubmission = new Subject<SubmissionInfoDto>();
 
   constructor(
     private http: HttpClient,
     private auth: AuthorizeService,
   ) {
-    this.userId = this.auth.getUser().pipe(map(u => u && u.sub));
+    this.userId = this.auth.getUser().pipe(take(1), map(u => u && u.sub));
   }
 
   public getPaginatedList(contestId: number | null, userId: string | null, contestantId: string | null, problemId: number | null,
