@@ -101,11 +101,10 @@ export class ProblemDetailComponent implements OnInit, OnDestroy {
   }
 
   public updateRoute() {
+    const queryParams = this.fullscreen ? { fullscreen: this.fullscreen } : {};
     this.router.navigate(['/contest', this.contestId, 'problem', this.problemId], {
       replaceUrl: true,
-      queryParams: {
-        fullscreen: this.fullscreen
-      }
+      queryParams: queryParams
     });
   }
 
