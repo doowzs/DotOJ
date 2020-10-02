@@ -43,7 +43,7 @@ export class AdminContestEditorComponent implements OnInit {
   public updateContest(contest: ContestEditDto) {
     this.service.updateSingle(contest).subscribe(() => {
       this.edit = false;
-      this.router.navigate(['/admin/contest', this.contestId], { replaceUrl: false });
+      this.router.navigate(['/admin/contest', this.contestId], { replaceUrl: true });
     }, error => console.error(error));
   }
 
