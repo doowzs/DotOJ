@@ -92,7 +92,7 @@ export class ProblemDetailComponent implements OnInit, OnDestroy {
 
   public loadProblem() {
     this.loading = true;
-    this.problemService.getSingle(this.problemId)
+    this.problemService.getSingle(this.problemId, true)
       .subscribe(problem => {
         this.problem = problem;
         this.title.setTitle(problem.title);
