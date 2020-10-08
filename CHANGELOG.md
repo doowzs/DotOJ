@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.2.8 - 2020-10-02
+## 1.2.9 - 2020-10-08
 
 ### Added
 
@@ -24,6 +24,7 @@
 - Fixed null reference in submission timeline component.
 - Fixed a performance issue caused by repeatedly force resizing code editor.
 - Fixed replaceUrl set to false when updating a contest in admin page.
+- Fixed overwrite flag when copying a new compiled checker to judge data folder.
 
 ### Removed
 
