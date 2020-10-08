@@ -135,7 +135,7 @@ namespace Worker.Runners.LanguageTypes.Base
             // Cache the binary file for later usage.
             try
             {
-                File.Copy(Path.Combine(Box, "checker"), binary);
+                File.Copy(Path.Combine(Box, "checker"), binary, true);
             }
             catch (Exception e)
             {
