@@ -196,7 +196,7 @@ namespace Worker.Runners.LanguageTypes.Base
             }
 
             await PrepareTestCaseAsync(inline, testCase);
-            await ExecuteProgramAsync(meta, bytes * 2);
+            await ExecuteProgramAsync(meta, Math.Max(bytes * 2, 5 * 1024 * 1024));
 
             var output = Path.Combine(Jail, "output");
             await using (var stream = new FileStream(output, FileMode.Open, FileAccess.Read))
