@@ -13,13 +13,13 @@
         <option *ngFor="let lang of Languages" [value]="lang.code" [label]="lang.name"></option>
       </select>
     </div>
-    <div class="col col-12 col-md-6 col-lg-4 my-2">
+    <div class="col col-12 col-lg-4 my-2 d-none d-lg-block">
       <input #readFileInput type="file" class="d-none" onClick="this.value = null" (change)="readFile($event)">
       <button class="btn btn-outline-primary w-100" (click)="readFileInput.click()">
         <fa-icon [icon]="faFolderOpen"></fa-icon><span>Load File</span>
       </button>
     </div>
-    <div class="col col-12 col-lg-4 ml-auto my-2">
+    <div class="col col-12 col-md-6 col-lg-4 ml-auto my-2">
       <button class="btn btn-success w-100" (click)="submitCode()"
               [disabled]="disabled || !language || !editor.getValue().length">
         <ng-container *ngIf="disabled && !!submissionId; else submitButton">

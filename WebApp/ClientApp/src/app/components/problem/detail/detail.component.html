@@ -1,10 +1,17 @@
-﻿<div [class.container]="!fullscreen">
+﻿<div class="position-fixed d-none d-lg-block"
+     [style]="'top: calc(50vh - 30px); right: ' + (fullscreen ? '50%' : '0') + '; z-index: 200;'">
+  <button class="btn bg-light text-secondary" id="toggle-button"
+          (click)="toggleFullscreen()">
+    <fa-icon [icon]="fullscreen ? faArrowRight : faArrowLeft" class="mr-0"></fa-icon>
+  </button>
+</div>
+<div [class.container]="!fullscreen">
   <div class="row overflow-hidden">
     <div class="col col-12 py-5" [class.col-lg-6]="fullscreen" [class.px-5]="fullscreen"
          [style]="fullscreen ? ('height: calc(100vh - ' + (ended ? 56 : 62) + 'px); overflow-y: auto;') : ''">
       <ng-container [ngTemplateOutlet]="problemDetail"></ng-container>
     </div>
-    <div class="col col-12 col-lg-6 p-0" [class.d-none]="!fullscreen"
+    <div class="col col-12 col-lg-6 p-0 d-block" [class.d-lg-none]="!fullscreen"
          [style]="'height: calc(100vh - ' + (ended ? 56 : 62) + 'px);'">
       <app-submission-creator [problemId]="problemId"></app-submission-creator>
     </div>
@@ -49,23 +56,24 @@
           <fa-icon [icon]="faSdCard"></fa-icon>
           <span>{{ problem.memoryLimit }}KiB</span>
         </span>
-        <span class="m-1 badge badge-success">
+        <a class="m-1 badge badge-success"
+              [routerLink]="['/contest', contestId, 'submissions']" [queryParams]="{problemId: problemId}">
           <fa-icon [icon]="faPaperPlane"></fa-icon>
           <span class="d-inline-block">
             {{ problem.acceptedSubmissions }}/{{ problem.totalSubmissions }} =
             {{ problem.totalSubmissions ? ((problem.acceptedSubmissions / problem.totalSubmissions * 100 | number : '1.1-1') + '%') : '0.0%' }}
           </span>
-        </span>
+        </a>
       </p>
     </div>
-    <button class="btn my-3 w-100"
-            [class.btn-outline-danger]="fullscreen"
-            [class.btn-outline-success]="!fullscreen"
-            (click)="toggleFullscreen()">
-      <fa-icon [icon]="fullscreen ? faTimes : faColumns"></fa-icon>
-      <span *ngIf="fullscreen">Close Editor</span>
-      <span *ngIf="!fullscreen">Open Editor</span>
-    </button>
+    <h3 class="mt-2">
+      Submissions
+      <span class="float-right" *ngIf="!fullscreen">
+        <button class="btn text-secondary" (click)="toggleFullscreen()">
+          <fa-icon [icon]="faColumns"></fa-icon><span>Open Editor</span>
+        </button>
+      </span>
+    </h3>
     <app-submission-timeline [problemId]="problemId"></app-submission-timeline>
 
     <h3 class="mt-5">Description</h3>
