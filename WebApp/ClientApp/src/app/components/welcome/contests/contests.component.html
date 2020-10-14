@@ -14,22 +14,24 @@
       <div class="card-body">
         <h5 class="card-title">{{ contest.title }}</h5>
         <p class="mb-2">
-          <ng-container #contestIsRunning *ngIf="now >= contest.beginTime; else contestIsPending">
-            <ng-container *ngIf="(contest.isPublic || contest.registered); else contestIsPrivate">
-              <a class="btn btn-sm btn-success" [routerLink]="['/contest', contest.id]">
-                <fa-icon [icon]="faSignInAlt"></fa-icon><span>Enter</span>
-              </a>
-            </ng-container>
-            <ng-template #contestIsPrivate>
-              <a class="btn btn-sm btn-outline-danger disabled">
-                <fa-icon [icon]="faLock"></fa-icon><span>Private</span>
+          <a *ngIf="canEnterContest(contest); else cannotEnterContest"
+             [class]="'btn btn-sm btn-' + (privileged && now.isBefore(contest.beginTime) ? 'warning' : 'success')"
+             [routerLink]="['/contest', contest.id]">
+            <fa-icon [icon]="faSignInAlt"></fa-icon>
+            <span>Enter</span>
+          </a>
+          <ng-template #cannotEnterContest>
+            <a *ngIf="now.isAfter(contest.beginTime); else contestPending"
+               class="btn btn-sm btn-outline-danger disabled">
+              <fa-icon [icon]="faLock"></fa-icon>
+              <span>Private</span>
+            </a>
+            <ng-template #contestPending>
+              <a class="btn btn-sm btn-outline-secondary disabled">
+                <fa-icon [icon]="faClock"></fa-icon>
+                <span>Pending</span>
               </a>
             </ng-template>
-          </ng-container>
-          <ng-template #contestIsPending>
-            <a class="btn btn-sm btn-outline-secondary disabled">
-              <fa-icon [icon]="faClock"></fa-icon><span>Pending</span>
-            </a>
           </ng-template>
         </p>
         <p class="mb-0">
