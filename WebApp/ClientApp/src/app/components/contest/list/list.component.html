@@ -18,10 +18,12 @@
         <tr *ngFor="let contest of list.items">
           <th scope="row">{{ contest.id }}</th>
           <td>
-            <a *ngIf="canEnterContest(contest); else contestTitle" [routerLink]="['/contest', contest.id]">
+            <a *ngIf="canEnterContest(contest); else cannotEnterContest"
+               [class.text-warning]="privileged && now.isBefore(contest.beginTime)"
+               [routerLink]="['/contest', contest.id]">
               {{ contest.title }}
             </a>
-            <ng-template #contestTitle>
+            <ng-template #cannotEnterContest>
               <span>{{ contest.title }}</span>
             </ng-template>
           </td>

@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.2.11 - 2020-10-13
+## 1.2.12 - 2020-10-14
 
 ### Added
 
@@ -16,6 +16,8 @@
 - Administrators and contest managers can submit to any problems before contest begins.
 - Move submission verdict component to be a dedicated component and module.
 - Increased output size limit to the larger one of either double of standard output or 10MiB.
+- Privileged users can now enter contest by buttons and links before the contest has begun.
+- Redesigned buttons to toggle code editor in problem description pages.
 
 ### Fixed
 
