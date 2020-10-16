@@ -69,7 +69,9 @@ namespace WebApp.Services
             var now = DateTime.Now.ToUniversalTime();
             var contests = await Context.Contests
                 .Where(c => c.EndTime > now)
-                .OrderBy(c => c.BeginTime)
+                .OrderBy(c => c.EndTime)
+                .ThenBy(c => c.BeginTime)
+                .ThenBy(c => c.Id)
                 .ToListAsync();
             if (Accessor.HttpContext.User.IsAuthenticated())
             {

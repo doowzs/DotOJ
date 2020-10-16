@@ -18,6 +18,7 @@
 - Increased output size limit to the larger one of either double of standard output or 10MiB.
 - Privileged users can now enter contest by buttons and links before the contest has begun.
 - Redesigned buttons to toggle code editor in problem description pages.
+- Current contest is now ordered by end time instead of begin time.
 
 ### Fixed
 
