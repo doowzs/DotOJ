@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.2.12 - 2020-10-14
+## 1.2.13 - 2020-10-16
 
 ### Added
 
@@ -18,6 +18,7 @@
 - Increased output size limit to the larger one of either double of standard output or 10MiB.
 - Privileged users can now enter contest by buttons and links before the contest has begun.
 - Redesigned buttons to toggle code editor in problem description pages.
+- Current contest is now ordered by end time instead of begin time.
 
 ### Fixed
 
