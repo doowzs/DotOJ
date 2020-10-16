@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.2.13 - 2020-10-16
+## 1.2.14 - 2020-10-16
 
 ### Added
 
@@ -19,6 +19,7 @@
 - Privileged users can now enter contest by buttons and links before the contest has begun.
 - Redesigned buttons to toggle code editor in problem description pages.
 - Current contest is now ordered by end time instead of begin time.
+- Updated background highlight style of bold text in all pages.
 
 ### Fixed
 

@@ -1,9 +1,4 @@
-﻿::ng-deep strong {
-  background-image: linear-gradient(transparent 60%,rgba(255,92,117,0.3) 40%);
-  background-repeat: repeat-x;
-}
-
-#toggle-button {
+﻿#toggle-button {
   border-radius: 1rem 0 0 1rem;
   padding-left: 0.6rem;
   padding-right: 0.5rem;
