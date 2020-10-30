@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.2.14 - 2020-10-16
+## 1.2.15 - 2020-10-30
 
 ### Added
 
@@ -30,6 +30,7 @@
 - Fixed a performance issue caused by repeatedly force resizing code editor.
 - Fixed replaceUrl set to false when updating a contest in admin page.
 - Fixed overwrite flag when copying a new compiled checker to judge data folder.
+- Fixed high CPU usage caused by redrawing progress bar too frequently.
 
 ### Removed
 
