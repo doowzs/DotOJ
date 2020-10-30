@@ -100,7 +100,7 @@ export class ContestHeaderComponent implements OnInit, OnDestroy {
     } else {
       const passed = moment.duration(this.now.diff(this.contest.beginTime)).asSeconds();
       const total = moment.duration(end.diff(this.contest.beginTime)).asSeconds();
-      this.progress = Math.min(100, passed / total * 100);
+      this.progress = Math.round(Math.min(100, passed / total * 100) * 10) / 10;
     }
   }
 }
