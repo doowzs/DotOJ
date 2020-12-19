@@ -119,6 +119,7 @@ namespace WebApp.Services.Admin
                 UserId = Accessor.HttpContext.User.GetSubjectId(),
                 ProblemId = dto.ProblemId.GetValueOrDefault(),
                 Program = dto.Program,
+                Hidden = true,
                 Verdict = Verdict.Pending,
                 Time = null,
                 Memory = null,

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Data.Generics;
@@ -21,6 +22,13 @@ namespace Data.Models
         #endregion
 
         #region Submission Content
+
+        /**
+         * If submitted before contest begins, this value shall be set to true to hide the submission.
+         * We add this extra attribute because including all reference to contest will cause performance issues.
+         */
+        [DefaultValue(false)]
+        public bool Hidden { get; set; }
 
         [NotMapped] public Program Program { get; set; }
 

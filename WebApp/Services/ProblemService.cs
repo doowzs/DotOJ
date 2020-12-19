@@ -70,7 +70,7 @@ namespace WebApp.Services
             var infos = new List<ProblemInfoDto>();
             foreach (var problem in problems.Items)
             {
-                var query = Context.Submissions.Where(s => s.ProblemId == problem.Id);
+                var query = Context.Submissions.Where(s => s.ProblemId == problem.Id && !s.Hidden);
                 var attempted = await query.AnyAsync(s => s.UserId == userId);
                 var solved = await query.AnyAsync(s => s.UserId == userId && s.Verdict == Verdict.Accepted);
                 var acceptedSubmissions = await query.CountAsync(s => s.Verdict == Verdict.Accepted);
@@ -89,6 +89,7 @@ namespace WebApp.Services
             var userId = Accessor.HttpContext.User.GetSubjectId();
             var problem = await Context.Problems.FindAsync(id);
             await Context.Entry(problem).Collection(p => p.Submissions).LoadAsync();
+            problem.Submissions = problem.Submissions.Where(s => !s.Hidden).ToList();
             var attempted = problem.Submissions.Any(s => s.UserId == userId);
             var solved = problem.Submissions.Any(s => s.UserId == userId && s.Verdict == Verdict.Accepted);
             var acceptedSubmissions = problem.Submissions.Count(s => s.Verdict == Verdict.Accepted);
