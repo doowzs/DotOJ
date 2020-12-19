@@ -19,7 +19,7 @@ COPY ./CHANGELOG.md /src/WebApp/wwwroot/changelog.md
 RUN sed -i 's/Version = "latest"/Version = "'"${VERSION}"'"/' /src/Data/Configs/ApplicationConfig.cs
 RUN dotnet publish WebApp -c Release -o /app/out
 
-FROM ccr.ccs.tencentyun.com/dotoj/runtime:3.1
+FROM ccr.ccs.tencentyun.com/dotoj/runtime:5.0
 WORKDIR /app
 COPY --from=build-env /app/out .
 ENTRYPOINT ["dotnet", "WebApp.dll"]

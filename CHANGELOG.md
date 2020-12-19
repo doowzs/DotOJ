@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.0 - 2020-12-19
+
+### Changed
+
+- Upgrade runtime to dotnet 5.0.
+
 ## 1.2.15 - 2020-10-30
 
 ### Added
