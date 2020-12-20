@@ -47,7 +47,7 @@ namespace WebApp.Services
             }
         }
 
-        private async Task ValidateSubmissionCreateDtoAsync(SubmissionCreateDto dto)
+        private async Task<Contest> ValidateSubmissionCreateDtoAsync(SubmissionCreateDto dto)
         {
             var problem = await Context.Problems.FindAsync(dto.ProblemId);
             if (problem is null)
@@ -94,12 +94,14 @@ namespace WebApp.Services
             {
                 throw new ValidationException("Invalid program code.");
             }
+
+            return contest;
         }
 
         public async Task<PaginatedList<SubmissionInfoDto>> GetPaginatedSubmissionsAsync(int? contestId, string userId,
             string contestantId, int? problemId, Verdict? verdict, int? pageSize, int? pageIndex)
         {
-            var submissions = Context.Submissions.AsQueryable();
+            var submissions = Context.Submissions.Where(s => !s.Hidden);
 
             if (contestId.HasValue)
             {
@@ -138,7 +140,7 @@ namespace WebApp.Services
             {
                 submissions = submissions.Where(s => s.Verdict == verdict.GetValueOrDefault());
             }
-
+            
             return await submissions.OrderByDescending(s => s.Id)
                 .PaginateAsync(s => s.User, s => new SubmissionInfoDto(s), pageIndex ?? 1, pageSize ?? PageSize);
         }
@@ -179,7 +181,7 @@ namespace WebApp.Services
 
         public async Task<SubmissionInfoDto> CreateSubmissionAsync(SubmissionCreateDto dto)
         {
-            await ValidateSubmissionCreateDtoAsync(dto);
+            var contest = await ValidateSubmissionCreateDtoAsync(dto);
 
             var user = await Manager.GetUserAsync(Accessor.HttpContext.User);
             var lastSubmission = await Context.Submissions
@@ -197,6 +199,7 @@ namespace WebApp.Services
                 ProblemId = dto.ProblemId.GetValueOrDefault(),
                 Program = dto.Program,
                 Verdict = Verdict.Pending,
+                Hidden = DateTime.Now.ToUniversalTime() < contest.BeginTime,
                 Time = null,
                 Memory = null,
                 FailedOn = null,

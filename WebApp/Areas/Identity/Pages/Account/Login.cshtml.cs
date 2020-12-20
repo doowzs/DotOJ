@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
@@ -38,7 +39,7 @@ namespace WebApp.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required] public string Username { get; set; }
+            [Required, Display(Name = "Contestant ID (NJU-ID)")] public string Username { get; set; }
 
             [Required]
             [DataType(DataType.Password)]

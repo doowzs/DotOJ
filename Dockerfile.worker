@@ -4,7 +4,7 @@ WORKDIR /src
 COPY . ./
 RUN dotnet publish Worker -c Release -o /app/out
 
-FROM ccr.ccs.tencentyun.com/dotoj/sdk:3.1
+FROM ccr.ccs.tencentyun.com/dotoj/sdk:5.0
 RUN sed -i 's/deb.debian.org/mirrors.aliyun.com/' /etc/apt/sources.list
 RUN sed -i 's/security.debian.org/mirrors.aliyun.com/' /etc/apt/sources.list
 ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1

@@ -1,15 +1,12 @@
-using AutoMapper.Configuration;
+using System;
 using Data;
 using Data.Configs;
-using Data.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Notification;
 using Notification.Providers;
-using Worker.Runners;
 
 namespace Worker
 {
@@ -28,7 +25,8 @@ namespace Worker
                     services.AddHostedService<Worker>();
 
                     services.AddDbContext<ApplicationDbContext>(options =>
-                        options.UseMySql(hostContext.Configuration.GetConnectionString("MySqlConnection"))
+                        options.UseMySql(hostContext.Configuration.GetConnectionString("MySqlConnection"),
+                            new MariaDbServerVersion(new Version(10, 5, 8)))
                     );
 
                     services.AddOptions();

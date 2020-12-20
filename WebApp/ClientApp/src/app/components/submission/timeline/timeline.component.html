@@ -1,9 +1,19 @@
 ﻿<ng-container *ngIf="submissions">
   <div *ngIf="submissions.length === 0; else submissionsTable" class="text-center text-secondary my-3">
-    <h3>
-      <fa-icon [icon]="faBoxOpen"></fa-icon>
-    </h3>
-    <p>You haven't tried this problem.</p>
+    <ng-container *ngIf="begun; else notBegun">
+      <h3>
+        <fa-icon [icon]="faBoxOpen"></fa-icon>
+      </h3>
+      <p>You haven't tried this problem.</p>
+    </ng-container>
+    <ng-template #notBegun>
+      <div class="text-center text-secondary my-3">
+        <h3>
+          <fa-icon [icon]="faClock"></fa-icon>
+        </h3>
+        <p>Submissions are only available in <a [routerLink]="['/admin/submission']">admin pages</a> before contest.</p>
+      </div>
+    </ng-template>
   </div>
   <ng-template #submissionsTable>
     <div class="my-3">

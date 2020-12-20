@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.3.0 - 2020-12-19
+
+### Changed
+
+- Upgrade framework and runtime to dotnet 5.0.
+- Submissions made by admin before contest is now hidden from public.
+
+### Fixed
+
+- Fixed incorrect pagination when making the 6th submission.
+- Fixed handling interrupted judging results by triggering a rejudge.
+
 ## 1.2.15 - 2020-10-30
 
 ### Added
