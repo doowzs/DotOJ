@@ -216,7 +216,7 @@ namespace WebApp
                 var adminUser = new ApplicationUser
                 {
                     Email = Configuration["Application:AdminUser:Email"],
-                    UserName = Configuration["Application:AdminUser:Email"],
+                    UserName = Configuration["Application:AdminUser:ContestantId"],
                     ContestantId = Configuration["Application:AdminUser:ContestantId"],
                     ContestantName = Configuration["Application:AdminUser:ContestantName"]
                 };
