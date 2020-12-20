@@ -1,14 +1,17 @@
 ﻿import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { ActivatedRoute } from "@angular/router";
 import { interval, Observable, Subject } from 'rxjs';
 import { map, take, takeUntil } from 'rxjs/operators';
+import * as moment from "moment";
 
 import { PaginatedList } from '../../../../interfaces/pagination.interfaces';
-import { ProblemViewDto } from '../../../../interfaces/problem.interfaces';
 import { SubmissionInfoDto } from '../../../../interfaces/submission.interfaces';
 import { VerdictStage } from '../../../../consts/verdicts.consts';
 import { SubmissionService } from '../../../services/submission.service';
 import { AuthorizeService } from '../../../../api-authorization/authorize.service';
-import { faBoxOpen } from '@fortawesome/free-solid-svg-icons';
+import { ContestViewDto } from "../../../../interfaces/contest.interfaces";
+import { ContestService } from "../../../services/contest.service";
+import { faBoxOpen, faClock } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-submission-timeline',
@@ -17,8 +20,13 @@ import { faBoxOpen } from '@fortawesome/free-solid-svg-icons';
 })
 export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy {
   faBoxOpen = faBoxOpen;
+  faClock = faClock;
 
   @Input() public problemId: number;
+
+  public contestId: number;
+  public contest: ContestViewDto;
+  public begun: boolean = true;
 
   public userId: Observable<string>;
   public pageIndex: number = 1;
@@ -29,13 +37,21 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
   private destroy$ = new Subject();
 
   constructor(
+    private route: ActivatedRoute,
     private auth: AuthorizeService,
-    private service: SubmissionService
+    private submissionService: SubmissionService,
+    private contestService: ContestService
   ) {
+    this.contestId = this.route.snapshot.parent.params.contestId;
     this.userId = this.auth.getUser().pipe(take(1), map(u => u && u.sub));
   }
 
   ngOnInit() {
+    this.contestService.getSingle(this.contestId, true)
+      .subscribe(contest => {
+        this.contest = contest;
+        this.begun = moment().isAfter(this.contest.beginTime);
+      });
     interval(2000)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
@@ -46,7 +62,7 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
           this.updatePendingSubmissions();
         }
       });
-    this.service.newSubmission
+    this.submissionService.newSubmission
       .pipe(takeUntil(this.destroy$))
       .subscribe(submission => {
         this.submissions.unshift(submission);
@@ -80,7 +96,7 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
 
   private loadSubmissions(problemId: number): void {
     this.userId.pipe(take(1)).subscribe(userId => {
-      this.service.getPaginatedList(null, userId, null, problemId, null, 5, this.pageIndex)
+      this.submissionService.getPaginatedList(null, userId, null, problemId, null, 5, this.pageIndex)
         .subscribe(list => {
           this.totalItems = list.totalItems;
           this.totalPages = list.totalPages;
@@ -94,7 +110,7 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
       return s.verdictInfo.stage === VerdictStage.RUNNING ||
         (s.verdictInfo.stage === VerdictStage.REJECTED && s.score == null);
     }).map(s => s.id);
-    this.service.getBatchInfos(submissionIds)
+    this.submissionService.getBatchInfos(submissionIds)
       .subscribe(updatedSubmissions => {
         for (let i = 0; i < updatedSubmissions.length; ++i) {
           const updated = updatedSubmissions[i];
