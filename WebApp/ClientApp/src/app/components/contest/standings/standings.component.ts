@@ -141,7 +141,7 @@ export class ContestStandingsComponent implements OnInit {
       { header: 'Score', key: 'score' },
       { header: 'Penalties', key: 'penalties' }
     ]);
-    for (const registration of this.registrations) {
+    for (const registration of this.registrations.slice(1)) {
       const row = {
         rank: registration.rank,
         id: registration.contestantId,
