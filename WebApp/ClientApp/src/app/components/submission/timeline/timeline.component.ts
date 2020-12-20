@@ -65,10 +65,10 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
     this.submissionService.newSubmission
       .pipe(takeUntil(this.destroy$))
       .subscribe(submission => {
+        this.totalItems++;
         this.submissions.unshift(submission);
         if (this.submissions.length > 5) {
           this.submissions.pop();
-          this.totalItems++;
           this.totalPages = (this.totalItems + 4) / 5;
         }
       });
