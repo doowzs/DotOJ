@@ -4,7 +4,12 @@
 
 ### Changed
 
-- Upgrade runtime to dotnet 5.0.
+- Upgrade framework and runtime to dotnet 5.0.
+- Submissions made by admin before contest is now hidden from public.
+
+### Fixed
+
+- Fixed an issue where pagination is incorrect when making the 6th submission.
 
 ## 1.2.15 - 2020-10-30
 
