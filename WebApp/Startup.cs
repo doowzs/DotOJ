@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Data;
 using Data.Configs;
 using Data.Models;
+using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -39,8 +40,10 @@ namespace WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseMySql(Configuration.GetConnectionString("MySqlConnection"),
+                    new MariaDbServerVersion("10.5.8"),
                     builder => { builder.MigrationsAssembly("WebApp"); }));
 
             services.AddDefaultIdentity<ApplicationUser>(options =>
@@ -71,7 +74,7 @@ namespace WebApp
                 };
             });
 
-            services.AddIdentityServer(options => { options.PublicOrigin = Configuration["Application:Host"]; })
+            services.AddIdentityServer()
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>()
                 .AddProfileService<ProfileService>();
 
@@ -130,10 +133,16 @@ namespace WebApp
         {
             ConfigureDatabase(provider).Wait();
 
+            app.Use(async (ctx, next) =>
+            {
+                ctx.SetIdentityServerOrigin(Configuration["Application:Host"]);
+                await next();
+            });
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
+                app.UseMigrationsEndPoint(); // https://github.com/aspnet/Announcements/issues/432
             }
             else
             {
