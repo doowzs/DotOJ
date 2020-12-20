@@ -43,7 +43,7 @@ namespace WebApp
             services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseMySql(Configuration.GetConnectionString("MySqlConnection"),
-                    new MariaDbServerVersion("10.5.8-mariadb"),
+                    new MariaDbServerVersion(new Version(10, 5, 8)),
                     builder => { builder.MigrationsAssembly("WebApp"); }));
 
             services.AddDefaultIdentity<ApplicationUser>(options =>

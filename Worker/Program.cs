@@ -1,3 +1,4 @@
+using System;
 using Data;
 using Data.Configs;
 using Microsoft.EntityFrameworkCore;
@@ -25,7 +26,7 @@ namespace Worker
 
                     services.AddDbContext<ApplicationDbContext>(options =>
                         options.UseMySql(hostContext.Configuration.GetConnectionString("MySqlConnection"),
-                            new MariaDbServerVersion("10.5.8-mariadb"))
+                            new MariaDbServerVersion(new Version(10, 5, 8)))
                     );
 
                     services.AddOptions();
