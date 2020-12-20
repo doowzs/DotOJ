@@ -36,7 +36,9 @@ namespace Worker.Triggers
             using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
             {
                 var pendingSubmissions = await Context.Submissions
-                    .Where(s => s.Verdict == Verdict.Pending).ToListAsync();
+                    .Where(s => s.Verdict == Verdict.Pending ||
+                                (s.Verdict == Verdict.Running && now >= s.UpdatedAt.AddMinutes(2)))
+                    .ToListAsync();
                 foreach (var pendingSubmission in pendingSubmissions)
                 {
                     // Must reset all fields to clear cache in DBContext.

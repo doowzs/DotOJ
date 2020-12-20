@@ -9,7 +9,8 @@
 
 ### Fixed
 
-- Fixed an issue where pagination is incorrect when making the 6th submission.
+- Fixed incorrect pagination when making the 6th submission.
+- Fixed handling interrupted judging results by triggering a rejudge.
 
 ## 1.2.15 - 2020-10-30
 
