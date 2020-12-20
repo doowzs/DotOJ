@@ -24,7 +24,7 @@ export class AdminContestRegistrationsComponent implements OnInit {
 
   public contestId: number;
   public contest: ContestEditDto;
-  public registrations: RegistrationInfoDto[];
+  public registrations: RegistrationInfoDto[] = [];
 
   public isParticipant = true;
   public isContestManager = false;
