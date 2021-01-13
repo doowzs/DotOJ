@@ -1,8 +1,21 @@
 <h2>Export Problem #{{ problemId }}</h2>
 <div class="row">
-  <div class="col">
+  <div class="col col-12">
     <button class="btn btn-primary w-100" (click)="exportProblem()">
       <fa-icon [icon]="faDownload"></fa-icon><span>Export as zip file</span>
     </button>
+  </div>
+</div>
+<div class="card mt-3">
+  <div class="card-body">
+    <h4>Export Submissions of Problem #{{ problemId }}</h4>
+    <span class="float-right">
+      <button class="btn btn-sm btn-secondary mr-2" (click)="exportProblemSubmissions(false)">
+        <fa-icon [icon]="faCheck"></fa-icon><span>First Accepted Only</span>
+      </button>
+      <button class="btn btn-sm btn-secondary" (click)="exportProblemSubmissions(true)">
+        <fa-icon [icon]="faList"></fa-icon><span>All Submissions</span>
+      </button>
+    </span>
   </div>
 </div>

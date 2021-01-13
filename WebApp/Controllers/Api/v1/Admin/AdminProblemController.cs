@@ -187,5 +187,22 @@ namespace WebApp.Controllers.Api.v1.Admin
                 return NotFound(e.Message);
             }
         }
+
+        [HttpGet("{id:int}/export/submissions")]
+        [Produces(MediaTypeNames.Application.Zip)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> ExportProblemSubmissions(int id, bool all)
+        {
+            try
+            {
+                var bytes = await _service.ExportProblemSubmissionsAsync(id, all);
+                return File(bytes, MediaTypeNames.Application.Zip, id + "-submissions.zip");
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+        }
     }
 }

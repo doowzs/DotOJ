@@ -28,6 +28,7 @@ namespace WebApp.Services.Admin
         public Task<List<TestCase>> UpdateProblemTestCasesAsync(int id, IFormFile file);
         public Task<ProblemEditDto> ImportProblemAsync(int contestId, IFormFile file);
         public Task<byte[]> ExportProblemAsync(int id);
+        public Task<byte[]> ExportProblemSubmissionsAsync(int id, bool all);
     }
 
     public class AdminProblemService : LoggableService<AdminProblemService>, IAdminProblemService
@@ -215,6 +216,19 @@ namespace WebApp.Services.Admin
             await EnsureProblemExists(id);
             var problem = await Context.Problems.FindAsync(id);
             return await Data.Archives.v1.ProblemArchive.CreateAsync(problem, Options);
+        }
+
+        public async Task<byte[]> ExportProblemSubmissionsAsync(int id, bool all)
+        {
+            await EnsureProblemExists(id);
+            var query = Context.Submissions.Where(s => s.ProblemId == id).AsQueryable();
+            if (!all)
+            {
+                query = query.GroupBy(s => s.UserId).Select(s => s.FirstOrDefault());
+            }
+
+            var submissions = await query.ToListAsync();
+            return await Data.Archives.v1.SubmissionsArchive.CreateAsync(submissions, Options);
         }
     }
 }

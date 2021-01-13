@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { faDownload } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faDownload, faList } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-admin-problem-export',
@@ -8,7 +8,9 @@ import { faDownload } from '@fortawesome/free-solid-svg-icons';
   styleUrls: ['./export.component.css']
 })
 export class AdminProblemExportComponent {
+  faCheck = faCheck;
   faDownload = faDownload;
+  faList = faList;
 
   public problemId: number;
 
@@ -18,5 +20,9 @@ export class AdminProblemExportComponent {
 
   public exportProblem() {
     window.open('/api/v1/admin/problem/' + this.problemId + '/export', '_blank');
+  }
+
+  public exportProblemSubmissions(all: boolean = false) {
+    window.open('/api/v1/admin/problem/' + this.problemId + '/export/submissions?all=' + all, '_blank');
   }
 }
