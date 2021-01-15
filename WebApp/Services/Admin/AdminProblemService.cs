@@ -221,13 +221,25 @@ namespace WebApp.Services.Admin
         public async Task<byte[]> ExportProblemSubmissionsAsync(int id, bool all)
         {
             await EnsureProblemExists(id);
-            var query = Context.Submissions.Where(s => s.ProblemId == id).AsQueryable();
+            var submissions = await Context.Submissions
+                    .Where(s => s.ProblemId == id)
+                    .ToListAsync();
             if (!all)
             {
-                query = query.GroupBy(s => s.UserId).Select(s => s.FirstOrDefault());
+                var groups = submissions
+                    .Where(s => s.Verdict == Verdict.Accepted)
+                    .GroupBy(s => s.UserId);
+                submissions = new List<Submission>();
+                foreach (var group in groups) {
+                    submissions.Add(group.OrderBy(s => s.Id).First());
+                }
+            }
+            
+            foreach (var submission in submissions)
+            {
+                Context.Entry(submission).Reference(s => s.User).Load();
             }
 
-            var submissions = await query.ToListAsync();
             return await Data.Archives.v1.SubmissionsArchive.CreateAsync(submissions, Options);
         }
     }

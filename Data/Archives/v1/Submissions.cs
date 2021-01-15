@@ -25,7 +25,7 @@ namespace Data.Archives.v1
 
                     #region Information about submission
 
-                    builder.AppendLine(comment + $"Submission #{submission.Id}");
+                    builder.AppendLine(comment + $"Submission  #{submission.Id}");
                     builder.AppendLine(comment + $"User ID:    {submission.UserId}");
                     if (submission.User is not null)
                     {
@@ -34,9 +34,12 @@ namespace Data.Archives.v1
                     }
 
                     builder.AppendLine(comment + $"Verdict:    {submission.Verdict.ToString()}");
-                    builder.AppendLine(comment + $"Score:      {submission.Score}");
+                    builder.AppendLine(comment + $"Score:      {submission.Score ?? 0}");
                     builder.AppendLine(comment + $"Submitted:  {submission.CreatedAt} (UTC Time)");
-                    builder.AppendLine(comment + $"Judged:     {submission.JudgedAt} by {submission.JudgedBy}");
+                    if (submission.JudgedAt.HasValue) {
+                        builder.AppendLine(comment + $"Judged:     {submission.JudgedAt} by {submission.JudgedBy}");
+                    }
+                    
                     builder.AppendLine();
 
                     #endregion
