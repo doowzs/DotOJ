@@ -1,6 +1,11 @@
 # Changelog
 
-## 1.3.0 - 2020-12-19
+## 1.3.1 - 2021-01-17
+
+### Added
+
+- Added CI config for Drone.
+- Can now export submissions of a problem.
 
 ### Changed
 
