@@ -1,0 +1,75 @@
+---
+kind: pipeline
+type: docker
+name: default
+
+trigger:
+  branch:
+    - master
+  ref:
+    - refs/tags/**
+
+environment:
+  CI_REGISTRY: ccr.ccs.tencentyun.com
+  ENV_IMAGE: ccr.ccs.tencentyun.com/dotoj/env
+  WEBAPP_IMAGE: ccr.ccs.tencentyun.com/dotoj/webapp
+  WORKER_IMAGE: ccr.ccs.tencentyun.com/dotoj/worker
+  DOCKER_HOST: unix:///var/run/docker.sock
+
+steps:
+  - name: build-env
+    image: docker:stable
+    volumes:
+      - name: dockersock
+        path: /var/run
+    environment:
+      CI_REGISTRY_PASS:
+        from_secret: CI_REGISTRY_PASS
+      CI_REGISTRY_USER:
+        from_secret: CI_REGISTRY_USER
+    commands:
+      - chmod +x ./release.sh
+      - echo "$CI_REGISTRY_PASS" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+      - ./release.sh env $ENV_IMAGE latest
+  - name: build-webapp
+    image: docker:stable
+    volumes:
+      - name: dockersock
+        path: /var/run
+    environment:
+      CI_REGISTRY_PASS:
+        from_secret: CI_REGISTRY_PASS
+      CI_REGISTRY_USER:
+        from_secret: CI_REGISTRY_USER
+    commands:
+      - chmod +x ./release.sh
+      - echo "$CI_REGISTRY_PASS" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+      - ./release.sh webapp $WEBAPP_IMAGE development-$DRONE_COMMIT_BRANCH-$(echo $DRONE_COMMIT_SHA | cut -c 1-8) $DRONE_TAG
+  - name: build-worker
+    image: docker:stable
+    volumes:
+      - name: dockersock
+        path: /var/run
+    environment:
+      CI_REGISTRY_PASS:
+        from_secret: CI_REGISTRY_PASS
+      CI_REGISTRY_USER:
+        from_secret: CI_REGISTRY_USER
+    commands:
+      - chmod +x ./release.sh
+      - echo "$CI_REGISTRY_PASS" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+      - ./release.sh worker $WORKER_IMAGE development-$DRONE_COMMIT_BRANCH-$(echo $DRONE_COMMIT_SHA | cut -c 1-8) $DRONE_TAG
+
+services:
+  - name: docker
+    image: docker:dind
+    privileged: true
+    volumes:
+      - name: dockersock
+        path: /var/run
+    commands:
+      - dockerd
+
+volumes:
+  - name: dockersock
+    temp: {}
