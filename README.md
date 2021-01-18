@@ -105,5 +105,5 @@ However, workers needs to share file system with web app in order to keep judge 
 $ openssl req -x509 -newkey rsa:4096 -sha256 -nodes \
   -subj "/CN=DotOJ" -keyout identity.key -out identity.crt
 $ openssl pkcs12 -export -out out/identity.pfx -password pass:identity \
-  -inkey identity.key -in identity.crt -certfile identity.crt
+  -inkey identity.key -in identity.crt
 ```
