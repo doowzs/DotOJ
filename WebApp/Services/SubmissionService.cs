@@ -9,7 +9,6 @@ using Data.Generics;
 using Data.Models;
 using IdentityServer4.Extensions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using WebApp.Exceptions;
 
 namespace WebApp.Services
@@ -33,14 +32,27 @@ namespace WebApp.Services
         {
         }
 
-        private async Task EnsureUserCanViewSubmissionAsync(Submission submission)
+        private async Task<Boolean> IsSubmissionViewableAsync(Submission submission)
         {
             var user = await Manager.GetUserAsync(Accessor.HttpContext.User);
+            if (submission.UserId == user.Id)
+            {
+                return true;
+            }
+
             var problem = await Context.Problems.FindAsync(submission.ProblemId);
             var contest = await Context.Contests.FindAsync(problem.ContestId);
-            var ended = DateTime.Now.ToUniversalTime() > contest.EndTime;
+            if (DateTime.Now.ToUniversalTime() > contest.EndTime)
+            {
+                return true;
+            }
 
-            var accessible = ended || submission.UserId == user.Id;
+            return await Context.Submissions.AnyAsync(s => s.UserId == user.Id && s.ProblemId == problem.Id && s.Verdict == Verdict.Accepted);
+        }
+
+        private async Task EnsureUserCanViewSubmissionAsync(Submission submission)
+        {
+            var accessible = await IsSubmissionViewableAsync(submission);
             if (!accessible)
             {
                 throw new UnauthorizedAccessException("Not allowed to view this submission.");
@@ -141,17 +153,45 @@ namespace WebApp.Services
                 submissions = submissions.Where(s => s.Verdict == verdict.GetValueOrDefault());
             }
             
-            return await submissions.OrderByDescending(s => s.Id)
-                .PaginateAsync(s => s.User, s => new SubmissionInfoDto(s), pageIndex ?? 1, pageSize ?? PageSize);
+            var paginated = await submissions.OrderByDescending(s => s.Id)
+                .PaginateAsync(s => s.User, s => s, pageIndex ?? 1, pageSize ?? PageSize);
+            var dict = new Dictionary<int, bool>();
+            var infos = new List<SubmissionInfoDto>();
+            foreach (var submission in paginated.Items)
+            {
+                var viewable = false;
+                if (!dict.TryGetValue(submission.Id, out viewable))
+                {
+                    viewable = await IsSubmissionViewableAsync(submission);
+                    dict.Add(submission.Id, viewable);
+                }
+                infos.Add(new SubmissionInfoDto(submission, viewable));
+            }
+
+            return new PaginatedList<SubmissionInfoDto>(paginated.TotalItems, paginated.PageIndex, paginated.PageSize, infos);
         }
 
         public async Task<List<SubmissionInfoDto>> GetBatchSubmissionInfosAsync(IEnumerable<int> ids)
         {
-            return await Context.Submissions
+            var dict = new Dictionary<int, bool>();
+            var submissions = await Context.Submissions
                 .Where(s => ids.Contains(s.Id))
                 .Include(s => s.User)
-                .Select(s => new SubmissionInfoDto(s))
                 .ToListAsync();
+            
+            var infos = new List<SubmissionInfoDto>();
+            foreach (var submission in submissions)
+            {
+                var viewable = false;
+                if (!dict.TryGetValue(submission.Id, out viewable))
+                {
+                    viewable = await IsSubmissionViewableAsync(submission);
+                    dict.Add(submission.Id, viewable);
+                }
+                infos.Add(new SubmissionInfoDto(submission, viewable));
+            }
+
+            return infos;
         }
 
         public async Task<SubmissionInfoDto> GetSubmissionInfoAsync(int id)
@@ -163,7 +203,7 @@ namespace WebApp.Services
             }
 
             await Context.Entry(submission).Reference(s => s.User).LoadAsync();
-            return new SubmissionInfoDto(submission);
+            return new SubmissionInfoDto(submission, await IsSubmissionViewableAsync(submission));
         }
 
         public async Task<SubmissionViewDto> GetSubmissionViewAsync(int id)
@@ -213,7 +253,7 @@ namespace WebApp.Services
             await Context.SaveChangesAsync();
 
             await Context.Entry(submission).Reference(s => s.User).LoadAsync();
-            var result = new SubmissionInfoDto(submission);
+            var result = new SubmissionInfoDto(submission, true);
             await LogInformation($"CreateSubmission ProblemId={result.ProblemId} " +
                                  $"Language={result.Language} Length={result.CodeBytes}");
             return result;

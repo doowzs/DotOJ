@@ -25,6 +25,7 @@ export interface SubmissionInfoDto {
   failedOn: number;
   score: number;
   progress: number;
+  viewable: boolean;
   judgedAt: moment.Moment | string;
   judgedAtMoment?: moment.Moment;
   createdAt: moment.Moment | string;

@@ -37,6 +37,9 @@
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
   <ItemGroup>
+    <Content Remove="appsettings.json" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Data\Data.csproj" />
     <ProjectReference Include="..\Notification\Notification.csproj" />
   </ItemGroup>
@@ -49,6 +52,9 @@
     <_ContentIncludedByDefault Remove="ClientApp\lib\jfcere\ngx-markdown\tsconfig.lib.prod.json" />
     <_ContentIncludedByDefault Remove="ClientApp\lib\jfcere\ngx-markdown\tsconfig.spec.json" />
     <_ContentIncludedByDefault Remove="ClientApp\lib\jfcere\ngx-markdown\tslint.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="appsettings.json" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

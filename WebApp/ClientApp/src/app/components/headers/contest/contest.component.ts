@@ -1,4 +1,4 @@
-﻿import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { interval, Observable, Subject, timer } from 'rxjs';
 import { map, take, takeUntil } from 'rxjs/operators';

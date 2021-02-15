@@ -22,7 +22,9 @@ namespace Data.DTOs
         public int? Score { get; }
         public int? Progress { get; }
 
-        public SubmissionInfoDto(Submission submission) : base(submission)
+        public bool Viewable { get; set; }
+
+        public SubmissionInfoDto(Submission submission, bool viewable = false) : base(submission)
         {
             var count = submission.Program.Code.Length;
             var padding = submission.Program.Code.Substring(count - 2, 2).Count(c => c == '=');
@@ -40,6 +42,7 @@ namespace Data.DTOs
             FailedOn = submission.FailedOn;
             Score = submission.Score;
             Progress = submission.Progress;
+            Viewable = viewable;
         }
     }
 

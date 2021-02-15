@@ -90,7 +90,7 @@ namespace WebApp.Services.Admin
             }
 
             return await submissions.OrderByDescending(s => s.Id)
-                .PaginateAsync(s => s.User, s => new SubmissionInfoDto(s), pageIndex ?? 1, PageSize);
+                .PaginateAsync(s => s.User, s => new SubmissionInfoDto(s, true), pageIndex ?? 1, PageSize);
         }
 
         public async Task<List<SubmissionInfoDto>> GetBatchSubmissionInfosAsync(IEnumerable<int> ids)
@@ -98,7 +98,7 @@ namespace WebApp.Services.Admin
             return await Context.Submissions
                 .Where(s => ids.Contains(s.Id))
                 .Include(s => s.User)
-                .Select(s => new SubmissionInfoDto(s))
+                .Select(s => new SubmissionInfoDto(s, true))
                 .ToListAsync();
         }
 
@@ -134,7 +134,7 @@ namespace WebApp.Services.Admin
             await Context.SaveChangesAsync();
 
             await Context.Entry(submission).Reference(s => s.User).LoadAsync();
-            var result = new SubmissionInfoDto(submission);
+            var result = new SubmissionInfoDto(submission, true);
             await LogInformation($"CreateSubmission [Admin] ProblemId={result.ProblemId} " +
                                  $"Language={result.Language} Length={result.CodeBytes}");
             return result;
@@ -235,7 +235,7 @@ namespace WebApp.Services.Admin
             var infos = new List<SubmissionInfoDto>();
             foreach (var submission in submissions)
             {
-                infos.Add(new SubmissionInfoDto(submission));
+                infos.Add(new SubmissionInfoDto(submission, true));
             }
 
             return infos;
