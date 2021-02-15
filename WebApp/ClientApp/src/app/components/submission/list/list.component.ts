@@ -1,9 +1,11 @@
-import { Component, OnInit, OnDestroy, Input } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { interval, Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
-import * as moment from 'moment';
+
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { SubmissionDetailComponent } from '../detail/detail.component';
 
 import { Verdicts, VerdictStage } from '../../../../consts/verdicts.consts';
 import { PaginatedList } from '../../../../interfaces/pagination.interfaces';
@@ -38,13 +40,16 @@ export class SubmissionListComponent implements OnInit, OnDestroy {
   public list: PaginatedList<SubmissionInfoDto>;
   private destroy$ = new Subject();
 
+  @ViewChild('submissionDetailModal') submissionDetailModal;
+
   constructor(
     private title: Title,
     private route: ActivatedRoute,
     private router: Router,
     private service: SubmissionService,
     private contestService: ContestService,
-    private auth: AuthorizeService
+    private auth: AuthorizeService,
+    private modal: NgbModal
   ) {
     this.contestId = this.route.snapshot.parent.params.contestId;
     this.contestantId = this.route.snapshot.queryParams.contestantId;
@@ -148,6 +153,8 @@ export class SubmissionListComponent implements OnInit, OnDestroy {
   }
 
   public viewSubmissionPopup(submission: SubmissionInfoDto): void {
-    window.open('/submission/' + submission.id, '', 'width=930,height=690');
+    const modelRef = this.modal.open(SubmissionDetailComponent, { size: 'xl' });
+    modelRef.componentInstance.submissionId = submission.id;
+    modelRef.componentInstance.standalone = false;
   }
 }

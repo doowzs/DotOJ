@@ -2,8 +2,11 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text;
+using Data.Configs;
 using Data.Generics;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Options;
 
 namespace Data.Models
 {
@@ -54,6 +57,52 @@ namespace Data.Models
         public string Message { get; set; }
         public string JudgedBy { get; set; }
         public DateTime? JudgedAt { get; set; }
+
+        #endregion
+
+        #region Submission Info Comments String
+
+        public string GetInfoCommentsString(IOptions<ApplicationConfig> options)
+        {
+            var comment = Program.GetSourceFileCommentSign();
+            var builder = new StringBuilder();
+            builder.AppendLine(comment + $"Submission  #{Id}");
+            builder.AppendLine(comment + $"User ID:    {UserId}");
+            if (User is not null)
+            {
+                builder.AppendLine(comment + $"Contestant: {User.ContestantId} {User.ContestantName}");
+            }
+
+            if (Problem is not null)
+            {
+                builder.AppendLine(comment + $"Problem:    No.{ProblemId} {Problem.Title}");
+            }
+            else
+            {
+                builder.AppendLine(comment + $"Problem:    No.{ProblemId}");
+            }
+
+            builder.AppendLine(comment + $"Verdict:    {Verdict} Score={Score ?? 0}");
+            builder.AppendLine(comment + $"Submitted:  {CreatedAt} (UTC Time)");
+            if (JudgedAt.HasValue)
+            {
+                builder.AppendLine(comment + $"Judged:     {JudgedAt} by {JudgedBy}");
+            }
+
+            builder.AppendLine(comment + $"Links:");
+            builder.AppendLine(comment + $"  1. {options.Value.Host}/submission/{Id}");
+            if (Problem is not null)
+            {
+                builder.AppendLine(comment + $"  2. {options.Value.Host}/contest/{Problem.ContestId}/problem/{ProblemId}");
+                if (User is not null)
+                {
+                    builder.AppendLine(comment + $"  3. {options.Value.Host}/contest/{Problem.ContestId}/submissions?problem={ProblemId}&contestantId={User.ContestantId}");
+                }
+            }
+
+            builder.AppendLine();
+            return builder.ToString();
+        }
 
         #endregion
     }

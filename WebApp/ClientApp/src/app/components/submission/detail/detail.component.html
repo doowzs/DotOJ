@@ -1,37 +1,14 @@
-<div class="card">
-  <div class="card-header">
-    <h2 class="d-flex">
-      Submission #{{ submissionId }}
-    </h2>
-    <h2 *ngIf="submission" class="text-right" style="position: fixed; top:0.5rem; right: 0.5rem; z-index: 1200;">
-      <verdict [submission]="submission" [badge]="true"></verdict>
-      <span class="badge badge-warning ml-1 d-none d-md-inline-block">Problem #{{ submission.problemId }}</span><br/>
-      <span *ngIf="submission.judgedAt" class="badge badge-info d-none d-md-inline-block">
-          {{ submission.judgedAtMoment.format('YYYY-MM-DD HH:mm:ss') }} @ {{ submission.judgedBy }}
-        </span>
-    </h2>
-    <div *ngIf="submission" class="m-3">
-      <p>Contestant: {{ submission.contestantId }} ({{ submission.contestantName }})</p>
-      <p>Submitted: {{ submission.createdAtMoment.format('YYYY-MM-DD HH:mm:ss') }}</p>
-      <p>
-        Language:
-        <span class="mx-2">{{ submission.program.languageInfo.name }}</span>
-        <span>{{ submission.codeBytes }}bytes</span>
-      </p>
-      <p *ngIf="!!submission.time && !!submission.memory">
-        Statistics:
-        <span class="mx-2">{{ submission.time }}ms</span>
-        <span>{{ submission.memory }}KiB</span>
-      </p>
-      <div *ngIf="!!submission.message">
-        <h3>Message</h3>
-        <pre>{{ submission.message }}</pre>
-      </div>
-    </div>
-  </div>
-  <div class="card-body p-0" *ngIf="submission">
-    <div class="vh-100">
-      <editor [disabled]="true" [submissionId]="submissionId" [program]="submission.program"></editor>
-    </div>
+<div class="modal-header">
+  <h2 class="d-flex">
+    Submission #{{ submissionId }}
+  </h2>
+  <button *ngIf="!standalone" type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body p-0" *ngIf="submission">
+  <div [ngStyle]="{'height': standalone ? 'calc(100vh - 79px)' : '80vh'}">
+    <editor [disabled]="true" [submissionId]="submissionId" [program]="submission.program"></editor>
   </div>
 </div>
+

@@ -216,7 +216,8 @@ namespace WebApp.Services
 
             await EnsureUserCanViewSubmissionAsync(submission);
             await Context.Entry(submission).Reference(s => s.User).LoadAsync();
-            return new SubmissionViewDto(submission);
+            await Context.Entry(submission).Reference(s => s.Problem).LoadAsync();
+            return new SubmissionViewDto(submission, Config);
         }
 
         public async Task<SubmissionInfoDto> CreateSubmissionAsync(SubmissionCreateDto dto)

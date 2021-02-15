@@ -1,8 +1,11 @@
-﻿import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { ActivatedRoute } from "@angular/router";
 import { interval, Observable, Subject } from 'rxjs';
 import { map, take, takeUntil } from 'rxjs/operators';
 import * as moment from "moment";
+
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { SubmissionDetailComponent } from '../detail/detail.component';
 
 import { PaginatedList } from '../../../../interfaces/pagination.interfaces';
 import { SubmissionInfoDto } from '../../../../interfaces/submission.interfaces';
@@ -40,7 +43,8 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
     private route: ActivatedRoute,
     private auth: AuthorizeService,
     private submissionService: SubmissionService,
-    private contestService: ContestService
+    private contestService: ContestService,
+    private modal: NgbModal
   ) {
     this.contestId = this.route.snapshot.parent.params.contestId;
     this.userId = this.auth.getUser().pipe(take(1), map(u => u && u.sub));
@@ -130,6 +134,8 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
   }
 
   public viewSubmissionPopup(submission: SubmissionInfoDto): void {
-    window.open('/submission/' + submission.id, '', 'width=930,height=690');
+    const modelRef = this.modal.open(SubmissionDetailComponent, { size: 'xl' });
+    modelRef.componentInstance.submissionId = submission.id;
+    modelRef.componentInstance.standalone = false;
   }
 }

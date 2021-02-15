@@ -12,42 +12,17 @@ namespace Data.Archives.v1
 {
     public class SubmissionsArchive
     {
-        public static async Task<byte[]> CreateAsync(List<Submission> submissions, IOptions<ApplicationConfig> options)
+        public static async Task<byte[]> CreateAsync(List<Submission> submissions, IOptions<ApplicationConfig> config)
         {
             await using var stream = new MemoryStream();
             using (var archive = new ZipArchive(stream, ZipArchiveMode.Create))
             {
                 foreach (var submission in submissions)
                 {
-                    var program = submission.Program;
-                    var comment = program.GetSourceFileCommentSign();
-                    var builder = new StringBuilder();
-
-                    #region Information about submission
-
-                    builder.AppendLine(comment + $"Submission  #{submission.Id}");
-                    builder.AppendLine(comment + $"User ID:    {submission.UserId}");
-                    if (submission.User is not null)
-                    {
-                        var user = submission.User;
-                        builder.AppendLine(comment + $"Contestant: {user.ContestantId} ({user.ContestantName})");
-                    }
-
-                    builder.AppendLine(comment + $"Verdict:    {submission.Verdict.ToString()}");
-                    builder.AppendLine(comment + $"Score:      {submission.Score ?? 0}");
-                    builder.AppendLine(comment + $"Submitted:  {submission.CreatedAt} (UTC Time)");
-                    if (submission.JudgedAt.HasValue) {
-                        builder.AppendLine(comment + $"Judged:     {submission.JudgedAt} by {submission.JudgedBy}");
-                    }
-                    
-                    builder.AppendLine();
-
-                    #endregion
-                    
-                    var sourceFile = submission.Id + program.GetSourceFileExtension();
+                    var sourceFile = submission.Id + submission.Program.GetSourceFileExtension();
                     var sourceEntry = archive.CreateEntry(sourceFile);
                     await using var sourceStream = sourceEntry.Open();
-                    await sourceStream.WriteAsync(Encoding.UTF8.GetBytes(builder.ToString()));
+                    await sourceStream.WriteAsync(Encoding.UTF8.GetBytes(submission.GetInfoCommentsString(config)));
                     await sourceStream.WriteAsync(Convert.FromBase64String(submission.Program.Code));
                     sourceStream.Close();
                 }

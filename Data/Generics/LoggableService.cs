@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Data.Configs;
 using Data.Models;
 using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Logging;
 
 namespace Data.Generics
 {
     public class LoggableService<T> where T : class
     {
+        protected readonly IOptions<ApplicationConfig> Config;
         protected readonly ApplicationDbContext Context;
         protected readonly IHttpContextAccessor Accessor;
         protected readonly UserManager<ApplicationUser> Manager;
@@ -22,6 +25,7 @@ namespace Data.Generics
 
         public LoggableService(IServiceProvider provider, bool noUser = false)
         {
+            Config = provider.GetRequiredService<IOptions<ApplicationConfig>>();
             Context = provider.GetRequiredService<ApplicationDbContext>();
             Accessor = provider.GetRequiredService<IHttpContextAccessor>();
             Manager = provider.GetRequiredService<UserManager<ApplicationUser>>();

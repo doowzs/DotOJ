@@ -1,8 +1,11 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text;
+using Data.Configs;
 using Data.Generics;
 using Data.Models;
+using Microsoft.Extensions.Options;
 
 namespace Data.DTOs
 {
@@ -64,14 +67,26 @@ namespace Data.DTOs
         public string JudgedBy { get; }
         public DateTime? JudgedAt { get; }
 
-        public SubmissionViewDto(Submission submission) : base(submission)
+        public SubmissionViewDto(Submission submission, IOptions<ApplicationConfig> options) : base(submission)
         {
             Id = submission.Id;
             UserId = submission.UserId;
             ContestantId = submission.User.ContestantId;
             ContestantName = submission.User.ContestantName;
             ProblemId = submission.ProblemId;
-            Program = submission.Program;
+
+            #region Prepend program with info comments
+
+            var code = Encoding.UTF8.GetString(Convert.FromBase64String(submission.Program.Code));
+            var encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(submission.GetInfoCommentsString(options) + code));
+            Program = new Program
+            {
+                Language = submission.Program.Language,
+                Code = encoded
+            };
+
+            #endregion
+
             Verdict = submission.Verdict;
             Time = submission.Time;
             Memory = submission.Memory;
