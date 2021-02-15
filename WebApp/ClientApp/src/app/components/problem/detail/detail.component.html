@@ -111,7 +111,7 @@
         <pre>{{ sample.output }}</pre>
       </div>
     </div>
-    <ng-container *ngIf="problem.footNote.trim() !== ''">
+    <ng-container *ngIf="problem.footNote && problem.footNote.trim() !== ''">
       <h3 class="mt-5">Foot Note</h3>
       <markdown [data]="problem.footNote" katex></markdown>
     </ng-container>
