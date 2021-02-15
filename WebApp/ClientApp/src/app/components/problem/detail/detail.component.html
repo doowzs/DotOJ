@@ -1,4 +1,4 @@
-﻿<div class="position-fixed d-none d-lg-block"
+<div class="position-fixed d-none d-lg-block"
      [style]="'top: calc(50vh - 30px); right: ' + (fullscreen ? '50%' : '0') + '; z-index: 200;'">
   <button class="btn bg-light text-secondary" id="toggle-button"
           (click)="toggleFullscreen()">
@@ -111,7 +111,7 @@
         <pre>{{ sample.output }}</pre>
       </div>
     </div>
-    <ng-container *ngIf="problem.footNote">
+    <ng-container *ngIf="problem.footNote.trim() !== ''">
       <h3 class="mt-5">Foot Note</h3>
       <markdown [data]="problem.footNote" katex></markdown>
     </ng-container>
