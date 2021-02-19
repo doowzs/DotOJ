@@ -48,6 +48,7 @@ export interface SubmissionViewDto {
   score: number;
   progress: number;
   message: string;
+  comments: string;
   judgedBy: string;
   judgedAt: moment.Moment | string;
   judgedAtMoment?: moment.Moment;

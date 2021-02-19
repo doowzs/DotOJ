@@ -1,14 +1,28 @@
 <div class="modal-header">
   <h2 class="d-flex">
     Submission #{{ submissionId }}
+    <span class="ml-3" *ngIf="submission">
+      <verdict [submission]="submission"></verdict>
+    </span>
   </h2>
   <button *ngIf="!standalone" type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
 <div class="modal-body p-0" *ngIf="submission">
-  <div [ngStyle]="{'height': standalone ? 'calc(100vh - 79px)' : '80vh'}">
-    <editor [disabled]="true" [submissionId]="submissionId" [program]="submission.program"></editor>
+  <div class="m-3">
+    <h3>Info</h3>
+    <pre>{{ submission.comments }}</pre>
+  </div>
+  <div class="m-3" *ngIf="!!submission.message">
+    <h3>Message</h3>
+    <pre>{{ submission.message }}</pre>
+  </div>
+  <div class="m-3">
+    <h3>Source</h3>
+    <div [ngStyle]="{'height': standalone ? 'calc(100vh - 79px)' : '80vh'}">
+      <editor [disabled]="true" [submissionId]="submissionId" [program]="submission.program"></editor>
+    </div>
   </div>
 </div>
 

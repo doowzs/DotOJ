@@ -64,6 +64,7 @@ namespace Data.DTOs
         public int? Score { get; }
         public int? Progress { get; }
         public string Message { get; }
+        public string Comments { get; }
         public string JudgedBy { get; }
         public DateTime? JudgedAt { get; }
 
@@ -74,19 +75,7 @@ namespace Data.DTOs
             ContestantId = submission.User.ContestantId;
             ContestantName = submission.User.ContestantName;
             ProblemId = submission.ProblemId;
-
-            #region Prepend program with info comments
-
-            var code = Encoding.UTF8.GetString(Convert.FromBase64String(submission.Program.Code));
-            var encoded = Convert.ToBase64String(Encoding.UTF8.GetBytes(submission.GetInfoCommentsString(options) + code));
-            Program = new Program
-            {
-                Language = submission.Program.Language,
-                Code = encoded
-            };
-
-            #endregion
-
+            Program = submission.Program;
             Verdict = submission.Verdict;
             Time = submission.Time;
             Memory = submission.Memory;
@@ -94,6 +83,7 @@ namespace Data.DTOs
             Score = submission.Score;
             Progress = submission.Progress;
             Message = submission.Message;
+            Comments = submission.GetInfoCommentsString(options, true);
             JudgedBy = submission.JudgedBy;
             JudgedAt = submission.JudgedAt;
         }

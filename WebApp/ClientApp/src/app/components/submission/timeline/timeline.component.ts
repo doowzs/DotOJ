@@ -12,6 +12,8 @@ import { SubmissionInfoDto } from '../../../../interfaces/submission.interfaces'
 import { VerdictStage } from '../../../../consts/verdicts.consts';
 import { SubmissionService } from '../../../services/submission.service';
 import { AuthorizeService } from '../../../../api-authorization/authorize.service';
+import { ProblemViewDto } from '../../../../interfaces/problem.interfaces';
+import { ProblemService } from '../../../services/problem.service';
 import { ContestViewDto } from "../../../../interfaces/contest.interfaces";
 import { ContestService } from "../../../services/contest.service";
 import { faBoxOpen, faClock } from '@fortawesome/free-solid-svg-icons';
@@ -29,6 +31,7 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
 
   public contestId: number;
   public contest: ContestViewDto;
+  public problem: ProblemViewDto;
   public begun: boolean = true;
 
   public userId: Observable<string>;
@@ -43,6 +46,7 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
     private route: ActivatedRoute,
     private auth: AuthorizeService,
     private submissionService: SubmissionService,
+    private problemService: ProblemService,
     private contestService: ContestService,
     private modal: NgbModal
   ) {
@@ -51,11 +55,13 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
   }
 
   ngOnInit() {
-    this.contestService.getSingle(this.contestId, true)
+    this.contestService.getSingle(this.contestId, false)
       .subscribe(contest => {
         this.contest = contest;
         this.begun = moment().isAfter(this.contest.beginTime);
       });
+    this.problemService.getSingle(this.problemId, false)
+      .subscribe(problem => this.problem = problem);
     interval(2000)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {

@@ -62,9 +62,9 @@ namespace Data.Models
 
         #region Submission Info Comments String
 
-        public string GetInfoCommentsString(IOptions<ApplicationConfig> options)
+        public string GetInfoCommentsString(IOptions<ApplicationConfig> options, bool omitCommentSign = false)
         {
-            var comment = Program.GetSourceFileCommentSign();
+            var comment = omitCommentSign ? "" : Program.GetSourceFileCommentSign();
             var builder = new StringBuilder();
             builder.AppendLine(comment + $"Submission  #{Id}");
             builder.AppendLine(comment + $"User ID:    {UserId}");
@@ -82,11 +82,11 @@ namespace Data.Models
                 builder.AppendLine(comment + $"Problem:    No.{ProblemId}");
             }
 
-            builder.AppendLine(comment + $"Verdict:    {Verdict} Score={Score ?? 0}");
-            builder.AppendLine(comment + $"Submitted:  {CreatedAt} (UTC Time)");
+            builder.AppendLine(comment + $"Verdict:    {Verdict} Score={Score ?? 0} Time={Time ?? 0} Memory={Memory ?? 0}");
+            builder.AppendLine(comment + $"Submitted:  {CreatedAt:yyyy-MM-dd HH:mm:ss} (UTC Time)");
             if (JudgedAt.HasValue)
             {
-                builder.AppendLine(comment + $"Judged:     {JudgedAt} by {JudgedBy}");
+                builder.AppendLine(comment + $"Judged:     {JudgedAt:yyyy-MM-dd HH:mm:ss} by {JudgedBy}");
             }
 
             builder.AppendLine(comment + $"Links:");

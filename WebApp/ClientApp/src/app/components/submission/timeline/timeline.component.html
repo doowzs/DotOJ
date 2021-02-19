@@ -34,8 +34,8 @@
             <td>
               <verdict [submission]="submission"></verdict>
             </td>
-            <td>{{ submission.time }}</td>
-            <td>{{ submission.memory }}</td>
+            <td [ngClass]="{'text-danger': !!problem && submission.time >= problem.timeLimit}">{{ submission.time }}</td>
+            <td [ngClass]="{'text-danger': !!problem && submission.memory >= problem.memoryLimit}">{{ submission.memory }}</td>
             <td>
               <a [href]="'/submission/' + submission.id"
                  (click)="$event.preventDefault(); viewSubmissionPopup(submission)">
