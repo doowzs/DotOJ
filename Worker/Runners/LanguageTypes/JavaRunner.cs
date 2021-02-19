@@ -54,6 +54,11 @@ namespace Worker.Runners.LanguageTypes
             await using var compilerOutputStream = new FileStream(compilerOutputFile, FileMode.Open);
             using var compilerOutputReader = new StreamReader(compilerOutputStream);
             var compilerOutputString = await compilerOutputReader.ReadToEndAsync();
+            if (compilerOutputString.Length > 4096)
+            {
+                compilerOutputString = compilerOutputString.Substring(0, 4096)
+                    + "\n\n*** Output trimmed due to excessive length of 4096 characters. ***";
+            }
 
             return new JudgeResult
             {
