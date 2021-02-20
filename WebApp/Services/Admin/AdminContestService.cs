@@ -153,7 +153,7 @@ namespace WebApp.Services.Admin
                 UserId = userId,
                 IsParticipant = isParticipant,
                 IsContestManager = isContestManager,
-                Statistics = new List<ProblemStatistics>()
+                Statistics = new List<RegistrationProblemStatistics>()
             }).ToList();
             await Context.Registrations.AddRangeAsync(registrations);
             foreach (var registration in registrations)
@@ -202,7 +202,7 @@ namespace WebApp.Services.Admin
                     UserId = r.UserId,
                     IsParticipant = r.IsParticipant,
                     IsContestManager = r.IsContestManager,
-                    Statistics = new List<ProblemStatistics>()
+                    Statistics = new List<RegistrationProblemStatistics>()
                 })
                 .ToListAsync();
             await Context.Registrations.AddRangeAsync(registrations);

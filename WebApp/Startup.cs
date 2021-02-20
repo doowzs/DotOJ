@@ -3,6 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
 using Data;
 using Data.Configs;
+using Data.DTOs;
 using Data.Models;
 using Data.RabbitMQ;
 using IdentityServer4.Extensions;
@@ -22,7 +23,7 @@ using Notification.Providers;
 using WebApp.RabbitMQ;
 using WebApp.Services;
 using WebApp.Services.Admin;
-using WebApp.Services.Cron;
+using WebApp.Services.Background;
 
 namespace WebApp
 {
@@ -132,7 +133,8 @@ namespace WebApp
             services.AddScoped<INotificationBroadcaster, NotificationBroadcaster>();
             
             // Background cron job services.
-            services.AddHostedService<CleanUnhandledSubmissionsJobService>();
+            services.AddHostedService<ProblemStatisticsService>();
+            services.AddHostedService<SubmissionFailSafeService>();
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/dist"; });

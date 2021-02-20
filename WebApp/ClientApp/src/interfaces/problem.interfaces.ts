@@ -5,6 +5,15 @@ export interface TestCase {
   output: string;
 }
 
+export interface ProblemStatistics {
+  totalSubmissions: number;
+  acceptedSubmissions: number;
+  totalContestants: number;
+  acceptedContestants: number;
+  byVerdict: { number: number };
+  updatedAt: string; // not used now
+}
+
 export interface ProblemInfoDto {
   id: number;
   contestId: number;
@@ -12,8 +21,7 @@ export interface ProblemInfoDto {
   title: string;
   attempted: boolean;
   solved: boolean;
-  acceptedSubmissions: number;
-  totalSubmissions: number;
+  accepted: number;
 }
 
 export interface ProblemViewDto {
@@ -29,9 +37,7 @@ export interface ProblemViewDto {
   hasSpecialJudge: boolean;
   hasHacking: boolean;
   sampleCases: TestCase[];
-  solved: boolean;
-  acceptedSubmissions: number;
-  totalSubmissions: number;
+  statistics: ProblemStatistics;
 }
 
 export interface ProblemEditDto {

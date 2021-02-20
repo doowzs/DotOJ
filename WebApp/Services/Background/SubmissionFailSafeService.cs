@@ -8,13 +8,13 @@ using Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace WebApp.Services.Cron
+namespace WebApp.Services.Background
 {
-    public class CleanUnhandledSubmissionsJobService : CronJobService
+    public class SubmissionFailSafeService : CronJobService
     {
         private readonly ApplicationDbContext _context;
 
-        public CleanUnhandledSubmissionsJobService(IServiceProvider provider) : base("*/3 * * * *")
+        public SubmissionFailSafeService(IServiceProvider provider) : base("* * * * *")
         {
             _context = provider.GetRequiredService<ApplicationDbContext>();
         }

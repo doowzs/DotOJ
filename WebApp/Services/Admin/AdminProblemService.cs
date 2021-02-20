@@ -99,9 +99,7 @@ namespace WebApp.Services.Admin
             foreach (var problem in problems.Items)
             {
                 var query = Context.Submissions.Where(s => s.ProblemId == problem.Id);
-                var acceptedSubmissions = await query.CountAsync(s => s.Verdict == Verdict.Accepted);
-                var totalSubmissions = await query.CountAsync();
-                problemInfos.Add(new ProblemInfoDto(problem, false, false, acceptedSubmissions, totalSubmissions));
+                problemInfos.Add(new ProblemInfoDto(problem));
             }
 
             return new PaginatedList<ProblemInfoDto>

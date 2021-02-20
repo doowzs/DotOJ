@@ -5,7 +5,7 @@ using Cronos;
 using Microsoft.Extensions.Hosting;
 using Timer = System.Timers.Timer;
 
-namespace WebApp.Services.Cron
+namespace WebApp.Services.Background
 {
     public abstract class CronJobService : BackgroundService
     {

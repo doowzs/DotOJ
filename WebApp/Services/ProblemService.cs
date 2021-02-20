@@ -7,7 +7,9 @@ using Data.Generics;
 using Data.Models;
 using IdentityServer4.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using WebApp.Exceptions;
+using WebApp.Services.Background;
 
 namespace WebApp.Services
 {
@@ -20,9 +22,11 @@ namespace WebApp.Services
     public class ProblemService : LoggableService<ProblemService>, IProblemService
     {
         private const int PageSize = 50;
+        private readonly ProblemStatisticsService _statisticsService;
 
         public ProblemService(IServiceProvider provider) : base(provider)
         {
+            _statisticsService = provider.GetRequiredService<ProblemStatisticsService>();
         }
 
         private async Task EnsureProblemExistsAsync(int id)
@@ -73,9 +77,8 @@ namespace WebApp.Services
                 var query = Context.Submissions.Where(s => s.ProblemId == problem.Id && !s.Hidden);
                 var attempted = await query.AnyAsync(s => s.UserId == userId);
                 var solved = await query.AnyAsync(s => s.UserId == userId && s.Verdict == Verdict.Accepted);
-                var acceptedSubmissions = await query.CountAsync(s => s.Verdict == Verdict.Accepted);
-                var totalSubmissions = await query.CountAsync();
-                infos.Add(new ProblemInfoDto(problem, attempted, solved, acceptedSubmissions, totalSubmissions));
+                var statistics = await _statisticsService.GetStatisticsAsync(problem.Id);
+                infos.Add(new ProblemInfoDto(problem, attempted, solved, statistics));
             }
 
             return new PaginatedList<ProblemInfoDto>(problems.TotalItems, pageIndex ?? 1, PageSize, infos);
@@ -90,11 +93,8 @@ namespace WebApp.Services
             var problem = await Context.Problems.FindAsync(id);
             await Context.Entry(problem).Collection(p => p.Submissions).LoadAsync();
             problem.Submissions = problem.Submissions.Where(s => !s.Hidden).ToList();
-            var attempted = problem.Submissions.Any(s => s.UserId == userId);
-            var solved = problem.Submissions.Any(s => s.UserId == userId && s.Verdict == Verdict.Accepted);
-            var acceptedSubmissions = problem.Submissions.Count(s => s.Verdict == Verdict.Accepted);
-            var totalSubmissions = problem.Submissions.Count;
-            return new ProblemViewDto(problem, attempted, solved, acceptedSubmissions, totalSubmissions);
+            var statistics = await _statisticsService.GetStatisticsAsync(problem.Id);
+            return new ProblemViewDto(problem, statistics);
         }
     }
 }

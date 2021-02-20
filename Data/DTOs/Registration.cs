@@ -12,7 +12,7 @@ namespace Data.DTOs
         public int ContestId { get; }
         public bool IsParticipant { get; }
         public bool IsContestManager { get; }
-        public List<ProblemStatistics> Statistics { get; }
+        public List<RegistrationProblemStatistics> Statistics { get; }
 
         public RegistrationInfoDto(Registration registration) : base(registration)
         {

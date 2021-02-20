@@ -7,7 +7,9 @@ using Data.Generics;
 using Data.Models;
 using IdentityServer4.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using WebApp.Exceptions;
+using WebApp.Services.Background;
 
 namespace WebApp.Services
 {
@@ -22,9 +24,11 @@ namespace WebApp.Services
     public class ContestService : LoggableService<ContestService>, IContestService
     {
         private const int PageSize = 20;
+        private readonly ProblemStatisticsService _statisticsService;
 
         public ContestService(IServiceProvider provider) : base(provider)
         {
+            _statisticsService = provider.GetRequiredService<ProblemStatisticsService>();
         }
 
         private async Task EnsureContestExistsAsync(int id)
@@ -141,9 +145,8 @@ namespace WebApp.Services
                     var query = Context.Submissions.Where(s => s.ProblemId == problem.Id && !s.Hidden);
                     var attempted = await query.AnyAsync(s => s.UserId == userId);
                     var solved = await query.AnyAsync(s => s.UserId == userId && s.Verdict == Verdict.Accepted);
-                    var acceptedSubmissions = await query.CountAsync(s => s.Verdict == Verdict.Accepted);
-                    var totalSubmissions = await query.CountAsync();
-                    problemInfos.Add(new ProblemInfoDto(problem, attempted, solved, acceptedSubmissions, totalSubmissions));
+                    var statistics = await _statisticsService.GetStatisticsAsync(problem.Id);
+                    problemInfos.Add(new ProblemInfoDto(problem, attempted, solved, statistics));
                 }
             }
             else

@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 namespace Data.Models
 {
     [NotMapped]
-    public class ProblemStatistics
+    public class RegistrationProblemStatistics
     {
         public int ProblemId { get; set; }
         public int Penalties { get; set; }
@@ -32,22 +32,22 @@ namespace Data.Models
 
         #region Statistics
 
-        [NotMapped] public List<ProblemStatistics> Statistics;
+        [NotMapped] public List<RegistrationProblemStatistics> Statistics;
 
         [Column("statistics", TypeName = "text")]
         public string StatisticsSerialized
         {
             get => JsonConvert.SerializeObject(Statistics);
             set => Statistics = string.IsNullOrEmpty(value)
-                ? new List<ProblemStatistics>()
-                : JsonConvert.DeserializeObject<List<ProblemStatistics>>(value);
+                ? new List<RegistrationProblemStatistics>()
+                : JsonConvert.DeserializeObject<List<RegistrationProblemStatistics>>(value);
         }
 
         #endregion
 
         public async Task RebuildStatisticsAsync(ApplicationDbContext context)
         {
-            var statistics = new List<ProblemStatistics>();
+            var statistics = new List<RegistrationProblemStatistics>();
 
             var contest = await context.Contests.FindAsync(ContestId);
             var problemIds = await context.Problems
@@ -88,7 +88,7 @@ namespace Data.Models
                     .Where(s => s.ProblemId == problemId && s.Score.HasValue)
                     .MaxAsync(s => s.Score) ?? 0;
 
-                var problemStatistics = new ProblemStatistics
+                var problemStatistics = new RegistrationProblemStatistics
                 {
                     ProblemId = problemId,
                     AcceptedAt = acceptedAt,

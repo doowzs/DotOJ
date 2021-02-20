@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Data.Generics;
@@ -5,6 +6,16 @@ using Data.Models;
 
 namespace Data.DTOs
 {
+    public class ProblemStatistics
+    {
+        public int TotalSubmissions;
+        public int AcceptedSubmissions;
+        public int TotalContestants;
+        public int AcceptedContestants;
+        public Dictionary<Verdict, int> ByVerdict;
+        public DateTime UpdatedAt;
+    }
+
     public class ProblemInfoDto
     {
         public int Id { get; }
@@ -12,8 +23,7 @@ namespace Data.DTOs
         public string Title { get; }
         public bool Attempted { get; }
         public bool Solved { get; }
-        public int AcceptedSubmissions { get; }
-        public int TotalSubmissions { get; }
+        public int Accepted { get; }
 
         public ProblemInfoDto(Problem problem)
         {
@@ -22,15 +32,15 @@ namespace Data.DTOs
             Title = problem.Title;
             Attempted = false;
             Solved = false;
+            Accepted = 0;
         }
 
-        public ProblemInfoDto(Problem problem, bool attempted, bool solved,
-            int acceptedSubmissions, int totalSubmissions) : this(problem)
+        public ProblemInfoDto(Problem problem, bool attempted, bool solved, 
+            ProblemStatistics statistics) : this(problem)
         {
             Attempted = attempted;
             Solved = solved;
-            AcceptedSubmissions = acceptedSubmissions;
-            TotalSubmissions = totalSubmissions;
+            Accepted = statistics.AcceptedContestants;
         }
     }
 
@@ -50,11 +60,7 @@ namespace Data.DTOs
         public bool HasSpecialJudge { get; }
         public bool HasHacking { get; }
         public List<TestCase> SampleCases { get; }
-
-        public bool Attempted { get; }
-        public bool Solved { get; }
-        public int AcceptedSubmissions { get; }
-        public int TotalSubmissions { get; }
+        public ProblemStatistics Statistics { get; }
 
         public ProblemViewDto(Problem problem) : base(problem)
         {
@@ -70,17 +76,12 @@ namespace Data.DTOs
             HasSpecialJudge = problem.HasSpecialJudge;
             HasHacking = problem.HasHacking;
             SampleCases = problem.SampleCases;
-            Solved = false;
-            AcceptedSubmissions = TotalSubmissions = 0;
+            Statistics = null;
         }
 
-        public ProblemViewDto(Problem problem, bool attempted, bool solved, 
-            int acceptedSubmissions, int totalSubmissions) : this(problem)
+        public ProblemViewDto(Problem problem, ProblemStatistics statistics) : this(problem)
         {
-            Attempted = attempted;
-            Solved = solved;
-            AcceptedSubmissions = acceptedSubmissions;
-            TotalSubmissions = totalSubmissions;
+            Statistics = statistics;
         }
     }
 

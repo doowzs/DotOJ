@@ -96,7 +96,7 @@ namespace WebApp.Services
                         ContestId = contest.Id,
                         IsParticipant = true,
                         IsContestManager = false,
-                        Statistics = new List<ProblemStatistics>()
+                        Statistics = new List<RegistrationProblemStatistics>()
                     };
                     await Context.Registrations.AddAsync(registration);
                     await Context.SaveChangesAsync();
