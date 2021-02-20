@@ -127,15 +127,19 @@ namespace Worker.RabbitMQ
             }
             catch (Exception e)
             {
-                var message = "Error: " + e.Message + "\n*** Please report this to TA and site administrator ***";
+                var message = $"Internal error: {e.Message}\n" +
+                              $"Occurred at {DateTime.Now:yyyy-MM-dd HH:mm:ss} UTC @ {_options.Value.Name}\n" +
+                              $"*** Please report this incident to TA and site administrator ***";
                 submission.Verdict = Verdict.Failed;
                 submission.FailedOn = null;
                 submission.Score = 0;
                 submission.Message = Convert.ToBase64String(Encoding.UTF8.GetBytes(message));
                 submission.JudgedAt = DateTime.Now.ToUniversalTime();
+                submission.JudgedBy = _options.Value.Name;
                 _context.Submissions.Update(submission);
                 await _context.SaveChangesAsync();
-                Logger.LogError($"RunSubmission Error Submission={submissionId} Error={e.Message}");
+                Logger.LogError($"RunSubmission Error Submission={submissionId} Error={e.Message}\n" +
+                                $"Stacktrace of error:\n{e.StackTrace}");
                 await _broadcaster.SendNotification(true, $"Runner failed on Submission #{submissionId}",
                     $"Submission runner \"{_options.Value.Name}\" failed on submission #{submissionId}" +
                     $" with error message **\"{e.Message}\"**.");
