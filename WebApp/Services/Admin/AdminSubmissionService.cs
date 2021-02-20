@@ -8,7 +8,9 @@ using Data.Generics;
 using Data.Models;
 using IdentityServer4.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using WebApp.Exceptions;
+using WebApp.RabbitMQ;
 
 namespace WebApp.Services.Admin
 {
@@ -28,9 +30,11 @@ namespace WebApp.Services.Admin
     public class AdminSubmissionService : LoggableService<AdminSubmissionService>, IAdminSubmissionService
     {
         private const int PageSize = 50;
+        private readonly JudgeRequestProducer _producer;
 
         public AdminSubmissionService(IServiceProvider provider) : base(provider)
         {
+            _producer = provider.GetRequiredService<JudgeRequestProducer>();
         }
 
         private async Task EnsureSubmissionExists(int id)
@@ -132,6 +136,7 @@ namespace WebApp.Services.Admin
             };
             await Context.Submissions.AddAsync(submission);
             await Context.SaveChangesAsync();
+            await _producer.SendAsync(submission);
 
             await Context.Entry(submission).Reference(s => s.User).LoadAsync();
             var result = new SubmissionInfoDto(submission, true);
@@ -229,6 +234,11 @@ namespace WebApp.Services.Admin
 
             Context.UpdateRange(submissions);
             await Context.SaveChangesAsync();
+            foreach (var submission in submissions)
+            {
+                await _producer.SendAsync(submission);
+            }
+            
             await LogInformation($"RejudgeSubmissions ContestId={contestId} " +
                                  $"ProblemId={problemId} SubmissionId={submissionId}");
 

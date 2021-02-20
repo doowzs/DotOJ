@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Data.DTOs;
 using Data.Generics;
-using Data.Messages;
+using Data.RabbitMQ;
 using Data.Models;
 using IdentityServer4.Extensions;
 using Microsoft.EntityFrameworkCore;
@@ -30,11 +30,11 @@ namespace WebApp.Services
     public class SubmissionService : LoggableService<SubmissionService>, ISubmissionService
     {
         private const int PageSize = 50;
-        private readonly SubmissionCreatedProducer producer;
+        private readonly JudgeRequestProducer _producer;
 
         public SubmissionService(IServiceProvider provider) : base(provider)
         {
-            producer = provider.GetRequiredService<SubmissionCreatedProducer>();
+            _producer = provider.GetRequiredService<JudgeRequestProducer>();
         }
 
         private async Task<Boolean> IsSubmissionViewableAsync(Submission submission)
@@ -257,9 +257,7 @@ namespace WebApp.Services
             };
             await Context.Submissions.AddAsync(submission);
             await Context.SaveChangesAsync();
-
-            // Send submission to RabbitMQ for dispatching.
-            await producer.SendAsync(new SubmissionCreatedMessage(submission));
+            await _producer.SendAsync(submission);
 
             await Context.Entry(submission).Reference(s => s.User).LoadAsync();
             var result = new SubmissionInfoDto(submission, true);

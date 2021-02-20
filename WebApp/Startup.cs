@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Data;
 using Data.Configs;
 using Data.Models;
+using Data.RabbitMQ;
 using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
@@ -107,7 +108,7 @@ namespace WebApp
 
             services.AddOptions();
             services.Configure<ApplicationConfig>(Configuration.GetSection("Application"));
-            services.Configure<RabbitMQConfig>(Configuration.GetSection("RabbitMQ"));
+            services.Configure<RabbitMqConfig>(Configuration.GetSection("RabbitMQ"));
             services.Configure<NotificationConfig>(Configuration.GetSection("Notification"));
 
             services.AddHttpClient(); // IHttpClientFactory
@@ -123,7 +124,7 @@ namespace WebApp
             services.AddScoped<IAdminProblemService, AdminProblemService>();
             services.AddScoped<IAdminSubmissionService, AdminSubmissionService>();
 
-            services.AddSingleton<SubmissionCreatedProducer>();
+            services.AddSingleton<JudgeRequestProducer>();
 
             // TODO: Broadcasters can be made singleton.
             services.AddScoped<IDingTalkNotification, DingTalkNotification>();
@@ -197,12 +198,16 @@ namespace WebApp
 
             lifetime.ApplicationStarted.Register(() =>
             {
-                app.ApplicationServices.GetRequiredService<SubmissionCreatedProducer>().Start();
+                var factory = new RabbitMqConnectionFactory(app.ApplicationServices);
+                var connection = factory.GetConnection();
+                app.ApplicationServices.GetRequiredService<JudgeRequestProducer>().Start(connection);
             });
 
             lifetime.ApplicationStopping.Register(() =>
             {
-                app.ApplicationServices.GetRequiredService<SubmissionCreatedProducer>().Stop();
+                var factory = new RabbitMqConnectionFactory(app.ApplicationServices);
+                app.ApplicationServices.GetRequiredService<JudgeRequestProducer>().Stop();
+                factory.CloseConnection();
             });
         }
 

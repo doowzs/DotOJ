@@ -2,7 +2,7 @@
 
 namespace Data.Configs
 {
-    public class RabbitMQConfig
+    public class RabbitMqConfig
     {
         public string HostName { get; set; }
         public int Port { get; set; }

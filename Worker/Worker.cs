@@ -1,11 +1,11 @@
 using System;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Data.RabbitMQ;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Worker.Triggers;
+using Worker.RabbitMQ;
 
 namespace Worker
 {
@@ -22,36 +22,24 @@ namespace Worker
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
+            using var scope = _factory.CreateScope();
+            var factory = new RabbitMqConnectionFactory(scope.ServiceProvider);
+            var consumer = new JudgeRequestConsumer(scope.ServiceProvider);
+            
+            // Application may be aborted in GetConnection().
+            var connection = factory.GetConnection();
+            if (!stoppingToken.IsCancellationRequested)
+            {
+                consumer.Start(connection);
+            }
+            
             while (!stoppingToken.IsCancellationRequested)
             {
                 await Task.Delay(1000, stoppingToken);
-
-                var continueWorking = true;
-                while (continueWorking)
-                {
-                    continueWorking = false;
-
-                    using var scope = _factory.CreateScope();
-                    var triggers = new List<ITrigger>
-                    {
-                        new SubmissionRunnerTrigger(scope.ServiceProvider)
-                    };
-                    foreach (var trigger in triggers)
-                    {
-                        try
-                        {
-                            if (await trigger.CheckAndRunAsync())
-                            {
-                                continueWorking = true;
-                            }
-                        }
-                        catch (Exception e)
-                        {
-                            _logger.LogError($"{nameof(trigger)} error: {e}");
-                        }
-                    }
-                }
             }
+
+            consumer.Stop();
+            factory.CloseConnection();
         }
     }
 }

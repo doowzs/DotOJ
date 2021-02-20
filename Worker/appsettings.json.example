@@ -2,6 +2,12 @@
   "ConnectionStrings": {
     "MySqlConnection": "Server=mariadb;Uid=judge;Pwd=judge;Database=judge;"
   },
+  "RabbitMQ": {
+    "HostName": "rabbitmq",
+    "Port": 5672,
+    "UserName": "worker-local",
+    "Password": "worker-local"
+  },
   "Judging": {
     "Name": "local",
     "BoxId": "0",

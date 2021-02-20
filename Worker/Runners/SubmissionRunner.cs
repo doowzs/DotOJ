@@ -22,11 +22,6 @@ namespace Worker.Runners
         private readonly Contest _contest;
         private readonly Problem _problem;
         private readonly Submission _submission;
-
-        private readonly ApplicationDbContext _context;
-        private readonly INotificationBroadcaster _broadcaster;
-        private readonly IOptions<JudgingConfig> _options;
-        private readonly ILogger<SubmissionRunner> _logger;
         private readonly IServiceProvider _provider;
 
         public SubmissionRunner(Contest contest, Problem problem, Submission submission, IServiceProvider provider)
@@ -34,11 +29,6 @@ namespace Worker.Runners
             _contest = contest;
             _problem = problem;
             _submission = submission;
-
-            _context = provider.GetRequiredService<ApplicationDbContext>();
-            _broadcaster = provider.GetRequiredService<INotificationBroadcaster>();
-            _options = provider.GetRequiredService<IOptions<JudgingConfig>>();
-            _logger = provider.GetRequiredService<ILogger<SubmissionRunner>>();
             _provider = provider;
         }
 

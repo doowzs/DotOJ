@@ -137,7 +137,7 @@ namespace Worker.Runners.LanguageTypes.Base
             {
                 File.Copy(Path.Combine(Box, "checker"), binary, true);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // Do nothing on a failed copy.
             }
