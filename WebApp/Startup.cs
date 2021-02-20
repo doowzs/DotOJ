@@ -193,8 +193,8 @@ namespace WebApp
 
         private async Task ConfigureDatabase(IServiceProvider provider)
         {
-            var logger = provider.GetService<ILogger<Startup>>();
-            var context = provider.GetService<ApplicationDbContext>();
+            var logger = provider.GetRequiredService<ILogger<Startup>>();
+            var context = provider.GetRequiredService<ApplicationDbContext>();
             await context.Database.MigrateAsync();
 
             var roleManager = provider.GetRequiredService<RoleManager<IdentityRole>>();
@@ -210,9 +210,10 @@ namespace WebApp
                 }
             }
 
-            if (await userManager.FindByEmailAsync(Configuration["Application:AdminUser:Email"].ToUpper()) == null)
+            if (await userManager.FindByEmailAsync(Configuration["Application:AdminUser:Email"].ToUpper()) == null &&
+                await userManager.FindByNameAsync(Configuration["Application:AdminUser:ContestantId"]) == null)
             {
-                logger.LogInformation("Creating admin user.");
+                logger.LogInformation($"Admin user not found. Creating admin user.");
                 var adminUser = new ApplicationUser
                 {
                     Email = Configuration["Application:AdminUser:Email"],
