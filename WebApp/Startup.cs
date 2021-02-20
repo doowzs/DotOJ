@@ -18,6 +18,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Notification;
 using Notification.Providers;
+using WebApp.RabbitMQ;
 using WebApp.Services;
 using WebApp.Services.Admin;
 
@@ -106,6 +107,7 @@ namespace WebApp
 
             services.AddOptions();
             services.Configure<ApplicationConfig>(Configuration.GetSection("Application"));
+            services.Configure<RabbitMQConfig>(Configuration.GetSection("RabbitMQ"));
             services.Configure<NotificationConfig>(Configuration.GetSection("Notification"));
 
             services.AddHttpClient(); // IHttpClientFactory
@@ -121,6 +123,9 @@ namespace WebApp
             services.AddScoped<IAdminProblemService, AdminProblemService>();
             services.AddScoped<IAdminSubmissionService, AdminSubmissionService>();
 
+            services.AddSingleton<SubmissionCreatedProducer>();
+
+            // TODO: Broadcasters can be made singleton.
             services.AddScoped<IDingTalkNotification, DingTalkNotification>();
             services.AddScoped<INotificationBroadcaster, NotificationBroadcaster>();
 
@@ -129,7 +134,7 @@ namespace WebApp
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider provider)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider provider, IHostApplicationLifetime lifetime)
         {
             ConfigureDatabase(provider).Wait();
 
@@ -188,6 +193,16 @@ namespace WebApp
                     // spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
                     spa.UseAngularCliServer(npmScript: "start:dotnet");
                 }
+            });
+
+            lifetime.ApplicationStarted.Register(() =>
+            {
+                app.ApplicationServices.GetRequiredService<SubmissionCreatedProducer>().Start();
+            });
+
+            lifetime.ApplicationStopping.Register(() =>
+            {
+                app.ApplicationServices.GetRequiredService<SubmissionCreatedProducer>().Stop();
             });
         }
 
