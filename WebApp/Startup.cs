@@ -22,6 +22,7 @@ using Notification.Providers;
 using WebApp.RabbitMQ;
 using WebApp.Services;
 using WebApp.Services.Admin;
+using WebApp.Services.Cron;
 
 namespace WebApp
 {
@@ -129,6 +130,9 @@ namespace WebApp
             // TODO: Broadcasters can be made singleton.
             services.AddScoped<IDingTalkNotification, DingTalkNotification>();
             services.AddScoped<INotificationBroadcaster, NotificationBroadcaster>();
+            
+            // Background cron job services.
+            services.AddHostedService<CleanUnhandledSubmissionsJobService>();
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/dist"; });
