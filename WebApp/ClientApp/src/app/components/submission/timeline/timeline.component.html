@@ -19,39 +19,40 @@
     <div class="my-3">
       <table class="table table-sm table-hover">
         <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col"></th>
-            <th scope="col"></th>
-            <th scope="col">Verdict</th>
-            <th scope="col">Time</th>
-            <th scope="col">Memory</th>
-            <th scope="col">Lang</th>
-            <th scope="col">Submitted</th>
-          </tr>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col" *ngIf="showSampleFailedMark()"></th>
+          <th scope="col" *ngIf="showMessageAvailableMark()"></th>
+          <th scope="col">Verdict</th>
+          <th scope="col">Time</th>
+          <th scope="col">Memory</th>
+          <th scope="col">Lang</th>
+          <th scope="col">Submitted</th>
+        </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let submission of submissions">
-            <th scope="row">{{ submission.id }}</th>
-            <td>
-              <span *ngIf="submission.failedOn === 0" ngbTooltip="Failed on samples" placement="top">X</span>
-            </td>
-            <td>
-              <span *ngIf="submission.hasMessage" ngbTooltip="Message available" placement="top">M</span>
-            </td>
-            <td>
-              <verdict [submission]="submission"></verdict>
-            </td>
-            <td [ngClass]="{'text-danger': !!problem && submission.time >= problem.timeLimit}">{{ submission.time }}</td>
-            <td [ngClass]="{'text-danger': !!problem && submission.memory >= problem.memoryLimit}">{{ submission.memory }}</td>
-            <td>
-              <a [href]="'/submission/' + submission.id"
-                 (click)="$event.preventDefault(); viewSubmissionPopup(submission)">
-                {{ submission.languageInfo.name }}
-              </a>
-            </td>
-            <td>{{ submission.createdAtMoment.format('MM-DD HH:mm') }}</td>
-          </tr>
+        <tr *ngFor="let submission of submissions">
+          <th scope="row">{{ submission.id }}</th>
+          <td *ngIf="showSampleFailedMark()">
+            <span *ngIf="submission.failedOn === 0" ngbTooltip="Failed on samples" placement="top">X</span>
+          </td>
+          <td *ngIf="showMessageAvailableMark()">
+            <span *ngIf="submission.hasMessage" ngbTooltip="Message available" placement="top">M</span>
+          </td>
+          <td>
+            <verdict [submission]="submission"></verdict>
+          </td>
+          <td [ngClass]="{'text-danger': !!problem && submission.time >= problem.timeLimit}">{{ submission.time }}</td>
+          <td
+            [ngClass]="{'text-danger': !!problem && submission.memory >= problem.memoryLimit}">{{ submission.memory }}</td>
+          <td>
+            <a [href]="'/submission/' + submission.id"
+               (click)="$event.preventDefault(); viewSubmissionPopup(submission)">
+              {{ submission.languageInfo.name }}
+            </a>
+          </td>
+          <td>{{ submission.createdAtMoment.format('MM-DD HH:mm') }}</td>
+        </tr>
         </tbody>
       </table>
       <div *ngIf="totalPages > 1" class="d-flex justify-content-end">

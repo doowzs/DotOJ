@@ -142,8 +142,16 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
   }
 
   public viewSubmissionPopup(submission: SubmissionInfoDto): void {
-    const modelRef = this.modal.open(SubmissionDetailComponent, { size: 'xl' });
+    const modelRef = this.modal.open(SubmissionDetailComponent, {size: 'xl'});
     modelRef.componentInstance.submissionId = submission.id;
     modelRef.componentInstance.standalone = false;
+  }
+
+  public showSampleFailedMark(): boolean {
+    return this.submissions.some(s => s.failedOn === 0);
+  }
+
+  public showMessageAvailableMark(): boolean {
+    return this.submissions.some(s => s.hasMessage);
   }
 }
