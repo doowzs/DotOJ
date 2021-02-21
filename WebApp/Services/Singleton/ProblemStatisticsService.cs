@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
 using Data;
@@ -16,7 +16,9 @@ namespace WebApp.Services.Singleton
     {
         private readonly IServiceScopeFactory _factory;
         private readonly ILogger<ProblemStatisticsService> _logger;
-        private readonly Dictionary<int, ProblemStatistics> _dictionary = new(); // TODO: replace with LRU dict
+
+        private readonly ConcurrentDictionary<int, ProblemStatistics>
+            _dictionary = new(); // TODO: replace with LRU dict
 
         public ProblemStatisticsService(IServiceProvider provider)
         {
