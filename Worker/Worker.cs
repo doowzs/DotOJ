@@ -15,7 +15,7 @@ namespace Worker
     {
         private readonly IServiceScopeFactory _factory;
         private readonly ILogger<Worker> _logger;
-        private IOptions<JudgingConfig> _options;
+        private readonly IOptions<JudgingConfig> _options;
 
         public Worker(IServiceProvider provider)
         {
@@ -44,7 +44,7 @@ namespace Worker
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                await Task.Yield();
+                await Task.Delay(1000, stoppingToken);
             }
 
             _logger.LogInformation($"Worker {_options.Value.Name} is stopping");
