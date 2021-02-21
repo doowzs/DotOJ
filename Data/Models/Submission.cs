@@ -100,8 +100,7 @@ namespace Data.Models
             builder.AppendLine(comment + $"Submitted:  {CreatedAt:yyyy-MM-dd HH:mm:ss} (UTC Time)");
             if (JudgedAt.HasValue)
             {
-                builder.AppendLine(comment + $"Judged:     {JudgedAt:yyyy-MM-dd HH:mm:ss} by {JudgedBy}" +
-                                   $" RV={RequestVersion} CV={CompleteVersion}");
+                builder.AppendLine(comment + $"Judged:     {JudgedAt:yyyy-MM-dd HH:mm:ss} by {JudgedBy}");
             }
 
             builder.AppendLine(comment + $"Links:");
