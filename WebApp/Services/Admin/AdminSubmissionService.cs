@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using WebApp.Exceptions;
 using WebApp.RabbitMQ;
+using WebApp.Services.Singleton;
 
 namespace WebApp.Services.Admin
 {
@@ -31,10 +32,12 @@ namespace WebApp.Services.Admin
     {
         private const int PageSize = 50;
         private readonly JudgeRequestProducer _producer;
+        private readonly ProblemStatisticsService _statisticsService;
 
         public AdminSubmissionService(IServiceProvider provider) : base(provider)
         {
             _producer = provider.GetRequiredService<JudgeRequestProducer>();
+            _statisticsService = provider.GetRequiredService<ProblemStatisticsService>();
         }
 
         private async Task EnsureSubmissionExists(int id)
@@ -142,6 +145,7 @@ namespace WebApp.Services.Admin
                 if (await _producer.SendAsync(submission.Id, submission.RequestVersion + 1))
                 {
                     submission.Verdict = Verdict.InQueue;
+                    await _statisticsService.InvalidStatisticsAsync(submission.ProblemId);
                 }
 
                 Context.Update(submission);

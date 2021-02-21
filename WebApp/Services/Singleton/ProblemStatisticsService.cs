@@ -56,7 +56,7 @@ namespace WebApp.Services.Singleton
                 ByVerdict = byVerdict,
                 UpdatedAt = DateTime.Now.ToUniversalTime()
             };
-            _dictionary.Add(problemId, statistics);
+            _ = _dictionary.TryAdd(problemId, statistics);
             return statistics;
         }
 
@@ -81,11 +81,11 @@ namespace WebApp.Services.Singleton
             if (submission is null || submission.CompleteVersion >= message.CompleteVersion)
             {
                 _logger.LogDebug($"IgnoreJudgeCompleteMessage" +
-                                $" SubmissionId={message.SubmissionId}" +
-                                $" CompleteVersion={message.CompleteVersion}");
+                                 $" SubmissionId={message.SubmissionId}" +
+                                 $" CompleteVersion={message.CompleteVersion}");
                 return;
             }
-            
+
             var problem = await context.Problems.FindAsync(submission.ProblemId);
             var contains = _dictionary.TryGetValue(problem.Id, out var statistics);
             if (contains)
@@ -95,26 +95,39 @@ namespace WebApp.Services.Singleton
                 var solved = await context.Submissions
                     .AnyAsync(s => s.Id != submission.Id && s.UserId == submission.UserId
                                                          && s.Verdict == Verdict.Accepted);
-                statistics.TotalSubmissions += 1;
-                statistics.AcceptedSubmissions += submission.Verdict == Verdict.Accepted ? 1 : 0;
-                statistics.TotalContestants += attempted ? 0 : 1;
-                statistics.AcceptedContestants += solved ? 0 : 1;
-
-                if (statistics.ByVerdict.ContainsKey(submission.Verdict))
+                lock (statistics)
                 {
-                    statistics.ByVerdict[submission.Verdict] += 1;
-                }
-                else
-                {
-                    statistics.ByVerdict[submission.Verdict] = 1;
-                }
+                    statistics.TotalSubmissions += 1;
+                    statistics.AcceptedSubmissions += submission.Verdict == Verdict.Accepted ? 1 : 0;
+                    statistics.TotalContestants += attempted ? 0 : 1;
+                    statistics.AcceptedContestants += solved ? 0 : 1;
 
-                statistics.UpdatedAt = DateTime.Now.ToUniversalTime();
+                    if (statistics.ByVerdict.ContainsKey(submission.Verdict))
+                    {
+                        statistics.ByVerdict[submission.Verdict] += 1;
+                    }
+                    else
+                    {
+                        statistics.ByVerdict[submission.Verdict] = 1;
+                    }
+
+                    statistics.UpdatedAt = DateTime.Now.ToUniversalTime();
+                }
             }
             else
             {
                 await BuildAndCacheStatisticsAsync(problem.Id);
             }
+        }
+
+        public Task InvalidStatisticsAsync(int problemId)
+        {
+            if (_dictionary.ContainsKey(problemId))
+            {
+                _ = _dictionary.TryRemove(problemId, out _);
+            }
+
+            return Task.CompletedTask;
         }
     }
 }

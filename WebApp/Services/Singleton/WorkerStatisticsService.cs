@@ -16,6 +16,7 @@ namespace WebApp.Services.Singleton
     {
         private readonly IServiceScopeFactory _factory;
         private readonly JudgeRequestProducer _producer;
+        private readonly ProblemStatisticsService _statisticsService;
 
         private static readonly Dictionary<string, (string Token, DateTime TimeStamp)> WorkerDictionary = new();
         // private static readonly Dictionary<int, DateTime> SubmissionTimestampDictionary = new();
@@ -24,6 +25,7 @@ namespace WebApp.Services.Singleton
         {
             _factory = provider.GetRequiredService<IServiceScopeFactory>();
             _producer = provider.GetRequiredService<JudgeRequestProducer>();
+            _statisticsService = provider.GetRequiredService<ProblemStatisticsService>();
         }
 
         private async Task HandleBrokenWorkerAsync(string name)
@@ -46,9 +48,15 @@ namespace WebApp.Services.Singleton
             foreach (var submission in submissions)
             {
                 // Trigger a rejudge for failed submissions
-                submission.Verdict = await _producer.SendAsync(submission.Id, submission.RequestVersion + 1)
-                    ? Verdict.InQueue
-                    : Verdict.Pending;
+                if (await _producer.SendAsync(submission.Id, submission.RequestVersion + 1))
+                {
+                    submission.Verdict = Verdict.InQueue;
+                    await _statisticsService.InvalidStatisticsAsync(submission.ProblemId);
+                }
+                else
+                {
+                    submission.Verdict = Verdict.Pending;
+                }
             }
 
             context.UpdateRange(submissions);
@@ -81,9 +89,15 @@ namespace WebApp.Services.Singleton
                 .ToListAsync(stoppingToken);
             foreach (var submission in submissions)
             {
-                submission.Verdict = await _producer.SendAsync(submission.Id, submission.RequestVersion + 1)
-                    ? Verdict.InQueue
-                    : Verdict.Pending;
+                if (await _producer.SendAsync(submission.Id, submission.RequestVersion + 1))
+                {
+                    submission.Verdict = Verdict.InQueue;
+                    await _statisticsService.InvalidStatisticsAsync(submission.ProblemId);
+                }
+                else
+                {
+                    submission.Verdict = Verdict.Pending;
+                }
             }
 
             context.UpdateRange(submissions);
