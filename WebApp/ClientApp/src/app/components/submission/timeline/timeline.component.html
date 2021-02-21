@@ -21,6 +21,8 @@
         <thead>
           <tr>
             <th scope="col">#</th>
+            <th scope="col"></th>
+            <th scope="col"></th>
             <th scope="col">Verdict</th>
             <th scope="col">Time</th>
             <th scope="col">Memory</th>
@@ -31,6 +33,12 @@
         <tbody>
           <tr *ngFor="let submission of submissions">
             <th scope="row">{{ submission.id }}</th>
+            <td>
+              <span *ngIf="submission.failedOn === 0" ngbTooltip="Failed on samples" placement="top">X</span>
+            </td>
+            <td>
+              <span *ngIf="submission.hasMessage" ngbTooltip="Message available" placement="top">M</span>
+            </td>
             <td>
               <verdict [submission]="submission"></verdict>
             </td>
@@ -48,7 +56,7 @@
       </table>
       <div *ngIf="totalPages > 1" class="d-flex justify-content-end">
         <ngb-pagination [collectionSize]="totalItems" [page]="pageIndex"
-                        [pageSize]="5" (pageChange)="changePage($event)">
+                        [pageSize]="15" (pageChange)="changePage($event)">
         </ngb-pagination>
       </div>
     </div>

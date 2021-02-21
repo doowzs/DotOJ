@@ -23,7 +23,8 @@ namespace Data.DTOs
         public string Title { get; }
         public bool Attempted { get; }
         public bool Solved { get; }
-        public int Accepted { get; }
+        public int TotalContestants { get; }
+        public int AcceptedContestants { get; }
 
         public ProblemInfoDto(Problem problem)
         {
@@ -32,7 +33,8 @@ namespace Data.DTOs
             Title = problem.Title;
             Attempted = false;
             Solved = false;
-            Accepted = 0;
+            TotalContestants = 0;
+            AcceptedContestants = 0;
         }
 
         public ProblemInfoDto(Problem problem, bool attempted, bool solved, 
@@ -40,7 +42,8 @@ namespace Data.DTOs
         {
             Attempted = attempted;
             Solved = solved;
-            Accepted = statistics.AcceptedContestants;
+            TotalContestants = statistics.TotalContestants;
+            AcceptedContestants = statistics.AcceptedContestants;
         }
     }
 

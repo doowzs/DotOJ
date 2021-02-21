@@ -24,8 +24,8 @@ namespace Data.DTOs
         public int? FailedOn { get; }
         public int? Score { get; }
         public int? Progress { get; }
-
-        public bool Viewable { get; set; }
+        public bool HasMessage { get; }
+        public bool Viewable { get; }
 
         public SubmissionInfoDto(Submission submission, bool viewable = false) : base(submission)
         {
@@ -45,6 +45,7 @@ namespace Data.DTOs
             FailedOn = submission.FailedOn;
             Score = submission.Score;
             Progress = submission.Progress;
+            HasMessage = !string.IsNullOrEmpty(submission.Message);
             Viewable = viewable;
         }
     }

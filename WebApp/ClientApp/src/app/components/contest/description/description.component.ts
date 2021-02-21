@@ -6,7 +6,7 @@ import * as moment from 'moment';
 import { ContestViewDto } from '../../../../interfaces/contest.interfaces';
 import { AuthorizeService, IUser } from '../../../../api-authorization/authorize.service';
 import { ContestService } from '../../../services/contest.service';
-import { faBoxOpen, faCheck, faEdit, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faBoxOpen, faCheck, faEdit, faTimes, faUser } from '@fortawesome/free-solid-svg-icons';
 import { take } from 'rxjs/operators';
 
 @Component({
@@ -19,6 +19,7 @@ export class ContestDescriptionComponent implements OnInit {
   faCheck = faCheck;
   faEdit = faEdit;
   faTimes = faTimes;
+  faUser = faUser;
 
   public user: IUser;
   public privileged = false;

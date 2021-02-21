@@ -16,7 +16,7 @@ import {
   faBoxes,
   faCoffee,
   faColumns,
-  faCopy, faEdit,
+  faCopy, faEdit, faFileAlt,
   faPaperPlane, faRedo,
   faSdCard,
   faStopwatch,
@@ -36,6 +36,7 @@ export class ProblemDetailComponent implements OnInit, OnDestroy {
   faColumns = faColumns;
   faCopy = faCopy;
   faEdit = faEdit;
+  faFileAlt = faFileAlt;
   faRedo = faRedo;
   faSdCard = faSdCard;
   faStopwatch = faStopwatch;

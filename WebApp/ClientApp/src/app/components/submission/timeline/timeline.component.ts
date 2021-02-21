@@ -77,9 +77,9 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
       .subscribe(submission => {
         this.totalItems++;
         this.submissions.unshift(submission);
-        if (this.submissions.length > 5) {
+        if (this.submissions.length > 15) {
           this.submissions.pop();
-          this.totalPages = (this.totalItems + 4) / 5;
+          this.totalPages = (this.totalItems + 14) / 15;
         }
       });
   }
@@ -106,7 +106,7 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
 
   private loadSubmissions(problemId: number): void {
     this.userId.pipe(take(1)).subscribe(userId => {
-      this.submissionService.getPaginatedList(null, userId, null, problemId, null, 5, this.pageIndex)
+      this.submissionService.getPaginatedList(null, userId, null, problemId, null, 15, this.pageIndex)
         .subscribe(list => {
           this.totalItems = list.totalItems;
           this.totalPages = list.totalPages;
@@ -134,6 +134,8 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
             submission.score = updated.score;
             submission.progress = updated.progress;
             submission.judgedAt = updated.judgedAt;
+            submission.hasMessage = updated.hasMessage;
+            submission.viewable = updated.viewable;
           }
         }
       });

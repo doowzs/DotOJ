@@ -29,10 +29,4 @@ export class VerdictComponent {
     }
     return null;
   }
-
-  public notAnValidAttempt = (): boolean => {
-    const verdict = this.submission.verdictInfo;
-    return verdict.stage === VerdictStage.ERROR ||
-      (verdict.stage === VerdictStage.REJECTED && this.submission.failedOn === 0);
-  };
 }

@@ -41,8 +41,13 @@
     </p>
   </div>
   <div *ngIf="contest && problem">
-    <div class="text-center">
-      <h2>{{ problem.title }}</h2>
+    <div>
+      <h2>{{ problem.title }}
+        <span class="float-right" *ngIf="!fullscreen">
+        <button class="btn text-secondary" (click)="toggleFullscreen()">
+          <fa-icon [icon]="faColumns"></fa-icon><span>Open Editor</span>
+        </button>
+      </span></h2>
       <p>
         <span *ngIf="problem.hasSpecialJudge" class="m-1 badge badge-danger">
           <fa-icon [icon]="faCoffee"></fa-icon>
@@ -57,63 +62,76 @@
           <span>{{ problem.memoryLimit }}KiB</span>
         </span>
         <a class="m-1 badge badge-success"
-              [routerLink]="['/contest', contestId, 'submissions']" [queryParams]="{problemId: problemId}">
+           [routerLink]="['/contest', contestId, 'submissions']" [queryParams]="{problemId: problemId}">
           <fa-icon [icon]="faPaperPlane"></fa-icon>
           <span class="d-inline-block">
-            {{ problem.acceptedSubmissions }}/{{ problem.totalSubmissions }} =
-            {{ problem.totalSubmissions ? ((problem.acceptedSubmissions / problem.totalSubmissions * 100 | number : '1.1-1') + '%') : '0.0%' }}
+            {{ problem.statistics.acceptedSubmissions }}/{{ problem.statistics.totalSubmissions }} =
+            {{ problem.statistics.totalSubmissions ? ((problem.statistics.acceptedSubmissions / problem.statistics.totalSubmissions * 100 | number : '1.1-1') + '%') : '0.0%' }}
           </span>
         </a>
       </p>
     </div>
-    <h3 class="mt-2">
-      Submissions
-      <span class="float-right" *ngIf="!fullscreen">
-        <button class="btn text-secondary" (click)="toggleFullscreen()">
-          <fa-icon [icon]="faColumns"></fa-icon><span>Open Editor</span>
-        </button>
-      </span>
-    </h3>
-    <app-submission-timeline [problemId]="problemId"></app-submission-timeline>
-
-    <h3 class="mt-5">Description</h3>
-    <markdown [data]="problem.description" katex></markdown>
-    <h3 class="mt-5">Input Format</h3>
-    <markdown [data]="problem.inputFormat" katex></markdown>
-    <h3 class="mt-5">Output Format</h3>
-    <markdown [data]="problem.outputFormat" katex></markdown>
-    <h3 class="mt-5">Sample Cases</h3>
-    <div *ngFor="let sample of problem.sampleCases" class="row mx-1 my-3">
-      <div class="col col-12 col-md-6 border">
-        <h5 class="my-3">
-          Input
-          <span class="float-right">
+    <ul ngbNav #detailNav="ngbNav" class="nav-tabs">
+      <li ngbNavItem class="w-50">
+        <a ngbNavLink class="text-center">
+          <fa-icon [icon]="faFileAlt"></fa-icon>Statement
+        </a>
+        <ng-template ngbNavContent>
+          <div class="border p-3">
+            <h3>Description</h3>
+            <markdown [data]="problem.description" katex></markdown>
+            <h3 class="mt-5">Input Format</h3>
+            <markdown [data]="problem.inputFormat" katex></markdown>
+            <h3 class="mt-5">Output Format</h3>
+            <markdown [data]="problem.outputFormat" katex></markdown>
+            <h3 class="mt-5">Sample Cases</h3>
+            <div *ngFor="let sample of problem.sampleCases" class="row mx-1 my-3">
+              <div class="col col-12 col-md-6 border">
+                <h5 class="my-3">
+                  Input
+                  <span class="float-right">
             <button class="btn btn-sm" ngxClipboard [cbContent]="sample.input"
                     ngbTooltip="Copied!" triggers="click:blur">
               <fa-icon [icon]="faCopy" class="mr-0"></fa-icon>
             </button>
           </span>
-        </h5>
-        <hr/>
-        <pre>{{ sample.input }}</pre>
-      </div>
-      <div class="col col-12 col-md-6 border">
-        <h5 class="my-3">
-          Output
-          <span class="float-right">
+                </h5>
+                <hr/>
+                <pre>{{ sample.input }}</pre>
+              </div>
+              <div class="col col-12 col-md-6 border">
+                <h5 class="my-3">
+                  Output
+                  <span class="float-right">
             <button class="btn btn-sm" ngxClipboard [cbContent]="sample.output"
                     ngbTooltip="Copied!" triggers="click:blur">
               <fa-icon [icon]="faCopy" class="mr-0"></fa-icon>
             </button>
           </span>
-        </h5>
-        <hr/>
-        <pre>{{ sample.output }}</pre>
-      </div>
-    </div>
-    <ng-container *ngIf="problem.footNote && problem.footNote.trim() !== ''">
-      <h3 class="mt-5">Foot Note</h3>
-      <markdown [data]="problem.footNote" katex></markdown>
-    </ng-container>
+                </h5>
+                <hr/>
+                <pre>{{ sample.output }}</pre>
+              </div>
+            </div>
+            <ng-container *ngIf="problem.footNote && problem.footNote.trim() !== ''">
+              <h3 class="mt-5">Foot Note</h3>
+              <markdown [data]="problem.footNote" katex></markdown>
+            </ng-container>
+          </div>
+        </ng-template>
+      </li>
+      <li ngbNavItem class="w-50 text-center" #submissionPane>
+        <a ngbNavLink>
+          <fa-icon [icon]="faPaperPlane"></fa-icon>Submissions
+        </a>
+        <ng-template ngbNavContent>
+          <div class="border p-3">
+            <h3>My Submissions</h3>
+            <app-submission-timeline [problemId]="problemId"></app-submission-timeline>
+          </div>
+        </ng-template>
+      </li>
+    </ul>
+    <div [ngbNavOutlet]="detailNav"></div>
   </div>
 </ng-template>
