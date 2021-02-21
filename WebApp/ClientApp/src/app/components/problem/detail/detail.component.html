@@ -74,7 +74,8 @@
     <ul ngbNav #detailNav="ngbNav" class="nav-tabs" [(activeId)]="activePaneId" [destroyOnHide]="false">
       <li [ngbNavItem]="1" class="w-50">
         <a ngbNavLink class="text-center">
-          <fa-icon [icon]="faFileAlt"></fa-icon>Statement
+          <fa-icon [icon]="faFileAlt"></fa-icon>
+          Statement
         </a>
         <ng-template ngbNavContent>
           <div class="border p-3">
@@ -122,12 +123,19 @@
       </li>
       <li [ngbNavItem]="2" class="w-50 text-center" [destroyOnHide]="false">
         <a ngbNavLink>
-          <fa-icon [icon]="faPaperPlane"></fa-icon>Submissions
+          <fa-icon [icon]="faPaperPlane"></fa-icon>
+          Submissions
         </a>
         <ng-template ngbNavContent>
           <div class="border p-3">
-            <h3>My Submissions</h3>
+            <h3>Submissions</h3>
             <app-submission-timeline [problemId]="problemId"></app-submission-timeline>
+            <h3>Statistics</h3>
+            <canvas baseChart chartType="doughnut" [legend]="true" height="80px"
+                    [data]="statsChartData"
+                    [labels]="statsChartLabels"
+                    [options]="statsChartOptions">
+            </canvas>
           </div>
         </ng-template>
       </li>

@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
+import { Label } from "ng2-charts";
 import * as moment from 'moment';
 
 import { LanguageInfo } from '../../../../consts/languages.consts';
@@ -23,6 +24,7 @@ import {
   faStopwatch,
   faTimes
 } from '@fortawesome/free-solid-svg-icons';
+import {ChartOptions} from "chart.js";
 
 @Component({
   selector: 'app-problem-detail',
@@ -55,6 +57,15 @@ export class ProblemDetailComponent implements OnInit, OnDestroy {
   public problem: ProblemViewDto;
   public language: LanguageInfo;
   public activePaneId: number = 1;
+
+  public statsChartLabels: Label[] = [];
+  public statsChartData: number[] = [];
+  public statsChartOptions: ChartOptions = {
+    responsive: true,
+    legend: {
+      position: 'left'
+    }
+  }
 
   public destroy$ = new Subject();
 
@@ -107,6 +118,13 @@ export class ProblemDetailComponent implements OnInit, OnDestroy {
         this.problem = problem;
         this.title.setTitle(problem.title);
         this.loading = false;
+        this.statsChartLabels = [];
+        this.statsChartData = [];
+        for (const verdict in problem.statistics.byVerdict) {
+          const value = problem.statistics.byVerdict[verdict];
+          this.statsChartLabels.push(verdict + ': ' + value);
+          this.statsChartData.push(value);
+        }
       });
   }
 

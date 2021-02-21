@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "allowedCommonJsDependencies": ["exceljs", "file-saver"],
+            "allowedCommonJsDependencies": ["chart.js", "exceljs", "file-saver"],
             "aot": true,
             "progress": false,
             "extractCss": true,
