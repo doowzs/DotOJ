@@ -26,10 +26,9 @@ namespace Worker.Runners.LanguageTypes.Base
 
         protected int MemoryLimit => Problem.MemoryLimit;
 
-        protected string BoxId => Options.Value?.BoxId ?? "0";
+        protected string BoxId => _options.Value?.BoxId ?? "0";
 
-        protected readonly ApplicationDbContext Context;
-        protected readonly IOptions<JudgingConfig> Options;
+        private readonly IOptions<JudgingConfig> _options;
         protected ILogger Logger;
         protected string Box;
         protected string Jail;
@@ -44,8 +43,7 @@ namespace Worker.Runners.LanguageTypes.Base
             Problem = problem;
             Submission = submission;
 
-            Context = provider.GetRequiredService<ApplicationDbContext>();
-            Options = provider.GetRequiredService<IOptions<JudgingConfig>>();
+            _options = provider.GetRequiredService<IOptions<JudgingConfig>>();
             Logger = provider.GetRequiredService<ILogger<Runner>>();
         }
 
@@ -99,13 +97,13 @@ namespace Worker.Runners.LanguageTypes.Base
         private async Task PrepareCheckerAsync()
         {
             // Check if a pre-compiled binary checker exists.
-            var binary = Path.Combine(Options.Value.DataPath, Problem.Id.ToString(), "checker");
+            var binary = Path.Combine(_options.Value.DataPath, Problem.Id.ToString(), "checker");
             if (File.Exists(binary) && File.GetLastWriteTimeUtc(binary) > Problem.UpdatedAt)
             {
                 File.Copy(binary, Path.Combine(Box, "checker"));
                 return;
             }
-        
+
             File.Copy("Resources/testlib.h", Path.Combine(Box, "testlib.h"));
             var checker = Path.Combine(Box, "checker.cpp");
             await using (var stream = new FileStream(checker, FileMode.Create, FileAccess.Write))
@@ -131,7 +129,7 @@ namespace Worker.Runners.LanguageTypes.Base
             {
                 throw new Exception($"Prepare checker error ExitCode={process.ExitCode}.");
             }
-            
+
             // Cache the binary file for later usage.
             try
             {
@@ -155,7 +153,7 @@ namespace Worker.Runners.LanguageTypes.Base
                 }
                 else
                 {
-                    var dataFile = Path.Combine(Options.Value.DataPath, Problem.Id.ToString(), testCase.Input);
+                    var dataFile = Path.Combine(_options.Value.DataPath, Problem.Id.ToString(), testCase.Input);
                     await using var dataStream = new FileStream(dataFile, FileMode.Open, FileAccess.Read);
                     await dataStream.CopyToAsync(stream);
                 }
@@ -190,7 +188,7 @@ namespace Worker.Runners.LanguageTypes.Base
             }
             else
             {
-                var answer = Path.Combine(Options.Value.DataPath, Problem.Id.ToString(), testCase.Output);
+                var answer = Path.Combine(_options.Value.DataPath, Problem.Id.ToString(), testCase.Output);
                 var info = new FileInfo(answer);
                 bytes = (int) info.Length;
             }
@@ -246,9 +244,11 @@ namespace Worker.Runners.LanguageTypes.Base
                                 {
                                     run.Message = $"Killed by signal {dict["exitsig"]} (SIGSEGV).";
                                 }
-                                else {
+                                else
+                                {
                                     run.Message = $"Killed by signal {dict["exitsig"]}.";
                                 }
+
                                 goto case "RE"; // fall through
                             }
                         }
@@ -303,10 +303,6 @@ namespace Worker.Runners.LanguageTypes.Base
                 }
             }
 
-            Submission.Verdict = Verdict.Running;
-            Context.Submissions.Update(Submission);
-            await Context.SaveChangesAsync();
-
             stopWatch.Start();
             result = await CompileAsync();
             stopWatch.Stop();
@@ -331,7 +327,7 @@ namespace Worker.Runners.LanguageTypes.Base
                 new KeyValuePair<List<TestCase>, bool>(Problem.SampleCases, true),
                 new KeyValuePair<List<TestCase>, bool>(Problem.TestCases, false)
             };
-            int count = 0, total = Problem.SampleCases.Count + Problem.TestCases.Count;
+            int count = 0, total = 0;
             foreach (var pair in testCasesPairList)
             {
                 int index = 0;
@@ -364,27 +360,13 @@ namespace Worker.Runners.LanguageTypes.Base
 
 
                     runs.Add(run);
-                    if (run.Verdict > Verdict.Accepted)
+                    if (run.Verdict > Verdict.Accepted && OnRunFailedDelegate != null)
                     {
-                        if (Submission.Verdict <= Verdict.Accepted)
+                        result = await OnRunFailedDelegate.Invoke(Contest, Problem, Submission, run);
+                        if (result != null)
                         {
-                            Submission.Verdict = run.Verdict;
-                            Submission.FailedOn = run.Index;
+                            return result;
                         }
-
-                        if (OnRunFailedDelegate != null)
-                        {
-                            result = await OnRunFailedDelegate.Invoke(Contest, Problem, Submission, run);
-                            // Do not return immediately, we will save submission data on next lines.
-                        }
-                    }
-
-                    Submission.Progress = ++count * 100 / total;
-                    Context.Submissions.Update(Submission);
-                    await Context.SaveChangesAsync();
-                    if (result != null)
-                    {
-                        return result;
                     }
                 }
             }
@@ -410,12 +392,12 @@ namespace Worker.Runners.LanguageTypes.Base
             return new JudgeResult
             {
                 // If there was any failure, submission's verdict will be changed from Running.
-                Verdict = Submission.Verdict == Verdict.Running ? Verdict.Accepted : Submission.Verdict,
+                Verdict = failed?.Verdict ?? Verdict.Accepted,
                 Time = time,
                 Memory = memory,
                 FailedOn = failed?.Index,
                 Score = count * 100 / total,
-                Message = ""
+                Message = string.Empty
             };
         }
 

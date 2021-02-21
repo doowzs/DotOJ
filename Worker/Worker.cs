@@ -28,22 +28,29 @@ namespace Worker
         {
             using var scope = _factory.CreateScope();
             _logger.LogInformation($"Worker {_options.Value.Name} is starting");
-            
+
             var factory = new RabbitMqConnectionFactory(scope.ServiceProvider);
-            var consumer = new JudgeRequestConsumer(scope.ServiceProvider);
+            var requestConsumer = scope.ServiceProvider.GetRequiredService<JudgeRequestConsumer>();
+            var completeProducer = scope.ServiceProvider.GetRequiredService<JudgeCompleteProducer>();
+            var heartbeatProducer = scope.ServiceProvider.GetRequiredService<WorkerHeartbeatProducer>();
+
             var connection = factory.GetConnection();
             if (!stoppingToken.IsCancellationRequested) // Application may be aborted in GetConnection().
             {
-                consumer.Start(connection);
+                heartbeatProducer.Start(connection);
+                completeProducer.Start(connection);
+                requestConsumer.Start(connection);
             }
-            
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 await Task.Yield();
             }
-            
+
             _logger.LogInformation($"Worker {_options.Value.Name} is stopping");
-            consumer.Stop();
+            requestConsumer.Stop();
+            completeProducer.Stop();
+            heartbeatProducer.Stop();
             factory.CloseConnection();
         }
     }

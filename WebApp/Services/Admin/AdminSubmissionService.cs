@@ -136,7 +136,17 @@ namespace WebApp.Services.Admin
             };
             await Context.Submissions.AddAsync(submission);
             await Context.SaveChangesAsync();
-            await _producer.SendAsync(submission);
+
+            _ = Task.Run(async () =>
+            {
+                if (await _producer.SendAsync(submission.Id, submission.RequestVersion + 1))
+                {
+                    submission.Verdict = Verdict.InQueue;
+                }
+
+                Context.Update(submission);
+                await Context.SaveChangesAsync();
+            });
 
             await Context.Entry(submission).Reference(s => s.User).LoadAsync();
             var result = new SubmissionInfoDto(submission, true);
@@ -223,22 +233,26 @@ namespace WebApp.Services.Admin
             var submissions = await queryable.Include(s => s.User).ToListAsync();
             foreach (var submission in submissions)
             {
-                submission.Verdict = Verdict.Pending;
-                submission.Time = submission.Memory = null;
-                submission.FailedOn = submission.FailedOn = null;
-                submission.Score = submission.Progress = null;
-                submission.Message = null;
-                submission.JudgedBy = null;
-                submission.JudgedAt = null;
+                submission.ResetVerdictFields();
             }
 
             Context.UpdateRange(submissions);
             await Context.SaveChangesAsync();
-            foreach (var submission in submissions)
+
+            _ = Task.Run(async () =>
             {
-                await _producer.SendAsync(submission);
-            }
-            
+                foreach (var submission in submissions)
+                {
+                    if (await _producer.SendAsync(submission.Id, submission.RequestVersion + 1))
+                    {
+                        submission.Verdict = Verdict.InQueue;
+                    }
+                }
+
+                Context.UpdateRange(submissions);
+                await Context.SaveChangesAsync();
+            });
+
             await LogInformation($"RejudgeSubmissions ContestId={contestId} " +
                                  $"ProblemId={problemId} SubmissionId={submissionId}");
 

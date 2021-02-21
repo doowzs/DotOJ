@@ -9,7 +9,7 @@ using IdentityServer4.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using WebApp.Exceptions;
-using WebApp.Services.Background;
+using WebApp.Services.Singleton;
 
 namespace WebApp.Services
 {

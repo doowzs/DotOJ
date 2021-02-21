@@ -57,8 +57,22 @@ namespace Data.Models
         public string Message { get; set; }
         public string JudgedBy { get; set; }
         public DateTime? JudgedAt { get; set; }
+        
+        // Two version numbers are used to avoid duplicate message in MQ.
+        public int RequestVersion { get; set; }
+        public int CompleteVersion { get; set; }
 
         #endregion
+
+        public void ResetVerdictFields()
+        {
+            Time = Memory = null;
+            FailedOn = null;
+            Score = Progress = null;
+            Message = null;
+            JudgedBy = null;
+            JudgedAt = null;
+        }
 
         #region Submission Info Comments String
 
@@ -86,7 +100,8 @@ namespace Data.Models
             builder.AppendLine(comment + $"Submitted:  {CreatedAt:yyyy-MM-dd HH:mm:ss} (UTC Time)");
             if (JudgedAt.HasValue)
             {
-                builder.AppendLine(comment + $"Judged:     {JudgedAt:yyyy-MM-dd HH:mm:ss} by {JudgedBy}");
+                builder.AppendLine(comment + $"Judged:     {JudgedAt:yyyy-MM-dd HH:mm:ss} by {JudgedBy}" +
+                                   $" RV={RequestVersion} CV={CompleteVersion}");
             }
 
             builder.AppendLine(comment + $"Links:");

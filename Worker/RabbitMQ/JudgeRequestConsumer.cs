@@ -10,6 +10,7 @@ using Data.RabbitMQ;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using Notification;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
@@ -19,18 +20,15 @@ namespace Worker.RabbitMQ
 {
     public sealed class JudgeRequestConsumer : RabbitMqQueueBase<JudgeRequestConsumer>
     {
-        private readonly IServiceProvider _provider;
+        private readonly IServiceScopeFactory _factory;
         private readonly IOptions<JudgingConfig> _options;
-        private readonly ApplicationDbContext _context;
-        private readonly INotificationBroadcaster _broadcaster;
+        private readonly JudgeCompleteProducer _producer;
 
         public JudgeRequestConsumer(IServiceProvider provider) : base(provider)
         {
-            Queue = "JudgeRequest";
-            _provider = provider;
-            _context = provider.GetRequiredService<ApplicationDbContext>();
+            _factory = provider.GetRequiredService<IServiceScopeFactory>();
             _options = provider.GetRequiredService<IOptions<JudgingConfig>>();
-            _broadcaster = provider.GetRequiredService<INotificationBroadcaster>();
+            _producer = provider.GetRequiredService<JudgeCompleteProducer>();
         }
 
         public override void Start(IConnection connection)
@@ -41,38 +39,53 @@ namespace Worker.RabbitMQ
             Channel.BasicQos(0, 1, false);
             consumer.Received += async (ch, ea) =>
             {
-                var message = Encoding.UTF8.GetString(ea.Body.ToArray());
-                if (int.TryParse(message, out var submissionId))
+                var serialized = Encoding.UTF8.GetString(ea.Body.ToArray());
+                var message = JsonConvert.DeserializeObject<JudgeRequestMessage>(serialized);
+                var completeVersion = await RunSubmissionAsync(message);
+                if (completeVersion > 0)
                 {
-                    await RunSubmissionAsync(submissionId);
-                    Channel.BasicAck(ea.DeliveryTag, true);
+                    await _producer.SendAsync(message.SubmissionId, completeVersion);
                 }
-                else
-                {
-                    Logger.LogError($"Invalid judge request message: {message}");
-                }
+                Channel.BasicAck(ea.DeliveryTag, true);
             };
         }
 
-        private async Task RunSubmissionAsync(int submissionId)
+        private async Task<int> RunSubmissionAsync(JudgeRequestMessage message)
         {
-            var submission = await _context.Submissions.FindAsync(submissionId);
-            if (submission is null)
+            using var scope = _factory.CreateScope();
+            var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            var submission = await context.Submissions.FindAsync(message.SubmissionId);
+            if (submission is null || submission.RequestVersion >= message.RequestVersion)
             {
-                Logger.LogError($"Submission with Id={submissionId} not found");
-                return;
+                Logger.LogDebug($"IgnoreJudgeRequestMessage" +
+                                $" SubmissionId={message.SubmissionId}" +
+                                $" RequestVersion={message.RequestVersion}");
+                return 0;
+            }
+            else
+            {
+                submission.Verdict = Verdict.Running;
+                submission.Time = null;
+                submission.Memory = null;
+                submission.FailedOn = null;
+                submission.Score = null;
+                submission.Progress = 0;
+                submission.JudgedBy = _options.Value.Name;
+                submission.RequestVersion = message.RequestVersion;
+                await context.SaveChangesAsync();
             }
 
-            var user = await _context.Users.FindAsync(submission.UserId);
-            var problem = await _context.Problems.FindAsync(submission.ProblemId);
-            var contest = await _context.Contests.FindAsync(problem.ContestId);
+            var user = await context.Users.FindAsync(submission.UserId);
+            var problem = await context.Problems.FindAsync(submission.ProblemId);
+            var contest = await context.Contests.FindAsync(problem.ContestId);
 
             try
             {
                 Logger.LogInformation($"RunSubmission Id={submission.Id} Problem={problem.Id}");
                 var stopwatch = Stopwatch.StartNew();
 
-                var runner = new SubmissionRunner(contest, problem, submission, _provider);
+                var runner = new SubmissionRunner(contest, problem, submission, scope.ServiceProvider);
                 var result = await runner.RunSubmissionAsync();
 
                 #region Update judge result of submission
@@ -86,36 +99,32 @@ namespace Worker.RabbitMQ
                 submission.Message = Convert.ToBase64String(Encoding.UTF8.GetBytes(result.Message));
                 submission.JudgedAt = DateTime.Now.ToUniversalTime();
 
-                using (var scope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+                using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                 {
                     // Validate that the submission is not touched by others since picking up.
-                    var judgedBy = (await _context.Submissions.FindAsync(submission.Id)).JudgedBy;
-                    if (judgedBy == _options.Value.Name)
+                    var fetched = await context.Submissions.FindAsync(submission.Id);
+                    if (fetched.RequestVersion == message.RequestVersion && fetched.JudgedBy == _options.Value.Name)
                     {
-                        _context.Submissions.Update(submission);
-                        await _context.SaveChangesAsync();
-                    }
-                    else
-                    {
-                        // If the row is touched, revert all changes.
-                        await _context.Entry(submission).ReloadAsync();
+                        context.Submissions.Update(submission);
+                        await context.SaveChangesAsync();
                     }
 
-                    scope.Complete();
+                    transactionScope.Complete();
                 }
 
                 #endregion
 
                 #region Rebuild statistics of registration
 
+                // TODO: remove this part to webapp
                 if (submission.CreatedAt >= contest.BeginTime && submission.CreatedAt <= contest.EndTime)
                 {
-                    var registration = await _context.Registrations.FindAsync(user.Id, contest.Id);
+                    var registration = await context.Registrations.FindAsync(user.Id, contest.Id);
                     if (registration != null)
                     {
-                        await registration.RebuildStatisticsAsync(_context);
-                        _context.Registrations.Update(registration);
-                        await _context.SaveChangesAsync();
+                        await registration.RebuildStatisticsAsync(context);
+                        context.Registrations.Update(registration);
+                        await context.SaveChangesAsync();
                     }
                 }
 
@@ -127,23 +136,39 @@ namespace Worker.RabbitMQ
             }
             catch (Exception e)
             {
-                var message = $"Internal error: {e.Message}\n" +
-                              $"Occurred at {DateTime.Now:yyyy-MM-dd HH:mm:ss} UTC @ {_options.Value.Name}\n" +
-                              $"*** Please report this incident to TA and site administrator ***";
+                var error = $"Internal error: {e.Message}\n" +
+                            $"Occurred at {DateTime.Now:yyyy-MM-dd HH:mm:ss} UTC @ {_options.Value.Name}\n" +
+                            $"*** Please report this incident to TA and site administrator ***";
                 submission.Verdict = Verdict.Failed;
+                submission.Time = submission.Memory = null;
                 submission.FailedOn = null;
                 submission.Score = 0;
-                submission.Message = Convert.ToBase64String(Encoding.UTF8.GetBytes(message));
+                submission.Message = Convert.ToBase64String(Encoding.UTF8.GetBytes(error));
                 submission.JudgedAt = DateTime.Now.ToUniversalTime();
                 submission.JudgedBy = _options.Value.Name;
-                _context.Submissions.Update(submission);
-                await _context.SaveChangesAsync();
-                Logger.LogError($"RunSubmission Error Submission={submissionId} Error={e.Message}\n" +
+
+                using (var transactionScope = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
+                {
+                    // Validate that the submission is not touched by others since picking up.
+                    var fetched = await context.Submissions.FindAsync(submission.Id);
+                    if (fetched.RequestVersion == message.RequestVersion && fetched.JudgedBy == _options.Value.Name)
+                    {
+                        context.Submissions.Update(submission);
+                        await context.SaveChangesAsync();
+                    }
+
+                    transactionScope.Complete();
+                }
+
+                Logger.LogError($"RunSubmission Error Submission={submission.Id} Error={e.Message}\n" +
                                 $"Stacktrace of error:\n{e.StackTrace}");
-                await _broadcaster.SendNotification(true, $"Runner failed on Submission #{submissionId}",
-                    $"Submission runner \"{_options.Value.Name}\" failed on submission #{submissionId}" +
+                var broadcaster = scope.ServiceProvider.GetRequiredService<INotificationBroadcaster>();
+                await broadcaster.SendNotification(true, $"Runner failed on Submission #{submission.Id}",
+                    $"Submission runner \"{_options.Value.Name}\" failed on submission #{submission.Id}" +
                     $" with error message **\"{e.Message}\"**.");
             }
+
+            return submission.RequestVersion;
         }
     }
 }

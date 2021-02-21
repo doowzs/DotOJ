@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using Data.Configs;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -9,7 +8,6 @@ using RabbitMQ.Client;
 
 namespace Data.RabbitMQ
 {
-
     public class RabbitMqConnectionFactory
     {
         private readonly RabbitMqConfig _config;
@@ -66,21 +64,31 @@ namespace Data.RabbitMQ
     public abstract class RabbitMqQueueBase<T> where T : class
     {
         protected readonly ILogger<T> Logger;
-        protected string Queue;
+        protected readonly string Queue;
         protected IModel Channel;
-        
+
         protected RabbitMqQueueBase(IServiceProvider provider)
         {
             Logger = provider.GetRequiredService<ILogger<T>>();
+
+            Queue = typeof(T).Name;
+            if (Queue.Contains("Producer"))
+            {
+                Queue = Queue.Remove(Queue.LastIndexOf("Producer", StringComparison.Ordinal));
+            }
+            else if (Queue.Contains("Consumer"))
+            {
+                Queue = Queue.Remove(Queue.LastIndexOf("Consumer", StringComparison.Ordinal));
+            }
         }
 
-        public virtual void Start([NotNull] IConnection connection)
+        public virtual void Start(IConnection connection)
         {
             Channel = connection.CreateModel();
-            Channel.QueueDeclare(Queue, durable:true, exclusive:false, autoDelete:false);
+            Channel.QueueDeclare(Queue, durable: true, exclusive: false, autoDelete: false);
         }
 
-        public void Stop()
+        public virtual void Stop()
         {
             Channel?.Close();
             Channel = null;

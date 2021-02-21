@@ -52,7 +52,8 @@ namespace WebApp.Services
                 return true;
             }
 
-            return await Context.Submissions.AnyAsync(s => s.UserId == user.Id && s.ProblemId == problem.Id && s.Verdict == Verdict.Accepted);
+            return await Context.Submissions.AnyAsync(s =>
+                s.UserId == user.Id && s.ProblemId == problem.Id && s.Verdict == Verdict.Accepted);
         }
 
         private async Task EnsureUserCanViewSubmissionAsync(Submission submission)
@@ -157,7 +158,7 @@ namespace WebApp.Services
             {
                 submissions = submissions.Where(s => s.Verdict == verdict.GetValueOrDefault());
             }
-            
+
             var paginated = await submissions.OrderByDescending(s => s.Id)
                 .PaginateAsync(s => s.User, s => s, pageIndex ?? 1, pageSize ?? PageSize);
             var dict = new Dictionary<int, bool>();
@@ -170,10 +171,12 @@ namespace WebApp.Services
                     viewable = await IsSubmissionViewableAsync(submission);
                     dict.Add(submission.Id, viewable);
                 }
+
                 infos.Add(new SubmissionInfoDto(submission, viewable));
             }
 
-            return new PaginatedList<SubmissionInfoDto>(paginated.TotalItems, paginated.PageIndex, paginated.PageSize, infos);
+            return new PaginatedList<SubmissionInfoDto>(paginated.TotalItems, paginated.PageIndex, paginated.PageSize,
+                infos);
         }
 
         public async Task<List<SubmissionInfoDto>> GetBatchSubmissionInfosAsync(IEnumerable<int> ids)
@@ -183,7 +186,7 @@ namespace WebApp.Services
                 .Where(s => ids.Contains(s.Id))
                 .Include(s => s.User)
                 .ToListAsync();
-            
+
             var infos = new List<SubmissionInfoDto>();
             foreach (var submission in submissions)
             {
@@ -193,6 +196,7 @@ namespace WebApp.Services
                     viewable = await IsSubmissionViewableAsync(submission);
                     dict.Add(submission.Id, viewable);
                 }
+
                 infos.Add(new SubmissionInfoDto(submission, viewable));
             }
 
@@ -257,7 +261,17 @@ namespace WebApp.Services
             };
             await Context.Submissions.AddAsync(submission);
             await Context.SaveChangesAsync();
-            await _producer.SendAsync(submission);
+
+            _ = Task.Run(async () =>
+            {
+                if (await _producer.SendAsync(submission.Id, 1))
+                {
+                    submission.Verdict = Verdict.InQueue;
+                }
+
+                Context.Update(submission);
+                await Context.SaveChangesAsync();
+            });
 
             await Context.Entry(submission).Reference(s => s.User).LoadAsync();
             var result = new SubmissionInfoDto(submission, true);

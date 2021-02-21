@@ -1,12 +1,14 @@
 using System;
 using Data;
 using Data.Configs;
+using Data.RabbitMQ;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Notification;
 using Notification.Providers;
+using Worker.RabbitMQ;
 
 namespace Worker
 {
@@ -33,6 +35,10 @@ namespace Worker
                     services.Configure<JudgingConfig>(hostContext.Configuration.GetSection("Judging"));
                     services.Configure<RabbitMqConfig>(hostContext.Configuration.GetSection("RabbitMQ"));
                     services.Configure<NotificationConfig>(hostContext.Configuration.GetSection("Notification"));
+
+                    services.AddSingleton<JudgeRequestConsumer>();
+                    services.AddSingleton<JudgeCompleteProducer>();
+                    services.AddSingleton<WorkerHeartbeatProducer>();
 
                     services.AddScoped<INotificationBroadcaster, NotificationBroadcaster>();
                     services.AddScoped<IDingTalkNotification, DingTalkNotification>();

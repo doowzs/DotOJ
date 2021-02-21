@@ -3,7 +3,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
 using Data;
 using Data.Configs;
-using Data.DTOs;
 using Data.Models;
 using Data.RabbitMQ;
 using IdentityServer4.Extensions;
@@ -24,6 +23,7 @@ using WebApp.RabbitMQ;
 using WebApp.Services;
 using WebApp.Services.Admin;
 using WebApp.Services.Background;
+using WebApp.Services.Singleton;
 
 namespace WebApp
 {
@@ -127,14 +127,18 @@ namespace WebApp
             services.AddScoped<IAdminSubmissionService, AdminSubmissionService>();
 
             services.AddSingleton<JudgeRequestProducer>();
+            services.AddSingleton<JudgeCompleteConsumer>();
+            services.AddSingleton<WorkerHeartbeatConsumer>();
+            
+            services.AddSingleton<ProblemStatisticsService>();
+            services.AddSingleton<WorkerStatisticsService>();
 
             // TODO: Broadcasters can be made singleton.
             services.AddScoped<IDingTalkNotification, DingTalkNotification>();
             services.AddScoped<INotificationBroadcaster, NotificationBroadcaster>();
             
             // Background cron job services.
-            services.AddHostedService<ProblemStatisticsService>();
-            services.AddHostedService<SubmissionFailSafeService>();
+            services.AddHostedService<WorkerStatisticsBackgroundService>();
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/dist"; });
@@ -207,11 +211,15 @@ namespace WebApp
                 var factory = new RabbitMqConnectionFactory(app.ApplicationServices);
                 var connection = factory.GetConnection();
                 app.ApplicationServices.GetRequiredService<JudgeRequestProducer>().Start(connection);
+                app.ApplicationServices.GetRequiredService<JudgeCompleteConsumer>().Start(connection);
+                app.ApplicationServices.GetRequiredService<WorkerHeartbeatConsumer>().Start(connection);
             });
 
             lifetime.ApplicationStopping.Register(() =>
             {
                 var factory = new RabbitMqConnectionFactory(app.ApplicationServices);
+                app.ApplicationServices.GetRequiredService<WorkerHeartbeatConsumer>().Stop();
+                app.ApplicationServices.GetRequiredService<JudgeCompleteConsumer>().Stop();
                 app.ApplicationServices.GetRequiredService<JudgeRequestProducer>().Stop();
                 factory.CloseConnection();
             });

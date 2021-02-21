@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text;
 using System.Threading.Tasks;
-using Data.Models;
 using Data.RabbitMQ;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;
@@ -13,20 +12,29 @@ namespace WebApp.RabbitMQ
     {
         public JudgeRequestProducer(IServiceProvider provider) : base(provider)
         {
-            Queue = "JudgeRequest";
         }
 
-        public void Send(Submission submission)
+        public Task<bool> SendAsync(int submissionId, int requestVersion)
         {
-            var body = Encoding.UTF8.GetBytes(submission.Id.ToString());
-            Channel.BasicPublish("", Queue, null, body);
-            Logger.LogDebug($"Sent RabbitMQ message for submission #{submission.Id}");
-        }
-
-        public Task SendAsync(Submission submission)
-        {
-            Send(submission);
-            return Task.CompletedTask;
+            var message = new JudgeRequestMessage
+            {
+                SubmissionId = submissionId,
+                RequestVersion = requestVersion
+            };
+            var serialized = JsonConvert.SerializeObject(message);
+            var body = Encoding.UTF8.GetBytes(serialized);
+            try
+            {
+                Channel.BasicPublish("", Queue, null, body);
+                Logger.LogDebug($"SendJudgeRequestMessage SubmissionId={submissionId} RequestVersion={requestVersion}");
+                return Task.FromResult(true);
+            }
+            catch (Exception e)
+            {
+                Logger.LogError($"SendJudgeRequestMessage failed: {e.Message}");
+                Logger.LogError($"Stacktrace: {e.StackTrace}");
+                return Task.FromResult(false);
+            }
         }
     }
 }
