@@ -71,8 +71,8 @@
         </a>
       </p>
     </div>
-    <ul ngbNav #detailNav="ngbNav" class="nav-tabs">
-      <li ngbNavItem class="w-50">
+    <ul ngbNav #detailNav="ngbNav" class="nav-tabs" [(activeId)]="activePaneId" [destroyOnHide]="false">
+      <li [ngbNavItem]="1" class="w-50">
         <a ngbNavLink class="text-center">
           <fa-icon [icon]="faFileAlt"></fa-icon>Statement
         </a>
@@ -120,7 +120,7 @@
           </div>
         </ng-template>
       </li>
-      <li ngbNavItem class="w-50 text-center" #submissionPane>
+      <li [ngbNavItem]="2" class="w-50 text-center" [destroyOnHide]="false">
         <a ngbNavLink>
           <fa-icon [icon]="faPaperPlane"></fa-icon>Submissions
         </a>

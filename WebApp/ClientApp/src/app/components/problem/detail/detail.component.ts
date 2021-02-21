@@ -11,6 +11,7 @@ import { ContestViewDto } from '../../../../interfaces/contest.interfaces';
 import { AuthorizeService, IUser } from '../../../../api-authorization/authorize.service';
 import { ProblemService } from '../../../services/problem.service';
 import { ContestService } from '../../../services/contest.service';
+import { SubmissionService } from "../../../services/submission.service";
 import {
   faArrowLeft, faArrowRight,
   faBoxes,
@@ -53,6 +54,7 @@ export class ProblemDetailComponent implements OnInit, OnDestroy {
   public problemId: number;
   public problem: ProblemViewDto;
   public language: LanguageInfo;
+  public activePaneId: number = 1;
 
   public destroy$ = new Subject();
 
@@ -62,6 +64,7 @@ export class ProblemDetailComponent implements OnInit, OnDestroy {
     private router: Router,
     private contestService: ContestService,
     private problemService: ProblemService,
+    private submissionService: SubmissionService,
     private auth: AuthorizeService
   ) {
     this.contestId = this.route.snapshot.parent.params.contestId;
@@ -81,6 +84,9 @@ export class ProblemDetailComponent implements OnInit, OnDestroy {
         this.contest = contest;
         this.ended = moment().isAfter(this.contest.endTime);
       });
+    this.submissionService.newSubmission
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(submission => this.activePaneId = 2);
     this.route.params
       .pipe(takeUntil(this.destroy$))
       .subscribe(params => {
