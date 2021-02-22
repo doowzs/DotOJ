@@ -39,7 +39,7 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes
                 }
             };
             process.Start();
-            process.WaitForExit();
+            await process.WaitForExitAsync();
             if (process.ExitCode == 0)
             {
                 return null;
@@ -71,7 +71,7 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes
             };
         }
 
-        protected override Task ExecuteProgramAsync(string meta, int bytes)
+        protected override async Task ExecuteProgramAsync(string meta, int bytes)
         {
             var process = new Process
             {
@@ -86,13 +86,11 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes
                 }
             };
             process.Start();
-            process.WaitForExit();
+            await process.WaitForExitAsync();
             if (process.ExitCode != 0 && process.ExitCode != 1)
             {
                 throw new Exception($"Isolate error ExitCode={process.ExitCode}.");
             }
-
-            return Task.CompletedTask;
         }
     }
 }

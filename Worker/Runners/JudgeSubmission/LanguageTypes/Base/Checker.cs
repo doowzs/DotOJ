@@ -103,7 +103,7 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
                 }
             };
             process.Start();
-            process.WaitForExit();
+            await process.WaitForExitAsync();
             if (process.ExitCode == 0)
             {
                 return true;

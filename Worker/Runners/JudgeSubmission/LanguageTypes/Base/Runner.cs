@@ -65,7 +65,7 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
                 }
             };
             cleaner.Start();
-            cleaner.WaitForExit();
+            await cleaner.WaitForExitAsync();
 
             var process = new Process
             {
@@ -77,7 +77,7 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
                 }
             };
             process.Start();
-            process.WaitForExit();
+            await process.WaitForExitAsync();
             Box = Path.Combine((await process.StandardOutput.ReadToEndAsync()).Trim(), "box");
             Jail = Path.Combine(Box, "jail");
             if (!Directory.Exists(Jail))
@@ -123,7 +123,7 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
                 }
             };
             process.Start();
-            process.WaitForExit();
+            await process.WaitForExitAsync();
             if (process.ExitCode != 0)
             {
                 throw new Exception($"Prepare checker error ExitCode={process.ExitCode}.");
@@ -410,7 +410,7 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
                 }
             };
             process.Start();
-            process.WaitForExit();
+            await process.WaitForExitAsync();
             Box = Path.Combine(await process.StandardOutput.ReadToEndAsync(), "box");
         }
     }
