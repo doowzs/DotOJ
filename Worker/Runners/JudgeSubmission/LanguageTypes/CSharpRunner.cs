@@ -7,19 +7,19 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Worker.Models;
 
-namespace Worker.Runners.LanguageTypes
+namespace Worker.Runners.JudgeSubmission.LanguageTypes
 {
-    public class GolangRunner : Base.Runner
+    public class CSharpRunner : Base.Runner
     {
-        public GolangRunner(Contest contest, Problem problem, Submission submission, IServiceProvider provider)
+        public CSharpRunner(Contest contest, Problem problem, Submission submission, IServiceProvider provider)
             : base(contest, problem, submission, provider)
         {
-            Logger = provider.GetRequiredService<ILogger<GolangRunner>>();
+            Logger = provider.GetRequiredService<ILogger<CSharpRunner>>();
         }
 
         protected override async Task<JudgeResult> CompileAsync()
         {
-            var file = Path.Combine(Jail, "main.go");
+            var file = Path.Combine(Jail, "main.cs");
             var program = Convert.FromBase64String(Submission.Program.Code);
             await using (var stream = new FileStream(file, FileMode.Create, FileAccess.Write))
             {
@@ -31,12 +31,12 @@ namespace Worker.Runners.LanguageTypes
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "isolate",
-                    Arguments = $"--cg -b {BoxId} -s -E PATH=/bin:/usr/bin -E HOME=/tmp" +
-                                $" -d /etc -c jail -i /dev/null -r compiler_output" +
+                    Arguments = $"--cg -b {BoxId} -s -E PATH=/bin:/usr/bin -d /etc" +
+                                " -c jail -i /dev/null -r compiler_output" +
                                 " -p120 -f 409600 --cg-timing -t 15.0 -x 0 -w 20.0 -k 128000 --cg-mem=512000" +
-                                " --run -- /usr/bin/go build " +
-                                LanguageOptions.LanguageOptionsDict[Language.Golang].CompilerOptions +
-                                " -o main main.go"
+                                " --run -- /usr/bin/csc " +
+                                LanguageOptions.LanguageOptionsDict[Language.CSharp].CompilerOptions +
+                                " -out:main.exe main.cs"
                 }
             };
             process.Start();
@@ -82,7 +82,7 @@ namespace Worker.Runners.LanguageTypes
                     Arguments = $"--cg -b {BoxId} -s -M {meta} -c jail -d /box={Box}:norec -d /box/jail={Jail}:rw" +
                                 $" -i jail/input -o jail/output -r jail/stderr -p20 -f {bytes}" +
                                 $" --cg-timing -t {TimeLimit} -x 0 -w {TimeLimit + 3.0f} -k 128000 --cg-mem={MemoryLimit}" +
-                                " --run -- main"
+                                " --run -- /usr/bin/csr main.exe"
                 }
             };
             process.Start();

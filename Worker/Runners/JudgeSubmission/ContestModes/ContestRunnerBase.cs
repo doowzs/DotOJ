@@ -2,9 +2,9 @@ using System;
 using System.Threading.Tasks;
 using Data.Models;
 using Worker.Models;
-using Worker.Runners.ProblemTypes;
+using Worker.Runners.JudgeSubmission.ProblemTypes;
 
-namespace Worker.Runners.ContestModes
+namespace Worker.Runners.JudgeSubmission.ContestModes
 {
     public class ContestRunnerBase : ISubmissionRunner
     {

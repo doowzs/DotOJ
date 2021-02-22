@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Data.Models;
 using Worker.Models;
 
-namespace Worker.Runners.LanguageTypes.Base
+namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
 {
     public abstract partial class Runner
     {

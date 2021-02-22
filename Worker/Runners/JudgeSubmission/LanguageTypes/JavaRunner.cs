@@ -7,19 +7,19 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Worker.Models;
 
-namespace Worker.Runners.LanguageTypes
+namespace Worker.Runners.JudgeSubmission.LanguageTypes
 {
-    public class RustRunner : Base.Runner
+    public class JavaRunner : Base.Runner
     {
-        public RustRunner(Contest contest, Problem problem, Submission submission, IServiceProvider provider)
+        public JavaRunner(Contest contest, Problem problem, Submission submission, IServiceProvider provider)
             : base(contest, problem, submission, provider)
         {
-            Logger = provider.GetRequiredService<ILogger<RustRunner>>();
+            Logger = provider.GetRequiredService<ILogger<JavaRunner>>();
         }
 
         protected override async Task<JudgeResult> CompileAsync()
         {
-            var file = Path.Combine(Jail, "main.rs");
+            var file = Path.Combine(Jail, "Main.java");
             var program = Convert.FromBase64String(Submission.Program.Code);
             await using (var stream = new FileStream(file, FileMode.Create, FileAccess.Write))
             {
@@ -33,10 +33,9 @@ namespace Worker.Runners.LanguageTypes
                     FileName = "isolate",
                     Arguments = $"--cg -b {BoxId} -s -E PATH=/bin:/usr/bin -d /etc" +
                                 " -c jail -i /dev/null -r compiler_output" +
-                                " -p120 -f 409600 --cg-timing -t 15.0 -x 0 -w 20.0 -k 128000 --cg-mem=512000" +
-                                " --run -- /usr/bin/rustc " +
-                                LanguageOptions.LanguageOptionsDict[Language.Rust].CompilerOptions +
-                                " -o main main.rs"
+                                " -p120 -f 409600 --cg-timing -t 15.0 -x 0 -w 20.0 --cg-mem=512000" +
+                                " --run -- /usr/bin/javac " +
+                                LanguageOptions.LanguageOptionsDict[Language.Java].CompilerOptions + " Main.java"
                 }
             };
             process.Start();
@@ -79,10 +78,11 @@ namespace Worker.Runners.LanguageTypes
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "isolate",
-                    Arguments = $"--cg -b {BoxId} -s -M {meta} -c jail -d /box={Box}:norec -d /box/jail={Jail}:rw" +
-                                $" -i jail/input -o jail/output -r jail/stderr -p1 -f {bytes}" +
-                                $" --cg-timing -t {TimeLimit} -x 0 -w {TimeLimit + 3.0f} -k 128000 --cg-mem={MemoryLimit}" +
-                                " --run -- main"
+                    Arguments = $"--cg -b {BoxId} -s -M {meta} -c jail" +
+                                $" -d /box={Box}:norec -d /box/jail={Jail}:rw -d /etc" +
+                                $" -i jail/input -o jail/output -r jail/stderr -p20 -f {bytes}" +
+                                $" --cg-timing -t {TimeLimit} -x 0 -w {TimeLimit + 3.0f} --cg-mem=512000" +
+                                " --run -- /usr/bin/java Main"
                 }
             };
             process.Start();

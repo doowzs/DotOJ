@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Data;
 using Data.Configs;
 using Data.Models;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,7 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Worker.Models;
 
-namespace Worker.Runners.LanguageTypes.Base
+namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
 {
     public abstract partial class Runner
     {

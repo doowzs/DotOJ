@@ -14,7 +14,7 @@ using Newtonsoft.Json;
 using Notification;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using Worker.Runners;
+using Worker.Runners.JudgeSubmission;
 
 namespace Worker.RabbitMQ
 {

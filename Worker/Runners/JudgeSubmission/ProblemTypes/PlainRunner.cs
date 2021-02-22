@@ -1,12 +1,10 @@
 using System;
 using System.Threading.Tasks;
 using Data.Models;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Worker.Models;
-using Worker.Runners.LanguageTypes;
+using Worker.Runners.JudgeSubmission.LanguageTypes;
 
-namespace Worker.Runners.ProblemTypes
+namespace Worker.Runners.JudgeSubmission.ProblemTypes
 {
     public class PlainRunner
     {

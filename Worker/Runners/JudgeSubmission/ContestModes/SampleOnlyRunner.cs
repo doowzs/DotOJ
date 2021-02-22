@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Data.Models;
 using Worker.Models;
 
-namespace Worker.Runners.ContestModes
+namespace Worker.Runners.JudgeSubmission.ContestModes
 {
     public class SampleOnlyRunner : ContestRunnerBase
     {

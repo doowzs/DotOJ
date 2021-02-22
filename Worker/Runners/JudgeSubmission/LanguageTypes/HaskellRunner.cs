@@ -7,19 +7,19 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Worker.Models;
 
-namespace Worker.Runners.LanguageTypes
+namespace Worker.Runners.JudgeSubmission.LanguageTypes
 {
-    public class CppRunner : Base.Runner
+    public class HaskellRunner : Base.Runner
     {
-        public CppRunner(Contest contest, Problem problem, Submission submission, IServiceProvider provider)
+        public HaskellRunner(Contest contest, Problem problem, Submission submission, IServiceProvider provider)
             : base(contest, problem, submission, provider)
         {
-            Logger = provider.GetRequiredService<ILogger<CppRunner>>();
+            Logger = provider.GetRequiredService<ILogger<HaskellRunner>>();
         }
 
         protected override async Task<JudgeResult> CompileAsync()
         {
-            var file = Path.Combine(Jail, "main.cpp");
+            var file = Path.Combine(Jail, "main.hs");
             var program = Convert.FromBase64String(Submission.Program.Code);
             await using (var stream = new FileStream(file, FileMode.Create, FileAccess.Write))
             {
@@ -31,12 +31,13 @@ namespace Worker.Runners.LanguageTypes
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "isolate",
-                    Arguments = $"--cg -b {BoxId} -s -E PATH=/bin:/usr/bin" +
-                                " -d /etc -c jail -i /dev/null -r compiler_output" +
+                    Arguments = $"--cg -b {BoxId} -s -E PATH=/bin:/usr/bin -d /etc" +
+                                " -d /var/lib/ghc/package.conf.d=/usr/lib/ghc/package.conf.d" +
+                                " -c jail -i /dev/null -r compiler_output" +
                                 " -p120 -f 409600 --cg-timing -t 15.0 -x 0 -w 20.0 -k 128000 --cg-mem=512000" +
-                                " --run -- /usr/bin/g++ " +
-                                LanguageOptions.LanguageOptionsDict[Language.Cpp].CompilerOptions +
-                                " -o main main.cpp"
+                                " --run -- /usr/bin/ghc " +
+                                LanguageOptions.LanguageOptionsDict[Language.Haskell].CompilerOptions +
+                                " -o main main.hs"
                 }
             };
             process.Start();

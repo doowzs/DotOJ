@@ -1,7 +1,6 @@
 using System;
 using Data;
 using Data.Configs;
-using Data.RabbitMQ;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

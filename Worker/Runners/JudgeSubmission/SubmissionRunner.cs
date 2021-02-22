@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Data;
-using Data.Configs;
 using Data.Models;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using Notification;
 using Worker.Models;
-using Worker.Runners.ContestModes;
+using Worker.Runners.JudgeSubmission.ContestModes;
 
-namespace Worker.Runners
+namespace Worker.Runners.JudgeSubmission
 {
     public interface ISubmissionRunner
     {

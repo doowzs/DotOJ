@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Worker.Models;
 
-namespace Worker.Runners.LanguageTypes
+namespace Worker.Runners.JudgeSubmission.LanguageTypes
 {
     public class PythonRunner : Base.Runner
     {

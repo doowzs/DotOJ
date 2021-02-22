@@ -3,7 +3,7 @@ using Data.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Worker.Runners.ProblemTypes
+namespace Worker.Runners.JudgeSubmission.ProblemTypes
 {
     public class SpecialJudgeRunner : PlainRunner
     {
