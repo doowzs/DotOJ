@@ -144,19 +144,17 @@ namespace Worker.Runners.LanguageTypes.Base
         private async Task PrepareTestCaseAsync(bool inline, TestCase testCase)
         {
             var file = Path.Combine(Jail, "input");
-            await using (var stream = new FileStream(file, FileMode.Create, FileAccess.Write))
+            await using var stream = new FileStream(file, FileMode.Create, FileAccess.Write);
+            if (inline)
             {
-                if (inline)
-                {
-                    await using var inputWriter = new StreamWriter(stream);
-                    await inputWriter.WriteAsync(Encoding.UTF8.GetString(Convert.FromBase64String(testCase.Input)));
-                }
-                else
-                {
-                    var dataFile = Path.Combine(_options.Value.DataPath, Problem.Id.ToString(), testCase.Input);
-                    await using var dataStream = new FileStream(dataFile, FileMode.Open, FileAccess.Read);
-                    await dataStream.CopyToAsync(stream);
-                }
+                await using var inputWriter = new StreamWriter(stream);
+                await inputWriter.WriteAsync(Encoding.UTF8.GetString(Convert.FromBase64String(testCase.Input)));
+            }
+            else
+            {
+                var dataFile = Path.Combine(_options.Value.DataPath, Problem.Id.ToString(), testCase.Input);
+                await using var dataStream = new FileStream(dataFile, FileMode.Open, FileAccess.Read);
+                await dataStream.CopyToAsync(stream);
             }
         }
 
