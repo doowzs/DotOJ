@@ -97,7 +97,7 @@ namespace Data.Archives.v1
 
                 foreach (var test in problem.TestCases)
                 {
-                    var inputFile = Path.Combine(options.Value.DataPath, problem.Id.ToString(), test.Input);
+                    var inputFile = Path.Combine(options.Value.DataPath, "tests", problem.Id.ToString(), test.Input);
                     await using (var fileStream = new FileStream(inputFile, FileMode.Open, FileAccess.Read))
                     {
                         var inputEntry = archive.CreateEntry(Path.Combine("tests", test.Input));
@@ -106,7 +106,7 @@ namespace Data.Archives.v1
                         inputStream.Close();
                     }
 
-                    var outputFile = Path.Combine(options.Value.DataPath, problem.Id.ToString(), test.Output);
+                    var outputFile = Path.Combine(options.Value.DataPath, "tests", problem.Id.ToString(), test.Output);
                     await using (var fileStream = new FileStream(outputFile, FileMode.Open, FileAccess.Read))
                     {
                         var outputEntry = archive.CreateEntry(Path.Combine("tests", test.Output));
@@ -295,8 +295,7 @@ namespace Data.Archives.v1
             using var archive = new ZipArchive(stream, ZipArchiveMode.Read);
 
             var inputs = new HashSet<string>();
-            var path = Path.Combine(options.Value.DataPath, problem.Id.ToString());
-            Console.WriteLine($"Path={path}");
+            var path = Path.Combine(options.Value.DataPath, "tests", problem.Id.ToString());
 
             #region Find valid test case pairs
 

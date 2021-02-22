@@ -46,7 +46,7 @@ services:
       - ./webapp/appsettings.json:/app/appsettings.json:ro
       - ${DATA_PATH_HOST}/aspnet:/root/.aspnet
       - ${DATA_PATH_HOST}/static:/app/wwwroot/static
-      - ${DATA_PATH_HOST}/judge-data:/var/www/judge-data
+      - ${DATA_PATH_HOST}/data:/data
     <<: *default-logging
     networks:
       - backend
@@ -57,7 +57,7 @@ services:
     mem_swappiness: 0
     volumes:
       - ./worker/appsettings.json:/app/appsettings.json:ro
-      - ${DATA_PATH_HOST}/judge-data:/var/www/judge-data:ro
+      - ${DATA_PATH_HOST}/data:/data
     <<: *default-logging
     networks:
       - backend

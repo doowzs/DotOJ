@@ -24,7 +24,7 @@ namespace Worker.Runners.LanguageTypes.Base
             }
             else
             {
-                var file = Path.Combine(_options.Value.DataPath, Problem.Id.ToString(), testCase.Output);
+                var file = Path.Combine(_options.Value.DataPath, "tests", Problem.Id.ToString(), testCase.Output);
                 await using var stream = new FileStream(file, FileMode.Open, FileAccess.Read);
                 using var reader = new StreamReader(stream);
                 answer = (await reader.ReadToEndAsync()).TrimEnd();

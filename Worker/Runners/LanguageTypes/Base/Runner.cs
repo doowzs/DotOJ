@@ -97,7 +97,7 @@ namespace Worker.Runners.LanguageTypes.Base
         private async Task PrepareCheckerAsync()
         {
             // Check if a pre-compiled binary checker exists.
-            var binary = Path.Combine(_options.Value.DataPath, Problem.Id.ToString(), "checker");
+            var binary = Path.Combine(_options.Value.DataPath, "tests", Problem.Id.ToString(), "checker");
             if (File.Exists(binary) && File.GetLastWriteTimeUtc(binary) > Problem.UpdatedAt)
             {
                 File.Copy(binary, Path.Combine(Box, "checker"));
@@ -152,7 +152,7 @@ namespace Worker.Runners.LanguageTypes.Base
             }
             else
             {
-                var dataFile = Path.Combine(_options.Value.DataPath, Problem.Id.ToString(), testCase.Input);
+                var dataFile = Path.Combine(_options.Value.DataPath, "tests", Problem.Id.ToString(), testCase.Input);
                 await using var dataStream = new FileStream(dataFile, FileMode.Open, FileAccess.Read);
                 await dataStream.CopyToAsync(stream);
             }
@@ -186,7 +186,7 @@ namespace Worker.Runners.LanguageTypes.Base
             }
             else
             {
-                var answer = Path.Combine(_options.Value.DataPath, Problem.Id.ToString(), testCase.Output);
+                var answer = Path.Combine(_options.Value.DataPath, "tests", Problem.Id.ToString(), testCase.Output);
                 var info = new FileInfo(answer);
                 bytes = (int) info.Length;
             }
