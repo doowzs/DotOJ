@@ -104,7 +104,7 @@ namespace Worker.Runners.LanguageTypes.Base
                 return;
             }
 
-            File.Copy("Resources/testlib.h", Path.Combine(Box, "testlib.h"));
+            File.Copy("Resources/testlib/testlib.h", Path.Combine(Box, "testlib.h"));
             var checker = Path.Combine(Box, "checker.cpp");
             await using (var stream = new FileStream(checker, FileMode.Create, FileAccess.Write))
             {
