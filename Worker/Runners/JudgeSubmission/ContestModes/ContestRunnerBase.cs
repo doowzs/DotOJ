@@ -6,7 +6,7 @@ using Worker.Runners.JudgeSubmission.ProblemTypes;
 
 namespace Worker.Runners.JudgeSubmission.ContestModes
 {
-    public class ContestRunnerBase : ISubmissionRunner
+    public class ContestRunnerBase
     {
         protected readonly Contest Contest;
         protected readonly Problem Problem;

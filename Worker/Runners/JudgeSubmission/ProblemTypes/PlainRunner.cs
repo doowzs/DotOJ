@@ -55,8 +55,7 @@ namespace Worker.Runners.JudgeSubmission.ProblemTypes
                     runner = new HaskellRunner(Contest, Problem, Submission, Provider);
                     break;
                 default:
-                    throw new Exception($"Invalid language Submission={Submission.Id}" +
-                                        $" Language={Submission.Program.Language}.");
+                    return JudgeResult.UnknownLanguageFailure;
             }
 
             runner.BeforeStartDelegate = BeforeStartDelegate;

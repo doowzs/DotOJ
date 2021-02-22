@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { faArchive, faBoxes, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faArchive, faBoxes, faEdit, faSearch } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-admin-problem-view',
@@ -11,6 +11,7 @@ export class AdminProblemViewComponent {
   faArchive = faArchive;
   faBoxes = faBoxes;
   faEdit = faEdit;
+  faSearch = faSearch;
 
   public problemId: number;
 

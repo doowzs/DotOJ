@@ -1,5 +1,7 @@
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using Data;
 using Data.Configs;
@@ -15,8 +17,10 @@ using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Notification;
 using Notification.Providers;
 using WebApp.RabbitMQ;
@@ -129,14 +133,14 @@ namespace WebApp
             services.AddSingleton<JobRequestProducer>();
             services.AddSingleton<JobCompleteConsumer>();
             services.AddSingleton<WorkerHeartbeatConsumer>();
-            
+
             services.AddSingleton<ProblemStatisticsService>();
             services.AddSingleton<WorkerStatisticsService>();
 
             // TODO: Broadcasters can be made singleton.
             services.AddScoped<IDingTalkNotification, DingTalkNotification>();
             services.AddScoped<INotificationBroadcaster, NotificationBroadcaster>();
-            
+
             // Background cron job services.
             services.AddHostedService<WorkerStatisticsBackgroundService>();
 
@@ -145,7 +149,8 @@ namespace WebApp
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider provider, IHostApplicationLifetime lifetime)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceProvider provider,
+            IHostApplicationLifetime lifetime)
         {
             ConfigureDatabase(provider).Wait();
 
@@ -167,7 +172,8 @@ namespace WebApp
             }
 
             // app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            app.UseStaticFiles(); // wwwroot
+
             if (!env.IsDevelopment())
             {
                 app.UseSpaStaticFiles();
@@ -182,6 +188,33 @@ namespace WebApp
                 });
             app.UseIdentityServer();
             app.UseAuthorization();
+
+            // Handle plagiarism report static files.
+            // This should come after UseAuthorization() for auth.
+            var options = provider.GetRequiredService<IOptions<ApplicationConfig>>();
+            var plagiarismsFolder = Path.Combine(options.Value.DataPath, "plagiarisms");
+            if (!Directory.Exists(plagiarismsFolder)) Directory.CreateDirectory(plagiarismsFolder);
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(plagiarismsFolder),
+                RequestPath = "/plagiarisms",
+                OnPrepareResponse = async (ctx) =>
+                {
+                    var authorized = ctx.Context.User.IsAuthenticated() &&
+                                     (ctx.Context.User.IsInRole(ApplicationRoles.Administrator) ||
+                                      ctx.Context.User.IsInRole(ApplicationRoles.ContestManager) ||
+                                      ctx.Context.User.IsInRole(ApplicationRoles.SubmissionManager));
+                    if (!authorized)
+                    {
+                        const string unauthorizedBody = "Unauthorized";
+                        ctx.Context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        ctx.Context.Response.Headers["Cache-Control"] = "no-store";
+                        ctx.Context.Response.Headers["Content-Length"] = unauthorizedBody.Length.ToString();
+                        ctx.Context.Response.Headers["Content-Type"] = "text/html";
+                        await ctx.Context.Response.WriteAsync(unauthorizedBody);
+                    }
+                }
+            });
 
             app.UseEndpoints(endpoints =>
             {

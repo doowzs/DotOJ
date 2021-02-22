@@ -9,11 +9,14 @@ using Data.Configs;
 using Data.DTOs;
 using Data.Generics;
 using Data.Models;
+using Data.RabbitMQ;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using WebApp.Exceptions;
+using WebApp.RabbitMQ;
+using WebApp.Services.Singleton;
 
 namespace WebApp.Services.Admin
 {
@@ -29,17 +32,22 @@ namespace WebApp.Services.Admin
         public Task<ProblemEditDto> ImportProblemAsync(int contestId, IFormFile file);
         public Task<byte[]> ExportProblemAsync(int id);
         public Task<byte[]> ExportProblemSubmissionsAsync(int id, bool all);
+        public Task<List<PlagiarismInfoDto>> GetProblemPlagiarismInfosAsync(int id);
+        public Task<PlagiarismInfoDto> CheckProblemPlagiarismAsync(int id);
     }
 
     public class AdminProblemService : LoggableService<AdminProblemService>, IAdminProblemService
     {
         private const int PageSize = 20;
-
-        protected readonly IOptions<ApplicationConfig> Options;
+        private readonly IOptions<ApplicationConfig> _options;
+        private readonly JobRequestProducer _producer;
+        private readonly ProblemStatisticsService _statisticsService;
 
         public AdminProblemService(IServiceProvider provider) : base(provider)
         {
-            Options = provider.GetRequiredService<IOptions<ApplicationConfig>>();
+            _options = provider.GetRequiredService<IOptions<ApplicationConfig>>();
+            _producer = provider.GetRequiredService<JobRequestProducer>();
+            _statisticsService = provider.GetRequiredService<ProblemStatisticsService>();
         }
 
         private async Task EnsureProblemExists(int id)
@@ -91,19 +99,17 @@ namespace WebApp.Services.Admin
 
         public async Task<PaginatedList<ProblemInfoDto>> GetPaginatedProblemInfosAsync(int? pageIndex)
         {
-            var problems = await Context.Problems
+            var paginated = await Context.Problems
                 .OrderByDescending(p => p.Id)
                 .PaginateAsync(pageIndex ?? 1, PageSize);
-
-            var problemInfos = new List<ProblemInfoDto>();
-            foreach (var problem in problems.Items)
+            List<ProblemInfoDto> problemInfos = new();
+            foreach (var problem in paginated.Items)
             {
-                var query = Context.Submissions.Where(s => s.ProblemId == problem.Id);
-                problemInfos.Add(new ProblemInfoDto(problem));
+                var statistics = await _statisticsService.GetStatisticsAsync(problem.Id);
+                problemInfos.Add(new ProblemInfoDto(problem, false, false, statistics));
             }
-
             return new PaginatedList<ProblemInfoDto>
-                (problems.TotalItems, problems.PageIndex, problems.PageSize, problemInfos);
+                (paginated.TotalItems, paginated.PageIndex, paginated.PageSize, problemInfos);
         }
 
         public async Task<ProblemEditDto> GetProblemEditAsync(int id)
@@ -185,7 +191,7 @@ namespace WebApp.Services.Admin
             await EnsureProblemExists(id);
 
             var problem = await Context.Problems.FindAsync(id);
-            await Data.Archives.v1.ProblemArchive.ExtractTestCasesAsync(problem, file, "", Options);
+            await Data.Archives.v1.ProblemArchive.ExtractTestCasesAsync(problem, file, "", _options);
             await Context.SaveChangesAsync();
 
             await LogInformation($"UpdateProblemTestCases Id={problem.Id} Count={problem.TestCases.Count}");
@@ -199,11 +205,11 @@ namespace WebApp.Services.Admin
                 throw new ValidationException("Invalid Contest ID.");
             }
 
-            var problem = await Data.Archives.v1.ProblemArchive.ParseAsync(contestId, file, Options);
+            var problem = await Data.Archives.v1.ProblemArchive.ParseAsync(contestId, file, _options);
             await Context.Problems.AddRangeAsync(problem);
             await Context.SaveChangesAsync();
 
-            await Data.Archives.v1.ProblemArchive.ExtractTestCasesAsync(problem, file, "tests/", Options);
+            await Data.Archives.v1.ProblemArchive.ExtractTestCasesAsync(problem, file, "tests/", _options);
             await Context.SaveChangesAsync();
 
             return new ProblemEditDto(problem);
@@ -213,32 +219,59 @@ namespace WebApp.Services.Admin
         {
             await EnsureProblemExists(id);
             var problem = await Context.Problems.FindAsync(id);
-            return await Data.Archives.v1.ProblemArchive.CreateAsync(problem, Options);
+            return await Data.Archives.v1.ProblemArchive.CreateAsync(problem, _options);
         }
 
         public async Task<byte[]> ExportProblemSubmissionsAsync(int id, bool all)
         {
             await EnsureProblemExists(id);
-            var submissions = await Context.Submissions
+            List<Submission> submissions;
+            if (all)
+            {
+                submissions = await Context.Submissions
                     .Where(s => s.ProblemId == id)
+                    .Include(s => s.User)
                     .ToListAsync();
-            if (!all)
+            }
+            else
             {
-                var groups = submissions
+                var submissionIds = await Context.Submissions
                     .Where(s => s.Verdict == Verdict.Accepted)
-                    .GroupBy(s => s.UserId);
-                submissions = new List<Submission>();
-                foreach (var group in groups) {
-                    submissions.Add(group.OrderBy(s => s.Id).First());
-                }
+                    .GroupBy(s => s.UserId)
+                    .Select(g => g.Min(s => s.Id))
+                    .ToListAsync();
+                submissions = await Context.Submissions
+                    .Where(s => submissionIds.Contains(s.Id))
+                    .ToListAsync();
             }
-            
-            foreach (var submission in submissions)
-            {
-                Context.Entry(submission).Reference(s => s.User).Load();
-            }
+            return await Data.Archives.v1.SubmissionsArchive.CreateAsync(submissions, _options);
+        }
 
-            return await Data.Archives.v1.SubmissionsArchive.CreateAsync(submissions, Options);
+        public async Task<List<PlagiarismInfoDto>> GetProblemPlagiarismInfosAsync(int id)
+        {
+            await EnsureProblemExists(id);
+            return await Context.Plagiarisms
+                .Where(p => p.ProblemId == id)
+                .OrderByDescending(p => p.Id)
+                .Select(p => new PlagiarismInfoDto(p))
+                .ToListAsync();
+        }
+
+        public async Task<PlagiarismInfoDto> CheckProblemPlagiarismAsync(int id)
+        {
+            await EnsureProblemExists(id);
+            var plagiarism = new Plagiarism
+            {
+                ProblemId = id,
+                Results = null,
+                Outdated = false
+            };
+            await Context.Plagiarisms.AddAsync(plagiarism);
+            await Context.SaveChangesAsync();
+
+            _ = Task.Run(async () => { await _producer.SendAsync(JobType.CheckPlagiarism, plagiarism.Id, 1); });
+
+            return new PlagiarismInfoDto(plagiarism);
         }
     }
 }

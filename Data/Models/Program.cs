@@ -5,6 +5,7 @@ namespace Data.Models
 {
     public enum Language
     {
+        Text = 0,
         C = 1,
         Cpp = 2,
         Java = 3,

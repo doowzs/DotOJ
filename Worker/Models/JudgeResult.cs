@@ -26,5 +26,13 @@ namespace Worker.Models
             FailedOn = null, Score = 0,
             Message = "Worker runner timed out."
         };
+
+        public static readonly JudgeResult UnknownLanguageFailure = new JudgeResult
+        {
+            Verdict = Verdict.Failed,
+            Time = null, Memory = null,
+            FailedOn = null, Score = 0,
+            Message = "Unknown program language."
+        };
     }
 }

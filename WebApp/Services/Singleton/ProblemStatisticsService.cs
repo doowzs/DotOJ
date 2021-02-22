@@ -87,6 +87,12 @@ namespace WebApp.Services.Singleton
                                  $" CompleteVersion={message.CompleteVersion}");
                 return;
             }
+            else
+            {
+                submission.CompleteVersion = message.CompleteVersion;
+                context.Update(submission);
+                await context.SaveChangesAsync();
+            }
 
             var problem = await context.Problems.FindAsync(submission.ProblemId);
             var contains = _dictionary.TryGetValue(problem.Id, out var statistics);

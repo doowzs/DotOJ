@@ -4,8 +4,9 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Base64 } from 'js-base64';
 
-import { ProblemEditDto, ProblemInfoDto, TestCase } from '../../interfaces/problem.interfaces';
 import { PaginatedList } from '../../interfaces/pagination.interfaces';
+import { ProblemEditDto, ProblemInfoDto, TestCase } from '../../interfaces/problem.interfaces';
+import { mapPlagiarismInfoDtoFields, PlagiarismInfoDto } from "../../interfaces/plagiarism.interfaces";
 
 @Injectable({
   providedIn: 'root'
@@ -90,8 +91,22 @@ export class AdminProblemService {
     return this.http.request(request);
   }
 
-
   public exportProblem(problemId: number): Observable<Blob> {
-    return this.http.get('/admin/problem/' + problemId.toString() + '/export', { responseType: 'blob' });
+    return this.http.get('/admin/problem/' + problemId.toString() + '/export', {responseType: 'blob'});
+  }
+
+  public getPlagiarisms(problemId: number): Observable<PlagiarismInfoDto[]> {
+    return this.http.get<PlagiarismInfoDto[]>('/admin/problem/' + problemId.toString() + '/plagiarisms')
+      .pipe(map(list => {
+        for (let i = 0; i < list.length; ++i) {
+          list[i] = mapPlagiarismInfoDtoFields(list[i]);
+        }
+        return list;
+      }));
+  }
+
+  public checkPlagiarisms(problemId: number): Observable<PlagiarismInfoDto> {
+    return this.http.post<PlagiarismInfoDto>('/admin/problem/' + problemId.toString() + '/plagiarisms/check', null)
+      .pipe(map(mapPlagiarismInfoDtoFields));
   }
 }

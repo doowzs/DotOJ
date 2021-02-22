@@ -27,7 +27,7 @@
     <th scope="row">{{ problem.id }}</th>
     <td>{{ problem.contestId }}</td>
     <td>{{ problem.title }}</td>
-    <td>{{ problem.acceptedSubmissions }} / {{ problem.totalSubmissions }}</td>
+    <td>{{ problem.acceptedContestants }} / {{ problem.totalContestants }}</td>
     <td>
       <a [routerLink]="['/admin/problem', problem.id]">View</a>
     </td>

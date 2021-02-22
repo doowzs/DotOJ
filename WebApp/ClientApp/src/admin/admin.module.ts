@@ -38,6 +38,7 @@ import { AdminProblemCreatorComponent } from './components/problem/creator/creat
 import { AdminProblemEditorComponent } from './components/problem/editor/editor.component';
 import { AdminProblemTestsComponent } from './components/problem/tests/tests.component';
 import { AdminProblemExportComponent } from './components/problem/export/export.component';
+import { AdminProblemPlagiarismsComponent } from './components/problem/plagiarisms/plagiarisms.component';
 import { AdminSubmissionListComponent } from './components/submission/list/list.component';
 import { AdminSubmissionFormComponent } from './components/submission/form/form.component';
 import { AdminSubmissionEditorComponent } from './components/submission/editor/editor.component';
@@ -108,7 +109,8 @@ import { VerdictModule } from '../lib/verdict/verdict.module';
                 children: [
                   { path: '', pathMatch: 'full', component: AdminProblemEditorComponent },
                   { path: 'tests', component: AdminProblemTestsComponent },
-                  { path: 'export', component: AdminProblemExportComponent }
+                  { path: 'export', component: AdminProblemExportComponent },
+                  { path: 'plagiarisms', component: AdminProblemPlagiarismsComponent }
                 ]
               }
             ]
@@ -158,6 +160,7 @@ import { VerdictModule } from '../lib/verdict/verdict.module';
     AdminProblemEditorComponent,
     AdminProblemTestsComponent,
     AdminProblemExportComponent,
+    AdminProblemPlagiarismsComponent,
     AdminSubmissionListComponent,
     AdminSubmissionFormComponent,
     AdminSubmissionEditorComponent,

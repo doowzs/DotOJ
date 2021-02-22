@@ -19,6 +19,7 @@ namespace WebApp.Services.Background
 
         public override async Task StartAsync(CancellationToken cancellationToken)
         {
+            await ExecuteAsync(cancellationToken);
             await ScheduleAsync(cancellationToken);
         }
 

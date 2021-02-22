@@ -155,7 +155,8 @@ namespace WebApp.Controllers.Api.v1.Admin
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ProblemEditDto>> ImportProblem
-            ([Required, FromForm(Name = "contest-id")] int? contestId, [FromForm(Name = "zip-file")] IFormFile file)
+        ([Required, FromForm(Name = "contest-id")]
+            int? contestId, [FromForm(Name = "zip-file")] IFormFile file)
         {
             try
             {
@@ -198,6 +199,38 @@ namespace WebApp.Controllers.Api.v1.Admin
             {
                 var bytes = await _service.ExportProblemSubmissionsAsync(id, all);
                 return File(bytes, MediaTypeNames.Application.Zip, id + "-submissions.zip");
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+        }
+
+        [HttpGet("{id:int}/plagiarisms")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> GetProblemPlagiarismInfos(int id)
+        {
+            try
+            {
+                return Ok(await _service.GetProblemPlagiarismInfosAsync(id));
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+        }
+
+        [HttpPost("{id:int}/plagiarisms/check")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> CheckProblemPlagiarism(int id)
+        {
+            try
+            {
+                return Ok(await _service.CheckProblemPlagiarismAsync(id));
             }
             catch (NotFoundException e)
             {
