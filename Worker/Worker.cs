@@ -30,8 +30,8 @@ namespace Worker
             _logger.LogInformation($"Worker {_options.Value.Name} is starting");
 
             var factory = new RabbitMqConnectionFactory(scope.ServiceProvider);
-            var requestConsumer = scope.ServiceProvider.GetRequiredService<JudgeRequestConsumer>();
-            var completeProducer = scope.ServiceProvider.GetRequiredService<JudgeCompleteProducer>();
+            var requestConsumer = scope.ServiceProvider.GetRequiredService<JobRequestConsumer>();
+            var completeProducer = scope.ServiceProvider.GetRequiredService<JobCompleteProducer>();
             var heartbeatProducer = scope.ServiceProvider.GetRequiredService<WorkerHeartbeatProducer>();
 
             var connection = factory.GetConnection();

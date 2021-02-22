@@ -11,7 +11,7 @@ namespace WebApp.Services.Background
     public class WorkerStatisticsBackgroundService : CronJobService
     {
         private readonly IServiceScopeFactory _factory;
-        private readonly JudgeRequestProducer _producer;
+        private readonly JobRequestProducer _producer;
 
         private static readonly Dictionary<string, (string Token, DateTime TimeStamp)> WorkerDictionary = new();
         // private static readonly Dictionary<int, DateTime> SubmissionTimestampDictionary = new();
@@ -19,7 +19,7 @@ namespace WebApp.Services.Background
         public WorkerStatisticsBackgroundService(IServiceProvider provider) : base("* * * * *")
         {
             _factory = provider.GetRequiredService<IServiceScopeFactory>();
-            _producer = provider.GetRequiredService<JudgeRequestProducer>();
+            _producer = provider.GetRequiredService<JobRequestProducer>();
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

@@ -73,15 +73,17 @@ namespace WebApp.Services.Singleton
             }
         }
 
-        public async Task UpdateStatisticsAsync(JudgeCompleteMessage message)
+        public async Task UpdateStatisticsAsync(JobCompleteMessage message)
         {
+            if (message.JobType != JobType.JudgeSubmission) return;
+            
             using var scope = _factory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            var submission = await context.Submissions.FindAsync(message.SubmissionId);
+            var submission = await context.Submissions.FindAsync(message.TargetId);
             if (submission is null || submission.CompleteVersion >= message.CompleteVersion)
             {
                 _logger.LogDebug($"IgnoreJudgeCompleteMessage" +
-                                 $" SubmissionId={message.SubmissionId}" +
+                                 $" SubmissionId={message.TargetId}" +
                                  $" CompleteVersion={message.CompleteVersion}");
                 return;
             }

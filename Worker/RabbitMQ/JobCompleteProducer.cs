@@ -8,30 +8,26 @@ using RabbitMQ.Client;
 
 namespace Worker.RabbitMQ
 {
-    public sealed class JudgeCompleteProducer : RabbitMqQueueBase<JudgeCompleteProducer>
+    public sealed class JobCompleteProducer : RabbitMqQueueBase<JobCompleteProducer>
     {
-        public JudgeCompleteProducer(IServiceProvider provider) : base(provider)
+        public JobCompleteProducer(IServiceProvider provider) : base(provider)
         {
         }
 
-        public Task SendAsync(int submissionId, int completeVersion)
+        public Task SendAsync(JobType jobType, int targetId, int completeVersion)
         {
-            var message = new JudgeCompleteMessage
-            {
-                SubmissionId = submissionId,
-                CompleteVersion = completeVersion
-            };
+            var message = new JobCompleteMessage(jobType, targetId, completeVersion);
             var serialized = JsonConvert.SerializeObject(message);
             var body = Encoding.UTF8.GetBytes(serialized);
             try
             {
                 Channel.BasicPublish("", Queue, null, body);
-                Logger.LogDebug(
-                    $"SendJudgeCompleteMessage SubmissionId={submissionId} CompleteVersion={completeVersion}");
+                Logger.LogDebug($"SendJobCompleteMessage JobType={jobType}" +
+                                $" TargetId={targetId} CompleteVersion={completeVersion}");
             }
             catch (Exception e)
             {
-                Logger.LogError($"SendJudgeCompleteMessage failed: {e.Message}");
+                Logger.LogError($"SendJobCompleteMessage failed: {e.Message}");
                 Logger.LogDebug($"Stacktrace: {e.StackTrace}");
             }
 

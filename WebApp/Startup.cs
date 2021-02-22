@@ -126,8 +126,8 @@ namespace WebApp
             services.AddScoped<IAdminProblemService, AdminProblemService>();
             services.AddScoped<IAdminSubmissionService, AdminSubmissionService>();
 
-            services.AddSingleton<JudgeRequestProducer>();
-            services.AddSingleton<JudgeCompleteConsumer>();
+            services.AddSingleton<JobRequestProducer>();
+            services.AddSingleton<JobCompleteConsumer>();
             services.AddSingleton<WorkerHeartbeatConsumer>();
             
             services.AddSingleton<ProblemStatisticsService>();
@@ -210,8 +210,8 @@ namespace WebApp
             {
                 var factory = new RabbitMqConnectionFactory(app.ApplicationServices);
                 var connection = factory.GetConnection();
-                app.ApplicationServices.GetRequiredService<JudgeRequestProducer>().Start(connection);
-                app.ApplicationServices.GetRequiredService<JudgeCompleteConsumer>().Start(connection);
+                app.ApplicationServices.GetRequiredService<JobRequestProducer>().Start(connection);
+                app.ApplicationServices.GetRequiredService<JobCompleteConsumer>().Start(connection);
                 app.ApplicationServices.GetRequiredService<WorkerHeartbeatConsumer>().Start(connection);
             });
 
@@ -219,8 +219,8 @@ namespace WebApp
             {
                 var factory = new RabbitMqConnectionFactory(app.ApplicationServices);
                 app.ApplicationServices.GetRequiredService<WorkerHeartbeatConsumer>().Stop();
-                app.ApplicationServices.GetRequiredService<JudgeCompleteConsumer>().Stop();
-                app.ApplicationServices.GetRequiredService<JudgeRequestProducer>().Stop();
+                app.ApplicationServices.GetRequiredService<JobCompleteConsumer>().Stop();
+                app.ApplicationServices.GetRequiredService<JobRequestProducer>().Stop();
                 factory.CloseConnection();
             });
         }

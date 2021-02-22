@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Data.DTOs;
 using Data.Generics;
 using Data.Models;
+using Data.RabbitMQ;
 using IdentityServer4.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,12 +32,12 @@ namespace WebApp.Services.Admin
     public class AdminSubmissionService : LoggableService<AdminSubmissionService>, IAdminSubmissionService
     {
         private const int PageSize = 50;
-        private readonly JudgeRequestProducer _producer;
+        private readonly JobRequestProducer _producer;
         private readonly ProblemStatisticsService _statisticsService;
 
         public AdminSubmissionService(IServiceProvider provider) : base(provider)
         {
-            _producer = provider.GetRequiredService<JudgeRequestProducer>();
+            _producer = provider.GetRequiredService<JobRequestProducer>();
             _statisticsService = provider.GetRequiredService<ProblemStatisticsService>();
         }
 
@@ -142,7 +143,7 @@ namespace WebApp.Services.Admin
 
             _ = Task.Run(async () =>
             {
-                if (await _producer.SendAsync(submission.Id, submission.RequestVersion + 1))
+                if (await _producer.SendAsync(JobType.JudgeSubmission, submission.Id, submission.RequestVersion + 1))
                 {
                     submission.Verdict = Verdict.InQueue;
                     await _statisticsService.InvalidStatisticsAsync(submission.ProblemId);
@@ -247,7 +248,8 @@ namespace WebApp.Services.Admin
             {
                 foreach (var submission in submissions)
                 {
-                    if (await _producer.SendAsync(submission.Id, submission.RequestVersion + 1))
+                    if (await _producer.SendAsync(JobType.JudgeSubmission,
+                        submission.Id, submission.RequestVersion + 1))
                     {
                         submission.Verdict = Verdict.InQueue;
                     }

@@ -1,15 +1,37 @@
 ﻿namespace Data.RabbitMQ
 {
-    public class JudgeRequestMessage
+    public enum JobType
     {
-        public int SubmissionId { get; set; }
-        public int RequestVersion { get; set; }
+        JudgeSubmission = 1,
+        CheckPlagiarism = 2
     }
 
-    public class JudgeCompleteMessage
+    public class JobRequestMessage
     {
-        public int SubmissionId { get; set; }
+        public JobType JobType { get; set; }
+        public int TargetId { get; set; }
+        public int RequestVersion { get; set; }
+
+        public JobRequestMessage(JobType jobType, int targetId, int requestVersion)
+        {
+            JobType = jobType;
+            TargetId = targetId;
+            RequestVersion = requestVersion;
+        }
+    }
+
+    public class JobCompleteMessage
+    {
+        public JobType JobType { get; set; }
+        public int TargetId { get; set; }
         public int CompleteVersion { get; set; }
+
+        public JobCompleteMessage(JobType jobType, int targetId, int completeVersion)
+        {
+            JobType = jobType;
+            TargetId = targetId;
+            CompleteVersion = completeVersion;
+        }
     }
 
     public class WorkerHeartbeatMessage

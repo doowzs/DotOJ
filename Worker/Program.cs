@@ -36,8 +36,8 @@ namespace Worker
                     services.Configure<RabbitMqConfig>(hostContext.Configuration.GetSection("RabbitMQ"));
                     services.Configure<NotificationConfig>(hostContext.Configuration.GetSection("Notification"));
 
-                    services.AddSingleton<JudgeRequestConsumer>();
-                    services.AddSingleton<JudgeCompleteProducer>();
+                    services.AddSingleton<JobRequestConsumer>();
+                    services.AddSingleton<JobCompleteProducer>();
                     services.AddSingleton<WorkerHeartbeatProducer>();
 
                     services.AddScoped<INotificationBroadcaster, NotificationBroadcaster>();

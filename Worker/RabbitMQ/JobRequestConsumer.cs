@@ -18,17 +18,17 @@ using Worker.Runners;
 
 namespace Worker.RabbitMQ
 {
-    public sealed class JudgeRequestConsumer : RabbitMqQueueBase<JudgeRequestConsumer>
+    public sealed class JobRequestConsumer : RabbitMqQueueBase<JobRequestConsumer>
     {
         private readonly IServiceScopeFactory _factory;
         private readonly IOptions<JudgingConfig> _options;
-        private readonly JudgeCompleteProducer _producer;
+        private readonly JobCompleteProducer _producer;
 
-        public JudgeRequestConsumer(IServiceProvider provider) : base(provider)
+        public JobRequestConsumer(IServiceProvider provider) : base(provider)
         {
             _factory = provider.GetRequiredService<IServiceScopeFactory>();
             _options = provider.GetRequiredService<IOptions<JudgingConfig>>();
-            _producer = provider.GetRequiredService<JudgeCompleteProducer>();
+            _producer = provider.GetRequiredService<JobCompleteProducer>();
         }
 
         public override void Start(IConnection connection)
@@ -40,26 +40,37 @@ namespace Worker.RabbitMQ
             consumer.Received += async (ch, ea) =>
             {
                 var serialized = Encoding.UTF8.GetString(ea.Body.ToArray());
-                var message = JsonConvert.DeserializeObject<JudgeRequestMessage>(serialized);
-                var completeVersion = await RunSubmissionAsync(message);
-                if (completeVersion > 0)
+                var message = JsonConvert.DeserializeObject<JobRequestMessage>(serialized);
+
+                switch (message.JobType)
                 {
-                    await _producer.SendAsync(message.SubmissionId, completeVersion);
+                    case JobType.JudgeSubmission:
+                        var completeVersion = await RunSubmissionAsync(message);
+                        if (completeVersion > 0)
+                        {
+                            await _producer.SendAsync(JobType.JudgeSubmission, message.TargetId, completeVersion);
+                        }
+                        break;
+                    case JobType.CheckPlagiarism:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
                 }
+
                 Channel.BasicAck(ea.DeliveryTag, true);
             };
         }
 
-        private async Task<int> RunSubmissionAsync(JudgeRequestMessage message)
+        private async Task<int> RunSubmissionAsync(JobRequestMessage message)
         {
             using var scope = _factory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-            var submission = await context.Submissions.FindAsync(message.SubmissionId);
+            var submission = await context.Submissions.FindAsync(message.TargetId);
             if (submission is null || submission.RequestVersion >= message.RequestVersion)
             {
                 Logger.LogDebug($"IgnoreJudgeRequestMessage" +
-                                $" SubmissionId={message.SubmissionId}" +
+                                $" SubmissionId={message.TargetId}" +
                                 $" RequestVersion={message.RequestVersion}");
                 return 0;
             }

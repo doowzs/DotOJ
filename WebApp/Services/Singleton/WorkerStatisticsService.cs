@@ -15,7 +15,7 @@ namespace WebApp.Services.Singleton
     public class WorkerStatisticsService
     {
         private readonly IServiceScopeFactory _factory;
-        private readonly JudgeRequestProducer _producer;
+        private readonly JobRequestProducer _producer;
         private readonly ProblemStatisticsService _statisticsService;
 
         private static readonly Dictionary<string, (string Token, DateTime TimeStamp)> WorkerDictionary = new();
@@ -24,7 +24,7 @@ namespace WebApp.Services.Singleton
         public WorkerStatisticsService(IServiceProvider provider)
         {
             _factory = provider.GetRequiredService<IServiceScopeFactory>();
-            _producer = provider.GetRequiredService<JudgeRequestProducer>();
+            _producer = provider.GetRequiredService<JobRequestProducer>();
             _statisticsService = provider.GetRequiredService<ProblemStatisticsService>();
         }
 
@@ -48,7 +48,7 @@ namespace WebApp.Services.Singleton
             foreach (var submission in submissions)
             {
                 // Trigger a rejudge for failed submissions
-                if (await _producer.SendAsync(submission.Id, submission.RequestVersion + 1))
+                if (await _producer.SendAsync(JobType.JudgeSubmission, submission.Id, submission.RequestVersion + 1))
                 {
                     submission.Verdict = Verdict.InQueue;
                     await _statisticsService.InvalidStatisticsAsync(submission.ProblemId);
@@ -89,7 +89,7 @@ namespace WebApp.Services.Singleton
                 .ToListAsync(stoppingToken);
             foreach (var submission in submissions)
             {
-                if (await _producer.SendAsync(submission.Id, submission.RequestVersion + 1))
+                if (await _producer.SendAsync(JobType.JudgeSubmission, submission.Id, submission.RequestVersion + 1))
                 {
                     submission.Verdict = Verdict.InQueue;
                     await _statisticsService.InvalidStatisticsAsync(submission.ProblemId);

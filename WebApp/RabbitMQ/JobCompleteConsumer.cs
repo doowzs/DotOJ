@@ -1,24 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Data;
 using Data.RabbitMQ;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using WebApp.Services.Singleton;
 
 namespace WebApp.RabbitMQ
 {
-    public class JudgeCompleteConsumer : RabbitMqQueueBase<JudgeCompleteConsumer>
+    public class JobCompleteConsumer : RabbitMqQueueBase<JobCompleteConsumer>
     {
         private readonly ProblemStatisticsService _problemStatisticsService;
         private readonly WorkerStatisticsService _workerStatisticsService;
         private static readonly Dictionary<int, DateTime> Dictionary = new();
 
-        public JudgeCompleteConsumer(IServiceProvider provider) : base(provider)
+        public JobCompleteConsumer(IServiceProvider provider) : base(provider)
         {
             _problemStatisticsService = provider.GetRequiredService<ProblemStatisticsService>();
             _workerStatisticsService = provider.GetRequiredService<WorkerStatisticsService>();
@@ -34,8 +32,19 @@ namespace WebApp.RabbitMQ
             consumer.Received += async (ch, ea) =>
             {
                 var serialized = Encoding.UTF8.GetString(ea.Body.ToArray());
-                var message = JsonConvert.DeserializeObject<JudgeCompleteMessage>(serialized);
-                await _problemStatisticsService.UpdateStatisticsAsync(message);
+                var message = JsonConvert.DeserializeObject<JobCompleteMessage>(serialized);
+                
+                switch (message.JobType)
+                {
+                    case JobType.JudgeSubmission:
+                        await _problemStatisticsService.UpdateStatisticsAsync(message);
+                        break;
+                    case JobType.CheckPlagiarism:
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+
                 Channel.BasicAck(ea.DeliveryTag, true);
             };
         }

@@ -30,11 +30,11 @@ namespace WebApp.Services
     public class SubmissionService : LoggableService<SubmissionService>, ISubmissionService
     {
         private const int PageSize = 50;
-        private readonly JudgeRequestProducer _producer;
+        private readonly JobRequestProducer _producer;
 
         public SubmissionService(IServiceProvider provider) : base(provider)
         {
-            _producer = provider.GetRequiredService<JudgeRequestProducer>();
+            _producer = provider.GetRequiredService<JobRequestProducer>();
         }
 
         private async Task<Boolean> IsSubmissionViewableAsync(Submission submission)
@@ -264,7 +264,7 @@ namespace WebApp.Services
 
             _ = Task.Run(async () =>
             {
-                if (await _producer.SendAsync(submission.Id, 1))
+                if (await _producer.SendAsync(JobType.JudgeSubmission, submission.Id, 1))
                 {
                     submission.Verdict = Verdict.InQueue;
                 }
