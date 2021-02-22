@@ -82,6 +82,22 @@ namespace Worker.Runners.CheckPlagiarism
                 }
             }
 
+            var root = Path.Combine(Options.Value.DataPath, "plagiarisms", plagiarism.Id.ToString());
+            if (!Directory.Exists(root))
+            {
+                Directory.CreateDirectory(root);
+            }
+
+            var log = Path.Combine(root, "log.txt");
+            await using (var writer = new StreamWriter(log, false, Encoding.UTF8))
+            {
+                await writer.WriteLineAsync($"Plagiarism #{plagiarism.Id} for Problem #{plagiarism.ProblemId}\n" +
+                                            $"Date:   {DateTime.Now.ToUniversalTime():yyyy-MM-dd HH:mm:ss} UTC\n" +
+                                            $"Worker: {Options.Value.Name}\n");
+                await writer.FlushAsync();
+                writer.Close();
+            }
+
             var results = new List<PlagiarismResult>();
             foreach (var group in groups)
             {
@@ -127,17 +143,6 @@ namespace Worker.Runners.CheckPlagiarism
 
             var root = Path.Combine(Options.Value.DataPath, "plagiarisms", plagiarism.Id.ToString());
             var log = Path.Combine(root, "log.txt");
-            if (!Directory.Exists(root))
-            {
-                Directory.CreateDirectory(root);
-                await using var writer = File.CreateText(log);
-                await writer.WriteLineAsync($"Plagiarism #{plagiarism.Id} for Problem #{plagiarism.ProblemId}\n" +
-                                            $"Date:   {DateTime.Now.ToUniversalTime():yyyy-MM-dd HH:mm:ss} UTC\n" +
-                                            $"Worker: {Options.Value.Name}\n");
-                writer.Close();
-                await writer.DisposeAsync();
-            }
-
             var results = Path.Combine(root, pathName);
             var sources = Path.Combine(root, pathName + "_sources");
             Directory.CreateDirectory(results);
@@ -154,6 +159,7 @@ namespace Worker.Runners.CheckPlagiarism
                     var fullPath = Path.Combine(sources, filename);
                     await using var stream = new FileStream(fullPath, FileMode.OpenOrCreate, FileAccess.Write);
                     await stream.WriteAsync(Convert.FromBase64String(submission.Program.Code));
+                    await stream.FlushAsync();
                     stream.Close();
                 }
 
@@ -184,8 +190,7 @@ namespace Worker.Runners.CheckPlagiarism
                 process.BeginErrorReadLine();
                 await process.WaitForExitAsync();
 
-                await using (var stream = new FileStream(log, FileMode.Append, FileAccess.Write))
-                await using (var writer = new StreamWriter(stream, Encoding.UTF8))
+                await using (var writer = new StreamWriter(log, true, Encoding.UTF8))
                 {
                     var group = "Group: " + groupName;
                     var len = (38 - group.Length) / 2;
@@ -201,10 +206,8 @@ namespace Worker.Runners.CheckPlagiarism
                         await writer.WriteLineAsync($"Stderr of process:\n" +
                                                     $"{string.Concat(stderr.ToString().Split('\n').Select(s => "    " + s + "\n"))}");
                     }
+                    await writer.FlushAsync();
                     writer.Close();
-                    stream.Close();
-                    await writer.DisposeAsync();
-                    await stream.DisposeAsync();
                 }
 
                 if (process.ExitCode != 0)
