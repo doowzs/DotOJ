@@ -21,7 +21,7 @@ namespace Worker.RabbitMQ
         {
             var message = new WorkerHeartbeatMessage
             {
-                Name = provider.GetRequiredService<IOptions<JudgingConfig>>().Value.Name,
+                Name = provider.GetRequiredService<IOptions<WorkerConfig>>().Value.Name,
                 Token = Guid.NewGuid().ToString()
             };
             _body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message));

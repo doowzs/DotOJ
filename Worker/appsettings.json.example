@@ -2,16 +2,16 @@
   "ConnectionStrings": {
     "MySqlConnection": "Server=mariadb;Uid=judge;Pwd=judge;Database=judge;"
   },
+  "Worker": {
+    "Name": "local",
+    "BoxId": "0",
+    "DataPath": "/var/www/judge-data"
+  },
   "RabbitMQ": {
     "HostName": "rabbitmq",
     "Port": 5672,
     "UserName": "worker-local",
     "Password": "worker-local"
-  },
-  "Judging": {
-    "Name": "local",
-    "BoxId": "0",
-    "DataPath": "/var/www/judge-data"
   },
   "Notification": {
     "DingTalk": {

@@ -3,7 +3,7 @@
 namespace Data.Configs
 {
     [NotMapped]
-    public class JudgingConfig
+    public class WorkerConfig
     {
         public string Name { get; set; }
         public string BoxId { get; set; }

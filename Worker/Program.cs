@@ -32,7 +32,7 @@ namespace Worker
                     );
 
                     services.AddOptions();
-                    services.Configure<JudgingConfig>(hostContext.Configuration.GetSection("Judging"));
+                    services.Configure<WorkerConfig>(hostContext.Configuration.GetSection("Worker"));
                     services.Configure<RabbitMqConfig>(hostContext.Configuration.GetSection("RabbitMQ"));
                     services.Configure<NotificationConfig>(hostContext.Configuration.GetSection("Notification"));
 

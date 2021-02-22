@@ -21,13 +21,13 @@ namespace Worker.RabbitMQ
     public sealed class JobRequestConsumer : RabbitMqQueueBase<JobRequestConsumer>
     {
         private readonly IServiceScopeFactory _factory;
-        private readonly IOptions<JudgingConfig> _options;
+        private readonly IOptions<WorkerConfig> _options;
         private readonly JobCompleteProducer _producer;
 
         public JobRequestConsumer(IServiceProvider provider) : base(provider)
         {
             _factory = provider.GetRequiredService<IServiceScopeFactory>();
-            _options = provider.GetRequiredService<IOptions<JudgingConfig>>();
+            _options = provider.GetRequiredService<IOptions<WorkerConfig>>();
             _producer = provider.GetRequiredService<JobCompleteProducer>();
         }
 

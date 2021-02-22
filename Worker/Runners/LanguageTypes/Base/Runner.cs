@@ -28,7 +28,7 @@ namespace Worker.Runners.LanguageTypes.Base
 
         protected string BoxId => _options.Value?.BoxId ?? "0";
 
-        private readonly IOptions<JudgingConfig> _options;
+        private readonly IOptions<WorkerConfig> _options;
         protected ILogger Logger;
         protected string Box;
         protected string Jail;
@@ -43,7 +43,7 @@ namespace Worker.Runners.LanguageTypes.Base
             Problem = problem;
             Submission = submission;
 
-            _options = provider.GetRequiredService<IOptions<JudgingConfig>>();
+            _options = provider.GetRequiredService<IOptions<WorkerConfig>>();
             Logger = provider.GetRequiredService<ILogger<Runner>>();
         }
 

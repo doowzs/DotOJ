@@ -15,13 +15,13 @@ namespace Worker
     {
         private readonly IServiceScopeFactory _factory;
         private readonly ILogger<Worker> _logger;
-        private readonly IOptions<JudgingConfig> _options;
+        private readonly IOptions<WorkerConfig> _options;
 
         public Worker(IServiceProvider provider)
         {
             _factory = provider.GetRequiredService<IServiceScopeFactory>();
             _logger = provider.GetRequiredService<ILogger<Worker>>();
-            _options = provider.GetRequiredService<IOptions<JudgingConfig>>();
+            _options = provider.GetRequiredService<IOptions<WorkerConfig>>();
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
