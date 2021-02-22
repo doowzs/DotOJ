@@ -2,7 +2,7 @@
 
 Also known as: .OJ, NTOJ, OJ Core, etc.
 
-Yet another online judge built on .NET Core tech stack, with ASP.NET, Angular and AntDesign.
+Yet another online judge built on .NET Core tech stack, with ASP.NET and Angular.
 
 ## Dependencies
 
