@@ -297,6 +297,20 @@ namespace WebApp
                     await userManager.AddToRoleAsync(adminUser, ApplicationRoles.Administrator);
                 }
             }
+            else
+            {
+                var adminUser = await userManager.FindByNameAsync(Configuration["Application:AdminUser:ContestantId"]);
+                var password = Configuration["Application:AdminUser:ContestantId"];
+                if (!await userManager.CheckPasswordAsync(adminUser, password))
+                {
+                    var token = await userManager.GeneratePasswordResetTokenAsync(adminUser);
+                    var result = await userManager.ResetPasswordAsync(adminUser, token, password);
+                    if (!result.Succeeded)
+                    {
+                        throw new Exception("Admin password is not valid.");
+                    }
+                }
+            }
 
             logger.LogInformation("Database configured successfully");
         }
