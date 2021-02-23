@@ -70,8 +70,6 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
       .subscribe(() => {
         if (this.hasPendingSubmissions()) {
           this.updatePendingSubmissions();
-        } else {
-          this.averageTime = null;
         }
       });
     this.submissionService.newSubmission
@@ -159,6 +157,9 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
             submission.hasMessage = updated.hasMessage;
             submission.viewable = updated.viewable;
           }
+        }
+        if (!this.hasPendingSubmissions()) {
+          this.averageTime = null;
         }
       });
   }
