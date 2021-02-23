@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Linq;
 using System.Threading.Tasks;
 using Data;
 using Data.DTOs;
+using Data.Generics;
 using Data.Models;
 using Data.RabbitMQ;
 using Microsoft.EntityFrameworkCore;
@@ -16,9 +16,7 @@ namespace WebApp.Services.Singleton
     {
         private readonly IServiceScopeFactory _factory;
         private readonly ILogger<ProblemStatisticsService> _logger;
-
-        private readonly ConcurrentDictionary<int, ProblemStatistics>
-            _dictionary = new(); // TODO: replace with LRU dict
+        private readonly LruCache<int, ProblemStatistics> _cache = new(1000, null);
 
         public ProblemStatisticsService(IServiceProvider provider)
         {
@@ -56,13 +54,13 @@ namespace WebApp.Services.Singleton
                 ByVerdict = byVerdict,
                 UpdatedAt = DateTime.Now.ToUniversalTime()
             };
-            _ = _dictionary.TryAdd(problemId, statistics);
+            _ = _cache.TryAdd(problemId, statistics);
             return statistics;
         }
 
         public async Task<ProblemStatistics> GetStatisticsAsync(int problemId)
         {
-            var contains = _dictionary.TryGetValue(problemId, out var statistics);
+            var contains = _cache.TryGetValue(problemId, out var statistics);
             if (contains)
             {
                 return statistics;
@@ -76,7 +74,7 @@ namespace WebApp.Services.Singleton
         public async Task UpdateStatisticsAsync(JobCompleteMessage message)
         {
             if (message.JobType != JobType.JudgeSubmission) return;
-            
+
             using var scope = _factory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             var submission = await context.Submissions.FindAsync(message.TargetId);
@@ -95,7 +93,7 @@ namespace WebApp.Services.Singleton
             }
 
             var problem = await context.Problems.FindAsync(submission.ProblemId);
-            var contains = _dictionary.TryGetValue(problem.Id, out var statistics);
+            var contains = _cache.TryGetValue(problem.Id, out var statistics);
             if (contains)
             {
                 var attempted = await context.Submissions
@@ -130,9 +128,9 @@ namespace WebApp.Services.Singleton
 
         public Task InvalidStatisticsAsync(int problemId)
         {
-            if (_dictionary.ContainsKey(problemId))
+            if (_cache.ContainsKey(problemId))
             {
-                _ = _dictionary.TryRemove(problemId, out _);
+                _ = _cache.TryRemove(problemId, out _);
             }
 
             return Task.CompletedTask;
