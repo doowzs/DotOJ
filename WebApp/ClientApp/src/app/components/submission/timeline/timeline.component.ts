@@ -29,6 +29,7 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
   faClock = faClock;
 
   @Input() public problemId: number;
+  @Input() public contestantId: string = null;
 
   public contestId: number;
   public contest: ContestViewDto;
@@ -107,17 +108,25 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
   }
 
   private loadSubmissions(problemId: number): void {
-    this.userId.pipe(take(1)).subscribe(userId => {
-      this.submissionService.getPaginatedList(null, userId, null, problemId, null, 15, this.pageIndex)
-        .subscribe(list => {
-          this.totalItems = list.totalItems;
-          this.totalPages = list.totalPages;
-          this.submissions = list.items;
-          if (this.hasPendingSubmissions()) {
-            this.loadAverageTime();
-          }
-        });
-    });
+    if (!!this.contestantId) {
+      this.loadSubmissionsInner(problemId, null, this.contestantId);
+    } else {
+      this.userId.pipe(take(1)).subscribe(userId => {
+        this.loadSubmissionsInner(problemId, userId, null);
+      });
+    }
+  }
+
+  private loadSubmissionsInner(problemId: number, userId: string, contestantId: string) {
+    this.submissionService.getPaginatedList(null, userId, contestantId, problemId, null, 15, this.pageIndex)
+      .subscribe(list => {
+        this.totalItems = list.totalItems;
+        this.totalPages = list.totalPages;
+        this.submissions = list.items;
+        if (this.hasPendingSubmissions()) {
+          this.loadAverageTime();
+        }
+      });
   }
 
   public loadAverageTime(): void {

@@ -1,3 +1,7 @@
 ﻿th, td {
   text-align: center !important;
 }
+
+.tr-not-hover:hover {
+  background-color: unset !important;
+}

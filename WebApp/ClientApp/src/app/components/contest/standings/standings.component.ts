@@ -11,7 +11,7 @@ import { ProblemInfoDto } from '../../../../interfaces/problem.interfaces';
 import { AuthorizeService } from '../../../../api-authorization/authorize.service';
 import { ContestService } from '../../../services/contest.service';
 import { RegistrationInfoDto } from '../../../../interfaces/registration.interfaces';
-import { faDownload, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
+import { faDownload, faSyncAlt, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { take } from 'rxjs/operators';
 
 @Component({
@@ -22,12 +22,15 @@ import { take } from 'rxjs/operators';
 export class ContestStandingsComponent implements OnInit {
   faDownload = faDownload;
   faSyncAlt = faSyncAlt;
+  faTimes = faTimes;
 
   public loading = true;
   public userId: string;
   public contestId: number;
   public contest: ContestViewDto;
   public registrations: RegistrationInfoDto[];
+  public selectedRegistration: RegistrationInfoDto = null;
+  public selectedProblem: ProblemInfoDto = null;
 
   constructor(
     private title: Title,
@@ -127,19 +130,31 @@ export class ContestStandingsComponent implements OnInit {
     return this.contest.problems.reduce((total, problem) => total + this.getProblemPenalty(registration, problem), 0);
   }
 
+  public selectRegistrationAndProblem(registration: RegistrationInfoDto, problemId: number)
+  {
+    const problem = this.contest.problems.find(p => p.id === problemId);
+    if (this.selectedRegistration === registration && this.selectedProblem === problem) {
+      this.selectedRegistration = null;
+      this.selectedProblem = null;
+    } else {
+      this.selectedRegistration = registration;
+      this.selectedProblem = problem;
+    }
+  }
+
   public exportStandings() {
     const workbook = new excel.Workbook();
     const sheet = workbook.addWorksheet(this.contest.title);
     sheet.columns = ([
-      { header: 'Rank', key: 'rank' },
-      { header: 'Contestant ID', key: 'id' },
-      { header: 'Contestant Name', key: 'name' },
+      {header: 'Rank', key: 'rank'},
+      {header: 'Contestant ID', key: 'id'},
+      {header: 'Contestant Name', key: 'name'},
     ] as Array<Partial<Column>>).concat(this.contest.problems.map(p => {
-      return { header: p.label + ' - ' + p.title, key: p.label };
+      return {header: p.label + ' - ' + p.title, key: p.label};
     })).concat([
-      { header: 'Solved', key: 'solved' },
-      { header: 'Score', key: 'score' },
-      { header: 'Penalties', key: 'penalties' }
+      {header: 'Solved', key: 'solved'},
+      {header: 'Score', key: 'score'},
+      {header: 'Penalties', key: 'penalties'}
     ]);
     for (const registration of this.registrations.slice(1)) {
       const row = {

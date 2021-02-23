@@ -32,21 +32,46 @@
     </tr>
     </thead>
     <tbody *ngIf="contest && registrations">
-    <tr *ngFor="let registration of registrations">
-      <td style="vertical-align: middle;">{{ registration.rank === -1 ? '-' : registration.rank.toString() }}</td>
-      <td style="vertical-align: middle;">
+    <ng-container *ngFor="let registration of registrations; index as index">
+      <tr>
+        <td style="vertical-align: middle;">{{ registration.rank === -1 ? '-' : registration.rank.toString() }}</td>
+        <td style="vertical-align: middle;">
         <span [ngbTooltip]="registration.contestantId">
           {{ registration.contestantName + (registration.isParticipant ? '' : '*') }}
         </span>
-      </td>
-      <td *ngFor="let problem of contest.problems">
-        <ng-container *ngIf="getProblemItem(registration, problem) as problemItem">
-          <span>{{ problemItem[0] }}</span><br/><span>{{ problemItem[1] }}</span>
-        </ng-container>
-      </td>
-      <td style="vertical-align: middle;">{{ registration.score }}</td>
-      <td style="vertical-align: middle;">{{ registration.penalties }}</td>
-    </tr>
+        </td>
+        <td *ngFor="let problem of contest.problems">
+          <ng-container *ngIf="getProblemItem(registration, problem) as problemItem">
+            <span>{{ problemItem[0] }}</span><br/>
+            <a href="javascript:void(0);" (click)="selectRegistrationAndProblem(registration, problem.id)">
+              {{ problemItem[1] }}
+            </a>
+          </ng-container>
+        </td>
+        <td style="vertical-align: middle;">{{ registration.score }}</td>
+        <td style="vertical-align: middle;">{{ registration.penalties }}</td>
+      </tr>
+      <tr class="tr-not-hover" *ngIf="selectedRegistration === registration && !!selectedProblem">
+        <td [colSpan]="contest.problems.length + 4">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="text-left">
+                {{ selectedRegistration.contestantName }}'s submissions to Problem {{ selectedProblem.label }}
+                <small class="float-right">
+                  <a href="javascript:void(0);" class="text-secondary" (click)="selectedRegistration = null">
+                    <fa-icon [icon]="faTimes"></fa-icon>
+                    Close
+                  </a>
+                </small>
+              </h5>
+              <app-submission-timeline [problemId]="selectedProblem.id"
+                                       [contestantId]="selectedRegistration.contestantId">
+              </app-submission-timeline>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </ng-container>
     </tbody>
   </table>
 </div>
