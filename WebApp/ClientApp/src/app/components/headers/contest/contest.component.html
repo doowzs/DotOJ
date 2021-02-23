@@ -2,7 +2,8 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
       <span class="navbar-brand ml-0">
-        <a routerLink="/contests" class="d-none d-lg-inline text-dark">
+        <a class="d-none d-lg-inline text-dark"
+           [routerLink]="atContestRoot ? ['/contests'] : ['/contest', contestId]">
           <fa-icon [icon]="faArrowLeft"></fa-icon>
         </a>
         {{ contest == null ? "Loading..." : contest.title }}

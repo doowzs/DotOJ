@@ -45,6 +45,7 @@ export class ContestHeaderComponent implements OnInit, OnDestroy {
   public ended = false;
   public progress = 0;
   public collapse = true;
+  public atContestRoot = false;
 
   private complete$ = new Subject();
   private destroy$ = new Subject();
@@ -71,6 +72,11 @@ export class ContestHeaderComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.route.url
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(url => {
+        this.atContestRoot = window.location.href.indexOf('/contest/' + this.contestId + '/') < 0;
+      });
     this.service.getSingle(this.contestId)
       .subscribe(contest => {
         this.contest = contest;
