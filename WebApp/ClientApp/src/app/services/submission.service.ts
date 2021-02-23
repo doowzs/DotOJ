@@ -47,7 +47,7 @@ export class SubmissionService {
       params = params.set('pageIndex', pageIndex.toString());
     }
 
-    return this.http.get<PaginatedList<SubmissionInfoDto>>('/submission', { params: params })
+    return this.http.get<PaginatedList<SubmissionInfoDto>>('/submission', {params: params})
       .pipe(map(list => {
         for (let i = 0; i < list.items.length; ++i) {
           list.items[i] = mapSubmissionInfoDtoFields(list.items[i]);
@@ -65,7 +65,7 @@ export class SubmissionService {
     for (let i = 0; i < submissionIds.length; ++i) {
       params = params.append('id', submissionIds[i].toString());
     }
-    return this.http.get<SubmissionInfoDto[]>('/submission/batch', { params: params })
+    return this.http.get<SubmissionInfoDto[]>('/submission/batch', {params: params})
       .pipe(map(list => {
         for (let i = 0; i < list.length; ++i) {
           list[i] = mapSubmissionInfoDtoFields(list[i]);

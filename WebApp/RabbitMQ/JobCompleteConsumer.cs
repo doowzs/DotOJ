@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using Data.RabbitMQ;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,14 +11,11 @@ namespace WebApp.RabbitMQ
 {
     public class JobCompleteConsumer : RabbitMqQueueBase<JobCompleteConsumer>
     {
-        private readonly ProblemStatisticsService _problemStatisticsService;
-        private readonly WorkerStatisticsService _workerStatisticsService;
-        private static readonly Dictionary<int, DateTime> Dictionary = new();
+        private readonly IServiceScopeFactory _factory;
 
         public JobCompleteConsumer(IServiceProvider provider) : base(provider)
         {
-            _problemStatisticsService = provider.GetRequiredService<ProblemStatisticsService>();
-            _workerStatisticsService = provider.GetRequiredService<WorkerStatisticsService>();
+            _factory = provider.GetRequiredService<IServiceScopeFactory>();
         }
 
         public override void Start(IConnection connection)
@@ -33,17 +29,21 @@ namespace WebApp.RabbitMQ
             {
                 var serialized = Encoding.UTF8.GetString(ea.Body.ToArray());
                 var message = JsonConvert.DeserializeObject<JobCompleteMessage>(serialized);
-                
+
+                using var scope = _factory.CreateScope();
+                var problemStatisticsService = scope.ServiceProvider.GetRequiredService<ProblemStatisticsService>();
+                var queueStatisticsService = scope.ServiceProvider.GetRequiredService<QueueStatisticsService>();
                 switch (message.JobType)
                 {
                     case JobType.JudgeSubmission:
-                        await _problemStatisticsService.UpdateStatisticsAsync(message);
+                        await problemStatisticsService.UpdateStatisticsAsync(message);
                         break;
                     case JobType.CheckPlagiarism:
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
+                await queueStatisticsService.RemoveJobRequestAsync(message);
 
                 Channel.BasicAck(ea.DeliveryTag, true);
             };

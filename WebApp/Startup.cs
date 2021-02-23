@@ -136,6 +136,7 @@ namespace WebApp
 
             services.AddSingleton<ProblemStatisticsService>();
             services.AddSingleton<WorkerStatisticsService>();
+            services.AddSingleton<QueueStatisticsService>();
 
             // TODO: Broadcasters can be made singleton.
             services.AddScoped<IDingTalkNotification, DingTalkNotification>();

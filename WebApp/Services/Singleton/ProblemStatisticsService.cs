@@ -16,7 +16,7 @@ namespace WebApp.Services.Singleton
     {
         private readonly IServiceScopeFactory _factory;
         private readonly ILogger<ProblemStatisticsService> _logger;
-        private readonly LruCache<int, ProblemStatistics> _cache = new(1000, null);
+        private readonly LruCache<int, ProblemStatistics> _cache = new(100000, null);
 
         public ProblemStatisticsService(IServiceProvider provider)
         {

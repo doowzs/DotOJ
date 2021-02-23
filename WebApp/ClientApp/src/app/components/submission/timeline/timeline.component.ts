@@ -10,6 +10,7 @@ import { SubmissionDetailComponent } from '../detail/detail.component';
 import { PaginatedList } from '../../../../interfaces/pagination.interfaces';
 import { SubmissionInfoDto } from '../../../../interfaces/submission.interfaces';
 import { VerdictStage } from '../../../../consts/verdicts.consts';
+import { ApplicationService } from "../../../services/application.service";
 import { SubmissionService } from '../../../services/submission.service';
 import { AuthorizeService } from '../../../../api-authorization/authorize.service';
 import { ProblemViewDto } from '../../../../interfaces/problem.interfaces';
@@ -40,11 +41,13 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
   public totalPages: number = 1;
   public list: PaginatedList<SubmissionInfoDto>;
   public submissions: SubmissionInfoDto[] = [];
+  public averageTime: number = null;
   private destroy$ = new Subject();
 
   constructor(
     private route: ActivatedRoute,
     private auth: AuthorizeService,
+    private applicationService: ApplicationService,
     private submissionService: SubmissionService,
     private problemService: ProblemService,
     private contestService: ContestService,
@@ -65,11 +68,10 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
     interval(2000)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
-        if (this.submissions && this.submissions.filter(s => {
-          return s.verdictInfo.stage === VerdictStage.RUNNING ||
-            (s.verdictInfo.stage === VerdictStage.REJECTED && s.score == null);
-        }).length > 0) {
+        if (this.hasPendingSubmissions()) {
           this.updatePendingSubmissions();
+        } else {
+          this.averageTime = null;
         }
       });
     this.submissionService.newSubmission
@@ -81,6 +83,7 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
           this.submissions.pop();
           this.totalPages = (this.totalItems + 14) / 15;
         }
+        this.loadAverageTime();
       });
   }
 
@@ -90,6 +93,7 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
       this.totalItems = 0;
       this.totalPages = 1;
       this.submissions = null;
+      this.averageTime = null;
       this.loadSubmissions(changes.problemId.currentValue);
     }
   }
@@ -111,8 +115,26 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
           this.totalItems = list.totalItems;
           this.totalPages = list.totalPages;
           this.submissions = list.items;
+          if (this.hasPendingSubmissions()) {
+            this.loadAverageTime();
+          }
         });
     });
+  }
+
+  public loadAverageTime(): void {
+    this.applicationService.getAverageQueueWaitingTime()
+      .subscribe(averageTime => {
+        console.log(averageTime);
+        this.averageTime = averageTime
+      });
+  }
+
+  private hasPendingSubmissions(): boolean {
+    return this.submissions && this.submissions.filter(s => {
+      return s.verdictInfo.stage === VerdictStage.RUNNING ||
+        (s.verdictInfo.stage === VerdictStage.REJECTED && s.score == null);
+    }).length > 0;
   }
 
   private updatePendingSubmissions(): void {

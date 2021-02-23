@@ -16,20 +16,26 @@ namespace WebApp.Services.Singleton
 {
     public class WorkerStatisticsService
     {
-        private readonly ILogger<WorkerStatisticsService> _logger;
         private readonly IServiceScopeFactory _factory;
+        private readonly ILogger<WorkerStatisticsService> _logger;
         private readonly JobRequestProducer _producer;
-        private readonly ProblemStatisticsService _statisticsService;
 
-        private static readonly Dictionary<string, (string Token, DateTime TimeStamp)> WorkerDictionary = new();
-        // private static readonly Dictionary<int, DateTime> SubmissionTimestampDictionary = new();
+        private readonly ReaderWriterLockSlim _lock = new();
+        private readonly Dictionary<string, (string Token, DateTime TimeStamp)> _dictionary = new();
 
         public WorkerStatisticsService(IServiceProvider provider)
         {
-            _logger = provider.GetRequiredService<ILogger<WorkerStatisticsService>>();
             _factory = provider.GetRequiredService<IServiceScopeFactory>();
+            _logger = provider.GetRequiredService<ILogger<WorkerStatisticsService>>();
             _producer = provider.GetRequiredService<JobRequestProducer>();
-            _statisticsService = provider.GetRequiredService<ProblemStatisticsService>();
+        }
+
+        public Task<int> GetAvailableWorkerCountAsync()
+        {
+            _lock.EnterReadLock();
+            var result = _dictionary.Count;
+            _lock.ExitReadLock();
+            return Task.FromResult(result);
         }
 
         private async Task HandleBrokenWorkerAsync(string name)
@@ -38,6 +44,7 @@ namespace WebApp.Services.Singleton
 
             using var scope = _factory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var problemStatisticsService = scope.ServiceProvider.GetRequiredService<ProblemStatisticsService>();
 
             #region Check for broken submission jobs
 
@@ -59,7 +66,7 @@ namespace WebApp.Services.Singleton
                 if (await _producer.SendAsync(JobType.JudgeSubmission, submission.Id, submission.RequestVersion + 1))
                 {
                     submission.Verdict = Verdict.InQueue;
-                    await _statisticsService.InvalidStatisticsAsync(submission.ProblemId);
+                    await problemStatisticsService.InvalidStatisticsAsync(submission.ProblemId);
                 }
                 else
                 {
@@ -92,18 +99,21 @@ namespace WebApp.Services.Singleton
         {
             using var scope = _factory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            var now = DateTime.Now.ToUniversalTime();
+            var problemStatisticsService = scope.ServiceProvider.GetRequiredService<ProblemStatisticsService>();
 
             #region Check for broken workers
 
-            var workers = WorkerDictionary
+            _lock.EnterWriteLock();
+            var now = DateTime.Now.ToUniversalTime();
+            var workers = _dictionary
                 .Where(p => p.Value.TimeStamp < now.AddMinutes(-2))
                 .Select(p => p.Key).ToList();
             foreach (var worker in workers)
             {
                 await HandleBrokenWorkerAsync(worker);
-                _ = WorkerDictionary.Remove(worker);
+                _ = _dictionary.Remove(worker);
             }
+            _lock.ExitWriteLock();
 
             #endregion
 
@@ -123,7 +133,7 @@ namespace WebApp.Services.Singleton
                     {
                         submission.Verdict = Verdict.InQueue;
                     }
-                    await _statisticsService.InvalidStatisticsAsync(submission.ProblemId);
+                    await problemStatisticsService.InvalidStatisticsAsync(submission.ProblemId);
                 }
                 else
                 {
@@ -154,22 +164,24 @@ namespace WebApp.Services.Singleton
 
         public async Task HandleWorkerHeartbeatAsync(WorkerHeartbeatMessage message)
         {
+            _lock.EnterWriteLock();
             var now = DateTime.Now.ToUniversalTime();
-            if (WorkerDictionary.ContainsKey(message.Name))
+            if (_dictionary.ContainsKey(message.Name))
             {
-                var (token, timestamp) = WorkerDictionary[message.Name];
+                var (token, timestamp) = _dictionary[message.Name];
                 if (token != message.Token)
                 {
                     await HandleBrokenWorkerAsync(message.Name);
                     token = message.Token;
                 }
 
-                WorkerDictionary[message.Name] = (token, now);
+                _dictionary[message.Name] = (token, now);
             }
             else
             {
-                WorkerDictionary.Add(message.Name, (message.Token, now));
+                _dictionary.Add(message.Name, (message.Token, now));
             }
+            _lock.ExitWriteLock();
         }
     }
 }

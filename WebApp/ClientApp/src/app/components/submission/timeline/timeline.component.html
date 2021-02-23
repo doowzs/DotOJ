@@ -17,6 +17,16 @@
   </div>
   <ng-template #submissionsTable>
     <div class="my-3">
+      <div class="alert alert-info" *ngIf="this.averageTime != null && this.averageTime >= 0">
+        <fa-icon [icon]="faClock"></fa-icon>Average waiting time:
+        <span *ngIf="this.averageTime >= 60; else lessThanAMinute">
+          {{ (this.averageTime - (this.averageTime % 60)) / 60 + 1 }} minutes
+        </span>
+        <ng-template #lessThanAMinute>
+          less than one minute
+        </ng-template>
+        <a class="float-right" (click)="loadAverageTime()">Refresh</a>
+      </div>
       <table class="table table-sm table-hover">
         <thead>
         <tr>
