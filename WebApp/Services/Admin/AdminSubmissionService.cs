@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using Data;
 using Data.DTOs;
 using Data.Generics;
 using Data.Models;
@@ -32,13 +33,9 @@ namespace WebApp.Services.Admin
     public class AdminSubmissionService : LoggableService<AdminSubmissionService>, IAdminSubmissionService
     {
         private const int PageSize = 50;
-        private readonly JobRequestProducer _producer;
-        private readonly ProblemStatisticsService _statisticsService;
 
         public AdminSubmissionService(IServiceProvider provider) : base(provider)
         {
-            _producer = provider.GetRequiredService<JobRequestProducer>();
-            _statisticsService = provider.GetRequiredService<ProblemStatisticsService>();
         }
 
         private async Task EnsureSubmissionExists(int id)
@@ -143,14 +140,19 @@ namespace WebApp.Services.Admin
 
             _ = Task.Run(async () =>
             {
-                if (await _producer.SendAsync(JobType.JudgeSubmission, submission.Id, submission.RequestVersion + 1))
+                using var scope = Provider.CreateScope();
+                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                var producer = scope.ServiceProvider.GetRequiredService<JobRequestProducer>();
+                var service = scope.ServiceProvider.GetRequiredService<ProblemStatisticsService>();
+                var reloadedSubmission = await context.Submissions.FindAsync(submission.Id);
+                if (await producer.SendAsync(JobType.JudgeSubmission,
+                    reloadedSubmission.Id, reloadedSubmission.RequestVersion + 1))
                 {
-                    submission.Verdict = Verdict.InQueue;
-                    await _statisticsService.InvalidStatisticsAsync(submission.ProblemId);
+                    reloadedSubmission.Verdict = Verdict.InQueue;
+                    context.Update(reloadedSubmission);
+                    await context.SaveChangesAsync();
+                    await service.InvalidStatisticsAsync(submission.ProblemId);
                 }
-
-                Context.Update(submission);
-                await Context.SaveChangesAsync();
             });
 
             await Context.Entry(submission).Reference(s => s.User).LoadAsync();
@@ -246,17 +248,22 @@ namespace WebApp.Services.Admin
 
             _ = Task.Run(async () =>
             {
-                foreach (var submission in submissions)
+                using var scope = Provider.CreateScope();
+                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                var producer = scope.ServiceProvider.GetRequiredService<JobRequestProducer>();
+                var submissionIds = submissions.Select(s => s.Id).ToList();
+                var reloadedSubmissions = await context.Submissions
+                    .Where(s => submissionIds.Contains(s.Id)).ToListAsync();
+                foreach (var reloadedSubmission in reloadedSubmissions)
                 {
-                    if (await _producer.SendAsync(JobType.JudgeSubmission,
-                        submission.Id, submission.RequestVersion + 1))
+                    if (await producer.SendAsync(JobType.JudgeSubmission,
+                        reloadedSubmission.Id, reloadedSubmission.RequestVersion + 1))
                     {
-                        submission.Verdict = Verdict.InQueue;
+                        reloadedSubmission.Verdict = Verdict.InQueue;
                     }
                 }
-
-                Context.UpdateRange(submissions);
-                await Context.SaveChangesAsync();
+                context.UpdateRange(reloadedSubmissions);
+                await context.SaveChangesAsync();
             });
 
             await LogInformation($"RejudgeSubmissions ContestId={contestId} " +

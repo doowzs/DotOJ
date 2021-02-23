@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Data;
 using Data.DTOs;
 using Data.Generics;
 using Data.RabbitMQ;
@@ -30,11 +31,9 @@ namespace WebApp.Services
     public class SubmissionService : LoggableService<SubmissionService>, ISubmissionService
     {
         private const int PageSize = 50;
-        private readonly JobRequestProducer _producer;
 
         public SubmissionService(IServiceProvider provider) : base(provider)
         {
-            _producer = provider.GetRequiredService<JobRequestProducer>();
         }
 
         private async Task<Boolean> IsSubmissionViewableAsync(Submission submission)
@@ -264,13 +263,16 @@ namespace WebApp.Services
 
             _ = Task.Run(async () =>
             {
-                if (await _producer.SendAsync(JobType.JudgeSubmission, submission.Id, 1))
+                using var scope = Provider.CreateScope();
+                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                var producer = scope.ServiceProvider.GetRequiredService<JobRequestProducer>();
+                var reloadedSubmission = await context.Submissions.FindAsync(submission.Id);
+                if (await producer.SendAsync(JobType.JudgeSubmission, reloadedSubmission.Id, 1))
                 {
-                    submission.Verdict = Verdict.InQueue;
+                    reloadedSubmission.Verdict = Verdict.InQueue;
+                    context.Update(reloadedSubmission);
+                    await context.SaveChangesAsync();
                 }
-
-                Context.Update(submission);
-                await Context.SaveChangesAsync();
             });
 
             await Context.Entry(submission).Reference(s => s.User).LoadAsync();
