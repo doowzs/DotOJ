@@ -10,6 +10,7 @@ namespace Data.Configs
         public string Title { get; set; }
         public string Author { get; set; }
         public string DataPath { get; set; }
+        public readonly string Version = "latest"; // injected in Dockerfile.webapp
     }
 
     [NotMapped]
@@ -24,7 +25,7 @@ namespace Data.Configs
         {
             Title = config.Title;
             Author = config.Author;
-            Version = "latest"; // injected in Dockerfile.webapp
+            Version = config.Version;
             ServerTime = DateTime.Now.ToUniversalTime();
         }
     }
