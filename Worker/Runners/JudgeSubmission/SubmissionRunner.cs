@@ -142,11 +142,11 @@ namespace Worker.Runners.JudgeSubmission
                 case ContestMode.Practice:
                     runner = new PracticeRunner(contest, problem, submission, Provider);
                     break;
-                case ContestMode.UntilFail:
-                    runner = new UntilFailRunner(contest, problem, submission, Provider);
-                    break;
                 case ContestMode.OneShot:
                     runner = new OneShotRunner(contest, problem, submission, Provider);
+                    break;
+                case ContestMode.UntilFail:
+                    runner = new UntilFailRunner(contest, problem, submission, Provider);
                     break;
                 case ContestMode.SampleOnly:
                     runner = new SampleOnlyRunner(contest, problem, submission, Provider);
