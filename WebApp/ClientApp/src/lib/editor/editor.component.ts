@@ -145,6 +145,7 @@ export class EditorComponent implements AfterViewInit, AfterViewChecked, OnChang
 
   public submitCode() {
     if (this.disabled || !this.language || !this.editor.getValue()) return;
+    this.saveCode(this.problemId);
     this.submit.next({
       language: this.language.code,
       code: Base64.encode(this.editor.getValue())
