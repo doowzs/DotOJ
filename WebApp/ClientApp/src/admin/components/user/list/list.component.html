@@ -4,7 +4,14 @@
     <li class="breadcrumb-item active" aria-current="page">Users</li>
   </ol>
 </nav>
-<h2>List Users</h2>
+<h2>
+  List Users
+  <span class="float-right">
+    <a routerLink="/admin/user/import" class="btn btn-primary">
+      <fa-icon [icon]="faPlus"></fa-icon><span>Import Users</span>
+    </a>
+  </span>
+</h2>
 <table class="table table-hover">
   <thead>
   <tr>

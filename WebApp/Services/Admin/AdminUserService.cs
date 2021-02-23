@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Data.DTOs;
 using Data.Generics;
 using Data.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using WebApp.Exceptions;
 
 namespace WebApp.Services.Admin
@@ -16,6 +19,7 @@ namespace WebApp.Services.Admin
         public Task<PaginatedList<ApplicationUserInfoDto>> GetPaginatedUserInfosAsync(int? pageIndex);
         public Task<ApplicationUserEditDto> GetUserEditAsync(string id);
         public Task<ApplicationUserEditDto> UpdateUserAsync(string id, ApplicationUserEditDto dto);
+        public Task<string> ImportUsersAsync(string input);
         public Task DeleteUserAsync(string id);
     }
 
@@ -122,6 +126,44 @@ namespace WebApp.Services.Admin
             await LogInformation($"UpdateUser Id={user.Id} ContestantId={user.ContestantId} " +
                                  $"ContestantName={user.ContestantName} Roles={roles}");
             return new ApplicationUserEditDto(user, await Manager.GetRolesAsync(user));
+        }
+
+        public async Task<string> ImportUsersAsync(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+            {
+                throw new BadHttpRequestException("Invalid input string.");
+            }
+            
+            var results = new StringBuilder("Id,ContestantId,ContestantName,Email,Password\n");
+            var lines = input.Split('\n');
+            foreach (var line in lines)
+            {
+                var parts = line.Split(',');
+                if (parts.Length >= 3)
+                {
+                    var user = new ApplicationUser
+                    {
+                        UserName = parts[0],
+                        ContestantId = parts[0],
+                        ContestantName = parts[1],
+                        Email = parts[2]
+                    };
+                    var password = parts.Length >= 4 ? parts[3] : parts[0];
+                    var result = await Manager.CreateAsync(user, password);
+                    if (result.Succeeded)
+                    {
+                        Logger.LogInformation($"Admin import account Id={user.Id} ContestantId={user.ContestantId}.");
+                        results.AppendLine(
+                            $"{user.Id},{user.ContestantId},{user.ContestantName},{user.Email},{password}");
+                    }
+                    else
+                    {
+                        results.AppendLine($"null,{string.Join(',', result.Errors.Select(e => e.Description))}");
+                    }
+                }
+            }
+            return results.ToString();
         }
 
         public async Task DeleteUserAsync(string id)

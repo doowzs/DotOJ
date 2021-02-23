@@ -25,6 +25,7 @@ import { AdminBulletinEditorComponent } from './components/bulletin/editor/edito
 import { AdminUserListComponent } from './components/user/list/list.component';
 import { AdminUserFormComponent } from './components/user/form/form.component';
 import { AdminUserEditorComponent } from './components/user/editor/editor.component';
+import { AdminUserImportComponent } from "./components/user/import/import.component";
 import { AdminContestListComponent } from './components/contest/list/list.component';
 import { AdminContestViewComponent } from './components/contest/view/view.component';
 import { AdminContestFormComponent } from './components/contest/form/form.component';
@@ -76,6 +77,7 @@ import { VerdictModule } from '../lib/verdict/verdict.module';
             data: { roles: ['Administrator', 'UserManager'] },
             children: [
               { path: '', pathMatch: 'full', component: AdminUserListComponent },
+              { path: 'import', component: AdminUserImportComponent },
               { path: ':userId', component: AdminUserEditorComponent }
             ]
           },
@@ -147,6 +149,7 @@ import { VerdictModule } from '../lib/verdict/verdict.module';
     AdminUserListComponent,
     AdminUserFormComponent,
     AdminUserEditorComponent,
+    AdminUserImportComponent,
     AdminContestListComponent,
     AdminContestViewComponent,
     AdminContestFormComponent,

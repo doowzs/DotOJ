@@ -58,6 +58,9 @@
   <ItemGroup>
     <None Include="appsettings.json" />
   </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\src\admin\components\user\import\import.component.ts" />
+  </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
     <!-- Ensure Node.js is installed -->

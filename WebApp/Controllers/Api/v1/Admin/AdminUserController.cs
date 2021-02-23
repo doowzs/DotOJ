@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Net.Mime;
+using System.Text;
 using System.Threading.Tasks;
 using Data.DTOs;
 using Data.Generics;
@@ -68,6 +70,23 @@ namespace WebApp.Controllers.Api.v1.Admin
                 return NotFound(e.Message);
             }
             catch (ValidationException e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [HttpPost("import")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<string>> ImportUsers()
+        {
+            try
+            {
+                using var reader = new StreamReader(Request.Body, Encoding.UTF8);
+                return Ok(await _service.ImportUsersAsync(await reader.ReadToEndAsync()));
+            }
+            catch (BadHttpRequestException e)
             {
                 return BadRequest(e.Message);
             }

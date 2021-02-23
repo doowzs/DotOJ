@@ -1,0 +1,25 @@
+﻿<h2>Import Users</h2>
+<div class="my-3 alert alert-info">
+  <p>Usage: Each line contains four parts separated by commas, represents a new user to import.</p>
+  <ol>
+    <li>Contestant ID (string)</li>
+    <li>Contestant Name (string)</li>
+    <li>Email (email)</li>
+    <li>Password (string, optional)</li>
+  </ol>
+  <p>Examples:</p>
+  <ul>
+    <li><code>171860001,ZhangSan,171860001@smail.nju.edu.cn</code> create a user with contestant ID as password.</li>
+    <li><code>171860001,ZhangSan,171860001@smail.nju.edu.cn,password</code> create a user with specified password.</li>
+  </ul>
+</div>
+<div>
+  <textarea class="form-control" [(ngModel)]="input" rows="15"
+            placeholder="171860001,ZhangSan,171860001@smail.nju.edu.cn,171860001
+171860002,LiSi,171860002@smail.nju.edu.cn,password"></textarea>
+  <button class="btn btn-primary my-3 w-100" (click)="importUsers()">Submit</button>
+</div>
+<div *ngIf="!!result">
+  <h3>Results</h3>
+  <textarea class="form-control" [(ngModel)]="result" rows="15" readonly></textarea>
+</div>

@@ -25,6 +25,10 @@ export class AdminUserService {
     return this.http.put<UserEditDto>('/admin/user/' + id, user);
   }
 
+  public importUsers(input: string): Observable<any> {
+    return this.http.post('/admin/user/import', input);
+  }
+
   public deleteSingle(id: string): Observable<any> {
     return this.http.delete('/admin/user/' + id);
   }

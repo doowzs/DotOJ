@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { PaginatedList } from '../../../../interfaces/pagination.interfaces';
 import { UserInfoDto } from '../../../../interfaces/user.interfaces';
 import { AdminUserService } from '../../../services/user.service';
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-admin-user-list',
@@ -11,6 +12,8 @@ import { AdminUserService } from '../../../services/user.service';
   styleUrls: ['./list.component.css']
 })
 export class AdminUserListComponent implements OnInit {
+  faPlus = faPlus;
+
   public pageIndex: number;
   public list: PaginatedList<UserInfoDto>;
 
