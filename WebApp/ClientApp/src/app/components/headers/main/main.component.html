@@ -48,7 +48,7 @@
                 <span>{{ username | async }}</span>
               </a>
               <div ngbDropdownMenu class="dropdown-menu-right">
-                <a *ngIf="canViewAdminPages" ngbDropdownItem routerLink="/admin">
+                <a *ngIf="canViewAdminPages | async" ngbDropdownItem routerLink="/admin">
                   <fa-icon [icon]="faTools"></fa-icon>
                   <span>Admin</span>
                 </a>
