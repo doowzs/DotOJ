@@ -56,10 +56,15 @@
           <td
             [ngClass]="{'text-danger': !!problem && submission.memory >= problem.memoryLimit}">{{ submission.memory }}</td>
           <td>
-            <a [href]="'/submission/' + submission.id"
-               (click)="$event.preventDefault(); viewSubmissionPopup(submission)">
-              {{ submission.languageInfo.name }}
-            </a>
+            <ng-container *ngIf="submission.viewable; else notViewable">
+              <a [href]="'/submission/' + submission.id"
+                 (click)="$event.preventDefault(); viewSubmissionPopup(submission)">
+                {{ submission.languageInfo.name }}
+              </a>
+            </ng-container>
+            <ng-template #notViewable>
+              <span>{{ submission.languageInfo.name }}</span>
+            </ng-template>
           </td>
           <td>{{ submission.createdAtMoment.format('MM-DD HH:mm') }}</td>
         </tr>
