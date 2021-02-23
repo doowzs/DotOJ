@@ -85,7 +85,7 @@ namespace WebApp.Services.Admin
                 var result = await Manager.ResetPasswordAsync(user, token, dto.Password);
                 if (!result.Succeeded)
                 {
-                    throw new ValidationException(result.Errors.ToString());
+                    throw new ValidationException(string.Join(',', result.Errors.Select(e => e.Description)));
                 }
             }
 

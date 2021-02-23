@@ -1,6 +1,7 @@
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Data;
@@ -300,14 +301,14 @@ namespace WebApp
             else
             {
                 var adminUser = await userManager.FindByNameAsync(Configuration["Application:AdminUser:ContestantId"]);
-                var password = Configuration["Application:AdminUser:ContestantId"];
+                var password = Configuration["Application:AdminUser:Password"];
                 if (!await userManager.CheckPasswordAsync(adminUser, password))
                 {
                     var token = await userManager.GeneratePasswordResetTokenAsync(adminUser);
                     var result = await userManager.ResetPasswordAsync(adminUser, token, password);
                     if (!result.Succeeded)
                     {
-                        throw new Exception("Admin password is not valid.");
+                        throw new Exception(string.Join(',', result.Errors.Select(e => e.Description)));
                     }
                 }
             }
