@@ -118,7 +118,15 @@ namespace WebApp.Services
         public async Task<PaginatedList<SubmissionInfoDto>> GetPaginatedSubmissionsAsync(int? contestId, string userId,
             string contestantId, int? problemId, Verdict? verdict, int? pageSize, int? pageIndex)
         {
-            var submissions = Context.Submissions.Where(s => !s.Hidden);
+            var submissions = Context.Submissions.AsQueryable();
+
+            var currentUser = await Manager.GetUserAsync(Accessor.HttpContext.User);
+            bool canViewHiddenSubmissions = await Manager.IsInRoleAsync(currentUser, ApplicationRoles.Administrator) ||
+                                            await Manager.IsInRoleAsync(currentUser, ApplicationRoles.ContestManager);
+            if (!canViewHiddenSubmissions)
+            {
+                submissions = submissions.Where(s => !s.Hidden);
+            }
 
             if (contestId.HasValue)
             {
