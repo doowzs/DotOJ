@@ -1,4 +1,11 @@
-﻿<h2>Import Users</h2>
+﻿<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a routerLink="/admin">Dashboard</a></li>
+    <li class="breadcrumb-item"><a routerLink="/admin/user">Users</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Import</li>
+  </ol>
+</nav>
+<h2>Import Users</h2>
 <div class="my-3 alert alert-info">
   <p>Usage: Each line contains four parts separated by commas, represents a new user to import.</p>
   <ol>
@@ -15,9 +22,12 @@
 </div>
 <div>
   <textarea class="form-control" [(ngModel)]="input" rows="15"
-            placeholder="171860001,ZhangSan,171860001@smail.nju.edu.cn,171860001
+            placeholder="E.g.
+171860001,ZhangSan,171860001@smail.nju.edu.cn,171860001
 171860002,LiSi,171860002@smail.nju.edu.cn,password"></textarea>
-  <button class="btn btn-primary my-3 w-100" (click)="importUsers()">Submit</button>
+  <button class="btn btn-primary my-3 w-100" [disabled]="!input" (click)="importUsers()">
+    <fa-icon [icon]="faUpload"></fa-icon>Submit
+  </button>
 </div>
 <div *ngIf="!!result">
   <h3>Results</h3>

@@ -1,5 +1,6 @@
 ﻿import { Component } from "@angular/core";
 import { AdminUserService } from "../../../services/user.service";
+import { faUpload } from "@fortawesome/free-solid-svg-icons";
 
 @Component({
   selector: 'app-admin-user-import',
@@ -7,6 +8,8 @@ import { AdminUserService } from "../../../services/user.service";
   styleUrls: ['./import.component.css']
 })
 export class AdminUserImportComponent {
+  faUpload = faUpload;
+
   public input: string;
   public result: string;
 
