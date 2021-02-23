@@ -15,7 +15,7 @@ namespace WebApp.Services.Background
     {
         private readonly IServiceScopeFactory _factory;
         private readonly IOptions<ApplicationConfig> _options;
-        
+
         public PlagiarismCleanerBackgroundService(IServiceProvider provider) : base("0 * * * *")
         {
             _factory = provider.GetRequiredService<IServiceScopeFactory>();
@@ -26,8 +26,9 @@ namespace WebApp.Services.Background
         {
             using var scope = _factory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var now = DateTime.Now.ToUniversalTime();
             var plagiarisms = await context.Plagiarisms
-                .Where(p => !p.Outdated && p.CreatedAt <= DateTime.Now.ToUniversalTime().AddDays(-7))
+                .Where(p => !p.Outdated && p.CreatedAt <= now.AddDays(-7))
                 .ToListAsync(stoppingToken);
             foreach (var plagiarism in plagiarisms)
             {
