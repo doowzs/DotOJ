@@ -251,7 +251,7 @@ namespace WebApp.Services.Admin
         {
             await EnsureProblemExists(id);
             return await Context.Plagiarisms
-                .Where(p => p.ProblemId == id)
+                .Where(p => p.ProblemId == id && !p.Outdated)
                 .OrderByDescending(p => p.Id)
                 .Select(p => new PlagiarismInfoDto(p))
                 .ToListAsync();
