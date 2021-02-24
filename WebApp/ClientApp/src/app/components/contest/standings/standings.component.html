@@ -11,6 +11,9 @@
   <h2>
     Standings
     <span class="float-right">
+      <button class="btn btn-outline-secondary mr-3" (click)="viewScore = !viewScore">
+        <fa-icon [icon]="faEye"></fa-icon><span>{{ viewScore ? 'Verdict' : 'Score' }}</span>
+      </button>
       <button class="btn btn-outline-success mr-3" [disabled]="loading" (click)="exportStandings()">
         <fa-icon [icon]="faDownload"></fa-icon><span>Export</span>
       </button>
@@ -42,9 +45,9 @@
         </td>
         <td *ngFor="let problem of contest.problems">
           <ng-container *ngIf="getProblemItem(registration, problem) as problemItem">
-            <span>{{ problemItem[0] }}</span><br/>
-            <a href="javascript:void(0);" (click)="selectRegistrationAndProblem(registration, problem.id)">
-              {{ problemItem[1] }}
+            <a href="javascript:void(0);" [ngClass]="viewScore ? 'text-dark' : problemItem[0]"
+               (click)="selectRegistrationAndProblem(registration, problem.id)">
+              {{ viewScore ? problemItem[2] : problemItem[1] }}
             </a>
           </ng-container>
         </td>

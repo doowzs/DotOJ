@@ -11,7 +11,7 @@ import { ProblemInfoDto } from '../../../../interfaces/problem.interfaces';
 import { AuthorizeService } from '../../../../api-authorization/authorize.service';
 import { ContestService } from '../../../services/contest.service';
 import { RegistrationInfoDto } from '../../../../interfaces/registration.interfaces';
-import { faDownload, faSyncAlt, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faDownload, faEye, faSyncAlt, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { take } from 'rxjs/operators';
 
 @Component({
@@ -21,6 +21,7 @@ import { take } from 'rxjs/operators';
 })
 export class ContestStandingsComponent implements OnInit {
   faDownload = faDownload;
+  faEye = faEye;
   faSyncAlt = faSyncAlt;
   faTimes = faTimes;
 
@@ -29,6 +30,7 @@ export class ContestStandingsComponent implements OnInit {
   public contestId: number;
   public contest: ContestViewDto;
   public registrations: RegistrationInfoDto[];
+  public viewScore: boolean = false;
   public selectedRegistration: RegistrationInfoDto = null;
   public selectedProblem: ProblemInfoDto = null;
 
@@ -107,11 +109,10 @@ export class ContestStandingsComponent implements OnInit {
     const statistic = registration.statistics.find(s => s.problemId === problem.id);
     if (statistic) {
       if (statistic.acceptedAt) {
-        const minutes = (statistic.acceptedAt as moment.Moment).diff(this.contest.beginTime, 'minutes');
         const penalties = statistic.penalties + 1;
-        return [Math.max(0, minutes).toString(), penalties.toString() + ' ' + (penalties === 1 ? 'try' : 'tries')];
+        return ['text-success', '+' + penalties, statistic.score.toString()];
       } else {
-        return ['-', (statistic.penalties).toString() + ' ' + (statistic.penalties === 1 ? 'try' : 'tries')];
+        return ['text-danger', '-' + statistic.penalties, statistic.score.toString()];
       }
     } else {
       return null;
