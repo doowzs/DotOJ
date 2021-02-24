@@ -18,6 +18,8 @@ volumes:
     driver: ${VOLUMES_DRIVER}
   mariadb:
     driver: ${VOLUMES_DRIVER}
+  rabbitmq:
+    driver: ${VOLUMES_DRIVER}
   webapp:
     driver: ${VOLUMES_DRIVER}
   worker:
@@ -37,6 +39,31 @@ services:
       - "${CADDY_ADMIN_PORT}:2019"
     networks:
       - frontend
+      - backend
+
+  mariadb:
+    image: mariadb:10
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
+    volumes:
+      - ${DATA_PATH_HOST}/mariadb:/var/lib/mysql
+      - ./mariadb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+    <<: *default-logging
+    ports:
+      - "${MARIADB_PORT}:3306"
+    networks:
+      - backend
+        
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    volumes:
+      - ${DATA_PATH_HOST}/rabbitmq/rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro
+      - ${DATA_PATH_HOST}/rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
+    <<: *default-logging
+    ports:
+      - "${RABBITMQ_PORT}:5672"
+      - "${RABBITMQ_MANAGEMENT_PORT}:15672"
+    networks:
       - backend
 
   webapp:
@@ -59,18 +86,5 @@ services:
       - ./worker/appsettings.json:/app/appsettings.json:ro
       - ${DATA_PATH_HOST}/data:/data
     <<: *default-logging
-    networks:
-      - backend
-
-  mariadb:
-    image: mariadb:10
-    environment:
-      - MYSQL_ROOT_PASSWORD=${MARIADB_ROOT_PASSWORD}
-    volumes:
-      - ${DATA_PATH_HOST}/mariadb:/var/lib/mysql
-      - ./mariadb/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
-    <<: *default-logging
-    ports:
-      - "${MARIADB_PORT}:3306"
     networks:
       - backend

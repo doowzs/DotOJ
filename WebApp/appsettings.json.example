@@ -1,6 +1,6 @@
 {
   "ConnectionStrings": {
-    "MySqlConnection": "Server=mariadb;Uid=judge;Pwd=judge;Database=judge;"
+    "MySqlConnection": "Server=mariadb;Uid=webapp;Pwd=webapp;Database=judge;"
   },
   "Application": {
     "Host": "https://dotoj",
@@ -17,8 +17,8 @@
   "RabbitMQ": {
     "HostName": "rabbitmq",
     "Port": 5672,
-    "UserName": "judge",
-    "Password": "judge"
+    "UserName": "webapp",
+    "Password": "webapp"
   },
   "Notification": {
     "DingTalk": {

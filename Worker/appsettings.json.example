@@ -1,6 +1,6 @@
 {
   "ConnectionStrings": {
-    "MySqlConnection": "Server=mariadb;Uid=judge;Pwd=judge;Database=judge;"
+    "MySqlConnection": "Server=mariadb;Uid=worker;Pwd=worker;Database=judge;"
   },
   "Worker": {
     "Name": "local",
@@ -10,8 +10,8 @@
   "RabbitMQ": {
     "HostName": "rabbitmq",
     "Port": 5672,
-    "UserName": "worker-local",
-    "Password": "worker-local"
+    "UserName": "worker",
+    "Password": "worker"
   },
   "Notification": {
     "DingTalk": {
