@@ -27,8 +27,6 @@ namespace Worker.RabbitMQ
         {
             base.Start(connection);
             var consumer = new AsyncEventingBasicConsumer(Channel);
-            Channel.BasicConsume(Queue, false, consumer); // disable auto ack for scheduling
-            Channel.BasicQos(0, 1, false);
             consumer.Received += async (ch, ea) =>
             {
                 using var scope = _factory.CreateScope();
@@ -56,8 +54,10 @@ namespace Worker.RabbitMQ
                         await _producer.SendAsync(message.JobType, message.TargetId, completeVersion);
                     }
                 }
-                Channel.BasicAck(ea.DeliveryTag, true);
+                Channel.BasicAck(ea.DeliveryTag, false);
             };
+            Channel.BasicQos(0, 1, false);
+            Channel.BasicConsume(Queue, false, consumer); // disable auto ack for work scheduling
         }
     }
 }

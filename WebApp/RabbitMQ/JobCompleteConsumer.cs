@@ -21,10 +21,7 @@ namespace WebApp.RabbitMQ
         public override void Start(IConnection connection)
         {
             base.Start(connection);
-
             var consumer = new AsyncEventingBasicConsumer(Channel);
-            Channel.BasicConsume(Queue, false, consumer);
-            Channel.BasicQos(0, 1, false);
             consumer.Received += async (ch, ea) =>
             {
                 var serialized = Encoding.UTF8.GetString(ea.Body.ToArray());
@@ -45,8 +42,10 @@ namespace WebApp.RabbitMQ
                 }
                 await queueStatisticsService.RemoveJobRequestAsync(message);
 
-                Channel.BasicAck(ea.DeliveryTag, true);
+                Channel.BasicAck(ea.DeliveryTag, false);
             };
+            Channel.BasicQos(0, 1, false);
+            Channel.BasicConsume(Queue, false, consumer);
         }
     }
 }

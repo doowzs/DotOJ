@@ -22,15 +22,15 @@ namespace WebApp.RabbitMQ
         {
             base.Start(connection);
             var consumer = new AsyncEventingBasicConsumer(Channel);
-            Channel.BasicConsume(Queue, false, consumer);
-            Channel.BasicQos(0, 1, false);
             consumer.Received += async (ch, ea) =>
             {
                 var serialized = Encoding.UTF8.GetString(ea.Body.ToArray());
                 var message = JsonConvert.DeserializeObject<WorkerHeartbeatMessage>(serialized);
                 await _service.HandleWorkerHeartbeatAsync(message);
-                Channel.BasicAck(ea.DeliveryTag, true);
+                Channel.BasicAck(ea.DeliveryTag, false);
             };
+            Channel.BasicQos(0, 1, false);
+            Channel.BasicConsume(Queue, false, consumer);
         }
     }
 }
