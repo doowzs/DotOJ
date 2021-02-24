@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Data.Generics;
@@ -8,8 +9,8 @@ namespace Data.Models
 {
     public enum ContestMode
     {
-        Practice = 0,  // Practice or exam
-        OneShot = 1,   // OI (judge only once)
+        Practice = 0, // Practice or exam
+        OneShot = 1, // OI (judge only once)
         UntilFail = 2, // ICPC (until first fail)
         SampleOnly = 3 // CF (judge samples only)
     }
@@ -28,6 +29,15 @@ namespace Data.Models
 
         [Required] public DateTime BeginTime { get; set; }
         [Required] public DateTime EndTime { get; set; }
+
+        [DefaultValue(false)] public bool HasScoreBonus { get; set; }
+        public DateTime? ScoreBonusTime { get; set; }
+        public int? ScoreBonusPercentage { get; set; }
+
+        [DefaultValue(false)] public bool HasScoreDecay { get; set; }
+        public bool? IsScoreDecayLinear { get; set; }
+        public DateTime? ScoreDecayTime { get; set; }
+        public int? ScoreDecayPercentage { get; set; }
 
         #endregion
 

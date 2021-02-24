@@ -43,6 +43,106 @@
       <datetime id="end-time" formControlName="endTime"></datetime>
     </div>
   </div>
+  <hr/>
+  <div class="form-group row">
+    <label class="col col-md-2 col-form-label">Score Bonus *</label>
+    <div class="col col-md-10 py-2">
+      <div class="alert alert-info">
+        If user submit code before a specified time, his score will be multiplied by a factor x (x >= 100%).<br/>
+        Bonus time must be a valid time between contest begin and end time.
+      </div>
+      <div class="input-group">
+        <div class="custom-control custom-radio custom-control-inline">
+          <input type="radio" id="score-bonus-no" class="custom-control-input"
+                 formControlName="hasScoreBonus" value="false">
+          <label class="custom-control-label" for="score-bonus-no">No</label>
+        </div>
+        <div class="custom-control custom-radio custom-control-inline">
+          <input type="radio" id="score-bonus-yes" class="custom-control-input"
+                 formControlName="hasScoreBonus" value="true">
+          <label class="custom-control-label" for="score-bonus-yes">Yes</label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="form-group row" *ngIf="form.get('hasScoreBonus').value === 'true'">
+    <label class="col col-md-2 col-form-label">Bonus Time *</label>
+    <div class="col col-md-10">
+      <datetime id="score-bonus-time" formControlName="scoreBonusTime"></datetime>
+    </div>
+  </div>
+  <div class="form-group row" *ngIf="form.get('hasScoreBonus').value === 'true'">
+    <label class="col col-md-2 col-form-label">Bonus Percentage *</label>
+    <div class="col col-md-10">
+      <div class="input-group">
+        <input id="score-bonus-percentage" class="form-control"
+               formControlName="scoreBonusPercentage" placeholder="x >= 100"/>
+        <div class="input-group-append">
+          <span class="input-group-text">%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr/>
+  <div class="form-group row">
+    <label class="col col-md-2 col-form-label">Score Decay *</label>
+    <div class="col col-md-10 py-2">
+      <div class="alert alert-info">
+        If user submit code after a specified time, his score will be multiplied by a factor x (0% <= x <= 100%).<br/>
+        If the decay is linear, the score will be multiplied by a factor y (x <= y <= 100%) depending on submit
+        time.<br/>
+        Decay time must be a valid time between contest begin and end time.
+      </div>
+      <div class="input-group">
+        <div class="custom-control custom-radio custom-control-inline">
+          <input type="radio" id="score-decay-no" class="custom-control-input"
+                 formControlName="hasScoreDecay" value="false">
+          <label class="custom-control-label" for="score-decay-no">No</label>
+        </div>
+        <div class="custom-control custom-radio custom-control-inline">
+          <input type="radio" id="score-decay-yes" class="custom-control-input"
+                 formControlName="hasScoreDecay" value="true">
+          <label class="custom-control-label" for="score-decay-yes">Yes</label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="form-group row" *ngIf="form.get('hasScoreDecay').value === 'true'">
+    <label class="col col-md-2 col-form-label">Linear Decay *</label>
+    <div class="col col-md-10 py-2">
+      <div class="input-group">
+        <div class="custom-control custom-radio custom-control-inline">
+          <input type="radio" id="score-decay-linear-no" class="custom-control-input"
+                 formControlName="isScoreDecayLinear" value="false">
+          <label class="custom-control-label" for="score-decay-linear-no">Non-linear (drop immediately)</label>
+        </div>
+        <div class="custom-control custom-radio custom-control-inline">
+          <input type="radio" id="score-decay-linear-yes" class="custom-control-input"
+                 formControlName="isScoreDecayLinear" value="true">
+          <label class="custom-control-label" for="score-decay-linear-yes">Linear</label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="form-group row" *ngIf="form.get('hasScoreDecay').value === 'true'">
+    <label class="col col-md-2 col-form-label">Decay Time *</label>
+    <div class="col col-md-10">
+      <datetime id="score-decay-time" formControlName="scoreDecayTime"></datetime>
+    </div>
+  </div>
+  <div class="form-group row" *ngIf="form.get('hasScoreDecay').value === 'true'">
+    <label class="col col-md-2 col-form-label">Decay Percentage *</label>
+    <div class="col col-md-10">
+      <div class="input-group">
+        <input id="score-decay-percentage" class="form-control"
+               formControlName="scoreDecayPercentage" placeholder="0 <= x <= 100"/>
+        <div class="input-group-append">
+          <span class="input-group-text">%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr/>
   <div class="row">
     <div class="col">
       <button class="btn btn-success w-100" [disabled]="!form.valid" type="submit">

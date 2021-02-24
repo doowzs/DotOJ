@@ -56,6 +56,12 @@ export class ContestService {
           }
           data.beginTime = moment.utc(data.beginTime).local();
           data.endTime = moment.utc(data.endTime).local();
+          if (!!data.scoreBonusTime) {
+            data.scoreBonusTime = moment.utc(data.scoreBonusTime).local();
+          }
+          if (!!data.scoreDecayTime) {
+            data.scoreDecayTime = moment.utc(data.scoreDecayTime).local();
+          }
           return data;
         }), shareReplay(1));
     }

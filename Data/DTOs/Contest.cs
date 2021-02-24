@@ -37,6 +37,13 @@ namespace Data.DTOs
         public ContestMode Mode { get; }
         public DateTime BeginTime { get; }
         public DateTime EndTime { get; }
+        public bool HasScoreBonus { get; }
+        public DateTime? ScoreBonusTime { get; }
+        public int? ScoreBonusPercentage { get; }
+        public bool HasScoreDecay { get; }
+        public bool? IsScoreDecayLinear { get; }
+        public DateTime? ScoreDecayTime { get; }
+        public int? ScoreDecayPercentage { get; }
         public IList<ProblemInfoDto> Problems { get; }
 
         public ContestViewDto(Contest contest, IList<ProblemInfoDto> problems) : base(contest)
@@ -48,6 +55,13 @@ namespace Data.DTOs
             Mode = contest.Mode;
             BeginTime = contest.BeginTime;
             EndTime = contest.EndTime;
+            HasScoreBonus = contest.HasScoreBonus;
+            ScoreBonusTime = contest.ScoreBonusTime;
+            ScoreBonusPercentage = contest.ScoreBonusPercentage;
+            HasScoreDecay = contest.HasScoreDecay;
+            IsScoreDecayLinear = contest.IsScoreDecayLinear;
+            ScoreDecayTime = contest.ScoreDecayTime;
+            ScoreDecayPercentage = contest.ScoreDecayPercentage;
             Problems = problems;
         }
     }
@@ -61,6 +75,13 @@ namespace Data.DTOs
         [Required] public ContestMode? Mode { get; set; }
         [Required] public DateTime BeginTime { get; set; }
         [Required] public DateTime EndTime { get; set; }
+        [Required] public bool? HasScoreBonus { get; set; }
+        public DateTime? ScoreBonusTime { get; set; }
+        public int? ScoreBonusPercentage { get; set; }
+        [Required] public bool? HasScoreDecay { get; set; }
+        public bool? IsScoreDecayLinear { get; set; }
+        public DateTime? ScoreDecayTime { get; set; }
+        public int? ScoreDecayPercentage { get; set; }
 
         public ContestEditDto()
         {
@@ -75,6 +96,13 @@ namespace Data.DTOs
             Mode = contest.Mode;
             BeginTime = contest.BeginTime;
             EndTime = contest.EndTime;
+            HasScoreBonus = contest.HasScoreBonus;
+            ScoreBonusTime = contest.ScoreBonusTime;
+            ScoreBonusPercentage = contest.ScoreBonusPercentage;
+            HasScoreDecay = contest.HasScoreDecay;
+            IsScoreDecayLinear = contest.IsScoreDecayLinear;
+            ScoreDecayTime = contest.ScoreDecayTime;
+            ScoreDecayPercentage = contest.ScoreDecayPercentage;
         }
     }
 }

@@ -53,6 +53,31 @@ namespace Worker.Runners.JudgeSubmission
 
                 var result = await this.RunSubmissionAsync(contest, problem, submission);
 
+                #region Update score of result with bonus and decay
+
+                if (contest.HasScoreBonus &&
+                    contest.ScoreBonusTime.HasValue &&
+                    submission.CreatedAt <= contest.ScoreBonusTime.Value)
+                {
+                    result.Score = result.Score * contest.ScoreBonusPercentage.GetValueOrDefault(100) / 100;
+                }
+                else if (contest.HasScoreDecay &&
+                         contest.ScoreDecayTime.HasValue &&
+                         submission.CreatedAt > contest.ScoreDecayTime.Value)
+                {
+                    var decayPercentage = contest.ScoreDecayPercentage.GetValueOrDefault(100);
+                    if (contest.IsScoreDecayLinear.GetValueOrDefault(false))
+                    {
+                        var progress = contest.EndTime.Subtract(contest.ScoreDecayTime.Value).TotalSeconds /
+                                       submission.CreatedAt.Subtract(contest.ScoreDecayTime.Value).TotalSeconds;
+                        decayPercentage = (int) (progress * (decayPercentage - 100) + 100);
+                        decayPercentage = Math.Max(0, Math.Min(decayPercentage, 100));
+                    }
+                    result.Score = result.Score * decayPercentage / 100;
+                }
+
+                #endregion
+
                 #region Update judge result of submission
 
                 submission.Verdict = result.Verdict;

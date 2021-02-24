@@ -60,6 +60,60 @@ namespace WebApp.Services.Admin
                 throw new ValidationException("Invalid begin and end time.");
             }
 
+            if (dto.HasScoreBonus.GetValueOrDefault(false))
+            {
+                if (!dto.ScoreBonusTime.HasValue)
+                {
+                    throw new ValidationException("Score bonus time cannot be null.");
+                }
+                else if (dto.ScoreBonusTime.Value < dto.BeginTime)
+                {
+                    throw new ValidationException("Score bonus time cannot be before contest start time.");
+                }
+                else if (dto.ScoreBonusTime.Value > dto.EndTime)
+                {
+                    throw new ValidationException("Score bonus time cannot be after contest end time.");
+                }
+
+                switch (dto.ScoreBonusPercentage)
+                {
+                    case null:
+                        throw new ValidationException("Score bonus percentage cannot be null.");
+                    case < 100:
+                        throw new ValidationException("Score bonus percentage cannot be less than 100.");
+                }
+            }
+
+            if (dto.HasScoreDecay.GetValueOrDefault(false))
+            {
+                if (!dto.ScoreDecayTime.HasValue)
+                {
+                    throw new ValidationException("Score decay time cannot be null.");
+                }
+                else if (dto.ScoreDecayTime.Value < dto.BeginTime)
+                {
+                    throw new ValidationException("Score decay time cannot be before contest start time.");
+                }
+                else if (dto.ScoreDecayTime.Value > dto.EndTime)
+                {
+                    throw new ValidationException("Score decay time cannot be after contest end time.");
+                }
+
+                if (!dto.IsScoreDecayLinear.HasValue)
+                {
+                    throw new ValidationException("Score decay linear cannot be null.");
+                }
+                switch (dto.ScoreDecayPercentage)
+                {
+                    case null:
+                        throw new ValidationException("Score decay percentage cannot be null.");
+                    case < 0:
+                        throw new ValidationException("Score decay percentage cannot be negative.");
+                    case > 100:
+                        throw new ValidationException("Score decay percentage cannot be more than 100.");
+                }
+            }
+
             return Task.CompletedTask;
         }
 
@@ -87,7 +141,14 @@ namespace WebApp.Services.Admin
                 IsPublic = dto.IsPublic.GetValueOrDefault(),
                 Mode = dto.Mode.GetValueOrDefault(),
                 BeginTime = dto.BeginTime,
-                EndTime = dto.EndTime
+                EndTime = dto.EndTime,
+                HasScoreBonus = dto.HasScoreBonus.GetValueOrDefault(),
+                ScoreBonusTime = dto.ScoreBonusTime,
+                ScoreBonusPercentage = dto.ScoreBonusPercentage,
+                HasScoreDecay = dto.HasScoreDecay.GetValueOrDefault(),
+                IsScoreDecayLinear = dto.IsScoreDecayLinear,
+                ScoreDecayTime = dto.ScoreDecayTime,
+                ScoreDecayPercentage = dto.ScoreDecayPercentage
             };
             await Context.Contests.AddAsync(contest);
             await Context.SaveChangesAsync();
@@ -108,6 +169,13 @@ namespace WebApp.Services.Admin
             contest.Mode = dto.Mode.GetValueOrDefault();
             contest.BeginTime = dto.BeginTime;
             contest.EndTime = dto.EndTime;
+            contest.HasScoreBonus = dto.HasScoreBonus.GetValueOrDefault();
+            contest.ScoreBonusTime = dto.ScoreBonusTime;
+            contest.ScoreBonusPercentage = dto.ScoreBonusPercentage;
+            contest.HasScoreDecay = dto.HasScoreDecay.GetValueOrDefault();
+            contest.IsScoreDecayLinear = dto.IsScoreDecayLinear;
+            contest.ScoreDecayTime = dto.ScoreDecayTime;
+            contest.ScoreDecayPercentage = dto.ScoreDecayPercentage;
             Context.Contests.Update(contest);
             await Context.SaveChangesAsync();
 

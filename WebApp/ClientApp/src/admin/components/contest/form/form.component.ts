@@ -27,7 +27,14 @@ export class AdminContestFormComponent implements OnInit, OnChanges {
       isPublic: [null, [Validators.required]],
       mode: [null, [Validators.required]],
       beginTime: [null, [Validators.required]],
-      endTime: [null, [Validators.required]]
+      endTime: [null, [Validators.required]],
+      hasScoreBonus: [null, [Validators.required]],
+      scoreBonusTime: [null, []],
+      scoreBonusPercentage: [null, [Validators.min(100)]],
+      hasScoreDecay: [null, [Validators.required]],
+      isScoreDecayLinear: [null, []],
+      scoreDecayTime: [null, []],
+      scoreDecayPercentage: [null, [Validators.min(0), Validators.max(100)]]
     });
   }
 
@@ -40,7 +47,14 @@ export class AdminContestFormComponent implements OnInit, OnChanges {
         isPublic: this.contest.isPublic.toString(),
         mode: this.contest.mode.toString(),
         beginTime: this.contest.beginTime as moment.Moment,
-        endTime: this.contest.endTime as moment.Moment
+        endTime: this.contest.endTime as moment.Moment,
+        hasScoreBonus: this.contest.hasScoreBonus.toString(),
+        scoreBonusTime: this.contest.scoreBonusTime as moment.Moment,
+        scoreBonusPercentage: this.contest.scoreBonusPercentage,
+        hasScoreDecay: this.contest.hasScoreDecay.toString(),
+        isScoreDecayLinear: this.contest.hasScoreDecay ? this.contest.isScoreDecayLinear.toString() : 'false',
+        scoreDecayTime: this.contest.scoreDecayTime as moment.Moment,
+        scoreDecayPercentage: this.contest.scoreDecayPercentage
       });
     }
     if (this.disabled) {
@@ -61,10 +75,17 @@ export class AdminContestFormComponent implements OnInit, OnChanges {
       id: data.id,
       title: data.title,
       description: data.description,
-      isPublic: data.isPublic,
+      isPublic: data.isPublic === 'true',
       mode: data.mode,
       beginTime: moment(data.beginTime).seconds(0).milliseconds(0).toISOString(),
-      endTime: moment(data.endTime).seconds(0).milliseconds(0).toISOString()
+      endTime: moment(data.endTime).seconds(0).milliseconds(0).toISOString(),
+      hasScoreBonus: data.hasScoreBonus === 'true',
+      scoreBonusTime: moment(data.scoreBonusTime).seconds(0).milliseconds(0).toISOString(),
+      scoreBonusPercentage: data.scoreBonusPercentage,
+      hasScoreDecay: data.hasScoreDecay === 'true',
+      isScoreDecayLinear: data.hasScoreDecay === 'true' ? (data.isScoreDecayLinear === 'true') : null,
+      scoreDecayTime: moment(data.scoreDecayTime).seconds(0).milliseconds(0).toISOString(),
+      scoreDecayPercentage: data.scoreDecayPercentage
     });
   }
 }

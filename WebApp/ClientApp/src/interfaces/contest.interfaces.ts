@@ -27,6 +27,13 @@ export interface ContestViewDto {
   mode: ContestMode;
   beginTime: string | moment.Moment;
   endTime: string | moment.Moment;
+  hasScoreBonus: boolean;
+  scoreBonusTime: string | moment.Moment;
+  scoreBonusPercentage: number;
+  hasScoreDecay: boolean;
+  isScoreDecayLinear: boolean;
+  scoreDecayTime: string | moment.Moment;
+  scoreDecayPercentage: number;
   problems: ProblemInfoDto[];
 }
 
@@ -38,4 +45,11 @@ export interface ContestEditDto {
   mode: ContestMode;
   beginTime: string | moment.Moment;
   endTime: string | moment.Moment;
+  hasScoreBonus: boolean;
+  scoreBonusTime: string | moment.Moment;
+  scoreBonusPercentage: number;
+  hasScoreDecay: boolean;
+  isScoreDecayLinear: boolean;
+  scoreDecayTime: string | moment.Moment;
+  scoreDecayPercentage: number;
 }
