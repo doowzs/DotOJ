@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,6 +9,7 @@ using Data.RabbitMQ;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Nito.AsyncEx;
 using WebApp.RabbitMQ;
 
 namespace WebApp.Services.Singleton
@@ -20,7 +20,7 @@ namespace WebApp.Services.Singleton
         private readonly ILogger<WorkerStatisticsService> _logger;
         private readonly JobRequestProducer _producer;
 
-        private readonly ReaderWriterLockSlim _lock = new();
+        private readonly AsyncReaderWriterLock _lock = new();
         private readonly Dictionary<string, (string Token, DateTime TimeStamp)> _dictionary = new();
 
         public WorkerStatisticsService(IServiceProvider provider)
@@ -30,12 +30,10 @@ namespace WebApp.Services.Singleton
             _producer = provider.GetRequiredService<JobRequestProducer>();
         }
 
-        public Task<int> GetAvailableWorkerCountAsync()
+        public async Task<int> GetAvailableWorkerCountAsync()
         {
-            _lock.EnterReadLock();
-            var result = _dictionary.Count;
-            _lock.ExitReadLock();
-            return Task.FromResult(result);
+            using var locked = await _lock.ReaderLockAsync();
+            return _dictionary.Count;
         }
 
         private async Task HandleBrokenWorkerAsync(string name)
@@ -103,7 +101,7 @@ namespace WebApp.Services.Singleton
 
             #region Check for broken workers
 
-            _lock.EnterWriteLock();
+            var locked = await _lock.WriterLockAsync();
             var now = DateTime.Now.ToUniversalTime();
             var workers = _dictionary
                 .Where(p => p.Value.TimeStamp < now.AddMinutes(-2))
@@ -113,7 +111,7 @@ namespace WebApp.Services.Singleton
                 await HandleBrokenWorkerAsync(worker);
                 _ = _dictionary.Remove(worker);
             }
-            _lock.ExitWriteLock();
+            locked.Dispose();
 
             #endregion
 
@@ -164,7 +162,7 @@ namespace WebApp.Services.Singleton
 
         public async Task HandleWorkerHeartbeatAsync(WorkerHeartbeatMessage message)
         {
-            _lock.EnterWriteLock();
+            using var locked = await _lock.WriterLockAsync();
             var now = DateTime.Now.ToUniversalTime();
             if (_dictionary.ContainsKey(message.Name))
             {
@@ -181,7 +179,6 @@ namespace WebApp.Services.Singleton
             {
                 _dictionary.Add(message.Name, (message.Token, now));
             }
-            _lock.ExitWriteLock();
         }
     }
 }
