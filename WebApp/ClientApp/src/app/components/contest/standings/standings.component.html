@@ -45,9 +45,9 @@
         </td>
         <td *ngFor="let problem of contest.problems">
           <ng-container *ngIf="getProblemItem(registration, problem) as problemItem">
-            <a href="javascript:void(0);" [ngClass]="viewScore ? 'text-dark' : problemItem[0]"
+            <a href="javascript:void(0);" [ngClass]="viewScore ? 'text-dark' : problemItem[2]"
                (click)="selectRegistrationAndProblem(registration, problem.id)">
-              {{ viewScore ? problemItem[2] : problemItem[1] }}
+              {{ viewScore ? problemItem[0] : problemItem[1] }}
             </a>
           </ng-container>
         </td>

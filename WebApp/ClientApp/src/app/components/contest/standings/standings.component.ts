@@ -30,6 +30,7 @@ export class ContestStandingsComponent implements OnInit {
   public contestId: number;
   public contest: ContestViewDto;
   public registrations: RegistrationInfoDto[];
+  public firstAcceptedMoments: { [id: number]: moment.Moment };
   public viewScore: boolean = false;
   public selectedRegistration: RegistrationInfoDto = null;
   public selectedProblem: ProblemInfoDto = null;
@@ -86,7 +87,25 @@ export class ContestStandingsComponent implements OnInit {
           }
           registrations[i].rank = registrations[i].isParticipant ? rank : -1;
         }
+
+        let firstAcceptedMoments = {};
+        for (let i = 0; i < registrations.length; ++i) {
+          const registration = registrations[i];
+          if (!registration.isParticipant) continue;
+          for (let j = 0; j < this.contest.problems.length; ++j) {
+            const problem = this.contest.problems[j];
+            const statistic = registration.statistics.find(s => s.problemId === problem.id);
+            if (!!statistic && statistic.acceptedAt) {
+              let moment = statistic.acceptedAt as moment.Moment;
+              if (firstAcceptedMoments[problem.id] === null || moment.isBefore(firstAcceptedMoments[problem.id])) {
+                firstAcceptedMoments[problem.id] = moment;
+              }
+            }
+          }
+        }
+
         this.registrations = registrations;
+        this.firstAcceptedMoments = firstAcceptedMoments;
         const myStanding = registrations.find(r => r.userId == this.userId);
         if (!!myStanding) {
           this.registrations.unshift(myStanding);
@@ -107,12 +126,14 @@ export class ContestStandingsComponent implements OnInit {
 
   public getProblemItem(registration: RegistrationInfoDto, problem: ProblemInfoDto): string[] | null {
     const statistic = registration.statistics.find(s => s.problemId === problem.id);
-    if (statistic) {
+    if (!!statistic) {
       if (statistic.acceptedAt) {
         const penalties = statistic.penalties + 1;
-        return ['text-success', '+' + penalties, statistic.score.toString()];
+        const isFirstAccepted = !!this.firstAcceptedMoments[problem.id] &&
+          this.firstAcceptedMoments[problem.id].isSame(statistic.acceptedAt as moment.Moment);
+        return [statistic.score.toString(), '+' + penalties, isFirstAccepted ? 'text-info font-weight-bold' : 'text-success'];
       } else {
-        return ['text-danger', '-' + statistic.penalties, statistic.score.toString()];
+        return [statistic.score.toString(), '-' + statistic.penalties, 'text-danger'];
       }
     } else {
       return null;
@@ -131,8 +152,7 @@ export class ContestStandingsComponent implements OnInit {
     return this.contest.problems.reduce((total, problem) => total + this.getProblemPenalty(registration, problem), 0);
   }
 
-  public selectRegistrationAndProblem(registration: RegistrationInfoDto, problemId: number)
-  {
+  public selectRegistrationAndProblem(registration: RegistrationInfoDto, problemId: number) {
     const problem = this.contest.problems.find(p => p.id === problemId);
     if (this.selectedRegistration === registration && this.selectedProblem === problem) {
       this.selectedRegistration = null;
