@@ -27,8 +27,7 @@ volumes:
 
 services:
   caddy:
-    build:
-      context: ./caddy
+    image: caddy:2-alpine
     volumes:
       - ./caddy:/etc/caddy
       - ${DATA_PATH_HOST}/caddy:/data
