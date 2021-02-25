@@ -4,14 +4,17 @@ WORKDIR /src
 # injected by release.sh
 ARG VERSION=latest
 
-ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
+ENV NODE_VERSION=14.16.0
+ENV NODE_MIRROR https://mirrors.tuna.tsinghua.edu.cn/nodejs-release
+
 RUN apt-get update -yqq
-RUN apt-get install curl gnupg -yqq
-RUN apt-get install build-essential -yqq
-RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
-RUN sed -i 's|deb.nodesource.com/node|mirrors.tuna.tsinghua.edu.cn/nodesource/deb|' /etc/apt/sources.list.d/nodesource.list
-RUN apt-get update -yqq
-RUN apt-get install -y nodejs
+RUN apt-get install wget xz-utils -yqq
+RUN wget -q ${NODE_MIRROR}/v${NODE_VERSION}/node-v${NODE_VERSION}-linux-x64.tar.xz
+RUN tar xJf node-v${NODE_VERSION}-linux-x64.tar.xz
+RUN mkdir -p /usr/local/lib
+RUN mv node-v${NODE_VERSION}-linux-x64 /usr/local/lib/node
+RUN rm -f node-v${NODE_VERSION}-linux-x64.tar.xz
+ENV PATH /usr/local/lib/node/bin:${PATH}
 RUN npm config set registry https://registry.npm.taobao.org
 
 COPY . ./
