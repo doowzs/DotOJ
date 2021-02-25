@@ -28,8 +28,9 @@ case "$ACTION" in
   cd Dockerize
   cp ../WebApp/appsettings.json.example ./webapp/appsettings.json
   cp ../Worker/appsettings.json.example ./worker/appsettings.json
-  sed -i 's/WEBAPP_VERSION=/WEBAPP_VERSION='"$TAG"'/' env-example
-  sed -i 's/WORKER_VERSION=/WORKER_VERSION='"$TAG"'/' env-example
+  cp env-example .env
+  sed -i 's/WEBAPP_VERSION=/WEBAPP_VERSION='"$TAG"'/' .env
+  sed -i 's/WORKER_VERSION=/WORKER_VERSION='"$TAG"'/' .env
   zip "$NAME" -r ./*
   mv "$NAME" ../
   cd -
