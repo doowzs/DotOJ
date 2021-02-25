@@ -36,8 +36,9 @@ export class WelcomeContestsComponent implements OnInit, OnDestroy {
     this.auth.getUser()
       .pipe(take(1))
       .subscribe(user => {
-        this.privileged = user.roles.indexOf('Administrator') >= 0
-          || user.roles.indexOf('ContestManager') >= 0;
+        this.privileged = user &&
+          (user.roles.indexOf('Administrator') >= 0 ||
+            user.roles.indexOf('ContestManager') >= 0);
       });
     this.service.getCurrentList()
       .subscribe(contests => {
