@@ -1,13 +1,12 @@
-FROM node:lts AS node-base
+FROM ccr.ccs.tencentyun.com/dotoj/node:14 AS node-base
 ARG VERSION=latest
 WORKDIR /src
 COPY ./WebApp/ClientApp ./
 RUN sed -i 's/"version": "latest"/"version": "'"${VERSION}"'"/' /src/package.json
-RUN npm config set registry https://registry.npm.taobao.org
 RUN npm install
 RUN npm run build -- --prod # build:ssr for server side render
 
-FROM ccr.ccs.tencentyun.com/dotoj/env AS build-env
+FROM ccr.ccs.tencentyun.com/dotoj/env:latest AS build-env
 ARG VERSION=latest
 WORKDIR /src
 COPY . ./

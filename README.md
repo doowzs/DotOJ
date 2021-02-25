@@ -83,11 +83,12 @@ Start `WebApp` and `Worker` with `dotnet run` and you should be able to visit th
 
 ### Docker Containers
 
-Docker containers are published in registry and namespace `ccr.ccs.tencentyun.com/dotoj`. There are five containers to build and run services:
+Docker containers are published in registry and namespace `ccr.ccs.tencentyun.com/dotoj`. There are six containers to build and run services:
 
 - `sdk`: .NET Core SDK.
 - `runtime`: ASP.NET runtime.
 - `env`: build environment.
+- `node`: node environment.
 - `webapp`: web frontend and server.
 - `worker`: judge service.
 

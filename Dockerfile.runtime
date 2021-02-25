@@ -1,1 +1,9 @@
 FROM mcr.microsoft.com/dotnet/aspnet:5.0
+
+# Replace to mirrors.tencentyun.com in Tencent Cloud
+RUN sed -i 's/deb.debian.org/mirrors.tencent.com/' /etc/apt/sources.list
+RUN sed -i 's/security.debian.org/mirrors.tencent.com/' /etc/apt/sources.list
+
+ENV APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
+RUN apt update -yqq
+RUN apt-get update -yqq
