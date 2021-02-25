@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.4.0 - 2021-02-25
+## 1.4.1 - 2021-02-25
 
 This version contains breaking changes.
 
@@ -20,6 +20,7 @@ This version contains breaking changes.
 - Authentication page is updated for a consistent style.
 - Contest standings page is redesigned.
 - Submission detail page is redesigned.
+- Deleting account by user is removed for security reasons.
 
 ### Fixed
 
