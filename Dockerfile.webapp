@@ -2,7 +2,7 @@ FROM ccr.ccs.tencentyun.com/dotoj/node:14 AS node-base
 ARG VERSION=latest
 WORKDIR /src
 COPY ./WebApp/ClientApp ./
-RUN sed -i 's/"version": "latest"/"version": "'"${VERSION}"'"/' /src/package.json
+RUN sed -i 's/"version": "1.0.0"/"version": "'"${VERSION}"'"/' /src/package.json
 RUN npm install
 RUN npm run build -- --prod # build:ssr for server side render
 
