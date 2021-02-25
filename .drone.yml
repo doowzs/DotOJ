@@ -67,7 +67,7 @@ services:
       - name: dockersock
         path: /var/run
     commands:
-      - dockerd
+      - dockerd --registry-mirror=https://mirror.ccs.tencentyun.com
 
 volumes:
   - name: dockersock
