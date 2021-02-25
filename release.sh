@@ -31,7 +31,7 @@ case "$ACTION" in
   cp env-example .env
   sed -i 's/WEBAPP_VERSION=/WEBAPP_VERSION='"$TAG"'/' .env
   sed -i 's/WORKER_VERSION=/WORKER_VERSION='"$TAG"'/' .env
-  zip "$NAME" -r ./*
+  zip "$NAME" -r ./* ./.env
   mv "$NAME" ../
   cd -
   ;;
