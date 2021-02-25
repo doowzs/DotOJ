@@ -26,6 +26,7 @@ steps:
       CI_REGISTRY_USER:
         from_secret: CI_REGISTRY_USER
     commands:
+      - echo "Waiting for dockerd to come up..." && sleep 10
       - chmod +x ./release.sh
       - echo "$CI_REGISTRY_PASS" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
       - ./release.sh env $ENV_IMAGE latest
