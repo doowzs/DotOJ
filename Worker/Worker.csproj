@@ -27,8 +27,4 @@
         </None>
     </ItemGroup>
 
-    <ItemGroup>
-        <None Remove="Files\compile"/>
-        <None Remove="Files\run"/>
-    </ItemGroup>
 </Project>
