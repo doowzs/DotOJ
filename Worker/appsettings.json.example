@@ -5,7 +5,7 @@
   "Worker": {
     "Name": "local",
     "BoxId": "0",
-    "DataPath": "/var/www/data"
+    "DataPath": "/data"
   },
   "RabbitMQ": {
     "HostName": "rabbitmq",

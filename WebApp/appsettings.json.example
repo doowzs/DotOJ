@@ -6,7 +6,7 @@
     "Host": "https://dotoj",
     "Title": "dotOJ",
     "Author": "dotOJ developers",
-    "DataPath": "/var/www/data",
+    "DataPath": "/data",
     "AdminUser": {
       "Email": "admin@dotoj.local",
       "Password": "password",
