@@ -1,5 +1,33 @@
 # Changelog
 
+## 1.4.0 - 2021-02-25
+
+This version contains breaking changes.
+
+- Data folder structure has been changed. All judge data now goes to `${DATA}/tests`.
+
+### Added
+
+- Added plagiarism detection.
+- Added score bonus and decay for contests.
+- Added problem and queue statistics information.
+- Added user import for admin use.
+
+### Changed
+
+- Submission queue is now reimplemented with RabbitMQ.
+- Submission will become viewable after solving the problem.
+- Authentication page is updated for a consistent style.
+- Contest standings page is redesigned.
+- Submission detail page is redesigned.
+
+### Fixed
+
+- Fixed problems may be caused by long error message from compiler.
+- Fixed null reference errors in angular app.
+- Fixed admin button showing up in non-admin users' menus.
+- Fixed wrong contest mode description in contest management page.
+
 ## 1.3.1 - 2021-01-17
 
 ### Added
