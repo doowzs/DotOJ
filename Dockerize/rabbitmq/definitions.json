@@ -19,7 +19,22 @@
       "name": "\/"
     }
   ],
-  "permissions": [],
+  "permissions": [
+    {
+      "user": "webapp",
+      "vhost": "\/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "worker",
+      "vhost": "\/",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    }
+  ],
   "parameters": [],
   "policies": [],
   "queues": [],
