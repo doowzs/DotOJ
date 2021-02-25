@@ -11,7 +11,7 @@ ARG VERSION=latest
 WORKDIR /src
 COPY . ./
 COPY ./CHANGELOG.md /src/WebApp/wwwroot/changelog.md
-COPY --from=node-base /src/dist /src/WebApp/ClientApp
+COPY --from=node-base /src/dist /src/WebApp/ClientApp/dist
 RUN sed -i 's/Version = "latest"/Version = "'"${VERSION}"'"/' /src/Data/Configs/ApplicationConfig.cs
 RUN dotnet publish WebApp -c Release -o /app/out
 
