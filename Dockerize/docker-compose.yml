@@ -56,9 +56,12 @@ services:
         
   rabbitmq:
     image: rabbitmq:3-management-alpine
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
     volumes:
-      - ${DATA_PATH_HOST}/rabbitmq/rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro
-      - ${DATA_PATH_HOST}/rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
+      - ./rabbitmq/rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro
+      - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json:ro
     <<: *default-logging
     ports:
       - "${RABBITMQ_PORT}:5672"

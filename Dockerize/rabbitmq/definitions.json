@@ -3,21 +3,15 @@
   "users": [
     {
       "name": "webapp",
-      "password_hash": "webapp",
+      "password_hash": "wZ6SEnJEPT5oie799ZTRrYwRvsf0CUeQz+yP7GmYKeTzMARX",
       "hashing_algorithm": "rabbit_password_hashing_sha256",
       "tags": ""
     },
     {
       "name": "worker",
-      "password_hash": "worker",
+      "password_hash": "8jEtwbXDV9pjkGckFsw3vGb9080JtqLHFSr/hTkmublhEJy5",
       "hashing_algorithm": "rabbit_password_hashing_sha256",
       "tags": ""
-    },
-    {
-      "name": "admin",
-      "password_hash": "admin",
-      "hashing_algorithm": "rabbit_password_hashing_sha256",
-      "tags": "administrator"
     }
   ],
   "vhosts": [
