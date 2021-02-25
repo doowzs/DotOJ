@@ -13,18 +13,16 @@ namespace WebApp.Services.Background
 {
     public class PlagiarismCleanerBackgroundService : CronJobService
     {
-        private readonly IServiceScopeFactory _factory;
         private readonly IOptions<ApplicationConfig> _options;
 
-        public PlagiarismCleanerBackgroundService(IServiceProvider provider) : base("0 * * * *")
+        public PlagiarismCleanerBackgroundService(IServiceProvider provider) : base(provider, "0 * * * *")
         {
-            _factory = provider.GetRequiredService<IServiceScopeFactory>();
             _options = provider.GetRequiredService<IOptions<ApplicationConfig>>();
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            using var scope = _factory.CreateScope();
+            using var scope = Factory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             var now = DateTime.Now.ToUniversalTime();
             var plagiarisms = await context.Plagiarisms

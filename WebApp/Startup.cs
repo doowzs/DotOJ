@@ -143,7 +143,7 @@ namespace WebApp
             services.AddScoped<IDingTalkNotification, DingTalkNotification>();
             services.AddScoped<INotificationBroadcaster, NotificationBroadcaster>();
 
-            // Background cron job services.
+            // Background cron job services. Note that these services cannot start until DB is migrated.
             services.AddHostedService<WorkerStatisticsBackgroundService>();
             services.AddHostedService<PlagiarismCleanerBackgroundService>();
 

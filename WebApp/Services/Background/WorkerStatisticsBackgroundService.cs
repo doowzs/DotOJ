@@ -9,7 +9,7 @@ namespace WebApp.Services.Background
     public class WorkerStatisticsBackgroundService : CronJobService
     {
         private readonly IServiceScopeFactory _factory;
-        public WorkerStatisticsBackgroundService(IServiceProvider provider) : base("* * * * *")
+        public WorkerStatisticsBackgroundService(IServiceProvider provider) : base(provider, "* * * * *")
         {
             _factory = provider.GetRequiredService<IServiceScopeFactory>();
         }

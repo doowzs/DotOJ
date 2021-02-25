@@ -2,6 +2,9 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Cronos;
+using Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Timer = System.Timers.Timer;
 
@@ -9,16 +12,27 @@ namespace WebApp.Services.Background
 {
     public abstract class CronJobService : BackgroundService
     {
+        protected readonly IServiceProvider Provider;
+        protected readonly IServiceScopeFactory Factory;
+        
         private Timer _timer;
         private readonly CronExpression _expression;
 
-        protected CronJobService(string expression)
+        protected CronJobService(IServiceProvider provider, string expression)
         {
+            Provider = provider;
+            Factory = provider.GetRequiredService<IServiceScopeFactory>();
             _expression = CronExpression.Parse(expression);
         }
 
         public override async Task StartAsync(CancellationToken cancellationToken)
         {
+            using (var scope = Factory.CreateScope())
+            {
+                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                await context.Database.MigrateAsync(cancellationToken);
+            }
+            
             await ExecuteAsync(cancellationToken);
             await ScheduleAsync(cancellationToken);
         }
