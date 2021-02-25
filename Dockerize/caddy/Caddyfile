@@ -1,2 +1,2 @@
-http://localhost
+:80
 reverse_proxy http://webapp
