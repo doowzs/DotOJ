@@ -36,7 +36,7 @@ namespace Worker.Models
                 {Language.Python, new LanguageOptions(4, 5.0f)},
                 {Language.Golang, new LanguageOptions(5, 2.0f)},
                 {Language.Rust, new LanguageOptions(6, 2.5f, "-O")},
-                {Language.CSharp, new LanguageOptions(7, 1.5f, "/o+ /d:ONLINE_JUDGE")},
+                {Language.CSharp, new LanguageOptions(7, 1.5f, "-optimize+ -define:ONLINE_JUDGE")},
                 {Language.Haskell, new LanguageOptions(61, 2.5f, "-v0 -O")},
             };
     }

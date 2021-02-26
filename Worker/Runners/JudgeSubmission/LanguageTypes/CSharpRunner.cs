@@ -32,9 +32,9 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes
                 {
                     FileName = "isolate",
                     Arguments = $"--cg -b {BoxId} -s -E PATH=/bin:/usr/bin -d /etc" +
-                                " -c jail -i /dev/null -r compiler_output" +
+                                " -c jail -i /dev/null" +
                                 " -p120 -f 409600 --cg-timing -t 15.0 -x 0 -w 20.0 -k 128000 --cg-mem=512000" +
-                                " --run -- /usr/bin/csc " +
+                                " --run -- /usr/bin/csc -errorlog compiler_output" +
                                 LanguageOptions.LanguageOptionsDict[Language.CSharp].CompilerOptions +
                                 " -out:main.exe main.cs"
                 }
