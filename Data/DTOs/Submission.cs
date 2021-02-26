@@ -42,7 +42,7 @@ namespace Data.DTOs
             Verdict = submission.Verdict;
             Time = submission.Time;
             Memory = submission.Memory;
-            FailedOn = submission.FailedOn;
+            FailedOn = submission.FailedOn > 0 ? 1 : 0; // Hide this info from users
             Score = submission.Score;
             Progress = submission.Progress;
             HasMessage = !string.IsNullOrEmpty(submission.Message);
