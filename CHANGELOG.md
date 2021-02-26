@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.4.1 - 2021-02-25
+## 1.4.2 - 2021-02-25
 
 This version contains breaking changes.
 
@@ -28,6 +28,7 @@ This version contains breaking changes.
 - Fixed null reference errors in angular app.
 - Fixed admin button showing up in non-admin users' menus.
 - Fixed wrong contest mode description in contest management page.
+- Fixed no compiler output for C# Roslyn compiler.
 
 ## 1.3.1 - 2021-01-17
 
