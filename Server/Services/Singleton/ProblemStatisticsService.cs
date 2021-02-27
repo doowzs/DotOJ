@@ -54,7 +54,7 @@ namespace Server.Services.Singleton
                 ByVerdict = byVerdict,
                 UpdatedAt = DateTime.Now.ToUniversalTime()
             };
-            _ = _cache.TryAdd(problemId, statistics);
+            _ = _cache.TryAddAsync(problemId, statistics);
             return statistics;
         }
 
@@ -128,7 +128,7 @@ namespace Server.Services.Singleton
         {
             if (await _cache.ContainsKeyAsync(problemId))
             {
-                _ = _cache.TryRemove(problemId);
+                _ = _cache.TryRemoveAsync(problemId);
             }
         }
     }
