@@ -5,11 +5,11 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
-using Data.Configs;
-using Data.DTOs;
-using Data.Generics;
-using Data.Models;
-using Data.RabbitMQ;
+using Shared.Configs;
+using Shared.DTOs;
+using Shared.Generics;
+using Shared.Models;
+using Shared.RabbitMQ;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -191,7 +191,7 @@ namespace WebApp.Services.Admin
             await EnsureProblemExists(id);
 
             var problem = await Context.Problems.FindAsync(id);
-            await Data.Archives.v1.ProblemArchive.ExtractTestCasesAsync(problem, file, "", _options);
+            await Shared.Archives.v1.ProblemArchive.ExtractTestCasesAsync(problem, file, "", _options);
             await Context.SaveChangesAsync();
 
             await LogInformation($"UpdateProblemTestCases Id={problem.Id} Count={problem.TestCases.Count}");
@@ -205,11 +205,11 @@ namespace WebApp.Services.Admin
                 throw new ValidationException("Invalid Contest ID.");
             }
 
-            var problem = await Data.Archives.v1.ProblemArchive.ParseAsync(contestId, file, _options);
+            var problem = await Shared.Archives.v1.ProblemArchive.ParseAsync(contestId, file, _options);
             await Context.Problems.AddRangeAsync(problem);
             await Context.SaveChangesAsync();
 
-            await Data.Archives.v1.ProblemArchive.ExtractTestCasesAsync(problem, file, "tests/", _options);
+            await Shared.Archives.v1.ProblemArchive.ExtractTestCasesAsync(problem, file, "tests/", _options);
             await Context.SaveChangesAsync();
 
             return new ProblemEditDto(problem);
@@ -219,7 +219,7 @@ namespace WebApp.Services.Admin
         {
             await EnsureProblemExists(id);
             var problem = await Context.Problems.FindAsync(id);
-            return await Data.Archives.v1.ProblemArchive.CreateAsync(problem, _options);
+            return await Shared.Archives.v1.ProblemArchive.CreateAsync(problem, _options);
         }
 
         public async Task<byte[]> ExportProblemSubmissionsAsync(int id, bool all)
@@ -244,7 +244,7 @@ namespace WebApp.Services.Admin
                     .Where(s => submissionIds.Contains(s.Id))
                     .ToListAsync();
             }
-            return await Data.Archives.v1.SubmissionsArchive.CreateAsync(submissions, _options);
+            return await Shared.Archives.v1.SubmissionsArchive.CreateAsync(submissions, _options);
         }
 
         public async Task<List<PlagiarismInfoDto>> GetProblemPlagiarismInfosAsync(int id)

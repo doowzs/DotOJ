@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Cronos;
-using Data;
+using Shared;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

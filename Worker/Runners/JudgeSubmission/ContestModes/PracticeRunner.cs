@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Data.Models;
+using Shared.Models;
 using Worker.Models;
 
 namespace Worker.Runners.JudgeSubmission.ContestModes

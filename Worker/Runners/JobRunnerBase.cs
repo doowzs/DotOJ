@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Data;
-using Data.Configs;
-using Data.RabbitMQ;
+using Shared;
+using Shared.Configs;
+using Shared.RabbitMQ;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;

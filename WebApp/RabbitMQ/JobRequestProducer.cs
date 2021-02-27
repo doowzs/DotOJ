@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Text;
 using System.Threading.Tasks;
-using Data.RabbitMQ;
+using Shared.RabbitMQ;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Logging;

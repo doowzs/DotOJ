@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using Data.Models;
+using Shared.Models;
 using Worker.Models;
 
 namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base

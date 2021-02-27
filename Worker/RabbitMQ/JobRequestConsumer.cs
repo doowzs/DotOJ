@@ -1,6 +1,6 @@
 using System;
 using System.Text;
-using Data.RabbitMQ;
+using Shared.RabbitMQ;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;

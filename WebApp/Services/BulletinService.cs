@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Data.DTOs;
-using Data.Generics;
+using Shared.DTOs;
+using Shared.Generics;
 using Microsoft.EntityFrameworkCore;
 
 namespace WebApp.Services

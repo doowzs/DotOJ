@@ -1,9 +1,9 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Data.DTOs;
-using Data.Generics;
-using Data.Models;
+using Shared.DTOs;
+using Shared.Generics;
+using Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using WebApp.Exceptions;
 

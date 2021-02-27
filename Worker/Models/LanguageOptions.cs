@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Data.Models;
+using Shared.Models;
 
 namespace Worker.Models
 {

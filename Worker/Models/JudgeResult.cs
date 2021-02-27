@@ -1,4 +1,4 @@
-using Data.Models;
+using Shared.Models;
 
 namespace Worker.Models
 {

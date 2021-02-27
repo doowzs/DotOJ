@@ -1,6 +1,6 @@
 using System;
-using Data;
-using Data.Configs;
+using Shared;
+using Shared.Configs;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

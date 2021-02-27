@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Data;
-using Data.DTOs;
-using Data.Generics;
-using Data.Models;
-using Data.RabbitMQ;
+using Shared;
+using Shared.DTOs;
+using Shared.Generics;
+using Shared.Models;
+using Shared.RabbitMQ;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

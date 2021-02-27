@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using System.Net.Mime;
 using System.Threading.Tasks;
-using Data.DTOs;
-using Data.Generics;
+using Shared.DTOs;
+using Shared.Generics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

@@ -1,5 +1,5 @@
 using System;
-using Data.Models;
+using Shared.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
