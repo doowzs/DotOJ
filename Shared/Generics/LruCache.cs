@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Nito.AsyncEx;
 
 namespace Shared.Generics
 {
     public class LruCache<TKey, TValue>
     {
+        private readonly AsyncReaderWriterLock _lock = new();
         private readonly Dictionary<TKey, LinkedListNode<LruCacheItem>> _cache = new();
         private readonly LinkedList<LruCacheItem> _list = new();
 
@@ -17,66 +20,54 @@ namespace Shared.Generics
             Dispose = dispose;
         }
 
-        public bool ContainsKey(TKey key)
+        public async Task<bool> ContainsKeyAsync(TKey key)
         {
-            lock (_cache)
-            {
-                return _cache.ContainsKey(key);
-            }
+            using var locked = await _lock.ReaderLockAsync();
+            return _cache.ContainsKey(key);
         }
 
-        public bool TryGetValue(TKey key, out TValue value)
+        public async Task<(bool, TValue)> TryGetValueAsync(TKey key)
         {
-            lock (_cache)
+            using var locked = await _lock.ReaderLockAsync();
+            if (_cache.TryGetValue(key, out var node))
             {
-                if (_cache.TryGetValue(key, out var node))
-                {
-                    value = node.Value.Value;
-                    _list.Remove(node);
-                    _list.AddLast(node);
-                    return true;
-                }
-                value = default;
+                _list.Remove(node);
+                _list.AddLast(node);
+                return (true, node.Value.Value);
+            }
+            return (false, default);
+        }
+
+        public async Task<bool> TryAdd(TKey key, TValue value)
+        {
+            using var locked = await _lock.WriterLockAsync();
+            if (_cache.ContainsKey(key))
+            {
                 return false;
             }
-        }
-
-        public bool TryAdd(TKey key, TValue value)
-        {
-            lock (_cache)
+            else
             {
-                if (_cache.ContainsKey(key))
+                if (_cache.Count >= Capacity)
                 {
-                    return false;
+                    RemoveFirst();
                 }
-                else
-                {
-                    if (_cache.Count >= Capacity)
-                    {
-                        RemoveFirst();
-                    }
-                    var item = new LruCacheItem(key, value);
-                    var node = new LinkedListNode<LruCacheItem>(item);
-                    _list.AddLast(node);
-                    _cache.Add(key, node);
-                    return true;
-                }
+                var item = new LruCacheItem(key, value);
+                var node = new LinkedListNode<LruCacheItem>(item);
+                _list.AddLast(node);
+                _cache.Add(key, node);
+                return true;
             }
         }
 
-        public bool TryRemove(TKey key, out TValue value)
+        public async Task<(bool, TValue)> TryRemove(TKey key)
         {
-            lock (_cache)
+            using var locked = await _lock.WriterLockAsync();
+            if (_cache.Remove(key, out var node))
             {
-                if (_cache.Remove(key, out var node))
-                {
-                    value = node.Value.Value;
-                    _list.Remove(node);
-                    return true;
-                }
-                value = default;
-                return false;
+                _list.Remove(node);
+                return (true, node.Value.Value);
             }
+            return (false, default);
         }
 
         private void RemoveFirst()

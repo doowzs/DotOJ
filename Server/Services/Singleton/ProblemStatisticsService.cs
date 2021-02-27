@@ -60,8 +60,7 @@ namespace Server.Services.Singleton
 
         public async Task<ProblemStatistics> GetStatisticsAsync(int problemId)
         {
-            var contains = _cache.TryGetValue(problemId, out var statistics);
-            if (contains)
+            if (await _cache.TryGetValueAsync(problemId) is (true, var statistics))
             {
                 return statistics;
             }
@@ -93,8 +92,7 @@ namespace Server.Services.Singleton
             }
 
             var problem = await context.Problems.FindAsync(submission.ProblemId);
-            var contains = _cache.TryGetValue(problem.Id, out var statistics);
-            if (contains)
+            if (await _cache.TryGetValueAsync(problem.Id) is (true, var statistics))
             {
                 var attempted = await context.Submissions
                     .AnyAsync(s => s.Id != submission.Id && s.UserId == submission.UserId);
@@ -126,14 +124,12 @@ namespace Server.Services.Singleton
             }
         }
 
-        public Task InvalidStatisticsAsync(int problemId)
+        public async Task InvalidStatisticsAsync(int problemId)
         {
-            if (_cache.ContainsKey(problemId))
+            if (await _cache.ContainsKeyAsync(problemId))
             {
-                _ = _cache.TryRemove(problemId, out _);
+                _ = _cache.TryRemove(problemId);
             }
-
-            return Task.CompletedTask;
         }
     }
 }
