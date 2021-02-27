@@ -1,5 +1,11 @@
 # Changelog
 
+## latest
+
+### Fixed
+
+- Fixed wrong predicate when exporting accepted submissions.
+
 ## 1.4.2 - 2021-02-25
 
 This version contains breaking changes.

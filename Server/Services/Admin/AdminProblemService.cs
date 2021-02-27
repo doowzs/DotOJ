@@ -247,7 +247,7 @@ namespace Server.Services.Admin
             else
             {
                 var submissionIds = await Context.Submissions
-                    .Where(s => s.Verdict == Verdict.Accepted)
+                    .Where(s => s.ProblemId == id && s.Verdict == Verdict.Accepted)
                     .GroupBy(s => s.UserId)
                     .Select(g => g.Min(s => s.Id))
                     .ToListAsync();
