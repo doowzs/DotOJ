@@ -6,6 +6,23 @@
     </div>
   </div>
   <div class="form-group row">
+    <label class="col col-md-2 col-form-label">Type *</label>
+    <div class="col col-md-10 py-2">
+      <div class="input-group">
+        <div class="custom-control custom-radio custom-control-inline">
+          <input type="radio" id="type-ordinary" class="custom-control-input"
+                 formControlName="type" value="0">
+          <label class="custom-control-label" for="type-ordinary">Ordinary</label>
+        </div>
+        <div class="custom-control custom-radio custom-control-inline">
+          <input type="radio" id="type-testkit-lab" class="custom-control-input"
+                 formControlName="type" value="1">
+          <label class="custom-control-label" for="type-testkit-lab">TestKitLab</label>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="form-group row">
     <label for="title" class="col col-md-2 col-form-label">Title *</label>
     <div class="col col-md-10">
       <input class="form-control" id="title" formControlName="title"/>
@@ -17,25 +34,25 @@
       <vditor id="description" formControlName="description"></vditor>
     </div>
   </div>
-  <div class="form-group row">
+  <div class="form-group row" *ngIf="form.get('type').value === '0'">
     <label for="input-format" class="col col-md-2 col-form-label">Input Format *</label>
     <div class="col col-md-10">
       <vditor id="input-format" formControlName="inputFormat"></vditor>
     </div>
   </div>
-  <div class="form-group row">
+  <div class="form-group row" *ngIf="form.get('type').value === '0'">
     <label for="output-format" class="col col-md-2 col-form-label">Output Format *</label>
     <div class="col col-md-10">
       <vditor id="output-format" formControlName="outputFormat"></vditor>
     </div>
   </div>
-  <div class="form-group row">
+  <div class="form-group row" *ngIf="form.get('type').value === '0'">
     <label for="foot-note" class="col col-md-2 col-form-label">Foot Note</label>
     <div class="col col-md-10">
       <vditor id="foot-note" formControlName="footNote"></vditor>
     </div>
   </div>
-  <div class="form-group row">
+  <div class="form-group row" *ngIf="form.get('type').value === '0'">
     <label for="time-limit" class="col col-md-2 col-form-label">Time Limit *</label>
     <div class="col col-md-10">
       <div class="input-group">
@@ -46,7 +63,7 @@
       </div>
     </div>
   </div>
-  <div class="form-group row">
+  <div class="form-group row" *ngIf="form.get('type').value === '0'">
     <label for="memory-limit" class="col col-md-2 col-form-label">Memory Limit *</label>
     <div class="col col-md-10">
       <div class="input-group">
@@ -57,62 +74,67 @@
       </div>
     </div>
   </div>
-  <div class="form-group row">
-    <label class="col col-md-2 col-form-label">Special Judge *</label>
-    <div class="col col-md-10 py-2">
-      <div class="input-group">
-        <div class="custom-control custom-radio custom-control-inline">
-          <input type="radio" id="special-judge-no" class="custom-control-input"
-                 formControlName="hasSpecialJudge" value="false">
-          <label class="custom-control-label" for="special-judge-no">No</label>
-        </div>
-        <div class="custom-control custom-radio custom-control-inline">
-          <input type="radio" id="special-judge-testlib" class="custom-control-input"
-                 formControlName="hasSpecialJudge" value="true">
-          <label class="custom-control-label" for="special-judge-testlib">Yes (C++17 with <code>testlib</code>)</label>
+  <div *ngIf="form.get('type').value === '0'">
+    <div class="form-group row">
+      <label class="col col-md-2 col-form-label">Special Judge *</label>
+      <div class="col col-md-10 py-2">
+        <div class="input-group">
+          <div class="custom-control custom-radio custom-control-inline">
+            <input type="radio" id="special-judge-no" class="custom-control-input"
+                   formControlName="hasSpecialJudge" value="false">
+            <label class="custom-control-label" for="special-judge-no">No</label>
+          </div>
+          <div class="custom-control custom-radio custom-control-inline">
+            <input type="radio" id="special-judge-testlib" class="custom-control-input"
+                   formControlName="hasSpecialJudge" value="true">
+            <label class="custom-control-label" for="special-judge-testlib">Yes (C++17 with
+              <code>testlib</code>)</label>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="form-group row" *ngIf="form.get('hasSpecialJudge').value === 'true'">
-    <label class="col col-md-2 col-form-label"></label>
-    <div class="col col-md-10">
+    <div class="form-group row" *ngIf="form.get('hasSpecialJudge').value === 'true'">
+      <label class="col col-md-2 col-form-label"></label>
+      <div class="col col-md-10">
       <textarea class="form-control monospace" id="special-judge-code"
                 formControlName="specialJudgeCode" rows="10"></textarea>
+      </div>
     </div>
   </div>
-  <hr/>
-  <h3>
-    Sample Cases
-    <span class="float-right">
+  <div *ngIf="form.get('type').value === '0'">
+    <hr/>
+    <h3>
+      Sample Cases
+      <span class="float-right">
       <button class="btn btn-success" type="button" [disabled]="disabled" (click)="addSampleCase()">
         <fa-icon [icon]="faPlus"></fa-icon><span>Add Sample Case</span>
       </button>
     </span>
-  </h3>
-  <ng-container *ngFor="let control of sampleCaseControls; index as index">
-    <h4 class="my-3">
-      Sample #{{ index + 1 }}
-      <span *ngIf="sampleCaseControls.length > 1" class="float-right">
+    </h3>
+    <ng-container *ngFor="let control of sampleCaseControls; index as index">
+      <h4 class="my-3">
+        Sample #{{ index + 1 }}
+        <span class="float-right">
           <button class="btn btn-sm text-danger" type="button"
                   [disabled]="disabled" (click)="removeSampleCase(control)">
             <fa-icon [icon]="faTimes"></fa-icon><span>Delete #{{ index + 1 }}</span>
           </button>
         </span>
-    </h4>
-    <div class="row">
-      <div class="col col-6">
-        <label [for]="control.instances[0]">Input</label>
-        <textarea class="form-control monospace" [formControlName]="control.instances[0]"
-                  [attr.id]="control.instances[0]" rows="5"></textarea>
+      </h4>
+      <div class="row">
+        <div class="col col-6">
+          <label [for]="control.instances[0]">Input</label>
+          <textarea class="form-control monospace" [formControlName]="control.instances[0]"
+                    [attr.id]="control.instances[0]" rows="5"></textarea>
+        </div>
+        <div class="col col-6">
+          <label [for]="control.instances[1]">Output</label>
+          <textarea class="form-control monospace" [formControlName]="control.instances[1]"
+                    [attr.id]="control.instances[1]" rows="5"></textarea>
+        </div>
       </div>
-      <div class="col col-6">
-        <label [for]="control.instances[1]">Output</label>
-        <textarea class="form-control monospace" [formControlName]="control.instances[1]"
-                  [attr.id]="control.instances[1]" rows="5"></textarea>
-      </div>
-    </div>
-  </ng-container>
+    </ng-container>
+  </div>
   <hr/>
   <div class="row">
     <div class="col">

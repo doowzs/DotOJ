@@ -1,4 +1,4 @@
-﻿<h2>Test Cases of Problem <span *ngIf="problem">#{{ problem.id }}</span></h2>
+﻿<h2>Test Cases of Problem #{{ problemId }}</h2>
 <div class="row my-3">
   <div class="col col-md-10">
     <input #zipFileInput type="file" accept="application/zip" (change)="selectZipFile($event)"/>
@@ -18,25 +18,43 @@
     </button>
   </div>
 </div>
-<div *ngIf="testCases">
+<div *ngIf="problem && testCases">
   <table class="table table-sm table-hover">
-    <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">Input</th>
-      <th scope="col">Output</th>
-    </tr>
-    </thead>
-    <tbody *ngIf="testCases">
-    <tr *ngFor="let test of testCases; index as index">
-      <th scope="row">{{ index + 1 }}</th>
-      <td><span class="monospace">{{ test.input }}</span></td>
-      <td><span class="monospace">{{ test.output }}</span></td>
-    </tr>
-    </tbody>
+    <ng-container *ngIf="problem.type === 0">
+      <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Input</th>
+        <th scope="col">Output</th>
+      </tr>
+      </thead>
+      <tbody *ngIf="testCases">
+      <tr *ngFor="let test of testCases; index as index">
+        <th scope="row">{{ index + 1 }}</th>
+        <td><span class="monospace">{{ test.input }}</span></td>
+        <td><span class="monospace">{{ test.output }}</span></td>
+      </tr>
+      </tbody>
+    </ng-container>
+    <ng-container *ngIf="problem.type === 1">
+      <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Filename</th>
+      </tr>
+      </thead>
+      <tbody *ngIf="testCases">
+      <tr *ngFor="let test of testCases; index as index">
+        <th scope="row">{{ index + 1 }}</th>
+        <td><span class="monospace">{{ test.input }}</span></td>
+      </tr>
+      </tbody>
+    </ng-container>
   </table>
 </div>
-<h2>Submit a Test</h2>
-<div style="height: 50vh;">
-  <editor [problemId]="problemId" (submit)="submitCode($event)"></editor>
+<div *ngIf="problem && problem.type === 0">
+  <h2>Submit a Test</h2>
+  <div style="height: 50vh;">
+    <editor [problemId]="problemId" (submit)="submitCode($event)"></editor>
+  </div>
 </div>

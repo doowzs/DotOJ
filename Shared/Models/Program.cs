@@ -20,6 +20,7 @@ namespace Shared.Models
 
     public enum Verdict
     {
+        Rejected = -3,
         Voided = -2,
         Failed = -1,
         Pending = 0,

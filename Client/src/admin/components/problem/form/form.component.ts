@@ -2,7 +2,7 @@
 import { FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 
 import { Languages } from '../../../../consts/languages.consts';
-import { ProblemEditDto, TestCase } from '../../../../interfaces/problem.interfaces';
+import { ProblemEditDto, ProblemType, TestCase } from '../../../../interfaces/problem.interfaces';
 import { faCheck, faPlus, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
@@ -26,20 +26,28 @@ export class AdminProblemFormComponent implements OnInit, OnChanges {
     this.form = this.builder.group({
       id: [null],
       contestId: [null, [Validators.required]],
+      type: [null, [Validators.required]],
       title: [null, [Validators.required, Validators.maxLength(30)]],
       description: [null, [Validators.required, Validators.maxLength(10000)]],
-      inputFormat: [null, [Validators.required, Validators.maxLength(10000)]],
-      outputFormat: [null, [Validators.required, Validators.maxLength(10000)]],
+      inputFormat: [null, [Validators.maxLength(10000)]],
+      outputFormat: [null, [Validators.maxLength(10000)]],
       footNote: [null, [Validators.maxLength(10000)]],
-      timeLimit: [null, [Validators.required, Validators.min(100), Validators.max(30000)]],
-      memoryLimit: [null, [Validators.required, Validators.min(1000), Validators.max(512000)]],
-      hasSpecialJudge: [null, [Validators.required]],
+      timeLimit: [null, [Validators.min(100), Validators.max(30000)]],
+      memoryLimit: [null, [Validators.min(1000), Validators.max(512000)]],
+      hasSpecialJudge: [null, []],
       specialJudgeCode: [null, [Validators.maxLength(30720)]]
     }, {
       validators: [
         (control: FormGroup): ValidationErrors | null => {
-          if (control.value.hasSpecialJudge === 'true' && !control.value.specialJudgeCode) {
-            return { specialJudgeCode: true };
+          if (control.value.type === '0') {
+            if (!control.value.inputFormat) return {inputFormat: true};
+            if (!control.value.outputFormat) return {outputFormat: true};
+            if (control.value.timeLimit.length === 0) return {timeLimit: true};
+            if (!control.value.memoryLimit) return {memoryLimit: true};
+            if (control.value.hasSpecialJudge === null) return {hasSpecialJudge: true};
+            if (control.value.hasSpecialJudge === 'true' && !control.value.specialJudgeCode) {
+              return {specialJudgeCode: true};
+            }
           }
           return null;
         }
@@ -52,14 +60,15 @@ export class AdminProblemFormComponent implements OnInit, OnChanges {
       this.form.setValue({
         id: this.problem.id,
         contestId: this.problem.contestId,
+        type: this.problem.type.toString(),
         title: this.problem.title,
         description: this.problem.description,
         inputFormat: this.problem.inputFormat,
         outputFormat: this.problem.outputFormat,
         footNote: this.problem.footNote,
-        timeLimit: this.problem.timeLimit,
-        memoryLimit: this.problem.memoryLimit,
-        hasSpecialJudge: this.problem.hasSpecialJudge.toString(),
+        timeLimit: this.problem.timeLimit ?? 1000,
+        memoryLimit: this.problem.memoryLimit ?? 256000,
+        hasSpecialJudge: this.problem.hasSpecialJudge.toString() ?? 'false',
         specialJudgeCode: this.problem.specialJudgeProgram?.code ?? ''
       });
       for (let i = 0; i < this.problem.sampleCases.length; ++i) {
@@ -84,7 +93,7 @@ export class AdminProblemFormComponent implements OnInit, OnChanges {
   public addSampleCase(input: string = null, output: string = null) {
     const index = this.sampleCaseControls.length > 0 ? this.sampleCaseControls[this.sampleCaseControls.length - 1].index + 1 : 0;
     const instances = [`sampleCaseInput${index}`, `sampleCaseOutput${index}`];
-    this.sampleCaseControls.push({ index: index, instances: instances });
+    this.sampleCaseControls.push({index: index, instances: instances});
     this.form.addControl(instances[0], new FormControl(input, [Validators.required, Validators.maxLength(10000)]));
     this.form.addControl(instances[1], new FormControl(output, [Validators.required, Validators.maxLength(10000)]));
   }
@@ -106,23 +115,43 @@ export class AdminProblemFormComponent implements OnInit, OnChanges {
         output: this.form.get(control.instances[1]).value
       });
     }
-    this.formSubmit.emit({
-      id: data.id,
-      contestId: data.contestId,
-      title: data.title,
-      description: data.description,
-      inputFormat: data.inputFormat,
-      outputFormat: data.outputFormat,
-      footNote: data.footNote,
-      timeLimit: data.timeLimit,
-      memoryLimit: data.memoryLimit,
-      hasSpecialJudge: data.hasSpecialJudge === 'true',
-      specialJudgeProgram: data.hasSpecialJudge === 'true' ? {
-        language: Languages.find(l => l.name === 'C++ 17').code,
-        code: btoa(data.specialJudgeCode)
-      } : null,
-      hasHacking: false,
-      sampleCases: sampleCases
-    });
+    if (data.type === ProblemType.Ordinary.toString()) {
+      this.formSubmit.emit({
+        id: data.id,
+        contestId: data.contestId,
+        type: ProblemType.Ordinary,
+        title: data.title,
+        description: data.description,
+        inputFormat: data.inputFormat,
+        outputFormat: data.outputFormat,
+        footNote: data.footNote,
+        timeLimit: data.timeLimit,
+        memoryLimit: data.memoryLimit,
+        hasSpecialJudge: data.hasSpecialJudge === 'true',
+        specialJudgeProgram: data.hasSpecialJudge === 'true' ? {
+          language: Languages.find(l => l.name === 'C++ 17').code,
+          code: btoa(data.specialJudgeCode)
+        } : null,
+        hasHacking: false,
+        sampleCases: sampleCases
+      });
+    } else {
+      this.formSubmit.emit({
+        id: data.id,
+        contestId: data.contestId,
+        type: ProblemType.TestKitLab,
+        title: data.title,
+        description: data.description,
+        inputFormat: "",
+        outputFormat: "",
+        footNote: null,
+        timeLimit: 0,
+        memoryLimit: 0,
+        hasSpecialJudge: false,
+        specialJudgeProgram: null,
+        hasHacking: false,
+        sampleCases: []
+      });
+    }
   }
 }

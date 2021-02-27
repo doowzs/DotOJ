@@ -9,8 +9,8 @@ namespace Shared.Models
 {
     public enum ProblemType
     {
-        OrdinaryProblem = 0,
-        TestKitLabProblem = 1
+        Ordinary = 0,
+        TestKitLab = 1
     }
 
     [NotMapped]
@@ -32,7 +32,7 @@ namespace Shared.Models
 
         #region Problem Description
 
-        [Required, DefaultValue(ProblemType.OrdinaryProblem)]
+        [Required, DefaultValue(ProblemType.Ordinary)]
         public ProblemType Type { get; set; }
 
         [Required] public string Title { get; set; }

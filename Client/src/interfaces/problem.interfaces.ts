@@ -1,5 +1,10 @@
 import { Program } from './submission.interfaces';
 
+export enum ProblemType {
+  Ordinary = 0,
+  TestKitLab = 1
+}
+
 export interface TestCase {
   input: string;
   output: string;
@@ -18,6 +23,7 @@ export interface ProblemInfoDto {
   id: number;
   contestId: number;
   label: string; // added in client service
+  type: ProblemType;
   title: string;
   attempted: boolean;
   solved: boolean;
@@ -28,6 +34,7 @@ export interface ProblemInfoDto {
 export interface ProblemViewDto {
   id: number;
   contestId: number;
+  type: ProblemType;
   title: string;
   description: string;
   inputFormat: string;
@@ -44,6 +51,7 @@ export interface ProblemViewDto {
 export interface ProblemEditDto {
   id: number;
   contestId: number;
+  type: ProblemType;
   title: string;
   description: string;
   inputFormat: string;

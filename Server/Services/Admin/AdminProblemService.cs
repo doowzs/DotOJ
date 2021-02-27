@@ -15,6 +15,7 @@ using Microsoft.Extensions.Options;
 using Server.Exceptions;
 using Server.RabbitMQ;
 using Server.Services.Singleton;
+using Shared.Archives.v2.Problems;
 
 namespace Server.Services.Admin
 {
@@ -74,7 +75,7 @@ namespace Server.Services.Admin
                 throw new ValidationException("Invalid problem description.");
             }
 
-            if (dto.Type == ProblemType.OrdinaryProblem)
+            if (dto.Type == ProblemType.Ordinary)
             {
                 if (string.IsNullOrEmpty(dto.InputFormat) || string.IsNullOrEmpty(dto.OutputFormat))
                 {
@@ -163,16 +164,35 @@ namespace Server.Services.Admin
             var problem = await Context.Problems.FindAsync(id);
             problem.ContestId = dto.ContestId.GetValueOrDefault();
             problem.Title = dto.Title;
+            problem.Type = dto.Type;
             problem.Description = dto.Description;
-            problem.InputFormat = dto.InputFormat;
-            problem.OutputFormat = dto.OutputFormat;
-            problem.FootNote = dto.FootNote;
-            problem.TimeLimit = dto.TimeLimit.GetValueOrDefault();
-            problem.MemoryLimit = dto.MemoryLimit.GetValueOrDefault();
-            problem.HasSpecialJudge = dto.HasSpecialJudge;
-            problem.SpecialJudgeProgram = dto.HasSpecialJudge ? dto.SpecialJudgeProgram : null;
-            problem.HasHacking = false;
-            problem.SampleCases = dto.SampleCases;
+            switch (problem.Type)
+            {
+                case ProblemType.Ordinary:
+                    problem.InputFormat = dto.InputFormat;
+                    problem.OutputFormat = dto.OutputFormat;
+                    problem.FootNote = dto.FootNote;
+                    problem.TimeLimit = dto.TimeLimit.GetValueOrDefault();
+                    problem.MemoryLimit = dto.MemoryLimit.GetValueOrDefault();
+                    problem.HasSpecialJudge = dto.HasSpecialJudge;
+                    problem.SpecialJudgeProgram = dto.HasSpecialJudge ? dto.SpecialJudgeProgram : null;
+                    problem.HasHacking = false;
+                    problem.SampleCases = dto.SampleCases;
+                    break;
+                case ProblemType.TestKitLab:
+                    problem.InputFormat = string.Empty;
+                    problem.OutputFormat = string.Empty;
+                    problem.FootNote = null;
+                    problem.TimeLimit = 0;
+                    problem.MemoryLimit = 0;
+                    problem.HasSpecialJudge = false;
+                    problem.SpecialJudgeProgram = null;
+                    problem.HasHacking = false;
+                    problem.SampleCases = new List<TestCase>();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
             Context.Problems.Update(problem);
             await Context.SaveChangesAsync();
 
@@ -202,10 +222,21 @@ namespace Server.Services.Admin
             await EnsureProblemExists(id);
 
             var problem = await Context.Problems.FindAsync(id);
-            await Shared.Archives.v1.ProblemArchive.ExtractTestCasesAsync(problem, file, "", _options);
+            switch (problem.Type)
+            {
+                case ProblemType.Ordinary:
+                    await OrdinaryProblemArchive.ExtractTestCasesAsync(problem, file, _options, prefix: "");
+                    break;
+                case ProblemType.TestKitLab:
+                    await TestKitLabProblemArchive.ExtractTestKitAsync(problem, file, _options, prefix: "");
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
             await Context.SaveChangesAsync();
 
-            await LogInformation($"UpdateProblemTestCases Id={problem.Id} Count={problem.TestCases.Count}");
+            await LogInformation($"UpdateProblemTestCases Id={problem.Id}" +
+                                 $" Type={problem.Type} Count={problem.TestCases.Count}");
             return problem.TestCases;
         }
 
@@ -216,13 +247,27 @@ namespace Server.Services.Admin
                 throw new ValidationException("Invalid Contest ID.");
             }
 
-            var problem = await Shared.Archives.v1.ProblemArchive.ParseAsync(contestId, file, _options);
-            await Context.Problems.AddRangeAsync(problem);
-            await Context.SaveChangesAsync();
-
-            await Shared.Archives.v1.ProblemArchive.ExtractTestCasesAsync(problem, file, "tests/", _options);
-            await Context.SaveChangesAsync();
-
+            Problem problem;
+            var type = await ProblemConfig.PeekProblemTypeAsync(file);
+            switch (type)
+            {
+                case ProblemType.Ordinary:
+                    problem = await OrdinaryProblemArchive.ParseAsync(contestId, file, _options);
+                    await Context.Problems.AddAsync(problem);
+                    await Context.SaveChangesAsync();
+                    await OrdinaryProblemArchive.ExtractTestCasesAsync(problem, file, _options);
+                    await Context.SaveChangesAsync();
+                    break;
+                case ProblemType.TestKitLab:
+                    problem = await TestKitLabProblemArchive.ParseAsync(contestId, file, _options);
+                    await Context.Problems.AddAsync(problem);
+                    await Context.SaveChangesAsync();
+                    await TestKitLabProblemArchive.ExtractTestKitAsync(problem, file, _options);
+                    await Context.SaveChangesAsync();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
             return new ProblemEditDto(problem);
         }
 
@@ -230,7 +275,14 @@ namespace Server.Services.Admin
         {
             await EnsureProblemExists(id);
             var problem = await Context.Problems.FindAsync(id);
-            return await Shared.Archives.v1.ProblemArchive.CreateAsync(problem, _options);
+            return problem.Type switch
+            {
+                ProblemType.Ordinary
+                    => await OrdinaryProblemArchive.CreateAsync(problem, _options),
+                ProblemType.TestKitLab
+                    => await TestKitLabProblemArchive.CreateAsync(problem, _options),
+                _ => throw new ArgumentOutOfRangeException()
+            };
         }
 
         public async Task<byte[]> ExportProblemSubmissionsAsync(int id, bool all)
@@ -253,6 +305,7 @@ namespace Server.Services.Admin
                     .ToListAsync();
                 submissions = await Context.Submissions
                     .Where(s => submissionIds.Contains(s.Id))
+                    .Include(s => s.User)
                     .ToListAsync();
             }
             return await Shared.Archives.v1.SubmissionsArchive.CreateAsync(submissions, _options);
@@ -271,6 +324,13 @@ namespace Server.Services.Admin
         public async Task<PlagiarismInfoDto> CheckProblemPlagiarismAsync(int id)
         {
             await EnsureProblemExists(id);
+
+            var problem = await Context.Problems.FindAsync(id);
+            if (problem is null || problem.Type != ProblemType.Ordinary)
+            {
+                throw new BadHttpRequestException("Plagiarism detection is only available for ordinary problems.");
+            }
+
             var plagiarism = new Plagiarism
             {
                 ProblemId = id,

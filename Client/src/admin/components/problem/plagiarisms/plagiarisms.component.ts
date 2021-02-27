@@ -3,7 +3,8 @@ import { ActivatedRoute } from "@angular/router";
 
 import { PlagiarismInfoDto } from "../../../../interfaces/plagiarism.interfaces";
 import { AdminProblemService } from "../../../services/problem.service";
-import { faRedo, faSearch } from '@fortawesome/free-solid-svg-icons';
+import { ProblemEditDto } from "../../../../interfaces/problem.interfaces";
+import { faRedo, faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-admin-problem-plagiarisms',
@@ -13,9 +14,11 @@ import { faRedo, faSearch } from '@fortawesome/free-solid-svg-icons';
 export class AdminProblemPlagiarismsComponent implements OnInit {
   faRedo = faRedo;
   faSearch = faSearch;
+  faTimes = faTimes;
 
   public loading = false;
   public problemId: number;
+  public problem: ProblemEditDto;
   public plagiarisms: PlagiarismInfoDto[] = [];
 
   constructor(
@@ -26,6 +29,8 @@ export class AdminProblemPlagiarismsComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.service.getSingle(this.problemId)
+      .subscribe(problem => this.problem = problem);
     this.loadPlagiarisms();
   }
 

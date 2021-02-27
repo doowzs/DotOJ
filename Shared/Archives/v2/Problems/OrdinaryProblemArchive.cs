@@ -6,37 +6,16 @@ using System.IO.Compression;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Shared.DTOs;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Shared.Configs;
 using Shared.Models;
 
-namespace Shared.Archives.v1
+namespace Shared.Archives.v2.Problems
 {
-    public class ProblemArchive
+    public static class OrdinaryProblemArchive
     {
-        private class ProblemConfig
-        {
-            public string Title { get; set; }
-            public int TimeLimit { get; set; }
-            public int MemoryLimit { get; set; }
-            public bool HasSpecialJudge { get; set; }
-
-            public ProblemConfig()
-            {
-            }
-
-            public ProblemConfig(Problem problem)
-            {
-                Title = problem.Title;
-                TimeLimit = problem.TimeLimit;
-                MemoryLimit = problem.MemoryLimit;
-                HasSpecialJudge = problem.HasSpecialJudge;
-            }
-        }
-
         public static async Task<byte[]> CreateAsync(Problem problem, IOptions<ApplicationConfig> options)
         {
             await using var stream = new MemoryStream();
@@ -44,7 +23,7 @@ namespace Shared.Archives.v1
             {
                 var metaEntry = archive.CreateEntry("version");
                 await using var metaStream = metaEntry.Open();
-                await metaStream.WriteAsync(Encoding.UTF8.GetBytes("1"));
+                await metaStream.WriteAsync(Encoding.UTF8.GetBytes("2"));
                 metaStream.Close();
 
                 var config = new ProblemConfig(problem);
@@ -84,12 +63,12 @@ namespace Shared.Archives.v1
                 foreach (var sample in problem.SampleCases)
                 {
                     ++index;
-                    var inputEntry = archive.CreateEntry(Path.Combine("samples", index + ".in"));
+                    var inputEntry = archive.CreateEntry(Path.Combine("samples", index + ".in").Replace('\\', '/'));
                     await using var inputStream = inputEntry.Open();
                     await inputStream.WriteAsync(Convert.FromBase64String(sample.Input));
                     inputStream.Close();
 
-                    var outputEntry = archive.CreateEntry(Path.Combine("samples", index + ".out"));
+                    var outputEntry = archive.CreateEntry(Path.Combine("samples", index + ".out").Replace('\\', '/'));
                     await using var outputStream = outputEntry.Open();
                     await outputStream.WriteAsync(Convert.FromBase64String(sample.Output));
                     outputStream.Close();
@@ -100,7 +79,7 @@ namespace Shared.Archives.v1
                     var inputFile = Path.Combine(options.Value.DataPath, "tests", problem.Id.ToString(), test.Input);
                     await using (var fileStream = new FileStream(inputFile, FileMode.Open, FileAccess.Read))
                     {
-                        var inputEntry = archive.CreateEntry(Path.Combine("tests", test.Input));
+                        var inputEntry = archive.CreateEntry(Path.Combine("tests", test.Input).Replace('\\', '/'));
                         await using var inputStream = inputEntry.Open();
                         await fileStream.CopyToAsync(inputStream);
                         inputStream.Close();
@@ -109,7 +88,7 @@ namespace Shared.Archives.v1
                     var outputFile = Path.Combine(options.Value.DataPath, "tests", problem.Id.ToString(), test.Output);
                     await using (var fileStream = new FileStream(outputFile, FileMode.Open, FileAccess.Read))
                     {
-                        var outputEntry = archive.CreateEntry(Path.Combine("tests", test.Output));
+                        var outputEntry = archive.CreateEntry(Path.Combine("tests", test.Output).Replace('\\', '/'));
                         await using var outputStream = outputEntry.Open();
                         await fileStream.CopyToAsync(outputStream);
                         outputStream.Close();
@@ -150,7 +129,7 @@ namespace Shared.Archives.v1
             using (var metaReader = new StreamReader(metaStream))
             {
                 var metaString = await metaReader.ReadToEndAsync();
-                if (!metaString.Equals("1"))
+                if (!metaString.Equals("2"))
                 {
                     throw new ValidationException("Invalid archive version.");
                 }
@@ -173,9 +152,34 @@ namespace Shared.Archives.v1
                 var config = JsonConvert.DeserializeObject<ProblemConfig>(configString);
 
                 problem.Title = config.Title;
-                problem.TimeLimit = config.TimeLimit;
-                problem.MemoryLimit = config.MemoryLimit;
-                problem.HasSpecialJudge = config.HasSpecialJudge;
+                problem.Type = ProblemType.Ordinary;
+
+                if (!config.TimeLimit.HasValue)
+                {
+                    throw new ValidationException("TimeLimit is required in config file.");
+                }
+                else
+                {
+                    problem.TimeLimit = config.TimeLimit.Value;
+                }
+
+                if (!config.MemoryLimit.HasValue)
+                {
+                    throw new ValidationException("MemoryLimit is required in config file.");
+                }
+                else
+                {
+                    problem.MemoryLimit = config.MemoryLimit.Value;
+                }
+
+                if (!config.HasSpecialJudge.HasValue)
+                {
+                    throw new ValidationException("HasSpecialJudge is required in config file.");
+                }
+                else
+                {
+                    problem.HasSpecialJudge = config.HasSpecialJudge.Value;
+                }
             }
 
             #endregion
@@ -289,7 +293,7 @@ namespace Shared.Archives.v1
         }
 
         public static async Task ExtractTestCasesAsync
-            (Problem problem, IFormFile file, string prefix, IOptions<ApplicationConfig> options)
+            (Problem problem, IFormFile file, IOptions<ApplicationConfig> options, string prefix = "tests/")
         {
             await using var stream = file.OpenReadStream();
             using var archive = new ZipArchive(stream, ZipArchiveMode.Read);

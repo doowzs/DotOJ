@@ -302,7 +302,7 @@ namespace Server.Services
         public async Task<string> GetTestKitLabSubmitTokenAsync(int problemId)
         {
             var problem = await Context.Problems.FindAsync(problemId);
-            if (problem is null || problem.Type != ProblemType.TestKitLabProblem)
+            if (problem is null || problem.Type != ProblemType.TestKitLab)
             {
                 throw new BadHttpRequestException("Invalid problem ID or problem does not allow token submit.");
             }

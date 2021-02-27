@@ -10,7 +10,7 @@ using Shared.Models;
 
 namespace Shared.Archives.v1
 {
-    public class SubmissionsArchive
+    public static class SubmissionsArchive
     {
         public static async Task<byte[]> CreateAsync(List<Submission> submissions, IOptions<ApplicationConfig> config)
         {

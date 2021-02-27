@@ -22,7 +22,7 @@
       <fa-icon [icon]="faArchive"></fa-icon><span>Export</span>
     </a>
   </li>
-  <li class="nav-item">
+  <li class="nav-item" *ngIf="problem && problem.type === 0">
     <a class="nav-link" [routerLink]="['/admin/problem', problemId, 'plagiarisms']" routerLinkActive="active">
       <fa-icon [icon]="faSearch"></fa-icon><span>Plagiarisms</span>
     </a>

@@ -1,41 +1,42 @@
-﻿<h2>Plagiarisms of Problem #{{ problemId }}</h2>
-<div class="row my-3">
-  <div class="col col-12 col-md-6">
-    <button class="btn btn-primary w-100" (click)="checkPlagiarism()">
-      <fa-icon [icon]="faSearch"></fa-icon>
-      <span>Check Plagiarism</span>
-    </button>
+﻿<ng-container *ngIf="problem && problem.type === 0">
+  <h2>Plagiarisms of Problem #{{ problemId }}</h2>
+  <div class="row my-3">
+    <div class="col col-12 col-md-6">
+      <button class="btn btn-primary w-100" (click)="checkPlagiarism()">
+        <fa-icon [icon]="faSearch"></fa-icon>
+        <span>Check Plagiarism</span>
+      </button>
+    </div>
+    <div class="col col-12 col-md-6">
+      <button class="btn btn-secondary w-100" (click)="loadPlagiarisms()" [disabled]="loading">
+        <fa-icon [icon]="faRedo"></fa-icon>
+        <span>Refresh</span>
+      </button>
+    </div>
   </div>
-  <div class="col col-12 col-md-6">
-    <button class="btn btn-secondary w-100" (click)="loadPlagiarisms()" [disabled]="loading">
-      <fa-icon [icon]="faRedo"></fa-icon>
-      <span>Refresh</span>
-    </button>
-  </div>
-</div>
-<div *ngIf="plagiarisms">
-  <table class="table table-sm table-hover">
-    <thead>
-    <tr>
-      <th scope="col">#</th>
-      <th scope="col">When</th>
-      <th scope="col">Log</th>
-      <th scope="col">Results</th>
-      <th scope="col">Checked By</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let plagiarism of plagiarisms;">
-      <th scope="row">{{ plagiarism.id }}</th>
-      <td>{{ plagiarism.createdAtMoment.format('YYYY-MM-DD HH:mm') }}</td>
-      <td>
+  <div *ngIf="plagiarisms">
+    <table class="table table-sm table-hover">
+      <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">When</th>
+        <th scope="col">Log</th>
+        <th scope="col">Results</th>
+        <th scope="col">Checked By</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let plagiarism of plagiarisms;">
+        <th scope="row">{{ plagiarism.id }}</th>
+        <td>{{ plagiarism.createdAtMoment.format('YYYY-MM-DD HH:mm') }}</td>
+        <td>
         <span *ngIf="!!plagiarism.checkedAt">
           <a [href]="'/plagiarisms/' + plagiarism.id + '/log.txt'" target="_blank">log</a>
         </span>
-      </td>
-      <td>
-        <span *ngIf="!plagiarism.checkedAt" class="text-secondary">Checking</span>
-        <span *ngFor="let result of plagiarism.results" class="mr-3">
+        </td>
+        <td>
+          <span *ngIf="!plagiarism.checkedAt" class="text-secondary">Checking</span>
+          <span *ngFor="let result of plagiarism.results" class="mr-3">
           <ng-container *ngIf="!!result.path; else resultNotAvailable">
             <a [href]="'/plagiarisms/' + plagiarism.id + '/' + result.path + '/index.html'" target="_blank">
               {{ result.name }} ({{ result.count }})
@@ -45,10 +46,17 @@
             <s class="text-secondary">{{ result.name }} ({{ result.count }})</s>
           </ng-template>
         </span>
-      </td>
-      <td>{{ plagiarism.checkedBy }}</td>
-    </tr>
-    </tbody>
-  </table>
-  <p>Note: plagiarisms reports will be deleted 7 days after create.</p>
-</div>
+        </td>
+        <td>{{ plagiarism.checkedBy }}</td>
+      </tr>
+      </tbody>
+    </table>
+    <p>Note: plagiarisms reports will be deleted 7 days after create.</p>
+  </div>
+</ng-container>
+<ng-container *ngIf="problem && problem.type !== 0">
+  <div class="alert alert-danger">
+    <fa-icon [icon]="faTimes"></fa-icon>
+    Plagiarism detection is only available for ordinary problems.
+  </div>
+</ng-container>
