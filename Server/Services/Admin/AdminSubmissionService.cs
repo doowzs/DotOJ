@@ -181,7 +181,7 @@ namespace Server.Services.Admin
             var submission = await Context.Submissions.FindAsync(id);
             submission.Verdict = dto.Verdict.GetValueOrDefault();
             submission.Time = submission.Memory = null;
-            submission.FailedOn = -1;
+            submission.FailedOn = null;
             submission.Score = submission.Verdict == Verdict.Accepted ? 100 : 0;
             submission.Message = dto.Message;
             submission.JudgedBy = "[manual] " + user.ContestantId;
