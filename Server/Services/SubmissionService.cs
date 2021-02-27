@@ -112,13 +112,22 @@ namespace Server.Services
                 }
             }
 
-            if (dto.Program.Language == Language.LabArchive)
+            switch (problem.Type)
             {
-                throw new ValidationException("Cannot submit lab archive through this API.");
-            }
-            else if (!Regex.IsMatch(dto.Program.Code, @"^[a-zA-Z0-9\+/]*={0,3}$", RegexOptions.None))
-            {
-                throw new ValidationException("Invalid program code.");
+                case ProblemType.Ordinary:
+                    if (dto.Program.Language == Language.LabArchive)
+                    {
+                        throw new ValidationException("Ordinary problem does not accept this language..");
+                    }
+                    else if (!Regex.IsMatch(dto.Program.Code, @"^[a-zA-Z0-9\+/]*={0,3}$", RegexOptions.None))
+                    {
+                        throw new ValidationException("Invalid program code.");
+                    }
+                    break;
+                case ProblemType.TestKitLab:
+                    throw new ValidationException("Cannot submit testkit lab problems through this API.");
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
 
             return contest;
