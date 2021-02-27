@@ -132,8 +132,7 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
   public loadAverageTime(): void {
     this.applicationService.getAverageQueueWaitingTime()
       .subscribe(averageTime => {
-        console.log(averageTime);
-        this.averageTime = averageTime
+        this.averageTime = averageTime;
       });
   }
 
