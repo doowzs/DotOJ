@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Nito.AsyncEx;
 
@@ -38,7 +39,27 @@ namespace Shared.Generics
             return (false, default);
         }
 
-        public async Task<bool> TryAdd(TKey key, TValue value)
+        public async Task<(bool, KeyValuePair<TKey, TValue>)> TryFindAsync(Func<KeyValuePair<TKey, TValue>, bool> pred)
+        {
+            bool Predicate(KeyValuePair<TKey, LinkedListNode<LruCacheItem>> p) =>
+                pred(new KeyValuePair<TKey, TValue>(p.Key, p.Value.Value.Value));
+
+            using var locked = await _lock.ReaderLockAsync();
+            if (_cache.Any(Predicate))
+            {
+                var pair = _cache.First(Predicate);
+                var node = pair.Value;
+                _list.Remove(node);
+                _list.AddLast(node);
+                return (true, new KeyValuePair<TKey, TValue>(pair.Key, pair.Value.Value.Value));
+            }
+            else
+            {
+                return (false, default);
+            }
+        }
+
+        public async Task<bool> TryAddAsync(TKey key, TValue value)
         {
             using var locked = await _lock.WriterLockAsync();
             if (_cache.ContainsKey(key))
@@ -59,7 +80,23 @@ namespace Shared.Generics
             }
         }
 
-        public async Task<(bool, TValue)> TryRemove(TKey key)
+        public async Task<bool> TryUpdateAsync(TKey key, TValue value)
+        {
+            using var locked = await _lock.WriterLockAsync();
+            if (_cache.TryGetValue(key, out var node))
+            {
+                node.Value = new LruCacheItem(key, value);
+                _list.Remove(node);
+                _list.AddLast(node);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public async Task<(bool, TValue)> TryRemoveAsync(TKey key)
         {
             using var locked = await _lock.WriterLockAsync();
             if (_cache.Remove(key, out var node))
