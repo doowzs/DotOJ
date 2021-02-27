@@ -1,0 +1,21 @@
+<div class="p-4 bg-light d-flex h-100" *ngIf="problem && problem.type === 1">
+  <div class="card w-100 justify-content-center align-self-center">
+    <div class="card-body">
+      <h3 class="card-title">Making Submit to Lab Problem</h3>
+      <p>
+        Your submit token for problem #{{ problem.id }} is:
+        <span class="float-right">
+          <a href="javascript:void(0)" class="text-secondary" (click)="loadProblemAndToken()">
+            <fa-icon [icon]="faSyncAlt"></fa-icon>Refresh
+          </a>
+        </span>
+      </p>
+      <h2 class="text-center"><code>{{ token }}</code></h2>
+      <p>Usage:</p>
+      <ol>
+        <li><code>make submit TOKEN={{ token }}</code></li>
+        <li><code>curl -H "Token: {{ token }}" -F "@file" http://submit</code></li>
+      </ol>
+    </div>
+  </div>
+</div>

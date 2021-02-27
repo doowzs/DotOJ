@@ -7,4 +7,7 @@
   <ItemGroup>
     <None Include="**" Exclude="node_modules\**" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="src\app\components\submission\creators" />
+  </ItemGroup>
 </Project>

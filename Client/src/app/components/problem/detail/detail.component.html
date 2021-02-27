@@ -11,9 +11,13 @@
          [style]="fullscreen ? ('height: calc(100vh - ' + (ended ? 56 : 62) + 'px); overflow-y: auto;') : ''">
       <ng-container [ngTemplateOutlet]="problemDetail"></ng-container>
     </div>
-    <div class="col col-12 col-lg-6 p-0 d-block" [class.d-lg-none]="!fullscreen"
-         [style]="'height: calc(100vh - ' + (ended ? 56 : 62) + 'px);'">
-      <app-submission-creator [problemId]="problemId"></app-submission-creator>
+    <div class="col col-12 col-lg-6 p-0 d-block" *ngIf="problem && problem.type === 0"
+         [class.d-lg-none]="!fullscreen" [style]="'height: calc(100vh - ' + (ended ? 56 : 62) + 'px);'">
+      <app-submission-ordinary-creator [problemId]="problemId"></app-submission-ordinary-creator>
+    </div>
+    <div class="col col-12 col-lg-6 p-0 d-block" *ngIf="problem && problem.type === 1"
+         [class.d-lg-none]="!fullscreen" [style]="'height: calc(100vh - ' + (ended ? 56 : 62) + 'px);'">
+      <app-submission-testkit-creator [problemId]="problemId"></app-submission-testkit-creator>
     </div>
   </div>
 </div>
@@ -49,18 +53,26 @@
         </button>
       </span></h2>
       <p>
-        <span *ngIf="problem.hasSpecialJudge" class="m-1 badge badge-danger">
-          <fa-icon [icon]="faCoffee"></fa-icon>
-          <span>Special Judge</span>
-        </span>
-        <span class="m-1 badge badge-warning">
-          <fa-icon [icon]="faStopwatch"></fa-icon>
-          <span>{{ problem.timeLimit }}ms</span>
-        </span>
-        <span class="m-1 badge badge-warning">
-          <fa-icon [icon]="faSdCard"></fa-icon>
-          <span>{{ problem.memoryLimit }}KiB</span>
-        </span>
+        <ng-container *ngIf="problem.type === 0">
+          <span *ngIf="problem.hasSpecialJudge" class="m-1 badge badge-danger">
+            <fa-icon [icon]="faCoffee"></fa-icon>
+            <span>Special Judge</span>
+          </span>
+          <span class="m-1 badge badge-warning">
+            <fa-icon [icon]="faStopwatch"></fa-icon>
+            <span>{{ problem.timeLimit }}ms</span>
+          </span>
+          <span class="m-1 badge badge-warning">
+            <fa-icon [icon]="faSdCard"></fa-icon>
+            <span>{{ problem.memoryLimit }}KiB</span>
+          </span>
+        </ng-container>
+        <ng-container *ngIf="problem.type === 1">
+          <span class="m-1 badge badge-danger">
+            <fa-icon [icon]="faFlask"></fa-icon>
+            <span>Lab Problem</span>
+          </span>
+        </ng-container>
         <a class="m-1 badge badge-success"
            [routerLink]="['/contest', contestId, 'submissions']" [queryParams]="{problemId: problemId}">
           <fa-icon [icon]="faPaperPlane"></fa-icon>
@@ -81,42 +93,44 @@
           <div class="border p-3">
             <h3>Description</h3>
             <markdown [data]="problem.description" katex></markdown>
-            <h3 class="mt-5">Input Format</h3>
-            <markdown [data]="problem.inputFormat" katex></markdown>
-            <h3 class="mt-5">Output Format</h3>
-            <markdown [data]="problem.outputFormat" katex></markdown>
-            <h3 class="mt-5">Sample Cases</h3>
-            <div *ngFor="let sample of problem.sampleCases" class="row mx-1 my-3">
-              <div class="col col-12 col-md-6 border">
-                <h5 class="my-3">
-                  Input
-                  <span class="float-right">
-            <button class="btn btn-sm" ngxClipboard [cbContent]="sample.input"
-                    ngbTooltip="Copied!" triggers="click:blur">
-              <fa-icon [icon]="faCopy" class="mr-0"></fa-icon>
-            </button>
-          </span>
-                </h5>
-                <hr/>
-                <pre>{{ sample.input }}</pre>
+            <ng-container *ngIf="problem.type === 0">
+              <h3 class="mt-5">Input Format</h3>
+              <markdown [data]="problem.inputFormat" katex></markdown>
+              <h3 class="mt-5">Output Format</h3>
+              <markdown [data]="problem.outputFormat" katex></markdown>
+              <h3 class="mt-5">Sample Cases</h3>
+              <div *ngFor="let sample of problem.sampleCases" class="row mx-1 my-3">
+                <div class="col col-12 col-md-6 border">
+                  <h5 class="my-3">
+                    Input
+                    <span class="float-right">
+                    <button class="btn btn-sm" ngxClipboard [cbContent]="sample.input"
+                            ngbTooltip="Copied!" triggers="click:blur">
+                      <fa-icon [icon]="faCopy" class="mr-0"></fa-icon>
+                    </button>
+                  </span>
+                  </h5>
+                  <hr/>
+                  <pre>{{ sample.input }}</pre>
+                </div>
+                <div class="col col-12 col-md-6 border">
+                  <h5 class="my-3">
+                    Output
+                    <span class="float-right">
+                    <button class="btn btn-sm" ngxClipboard [cbContent]="sample.output"
+                            ngbTooltip="Copied!" triggers="click:blur">
+                    <fa-icon [icon]="faCopy" class="mr-0"></fa-icon>
+                    </button>
+                  </span>
+                  </h5>
+                  <hr/>
+                  <pre>{{ sample.output }}</pre>
+                </div>
               </div>
-              <div class="col col-12 col-md-6 border">
-                <h5 class="my-3">
-                  Output
-                  <span class="float-right">
-            <button class="btn btn-sm" ngxClipboard [cbContent]="sample.output"
-                    ngbTooltip="Copied!" triggers="click:blur">
-              <fa-icon [icon]="faCopy" class="mr-0"></fa-icon>
-            </button>
-          </span>
-                </h5>
-                <hr/>
-                <pre>{{ sample.output }}</pre>
-              </div>
-            </div>
-            <ng-container *ngIf="problem.footNote && problem.footNote.trim() !== ''">
-              <h3 class="mt-5">Foot Note</h3>
-              <markdown [data]="problem.footNote" katex></markdown>
+              <ng-container *ngIf="problem.footNote && problem.footNote.trim() !== ''">
+                <h3 class="mt-5">Foot Note</h3>
+                <markdown [data]="problem.footNote" katex></markdown>
+              </ng-container>
             </ng-container>
           </div>
         </ng-template>

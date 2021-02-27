@@ -28,7 +28,8 @@ import { ContestSubmissionsComponent } from './components/contest/submissions/su
 import { ContestStandingsComponent } from './components/contest/standings/standings.component';
 import { ProblemDetailComponent } from './components/problem/detail/detail.component';
 import { SubmissionListComponent } from './components/submission/list/list.component';
-import { SubmissionCreatorComponent } from './components/submission/creator/creator.component';
+import { SubmissionOrdinaryCreatorComponent } from './components/submission/creators/ordinary/ordinary.component';
+import { SubmissionTestKitCreatorComponent } from "./components/submission/creators/testkit/testkit.component";
 import { SubmissionTimelineComponent } from './components/submission/timeline/timeline.component';
 import { SubmissionDetailComponent } from './components/submission/detail/detail.component';
 import { HelpComponent } from './components/miscellaneous/help/help.component';
@@ -64,7 +65,8 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     ContestStandingsComponent,
     ProblemDetailComponent,
     SubmissionListComponent,
-    SubmissionCreatorComponent,
+    SubmissionOrdinaryCreatorComponent,
+    SubmissionTestKitCreatorComponent,
     SubmissionTimelineComponent,
     SubmissionDetailComponent,
     HelpComponent,

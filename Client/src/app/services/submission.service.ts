@@ -90,4 +90,12 @@ export class SubmissionService {
       program: program
     }).pipe(map(mapSubmissionInfoDtoFields), tap(data => this.newSubmission.next(data)));
   }
+
+  public getSubmitToken(problemId: number): Observable<string> {
+    return this.http.get<string>('/submission/testkit/token', {
+      params: {
+        problemId: problemId.toString()
+      }
+    });
+  }
 }

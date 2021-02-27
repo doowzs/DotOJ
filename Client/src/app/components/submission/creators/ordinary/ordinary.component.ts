@@ -1,14 +1,14 @@
 import { Component, Input } from '@angular/core';
 
-import { SubmissionService } from '../../../services/submission.service';
-import { Program } from '../../../../interfaces/submission.interfaces';
+import { SubmissionService } from '../../../../services/submission.service';
+import { Program } from '../../../../../interfaces/submission.interfaces';
 
 @Component({
-  selector: 'app-submission-creator',
-  templateUrl: './creator.component.html',
-  styleUrls: ['./creator.component.css']
+  selector: 'app-submission-ordinary-creator',
+  templateUrl: './ordinary.component.html',
+  styleUrls: ['./ordinary.component.css']
 })
-export class SubmissionCreatorComponent {
+export class SubmissionOrdinaryCreatorComponent {
   @Input() public problemId: number;
 
   public submitting = false;
