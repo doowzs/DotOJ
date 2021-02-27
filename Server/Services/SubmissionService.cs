@@ -10,10 +10,12 @@ using Shared.Generics;
 using Shared.RabbitMQ;
 using Shared.Models;
 using IdentityServer4.Extensions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Server.Exceptions;
 using Server.RabbitMQ;
+using Server.Services.Singleton;
 
 namespace Server.Services
 {
@@ -26,14 +28,17 @@ namespace Server.Services
         public Task<SubmissionInfoDto> GetSubmissionInfoAsync(int id);
         public Task<SubmissionViewDto> GetSubmissionViewAsync(int id);
         public Task<SubmissionInfoDto> CreateSubmissionAsync(SubmissionCreateDto dto);
+        public Task<string> GetTestKitLabSubmitTokenAsync(int problemId);
     }
 
     public class SubmissionService : LoggableService<SubmissionService>, ISubmissionService
     {
         private const int PageSize = 50;
+        private readonly TestKitLabSubmitTokenService _tokenService;
 
         public SubmissionService(IServiceProvider provider) : base(provider)
         {
+            _tokenService = provider.GetRequiredService<TestKitLabSubmitTokenService>();
         }
 
         private async Task<Boolean> IsSubmissionViewableAsync(Submission submission)
@@ -186,8 +191,8 @@ namespace Server.Services
                 infos.Add(new SubmissionInfoDto(submission, viewable));
             }
 
-            return new PaginatedList<SubmissionInfoDto>(paginated.TotalItems, paginated.PageIndex, paginated.PageSize,
-                infos);
+            return new PaginatedList<SubmissionInfoDto>
+                (paginated.TotalItems, paginated.PageIndex, paginated.PageSize, infos);
         }
 
         public async Task<List<SubmissionInfoDto>> GetBatchSubmissionInfosAsync(IEnumerable<int> ids)
@@ -292,6 +297,18 @@ namespace Server.Services
             await LogInformation($"CreateSubmission ProblemId={result.ProblemId} " +
                                  $"Language={result.Language} Length={result.CodeBytes}");
             return result;
+        }
+
+        public async Task<string> GetTestKitLabSubmitTokenAsync(int problemId)
+        {
+            var problem = await Context.Problems.FindAsync(problemId);
+            if (problem is null || problem.Type != ProblemType.TestKitLabProblem)
+            {
+                throw new BadHttpRequestException("Invalid problem ID or problem does not allow token submit.");
+            }
+
+            var user = await Manager.GetUserAsync(Accessor.HttpContext.User);
+            return await _tokenService.GetOrGenerateToken(user.Id, problemId);
         }
     }
 }

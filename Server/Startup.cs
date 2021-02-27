@@ -138,6 +138,7 @@ namespace Server
             services.AddSingleton<ProblemStatisticsService>();
             services.AddSingleton<WorkerStatisticsService>();
             services.AddSingleton<QueueStatisticsService>();
+            services.AddSingleton<TestKitLabSubmitTokenService>();
 
             // TODO: Broadcasters can be made singleton.
             services.AddScoped<IDingTalkNotification, DingTalkNotification>();
