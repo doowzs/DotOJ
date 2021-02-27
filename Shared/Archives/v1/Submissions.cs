@@ -19,7 +19,8 @@ namespace Shared.Archives.v1
             {
                 foreach (var submission in submissions)
                 {
-                    var sourceFile = submission.Id + submission.Program.GetSourceFileExtension();
+                    var sourceFile = submission.User.ContestantId + '-' + submission.Id +
+                                     submission.Program.GetSourceFileExtension();
                     var sourceEntry = archive.CreateEntry(sourceFile);
                     await using var sourceStream = sourceEntry.Open();
                     await sourceStream.WriteAsync(Encoding.UTF8.GetBytes(submission.GetInfoCommentsString(config)));

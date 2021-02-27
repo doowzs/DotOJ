@@ -2,6 +2,10 @@
 
 ## latest
 
+### Changed
+
+- Changed file naming rules when exporting submissions.
+
 ### Fixed
 
 - Fixed wrong predicate when exporting accepted submissions.
