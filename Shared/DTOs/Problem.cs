@@ -20,6 +20,7 @@ namespace Shared.DTOs
     {
         public int Id { get; }
         public int ContestId { get; }
+        public ProblemType Type { get; }
         public string Title { get; }
         public bool Attempted { get; }
         public bool Solved { get; }
@@ -30,6 +31,7 @@ namespace Shared.DTOs
         {
             Id = problem.Id;
             ContestId = problem.ContestId;
+            Type = problem.Type;
             Title = problem.Title;
             Attempted = false;
             Solved = false;
@@ -51,6 +53,7 @@ namespace Shared.DTOs
     {
         public int Id { get; }
         public int ContestId { get; }
+        public ProblemType Type { get; }
         public string Title { get; }
         public string Description { get; }
         public string InputFormat { get; }
@@ -69,6 +72,7 @@ namespace Shared.DTOs
         {
             Id = problem.Id;
             ContestId = problem.ContestId;
+            Type = problem.Type;
             Title = problem.Title;
             Description = problem.Description;
             InputFormat = problem.InputFormat;
@@ -92,14 +96,15 @@ namespace Shared.DTOs
     {
         public int? Id { get; }
         [Required] public int? ContestId { get; set; }
+        [Required] public ProblemType Type { get; set; }
         [Required] public string Title { get; set; }
         [Required] public string Description { get; set; }
         [Required] public string InputFormat { get; set; }
         [Required] public string OutputFormat { get; set; }
         public string FootNote { get; set; }
 
-        [Required, Range(100, 30000)] public int? TimeLimit { get; set; }
-        [Required, Range(1000, 512000)] public int? MemoryLimit { get; set; }
+        [Range(100, 30000)] public int? TimeLimit { get; set; }
+        [Range(1000, 512000)] public int? MemoryLimit { get; set; }
 
         [Required] public bool HasSpecialJudge { get; set; }
         public Program SpecialJudgeProgram { get; set; }
@@ -118,6 +123,7 @@ namespace Shared.DTOs
         {
             Id = problem.Id;
             ContestId = problem.ContestId;
+            Type = problem.Type;
             Title = problem.Title;
             Description = problem.Description;
             InputFormat = problem.InputFormat;

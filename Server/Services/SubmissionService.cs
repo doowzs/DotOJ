@@ -107,7 +107,11 @@ namespace Server.Services
                 }
             }
 
-            if (!Regex.IsMatch(dto.Program.Code, @"^[a-zA-Z0-9\+/]*={0,3}$", RegexOptions.None))
+            if (dto.Program.Language == Language.LabArchive)
+            {
+                throw new ValidationException("Cannot submit lab archive through this API.");
+            }
+            else if (!Regex.IsMatch(dto.Program.Code, @"^[a-zA-Z0-9\+/]*={0,3}$", RegexOptions.None))
             {
                 throw new ValidationException("Invalid program code.");
             }

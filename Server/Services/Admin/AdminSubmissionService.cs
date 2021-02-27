@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Shared;
 using Shared.DTOs;
@@ -52,6 +53,15 @@ namespace Server.Services.Admin
             if (problem is null)
             {
                 throw new ValidationException("Invalid problem ID.");
+            }
+
+            if (dto.Program.Language == Language.LabArchive)
+            {
+                throw new ValidationException("Cannot submit lab archive through this API.");
+            }
+            else if (!Regex.IsMatch(dto.Program.Code, @"^[a-zA-Z0-9\+/]*={0,3}$", RegexOptions.None))
+            {
+                throw new ValidationException("Invalid program code.");
             }
         }
 
@@ -262,6 +272,7 @@ namespace Server.Services.Admin
                         reloadedSubmission.Verdict = Verdict.InQueue;
                     }
                 }
+
                 context.UpdateRange(reloadedSubmissions);
                 await context.SaveChangesAsync();
             });

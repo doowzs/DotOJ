@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Shared.Models
@@ -13,7 +14,8 @@ namespace Shared.Models
         Golang = 5,
         Rust = 6,
         CSharp = 7,
-        Haskell = 8
+        Haskell = 8,
+        LabArchive = 9
     }
 
     public enum Verdict
@@ -49,6 +51,8 @@ namespace Shared.Models
                 Models.Language.Rust => ".rs",
                 Models.Language.CSharp => ".cs",
                 Models.Language.Haskell => ".hs",
+                Models.Language.LabArchive =>
+                    throw new Exception("Lab archive does not have source file extension."),
                 _ => ".txt"
             };
         }
@@ -59,6 +63,8 @@ namespace Shared.Models
             {
                 Models.Language.Python => "# ",
                 Models.Language.Haskell => "-- ",
+                Models.Language.LabArchive =>
+                    throw new Exception("Lab archive does not have source file comment sign."),
                 _ => "// "
             };
         }

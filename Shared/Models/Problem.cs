@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Newtonsoft.Json;
@@ -6,6 +7,12 @@ using Shared.Generics;
 
 namespace Shared.Models
 {
+    public enum ProblemType
+    {
+        OrdinaryProblem = 0,
+        TestKitLabProblem = 1
+    }
+
     [NotMapped]
     public class TestCase
     {
@@ -24,6 +31,9 @@ namespace Shared.Models
         public List<Submission> Submissions { get; set; }
 
         #region Problem Description
+
+        [Required, DefaultValue(ProblemType.OrdinaryProblem)]
+        public ProblemType Type { get; set; }
 
         [Required] public string Title { get; set; }
         [Required, Column(TypeName = "text")] public string Description { get; set; }

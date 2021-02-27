@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Threading.Tasks;
 using Shared.Configs;
@@ -76,24 +74,37 @@ namespace Server.Services.Admin
                 throw new ValidationException("Invalid problem description.");
             }
 
-            if (string.IsNullOrEmpty(dto.InputFormat) || string.IsNullOrEmpty(dto.OutputFormat))
+            if (dto.Type == ProblemType.OrdinaryProblem)
             {
-                throw new ValidationException("Invalid problem input or output format.");
-            }
+                if (string.IsNullOrEmpty(dto.InputFormat) || string.IsNullOrEmpty(dto.OutputFormat))
+                {
+                    throw new ValidationException("Invalid problem input or output format.");
+                }
 
-            if (dto.HasSpecialJudge && dto.SpecialJudgeProgram == null)
-            {
-                throw new ValidationException("Special judge program cannot be null.");
-            }
+                if (!dto.TimeLimit.HasValue)
+                {
+                    throw new ValidationException("Time limit cannot be null.");
+                }
 
-            if (dto.HasHacking)
-            {
-                throw new NotImplementedException("Hacking and Special Judge is not implemented.");
-            }
+                if (!dto.MemoryLimit.HasValue)
+                {
+                    throw new ValidationException("Memory limit cannot be null.");
+                }
 
-            if (dto.SampleCases.Count == 0)
-            {
-                throw new ValidationException("At lease one sample case is required.");
+                if (dto.HasSpecialJudge && dto.SpecialJudgeProgram == null)
+                {
+                    throw new ValidationException("Special judge program cannot be null.");
+                }
+
+                if (dto.HasHacking)
+                {
+                    throw new NotImplementedException("Hacking and Special Judge is not implemented.");
+                }
+
+                if (dto.SampleCases.Count == 0)
+                {
+                    throw new ValidationException("At lease one sample case is required.");
+                }
             }
         }
 
