@@ -29,7 +29,7 @@ namespace Shared.Generics
 
         public async Task<(bool, TValue)> TryGetValueAsync(TKey key)
         {
-            using var locked = await _lock.ReaderLockAsync();
+            using var locked = await _lock.WriterLockAsync();
             if (_cache.TryGetValue(key, out var node))
             {
                 _list.Remove(node);
@@ -44,7 +44,7 @@ namespace Shared.Generics
             bool Predicate(KeyValuePair<TKey, LinkedListNode<LruCacheItem>> p) =>
                 pred(new KeyValuePair<TKey, TValue>(p.Key, p.Value.Value.Value));
 
-            using var locked = await _lock.ReaderLockAsync();
+            using var locked = await _lock.WriterLockAsync();
             if (_cache.Any(Predicate))
             {
                 var pair = _cache.First(Predicate);
