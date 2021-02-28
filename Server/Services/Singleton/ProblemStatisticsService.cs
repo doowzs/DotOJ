@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Shared;
@@ -29,18 +30,18 @@ namespace Server.Services.Singleton
             using var scope = _factory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
             var totalSubmissions = await context.Submissions
-                .Where(s => s.ProblemId == problemId).CountAsync();
+                .Where(s => s.ProblemId == problemId && s.Verdict >= Verdict.Accepted).CountAsync();
             var acceptedSubmissions = await context.Submissions
                 .Where(s => s.ProblemId == problemId && s.Verdict == Verdict.Accepted).CountAsync();
             var totalContestants = await context.Submissions
-                .Where(s => s.ProblemId == problemId)
+                .Where(s => s.ProblemId == problemId && s.Verdict >= Verdict.Accepted)
                 .Select(s => s.UserId).Distinct().CountAsync();
             var acceptedContestants = await context.Submissions
                 .Where(s => s.ProblemId == problemId && s.Verdict == Verdict.Accepted)
                 .Select(s => s.UserId).Distinct().CountAsync();
 
             var byVerdict = await context.Submissions
-                .Where(s => s.ProblemId == problemId)
+                .Where(s => s.ProblemId == problemId && s.Verdict >= Verdict.Accepted)
                 .GroupBy(s => s.Verdict)
                 .Select(g => new {Key = g.Key, Value = g.Count()})
                 .ToDictionaryAsync(p => p.Key, q => q.Value);
@@ -92,31 +93,32 @@ namespace Server.Services.Singleton
             }
 
             var problem = await context.Problems.FindAsync(submission.ProblemId);
-            if (await _cache.TryGetValueAsync(problem.Id) is (true, var statistics))
+            if (await _cache.TryGetValueAsync(problem.Id) is (true, var ps))
             {
                 var attempted = await context.Submissions
                     .AnyAsync(s => s.Id != submission.Id && s.UserId == submission.UserId);
                 var solved = await context.Submissions
                     .AnyAsync(s => s.Id != submission.Id && s.UserId == submission.UserId
                                                          && s.Verdict == Verdict.Accepted);
-                lock (statistics)
+                var byVerdict = new Dictionary<Verdict, int>(ps.ByVerdict);
+                if (byVerdict.ContainsKey(submission.Verdict))
                 {
-                    statistics.TotalSubmissions += 1;
-                    statistics.AcceptedSubmissions += submission.Verdict == Verdict.Accepted ? 1 : 0;
-                    statistics.TotalContestants += attempted ? 0 : 1;
-                    statistics.AcceptedContestants += solved ? 0 : 1;
-
-                    if (statistics.ByVerdict.ContainsKey(submission.Verdict))
-                    {
-                        statistics.ByVerdict[submission.Verdict] += 1;
-                    }
-                    else
-                    {
-                        statistics.ByVerdict[submission.Verdict] = 1;
-                    }
-
-                    statistics.UpdatedAt = DateTime.Now.ToUniversalTime();
+                    byVerdict[submission.Verdict] += 1;
                 }
+                else
+                {
+                    byVerdict[submission.Verdict] = 1;
+                }
+                var statistics = new ProblemStatistics
+                {
+                    TotalSubmissions = ps.TotalSubmissions + 1,
+                    AcceptedSubmissions = ps.AcceptedSubmissions + (submission.Verdict == Verdict.Accepted ? 1 : 0),
+                    TotalContestants = ps.TotalContestants + (attempted ? 0 : 1),
+                    AcceptedContestants = ps.AcceptedContestants + (solved ? 0 : 1),
+                    ByVerdict = ps.ByVerdict,
+                    UpdatedAt = DateTime.Now.ToUniversalTime()
+                };
+                await _cache.TryUpdateAsync(problem.Id, statistics);
             }
             else
             {

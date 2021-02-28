@@ -34,9 +34,11 @@ namespace Server.Services.Admin
     public class AdminSubmissionService : LoggableService<AdminSubmissionService>, IAdminSubmissionService
     {
         private const int PageSize = 50;
+        private readonly ProblemStatisticsService _problemStatisticsService;
 
         public AdminSubmissionService(IServiceProvider provider) : base(provider)
         {
+            _problemStatisticsService = provider.GetRequiredService<ProblemStatisticsService>();
         }
 
         private async Task EnsureSubmissionExists(int id)
@@ -260,6 +262,7 @@ namespace Server.Services.Admin
             foreach (var submission in submissions)
             {
                 submission.ResetVerdictFields();
+                await _problemStatisticsService.InvalidStatisticsAsync(submission.ProblemId);
             }
 
             Context.UpdateRange(submissions);
