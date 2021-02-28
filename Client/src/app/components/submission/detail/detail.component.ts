@@ -16,6 +16,7 @@ export class SubmissionDetailComponent implements OnInit {
   @Input() submissionId: number;
   @Input() standalone: boolean = true;
   public submission: SubmissionViewDto;
+  public unauthorized: boolean = false;
 
   constructor(
     private title: Title,
@@ -31,6 +32,12 @@ export class SubmissionDetailComponent implements OnInit {
       this.title.setTitle('Submission #' + this.submissionId);
     }
     this.service.getSingleAsView(this.submissionId)
-      .subscribe(submission => this.submission = submission);
+      .subscribe(submission => {
+        this.submission = submission;
+      }, error => {
+        if (error.status === 401) {
+          this.unauthorized = true;
+        }
+      });
   }
 }

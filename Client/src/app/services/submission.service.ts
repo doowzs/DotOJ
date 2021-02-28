@@ -80,8 +80,11 @@ export class SubmissionService {
   }
 
   public getSingleAsView(submissionId: number): Observable<SubmissionViewDto> {
-    return this.http.get<SubmissionViewDto>('/submission/' + submissionId.toString() + '/detail')
-      .pipe(map(mapSubmissionViewDtoFields));
+    return this.http.get<SubmissionViewDto>('/submission/' + submissionId.toString() + '/detail', {
+      headers: {
+        'X-Skip-Error-Redirect': 'true' // authorize.interceptor.ts
+      }
+    }).pipe(map(mapSubmissionViewDtoFields));
   }
 
   public createSingle(problemId: number, program: Program): Observable<SubmissionInfoDto> {

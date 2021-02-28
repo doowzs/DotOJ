@@ -5,6 +5,8 @@ import { AuthorizeService } from './authorize.service';
 import { catchError, mergeMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 
+export const SkipErrorRedirectHeader = 'X-Skip-Error-Redirect';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -32,12 +34,18 @@ export class AuthorizeInterceptor implements HttpInterceptor {
       });
     }
 
-    return next.handle(req).pipe(catchError(err => {
-      if (err.status === 401) {
-        this.router.navigate(['/authentication/login']);
-      }
-      return throwError(err);
-    }));
+    if (req.headers.has(SkipErrorRedirectHeader)) {
+      const headers = req.headers.delete(SkipErrorRedirectHeader);
+      return next.handle(req.clone({headers}));
+    } else {
+      return next.handle(req).pipe(catchError(err => {
+        if (err.status === 401) {
+          console.log('Unauthorized access, redirect user to login.');
+          this.router.navigate(['/authentication/login']);
+        }
+        return throwError(err);
+      }));
+    }
   }
 
   private isSameOriginUrl(req: any) {

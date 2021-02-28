@@ -9,20 +9,26 @@
     <span aria-hidden="true">&times;</span>
   </button>
 </div>
-<div class="modal-body p-0" *ngIf="submission">
-  <div class="m-3">
-    <h3>Info</h3>
-    <pre>{{ submission.comments }}</pre>
-  </div>
-  <div class="m-3" *ngIf="!!submission.message">
-    <h3>Message</h3>
-    <pre>{{ submission.message }}</pre>
-  </div>
-  <div class="m-3" *ngIf="!!submission.program.languageInfo.mode">
-    <h3>Source</h3>
-    <div [ngStyle]="{'height': standalone ? 'calc(100vh - 79px)' : '80vh'}">
-      <editor [disabled]="true" [submissionId]="submissionId" [program]="submission.program"></editor>
+<div class="modal-body p-3">
+  <ng-container *ngIf="submission">
+    <div>
+      <h3>Info</h3>
+      <pre>{{ submission.comments }}</pre>
     </div>
-  </div>
+    <div *ngIf="!!submission.message">
+      <h3>Message</h3>
+      <pre>{{ submission.message }}</pre>
+    </div>
+    <div *ngIf="!!submission.program.languageInfo.mode">
+      <h3>Source</h3>
+      <div [ngStyle]="{'height': standalone ? 'calc(100vh - 79px)' : '80vh'}">
+        <editor [disabled]="true" [submissionId]="submissionId" [program]="submission.program"></editor>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="unauthorized">
+    <h3>Unauthorized</h3>
+    <p>Sorry, you are not authorized to view this submission.</p>
+  </ng-container>
 </div>
 
