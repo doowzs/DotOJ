@@ -149,7 +149,7 @@ namespace Server
             services.AddHostedService<PlagiarismCleanerBackgroundService>();
 
             // In production, the Angular files will be served from this directory
-            services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/dist"; });
+            services.AddSpaStaticFiles(configuration => { configuration.RootPath = "wwwroot/dist"; });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

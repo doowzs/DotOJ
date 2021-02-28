@@ -351,7 +351,7 @@ namespace Server.Services
                     throw new BadHttpRequestException("BadRequest: Zip archive is empty.");
                 }
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw new BadHttpRequestException($"BadRequest: File is not a valid zip archive.");
             }
