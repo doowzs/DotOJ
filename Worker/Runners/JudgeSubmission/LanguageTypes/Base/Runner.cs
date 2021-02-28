@@ -43,209 +43,16 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
             Box = box;
             _options = provider.GetRequiredService<IOptions<WorkerConfig>>();
             Logger = provider.GetRequiredService<ILogger<Runner>>();
-        }
-
-        public async Task<JudgeResult> RunSubmissionAsync()
-        {
+            
             if (!Directory.Exists(Jail))
             {
                 Directory.CreateDirectory(Jail);
             }
-            var result = await InnerRunSubmissionAsync();
-            return result;
         }
 
-        protected abstract Task<bool> CompileAsync();
-
-        private async Task PrepareCheckerAsync()
+        public async Task<JudgeResult> RunSubmissionAsync()
         {
-            // Check if a pre-compiled binary checker exists.
-            var binary = Path.Combine(_options.Value.DataPath, "tests", Problem.Id.ToString(), "checker");
-            if (File.Exists(binary) && File.GetLastWriteTimeUtc(binary) > Problem.UpdatedAt)
-            {
-                File.Copy(binary, Path.Combine(Root, "checker"));
-                return;
-            }
-
-            File.Copy("Resources/testlib/testlib.h", Path.Combine(Root, "testlib.h"));
-            var checker = Path.Combine(Root, "checker.cpp");
-            await using (var stream = new FileStream(checker, FileMode.Create, FileAccess.Write))
-            {
-                await stream.WriteAsync(Convert.FromBase64String(Problem.SpecialJudgeProgram.Code));
-            }
-
-            var options = LanguageOptions.LanguageOptionsDict[Language.Cpp].CompilerOptions;
-            var exitCode = await Box.ExecuteAsync(
-                $"/usr/bin/g++ {options} -o checker checker.cpp",
-                bind: new[] {"/etc"},
-                chroot: "jail",
-                stderr: "compiler_output",
-                proc: 120,
-                time: 15.0f,
-                memory: 512000
-            );
-            if (exitCode != 0)
-            {
-                throw new Exception($"Prepare checker error ExitCode={exitCode}.\n"
-                                    + (await Box.ReadFileAsync("compiler_output")).Substring(0, 4096));
-            }
-
-            // Cache the binary file for later usage.
-            try
-            {
-                File.Copy(Path.Combine(Root, "checker"), binary, true);
-            }
-            catch (Exception)
-            {
-                // Do nothing on a failed copy.
-            }
-        }
-
-        private async Task PrepareTestCaseAsync(bool inline, TestCase testCase)
-        {
-            var file = Path.Combine(Jail, "input");
-            await using var stream = new FileStream(file, FileMode.Create, FileAccess.Write);
-            if (inline)
-            {
-                await using var inputWriter = new StreamWriter(stream);
-                await inputWriter.WriteAsync(Encoding.UTF8.GetString(Convert.FromBase64String(testCase.Input)));
-            }
-            else
-            {
-                var dataFile = Path.Combine(_options.Value.DataPath, "tests", Problem.Id.ToString(), testCase.Input);
-                await using var dataStream = new FileStream(dataFile, FileMode.Open, FileAccess.Read);
-                await dataStream.CopyToAsync(stream);
-            }
-        }
-
-        protected virtual Task ExecuteProgramAsync(string meta, int bytes)
-        {
-            return Task.CompletedTask;
-        }
-
-        private async Task<Run> RunTestCaseAsync(bool inline, int index, TestCase testCase)
-        {
-            var run = new Run
-            {
-                Check = false,
-                Inline = inline,
-                Index = index,
-                Stdout = "",
-                Stderr = "",
-                Verdict = Verdict.Accepted,
-                Time = null,
-                Memory = null,
-                Message = ""
-            };
-
-            var meta = Path.Combine(Root, "meta");
-            var bytes = 0;
-            if (inline)
-            {
-                bytes = testCase.Output.Length * 3 / 4;
-            }
-            else
-            {
-                var answer = Path.Combine(_options.Value.DataPath, "tests", Problem.Id.ToString(), testCase.Output);
-                var info = new FileInfo(answer);
-                bytes = (int) info.Length;
-            }
-
-            await PrepareTestCaseAsync(inline, testCase);
-            await ExecuteProgramAsync(meta, Math.Max(bytes * 2, 10 * 1024 * 1024));
-
-            var output = Path.Combine(Jail, "output");
-            await using (var stream = new FileStream(output, FileMode.Open, FileAccess.Read))
-            using (var reader = new StreamReader(stream))
-            {
-                run.Stdout = await reader.ReadToEndAsync();
-            }
-
-            var stderr = Path.Combine(Jail, "stderr");
-            await using (var stream = new FileStream(stderr, FileMode.Open, FileAccess.Read))
-            using (var reader = new StreamReader(stream))
-            {
-                run.Stderr = await reader.ReadToEndAsync();
-            }
-
-            var dict = new Dictionary<string, string>();
-            var lines = await File.ReadAllLinesAsync(meta);
-            foreach (var line in lines)
-            {
-                var idx = line.IndexOf(':');
-                if (idx >= 0)
-                {
-                    var key = line.Substring(0, idx);
-                    var value = line.Substring(idx + 1);
-                    if (!dict.ContainsKey(key))
-                    {
-                        dict.Add(key, value);
-                    }
-                }
-            }
-
-            if (dict.ContainsKey("status"))
-            {
-                switch (dict["status"])
-                {
-                    case "SG":
-                        if (dict.ContainsKey("exitsig"))
-                        {
-                            if (dict["exitsig"].Equals("25"))
-                            {
-                                run.Verdict = Verdict.WrongAnswer;
-                                run.Message = $"Killed by signal {dict["exitsig"]} (output longer than 2x answer).";
-                            }
-                            else
-                            {
-                                if (dict["exitsig"].Equals("11"))
-                                {
-                                    run.Message = $"Killed by signal {dict["exitsig"]} (SIGSEGV).";
-                                }
-                                else
-                                {
-                                    run.Message = $"Killed by signal {dict["exitsig"]}.";
-                                }
-
-                                goto case "RE"; // fall through
-                            }
-                        }
-
-                        break;
-                    case "RE":
-                        run.Verdict = dict.ContainsKey("cg-oom-killed")
-                            ? Verdict.MemoryLimitExceeded
-                            : Verdict.RuntimeError;
-                        break;
-                    case "TO":
-                        run.Verdict = Verdict.TimeLimitExceeded;
-                        if (dict.ContainsKey("time-wall") && float.TryParse(dict["time-wall"], out var wallTime))
-                        {
-                            run.Time = (int) (Math.Min(wallTime, TimeLimit) * 1000);
-                        }
-
-                        break;
-                    case "XX":
-                        throw new Exception("Isolate internal error XX in meta file.");
-                }
-            }
-
-            if (!run.Time.HasValue && float.TryParse(dict["time"], out var time))
-            {
-                run.Time = (int) (Math.Min(time, TimeLimit) * 1000);
-            }
-
-            if (int.TryParse(dict["cg-mem"], out var memory))
-            {
-                run.Memory = Math.Min(memory, MemoryLimit);
-            }
-
-            return run;
-        }
-
-        private async Task<JudgeResult> InnerRunSubmissionAsync()
-        {
-            JudgeResult result = null;
+            JudgeResult result;
             Stopwatch stopWatch = new Stopwatch();
             if (Problem.TestCases.Count <= 0)
             {
@@ -367,6 +174,191 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
                 Score = count * 100 / total,
                 Message = string.Empty
             };
+        }
+
+        protected abstract Task<bool> CompileAsync();
+
+        private async Task PrepareCheckerAsync()
+        {
+            // Check if a pre-compiled binary checker exists.
+            var binary = Path.Combine(_options.Value.DataPath, "tests", Problem.Id.ToString(), "checker");
+            if (File.Exists(binary) && File.GetLastWriteTimeUtc(binary) > Problem.UpdatedAt)
+            {
+                File.Copy(binary, Path.Combine(Root, "checker"));
+                return;
+            }
+
+            File.Copy("Resources/testlib/testlib.h", Path.Combine(Root, "testlib.h"));
+            var checker = Path.Combine(Root, "checker.cpp");
+            await using (var stream = new FileStream(checker, FileMode.Create, FileAccess.Write))
+            {
+                await stream.WriteAsync(Convert.FromBase64String(Problem.SpecialJudgeProgram.Code));
+            }
+
+            var options = LanguageOptions.LanguageOptionsDict[Language.Cpp].CompilerOptions;
+            var exitCode = await Box.ExecuteAsync(
+                $"/usr/bin/g++ {options} -o checker checker.cpp",
+                bind: new[] {"/etc"},
+                chroot: "jail",
+                stderr: "compiler_output",
+                proc: 120,
+                time: 15.0f,
+                memory: 512000
+            );
+            if (exitCode != 0)
+            {
+                throw new Exception($"Prepare checker error ExitCode={exitCode}.\n"
+                                    + (await Box.ReadFileAsync("compiler_output")).Substring(0, 4096));
+            }
+
+            // Cache the binary file for later usage.
+            try
+            {
+                File.Copy(Path.Combine(Root, "checker"), binary, true);
+            }
+            catch (Exception)
+            {
+                // Do nothing on a failed copy.
+            }
+        }
+
+        private async Task PrepareTestCaseAsync(bool inline, TestCase testCase)
+        {
+            var file = Path.Combine(Jail, "input");
+            await using var stream = new FileStream(file, FileMode.Create, FileAccess.Write);
+            if (inline)
+            {
+                await using var inputWriter = new StreamWriter(stream);
+                await inputWriter.WriteAsync(Encoding.UTF8.GetString(Convert.FromBase64String(testCase.Input)));
+            }
+            else
+            {
+                var dataFile = Path.Combine(_options.Value.DataPath, "tests", Problem.Id.ToString(), testCase.Input);
+                await using var dataStream = new FileStream(dataFile, FileMode.Open, FileAccess.Read);
+                await dataStream.CopyToAsync(stream);
+            }
+        }
+
+        protected abstract Task ExecuteProgramAsync(string meta, int bytes);
+
+        private async Task<Run> RunTestCaseAsync(bool inline, int index, TestCase testCase)
+        {
+            var run = new Run
+            {
+                Check = false,
+                Inline = inline,
+                Index = index,
+                Stdout = "",
+                Stderr = "",
+                Verdict = Verdict.Accepted,
+                Time = null,
+                Memory = null,
+                Message = ""
+            };
+
+            var meta = Path.Combine(Root, "meta");
+            var bytes = 0;
+            if (inline)
+            {
+                bytes = testCase.Output.Length * 3 / 4;
+            }
+            else
+            {
+                var answer = Path.Combine(_options.Value.DataPath, "tests", Problem.Id.ToString(), testCase.Output);
+                var info = new FileInfo(answer);
+                bytes = (int) info.Length;
+            }
+
+            await PrepareTestCaseAsync(inline, testCase);
+            await ExecuteProgramAsync(meta, Math.Max(bytes * 2, 10 * 1024 * 1024));
+
+            var output = Path.Combine(Jail, "output");
+            await using (var stream = new FileStream(output, FileMode.Open, FileAccess.Read))
+            using (var reader = new StreamReader(stream))
+            {
+                run.Stdout = await reader.ReadToEndAsync();
+            }
+
+            var stderr = Path.Combine(Jail, "stderr");
+            await using (var stream = new FileStream(stderr, FileMode.Open, FileAccess.Read))
+            using (var reader = new StreamReader(stream))
+            {
+                run.Stderr = await reader.ReadToEndAsync();
+            }
+
+            var dict = new Dictionary<string, string>();
+            var lines = await File.ReadAllLinesAsync(meta);
+            foreach (var line in lines)
+            {
+                var idx = line.IndexOf(':');
+                if (idx >= 0)
+                {
+                    var key = line.Substring(0, idx);
+                    var value = line.Substring(idx + 1);
+                    if (!dict.ContainsKey(key))
+                    {
+                        dict.Add(key, value);
+                    }
+                }
+            }
+
+            if (dict.ContainsKey("status"))
+            {
+                switch (dict["status"])
+                {
+                    case "SG":
+                        if (dict.ContainsKey("exitsig"))
+                        {
+                            if (dict["exitsig"].Equals("25"))
+                            {
+                                run.Verdict = Verdict.WrongAnswer;
+                                run.Message = $"Killed by signal {dict["exitsig"]} (output longer than 2x answer).";
+                            }
+                            else
+                            {
+                                if (dict["exitsig"].Equals("11"))
+                                {
+                                    run.Message = $"Killed by signal {dict["exitsig"]} (SIGSEGV).";
+                                }
+                                else
+                                {
+                                    run.Message = $"Killed by signal {dict["exitsig"]}.";
+                                }
+
+                                goto case "RE"; // fall through
+                            }
+                        }
+
+                        break;
+                    case "RE":
+                        run.Verdict = dict.ContainsKey("cg-oom-killed")
+                            ? Verdict.MemoryLimitExceeded
+                            : Verdict.RuntimeError;
+                        break;
+                    case "TO":
+                        run.Verdict = Verdict.TimeLimitExceeded;
+                        if (dict.ContainsKey("time-wall") && float.TryParse(dict["time-wall"], out var wallTime))
+                        {
+                            run.Time = (int) (Math.Min(wallTime, TimeLimit) * 1000);
+                        }
+
+                        break;
+                    case "XX":
+                        throw new Exception("Isolate internal error XX in meta file.");
+                }
+            }
+
+            if (!run.Time.HasValue && float.TryParse(dict["time"], out var time))
+            {
+                run.Time = (int) (Math.Min(time, TimeLimit) * 1000);
+            }
+
+            if (int.TryParse(dict["cg-mem"], out var memory))
+            {
+                run.Memory = Math.Min(memory, MemoryLimit);
+            }
+
+            return run;
         }
     }
 }

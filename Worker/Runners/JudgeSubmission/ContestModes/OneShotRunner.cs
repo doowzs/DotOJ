@@ -5,10 +5,11 @@ using Worker.Models;
 
 namespace Worker.Runners.JudgeSubmission.ContestModes
 {
-    public class OneShotRunner : ContestRunnerBase
+    public sealed class OneShotRunner : ContestRunnerBase
     {
-        public OneShotRunner(Contest contest, Problem problem, Submission submission, IServiceProvider provider)
-            : base(contest, problem, submission, provider)
+        public OneShotRunner
+            (Contest contest, Problem problem, Submission submission, Box box, IServiceProvider provider)
+            : base(contest, problem, submission, box, provider)
         {
             BeforeStartDelegate = BeforeStartImpl;
             OnRunFailedDelegate = PracticeRunner.OnRunFailedImpl;

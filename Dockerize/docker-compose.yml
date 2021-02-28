@@ -73,6 +73,7 @@ services:
       - ${DATA_PATH_HOST}/aspnet:/root/.aspnet
       - ${DATA_PATH_HOST}/static:/app/wwwroot/static
       - ${DATA_PATH_HOST}/data/tests:/data/tests
+      - ${DATA_PATH_HOST}/data/submissions:/data/submissions
       - ${DATA_PATH_HOST}/data/plagiarisms:/data/plagiarisms
     <<: *default-logging
     networks:
@@ -85,6 +86,7 @@ services:
     volumes:
       - ./worker/appsettings.json:/app/appsettings.json:ro
         - ${DATA_PATH_HOST}/data/tests:/data/tests:ro
+        - ${DATA_PATH_HOST}/data/submissions:/data/submissions:ro
         - ${DATA_PATH_HOST}/data/plagiarisms:/data/plagiarisms
     <<: *default-logging
     networks:

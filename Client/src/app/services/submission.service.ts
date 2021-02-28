@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpParams, HttpRequest } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import { map, take, tap } from 'rxjs/operators';
 
@@ -91,11 +91,26 @@ export class SubmissionService {
     }).pipe(map(mapSubmissionInfoDtoFields), tap(data => this.newSubmission.next(data)));
   }
 
-  public getSubmitToken(problemId: number): Observable<string> {
-    return this.http.get<string>('/submission/testkit/token', {
+  public getLabSubmitToken(problemId: number): Observable<string> {
+    return this.http.get<string>('/submission/lab/token', {
       params: {
         problemId: problemId.toString()
       }
     });
+  }
+
+  public createLabSubmission(token: string, file: File): Observable<HttpEvent<any>> {
+    const formData = new FormData();
+    formData.append('TOKEN', token);
+    formData.append('FILE', file, file.name);
+
+    const endpoint = '/submission/lab';
+    const options = {
+      params: new HttpParams(),
+      reportProgress: true
+    };
+
+    const request = new HttpRequest('POST', endpoint, formData, options);
+    return this.http.request(request);
   }
 }

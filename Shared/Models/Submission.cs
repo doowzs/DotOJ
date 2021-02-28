@@ -66,6 +66,7 @@ namespace Shared.Models
 
         public void ResetVerdictFields()
         {
+            Verdict = Verdict.Pending;
             Time = Memory = null;
             FailedOn = null;
             Score = Progress = null;
@@ -81,8 +82,11 @@ namespace Shared.Models
             var comment = omitCommentSign ? "" : Program.GetSourceFileCommentSign();
             var builder = new StringBuilder();
             builder.AppendLine(comment + $"Submission  #{Id}");
-            builder.AppendLine(comment + $"User ID:    {UserId}");
-            if (User is not null)
+            if (User is null)
+            {
+                builder.AppendLine(comment + $"User ID:    {UserId}");
+            }
+            else
             {
                 builder.AppendLine(comment + $"Contestant: {User.ContestantId} {User.ContestantName}");
             }

@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 using Shared.Configs;
 using Shared.Models;
 
-namespace Shared.Archives.v1
+namespace Shared.Archives.v2
 {
     public static class SubmissionsArchive
     {

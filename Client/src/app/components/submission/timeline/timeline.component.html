@@ -1,4 +1,4 @@
-<ng-container *ngIf="submissions">
+<ng-container *ngIf="problem && submissions">
   <div *ngIf="submissions.length === 0; else submissionsTable" class="text-center text-secondary my-3">
     <ng-container *ngIf="begun; else notBegun">
       <h3>
@@ -18,7 +18,8 @@
   <ng-template #submissionsTable>
     <div class="my-3">
       <div class="alert alert-info" *ngIf="this.averageTime != null && this.averageTime >= 0">
-        <fa-icon [icon]="faClock"></fa-icon>Average waiting time:
+        <fa-icon [icon]="faClock"></fa-icon>
+        Average waiting time:
         <span *ngIf="this.averageTime >= 60; else lessThanAMinute">
           {{ (this.averageTime - (this.averageTime % 60)) / 60 + 1 }} minutes
         </span>
@@ -31,11 +32,12 @@
         <thead>
         <tr>
           <th scope="col">#</th>
-          <th scope="col" *ngIf="showSampleFailedMark()"></th>
-          <th scope="col" *ngIf="showMessageAvailableMark()"></th>
           <th scope="col">Verdict</th>
-          <th scope="col">Time</th>
-          <th scope="col">Memory</th>
+          <th scope="col">Score</th>
+          <ng-container *ngIf="problem.type === 0">
+            <th scope="col">Time</th>
+            <th scope="col">Memory</th>
+          </ng-container>
           <th scope="col">Lang</th>
           <th scope="col">Submitted</th>
         </tr>
@@ -43,18 +45,18 @@
         <tbody>
         <tr *ngFor="let submission of submissions">
           <th scope="row">{{ submission.id }}</th>
-          <td *ngIf="showSampleFailedMark()">
-            <span *ngIf="submission.failedOn === 0" ngbTooltip="Failed on samples" placement="top">X</span>
-          </td>
-          <td *ngIf="showMessageAvailableMark()">
-            <span *ngIf="submission.hasMessage" ngbTooltip="Message available" placement="top">M</span>
-          </td>
           <td>
             <verdict [submission]="submission"></verdict>
           </td>
-          <td [ngClass]="{'text-danger': !!problem && submission.time >= problem.timeLimit}">{{ submission.time }}</td>
-          <td
-            [ngClass]="{'text-danger': !!problem && submission.memory >= problem.memoryLimit}">{{ submission.memory }}</td>
+          <td>{{ submission.score }}</td>
+          <ng-container *ngIf="problem.type === 0">
+            <td [ngClass]="{'text-danger': !!problem && submission.time >= problem.timeLimit}">
+              {{ submission.time }}
+            </td>
+            <td [ngClass]="{'text-danger': !!problem && submission.memory >= problem.memoryLimit}">
+              {{ submission.memory }}
+            </td>
+          </ng-container>
           <td>
             <ng-container *ngIf="submission.viewable; else notViewable">
               <a [href]="'/submission/' + submission.id"

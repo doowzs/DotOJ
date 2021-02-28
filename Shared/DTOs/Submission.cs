@@ -17,7 +17,7 @@ namespace Shared.DTOs
         public string ContestantName { get; }
         public int ProblemId { get; }
         public Language Language { get; }
-        public int CodeBytes { get; }
+        public int? CodeBytes { get; }
         public Verdict Verdict { get; }
         public int? Time { get; }
         public int? Memory { get; }
@@ -38,7 +38,7 @@ namespace Shared.DTOs
             ContestantName = submission.User.ContestantName;
             ProblemId = submission.ProblemId;
             Language = submission.Program.Language.GetValueOrDefault();
-            CodeBytes = 3 * count / 4 - padding;
+            CodeBytes = submission.Program.Language == Language.LabArchive ? null : (3 * count / 4 - padding);
             Verdict = submission.Verdict;
             Time = submission.Time;
             Memory = submission.Memory;

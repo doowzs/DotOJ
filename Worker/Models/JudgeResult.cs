@@ -34,5 +34,31 @@ namespace Worker.Models
             FailedOn = null, Score = 0,
             Message = "Unknown program language."
         };
+
+        public static JudgeResult NewFailedResult(string message)
+        {
+            return new JudgeResult
+            {
+                Verdict = Verdict.Failed,
+                FailedOn = 0,
+                Time = null,
+                Memory = null,
+                Score = 0,
+                Message = message
+            };
+        }
+
+        public static JudgeResult NewRejectedResult(string message)
+        {
+            return new JudgeResult
+            {
+                Verdict = Verdict.Rejected,
+                FailedOn = 0,
+                Time = null,
+                Memory = null,
+                Score = 0,
+                Message = message
+            };
+        }
     }
 }

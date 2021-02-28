@@ -26,5 +26,6 @@ export const Languages: LanguageInfo[] = [
   { code: 5, factor: 2.0, name: 'Golang', mode: 'golang', option: '' },
   { code: 6, factor: 2.5, name: 'Rust', mode: 'rust', option: '-O' },
   { code: 7, factor: 1.5, name: 'C# 9.0', mode: 'csharp', option: '/o+ /d:ONLINE_JUDGE' },
-  { code: 8, factor: 2.5, name: 'Haskell', mode: 'haskell', option: '-v0 -O' }
+  { code: 8, factor: 2.5, name: 'Haskell', mode: 'haskell', option: '-v0 -O' },
+  { code: 9, factor: 0.0, name: 'Archive', mode: null, option: '' }
 ];

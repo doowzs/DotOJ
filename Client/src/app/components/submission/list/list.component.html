@@ -51,6 +51,7 @@
       <th scope="col">Contestant</th>
       <th scope="col">Problem</th>
       <th scope="col">Verdict</th>
+      <th scope="col">Score</th>
       <th scope="col">Time</th>
       <th scope="col">Memory</th>
       <th scope="col">Language</th>
@@ -66,6 +67,7 @@
       <td>
         <verdict [submission]="submission"></verdict>
       </td>
+      <td>{{ submission.score }}</td>
       <td>{{ submission.time }}</td>
       <td>{{ submission.memory }}</td>
       <td>

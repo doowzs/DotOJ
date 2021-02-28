@@ -116,14 +116,11 @@ namespace Server.Controllers.Api.v1
             }
             catch (TooManyRequestsException e)
             {
-                return new ObjectResult(e.Message)
-                {
-                    StatusCode = StatusCodes.Status429TooManyRequests
-                };
+                return StatusCode(StatusCodes.Status429TooManyRequests, e.Message);
             }
         }
 
-        [HttpGet("testkit/token")]
+        [HttpGet("lab/token")]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -142,6 +139,41 @@ namespace Server.Controllers.Api.v1
             catch (Exception e)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+        }
+
+        [AllowAnonymous]
+        [HttpPost("lab")]
+        [RequestSizeLimit(10 * 1024 * 1024)]
+        [RequestFormLimits(MultipartBodyLengthLimit = 10 * 1024 * 1024)]
+        [Consumes("multipart/form-data")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
+        public async Task<ActionResult<string>> CreateTestKitLabSubmission
+            ([FromForm(Name = "TOKEN")] string token, [FromForm(Name = "FILE")] IFormFile file)
+        {
+            try
+            {
+                return await _service.CreateTestKitLabSubmissionAsync(token, file);
+            }
+            catch (BadHttpRequestException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized(e.Message);
+            }
+            catch (TooManyRequestsException e)
+            {
+                return StatusCode(StatusCodes.Status429TooManyRequests, $"TooManyRequests: {e.Message}");
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"InternalServerError: {e.Message}");
             }
         }
     }

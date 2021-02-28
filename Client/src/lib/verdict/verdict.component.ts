@@ -8,6 +8,7 @@ import { SubmissionInfoDto, SubmissionViewDto } from '../../interfaces/submissio
   styleUrls: ['./verdict.component.css']
 })
 export class VerdictComponent {
+  @Input() simple: boolean = true;
   @Input() badge: boolean = false;
   @Input() submission: SubmissionInfoDto | SubmissionViewDto;
 

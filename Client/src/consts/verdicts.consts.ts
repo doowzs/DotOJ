@@ -1,6 +1,4 @@
-﻿import { SubmissionEditDto, SubmissionInfoDto, SubmissionViewDto } from '../interfaces/submission.interfaces';
-
-export enum VerdictStage {
+﻿export enum VerdictStage {
   ERROR, RUNNING, ACCEPTED, REJECTED
 }
 
@@ -15,12 +13,16 @@ export interface VerdictInfo {
 
 export const Verdicts: VerdictInfo[] = [
   {
+    code: -3, name: 'Rejected', showCase: false, stage: VerdictStage.REJECTED,
+    color: 'secondary', explain: 'This submission cannot be judged and is rejected.'
+  },
+  {
     code: -2, name: 'Voided', showCase: false, stage: VerdictStage.ERROR,
     color: 'secondary', explain: 'This submission is voided by a newer submission or manually.'
   },
   {
     code: -1, name: 'Service Failed', showCase: false, stage: VerdictStage.ERROR,
-    color: 'secondary', explain: 'An internal error occurdanger in the judging service.'
+    color: 'secondary', explain: 'An internal error occurred in the judging service.'
   },
   {
     code: 0, name: 'Pending', showCase: false, stage: VerdictStage.RUNNING,

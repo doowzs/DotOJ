@@ -64,8 +64,6 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
         this.contest = contest;
         this.begun = moment().isAfter(this.contest.beginTime);
       });
-    this.problemService.getSingle(this.problemId, false)
-      .subscribe(problem => this.problem = problem);
     interval(2000)
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
@@ -93,6 +91,7 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
       this.totalPages = 1;
       this.submissions = null;
       this.averageTime = null;
+      this.loadProblem(changes.problemId.currentValue);
       this.loadSubmissions(changes.problemId.currentValue);
     }
   }
@@ -105,6 +104,11 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
   public changePage(pageIndex: number): void {
     this.pageIndex = pageIndex;
     this.loadSubmissions(this.problemId);
+  }
+
+  private loadProblem(problemId: number): void {
+    this.problemService.getSingle(problemId, false)
+      .subscribe(problem => this.problem = problem);
   }
 
   private loadSubmissions(problemId: number): void {

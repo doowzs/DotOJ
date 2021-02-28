@@ -308,7 +308,7 @@ namespace Server.Services.Admin
                     .Include(s => s.User)
                     .ToListAsync();
             }
-            return await Shared.Archives.v1.SubmissionsArchive.CreateAsync(submissions, _options);
+            return await Shared.Archives.v2.SubmissionsArchive.CreateAsync(submissions, _options);
         }
 
         public async Task<List<PlagiarismInfoDto>> GetProblemPlagiarismInfosAsync(int id)

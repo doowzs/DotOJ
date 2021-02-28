@@ -158,11 +158,18 @@ namespace Shared.Archives.v2.Problems
             foreach (var entry in archive.Entries)
             {
                 var filename = entry.FullName;
-                if (filename.StartsWith(prefix))
+                if (filename.StartsWith(prefix) && !filename.EndsWith('/'))
                 {
                     dataFiles.Add(filename);
                 }
             }
+
+            var manifest = dataFiles.FirstOrDefault(f => f.EndsWith("manifest.json"));
+            if (manifest == null)
+            {
+                throw new ValidationException("manifest.json does not exist in zip archive.");
+            }
+            prefix = manifest.Substring(0, manifest.Length - "manifest.json".Length);
 
             #endregion
 

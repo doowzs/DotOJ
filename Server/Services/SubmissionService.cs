@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Shared;
@@ -29,6 +32,7 @@ namespace Server.Services
         public Task<SubmissionViewDto> GetSubmissionViewAsync(int id);
         public Task<SubmissionInfoDto> CreateSubmissionAsync(SubmissionCreateDto dto);
         public Task<string> GetTestKitLabSubmitTokenAsync(int problemId);
+        public Task<string> CreateTestKitLabSubmissionAsync(string token, IFormFile file);
     }
 
     public class SubmissionService : LoggableService<SubmissionService>, ISubmissionService
@@ -303,8 +307,8 @@ namespace Server.Services
 
             await Context.Entry(submission).Reference(s => s.User).LoadAsync();
             var result = new SubmissionInfoDto(submission, true);
-            await LogInformation($"CreateSubmission ProblemId={result.ProblemId} " +
-                                 $"Language={result.Language} Length={result.CodeBytes}");
+            await LogInformation($"CreateSubmission Id={result.Id} ProblemId={result.ProblemId}" +
+                                 $" ContestantId={user.ContestantId} Language={result.Language}");
             return result;
         }
 
@@ -318,6 +322,108 @@ namespace Server.Services
 
             var user = await Manager.GetUserAsync(Accessor.HttpContext.User);
             return await _tokenService.GetOrGenerateToken(user.Id, problemId);
+        }
+
+        public async Task<string> CreateTestKitLabSubmissionAsync(string token, IFormFile file)
+        {
+            var (userId, problemId) = await _tokenService.ConsumeTokenAsync(token);
+            if (userId is null)
+            {
+                throw new UnauthorizedAccessException("Unauthorized: Invalid submit token.");
+            }
+
+            try
+            {
+                var stream = file.OpenReadStream();
+                var archive = new ZipArchive(stream, ZipArchiveMode.Read);
+                if (archive.Entries.Count == 0)
+                {
+                    throw new BadHttpRequestException("BadRequest: Zip archive is empty.");
+                }
+            }
+            catch (Exception e)
+            {
+                throw new BadHttpRequestException($"BadRequest: File is not a valid zip archive.");
+            }
+
+            var user = await Context.Users.FindAsync(userId);
+            if (user is null)
+            {
+                throw new Exception("User does not exist.");
+            }
+
+            var problem = await Context.Problems.FindAsync(problemId);
+            if (problem is null)
+            {
+                throw new Exception("Problem does not exist.");
+            }
+            else if (problem.Type != ProblemType.TestKitLab)
+            {
+                throw new BadHttpRequestException("BadRequest: Problem does not accept submission through this API.");
+            }
+
+            var contest = await Context.Contests.FindAsync(problem.ContestId);
+            var lastSubmission = await Context.Submissions
+                .Where(s => s.UserId == user.Id)
+                .OrderByDescending(s => s.Id)
+                .FirstOrDefaultAsync();
+            if (lastSubmission != null && (DateTime.Now.ToUniversalTime() - lastSubmission.CreatedAt).TotalSeconds < 5)
+            {
+                throw new TooManyRequestsException("Cannot submit twice between 5 seconds.");
+            }
+
+            var submission = new Submission
+            {
+                UserId = userId,
+                ProblemId = problemId,
+                Program = new Shared.Models.Program
+                {
+                    Language = Language.LabArchive,
+                    Code = Convert.ToBase64String(Encoding.UTF8.GetBytes(file.FileName))
+                },
+                Verdict = Verdict.Pending,
+                Hidden = DateTime.Now.ToUniversalTime() < contest.BeginTime,
+                Time = null,
+                Memory = null,
+                FailedOn = null,
+                Score = null,
+                Progress = null,
+                Message = null,
+                JudgedBy = null,
+                JudgedAt = null
+            };
+            await Context.Submissions.AddAsync(submission);
+            await Context.SaveChangesAsync();
+
+
+            var folder = Path.Combine(Config.Value.DataPath, "submissions", submission.Id.ToString());
+            if (!Directory.Exists(folder))
+            {
+                Directory.CreateDirectory(folder);
+            }
+
+            await using (var stream = new FileStream(Path.Combine(folder, file.FileName), FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            _ = Task.Run(async () =>
+            {
+                using var scope = Provider.CreateScope();
+                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                var producer = scope.ServiceProvider.GetRequiredService<JobRequestProducer>();
+                var reloadedSubmission = await context.Submissions.FindAsync(submission.Id);
+                if (await producer.SendAsync(JobType.JudgeSubmission, reloadedSubmission.Id, 1))
+                {
+                    reloadedSubmission.Verdict = Verdict.InQueue;
+                    context.Update(reloadedSubmission);
+                    await context.SaveChangesAsync();
+                }
+            });
+
+            await LogInformation($"CreateSubmission Id={submission.Id} ProblemId={problem.Id}" +
+                                 $" ContestantId={user.ContestantId} Language={Language.LabArchive}");
+            return $"Accepted submission #{submission.Id} for contestant {user.ContestantId}.";
         }
     }
 }

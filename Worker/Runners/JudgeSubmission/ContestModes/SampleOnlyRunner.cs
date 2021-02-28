@@ -5,10 +5,10 @@ using Worker.Models;
 
 namespace Worker.Runners.JudgeSubmission.ContestModes
 {
-    public class SampleOnlyRunner : ContestRunnerBase
+    public sealed class SampleOnlyRunner : ContestRunnerBase
     {
-        public SampleOnlyRunner(Contest contest, Problem problem, Submission submission, IServiceProvider provider)
-            : base(contest, problem, submission, provider)
+        public SampleOnlyRunner(Contest contest, Problem problem, Submission submission, Box box, IServiceProvider provider)
+            : base(contest, problem, submission, box, provider)
         {
             BeforeTestGroupDelegate = BeforeTestGroupImpl;
             OnRunFailedDelegate = PracticeRunner.OnRunFailedImpl;

@@ -5,10 +5,11 @@ using Worker.Models;
 
 namespace Worker.Runners.JudgeSubmission.ContestModes
 {
-    public class UntilFailRunner : ContestRunnerBase
+    public sealed class UntilFailRunner : ContestRunnerBase
     {
-        public UntilFailRunner(Contest contest, Problem problem, Submission submission, IServiceProvider provider)
-            : base(contest, problem, submission, provider)
+        public UntilFailRunner
+            (Contest contest, Problem problem, Submission submission, Box box, IServiceProvider provider)
+            : base(contest, problem, submission, box, provider)
         {
             OnRunFailedDelegate = OnRunFailedImpl;
         }

@@ -2,7 +2,23 @@
   <div class="card w-100 justify-content-center align-self-center">
     <div class="card-body">
       <h3 class="card-title">Making Submit to Lab Problem</h3>
-      <p>
+      <div class="row my-3">
+        <div class="col col-12">
+          <input #zipFileInput type="file" accept="application/zip"
+                 class="d-none" (change)="createLabSubmission($event)"/>
+          <button class="btn btn-success w-100" (click)="zipFileInput.click()">
+            <fa-icon [icon]="faUpload"></fa-icon>Upload Submission
+          </button>
+        </div>
+      </div>
+      <div *ngIf="!!error" class="alert alert-danger">
+        Error: {{ error }}
+        <a class="float-right text-secondary" href="javascript:void(0)" (click)="error = null">
+          <fa-icon [icon]="faTimes"></fa-icon>Close
+        </a>
+      </div>
+      <hr/>
+      <p class="mb-1">
         Your submit token for problem #{{ problem.id }} is:
         <span class="float-right">
           <a href="javascript:void(0)" class="text-secondary" (click)="loadProblemAndToken()">
@@ -11,10 +27,10 @@
         </span>
       </p>
       <h2 class="text-center"><code>{{ token }}</code></h2>
-      <p>Usage:</p>
+      <p class="mb-1">Make submission from Linux/macOS command line:</p>
       <ol>
         <li><code>make submit TOKEN={{ token }}</code></li>
-        <li><code>curl -H "Token: {{ token }}" -F "@file" http://submit</code></li>
+        <li><code>curl -X POST -F "TOKEN={{ token }}" -F "FILE=@archive" {{ api }}</code></li>
       </ol>
     </div>
   </div>

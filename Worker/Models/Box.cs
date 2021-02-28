@@ -150,6 +150,7 @@ namespace Worker.Models
 
         public async Task<string> ReadFileAsync(string file)
         {
+            if (!File.Exists(Path.Combine(Root, file))) return string.Empty;
             char[] buffer = new char[1024];
             var stream = new FileStream(Path.Combine(Root, file), FileMode.Open);
             var reader = new StreamReader(stream, Encoding.UTF8);
@@ -161,6 +162,7 @@ namespace Worker.Models
 
         public async Task<Dictionary<string, string>> ReadDictAsync(string file)
         {
+            if (!File.Exists(Path.Combine(Root, file))) return new();
             return (await File.ReadAllLinesAsync(Path.Combine(Root, file)))
                 .Select(l => l.Split(':'))
                 .Where(s => s.Length == 2)

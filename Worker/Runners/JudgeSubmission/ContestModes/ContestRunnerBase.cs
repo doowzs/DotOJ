@@ -11,32 +11,35 @@ namespace Worker.Runners.JudgeSubmission.ContestModes
         protected readonly Contest Contest;
         protected readonly Problem Problem;
         protected readonly Submission Submission;
+        protected readonly Box Box;
         protected readonly IServiceProvider Provider;
 
         protected Func<Contest, Problem, Submission, Task<JudgeResult>> BeforeStartDelegate = null;
         protected Func<Contest, Problem, Submission, bool, Task<JudgeResult>> BeforeTestGroupDelegate = null;
         protected Func<Contest, Problem, Submission, Run, Task<JudgeResult>> OnRunFailedDelegate = null;
 
-        public ContestRunnerBase(Contest contest, Problem problem, Submission submission, IServiceProvider provider)
+        public ContestRunnerBase
+            (Contest contest, Problem problem, Submission submission, Box box, IServiceProvider provider)
         {
             Contest = contest;
             Problem = problem;
             Submission = submission;
+            Box = box;
             Provider = provider;
         }
 
         public async Task<JudgeResult> RunSubmissionAsync()
         {
-            PlainRunner runner;
-            if (Problem.HasSpecialJudge)
+            PlainRunner runner = Problem.Type switch
             {
-                runner = new SpecialJudgeRunner(Contest, Problem, Submission, Provider);
-            }
-            else
-            {
-                runner = new PlainRunner(Contest, Problem, Submission, Provider);
-            }
-
+                ProblemType.Ordinary => Problem.HasSpecialJudge switch
+                {
+                    true => new SpecialJudgeRunner(Contest, Problem, Submission, Box, Provider),
+                    false => new PlainRunner(Contest, Problem, Submission, Box, Provider)
+                },
+                ProblemType.TestKitLab => new TestKitLabRunner(Contest, Problem, Submission, Box, Provider),
+                _ => throw new ArgumentOutOfRangeException()
+            };
             runner.BeforeStartDelegate = BeforeStartDelegate;
             runner.BeforeTestGroupDelegate = BeforeTestGroupDelegate;
             runner.OnRunFailedDelegate = OnRunFailedDelegate;

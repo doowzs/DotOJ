@@ -42,16 +42,21 @@ namespace Worker.Runners.JudgeSubmission
                 await Context.SaveChangesAsync();
             }
 
-            var user = await Context.Users.FindAsync(submission.UserId);
+            await Context.Entry(submission).Reference(s => s.User).LoadAsync();
             var problem = await Context.Problems.FindAsync(submission.ProblemId);
             var contest = await Context.Contests.FindAsync(problem.ContestId);
+            var user = submission.User;
 
             try
             {
                 Logger.LogInformation($"RunSubmission Id={submission.Id} Problem={problem.Id}");
                 var stopwatch = Stopwatch.StartNew();
 
-                var result = await this.RunSubmissionAsync(contest, problem, submission);
+                JudgeResult result;
+                await using (var box = await Box.GetBoxAsync(Options.Value.BoxId ?? "0"))
+                {
+                    result = await this.RunSubmissionAsync(contest, problem, submission, box);
+                }
 
                 #region Update score of result with bonus and decay
 
@@ -159,22 +164,23 @@ namespace Worker.Runners.JudgeSubmission
             return submission.RequestVersion;
         }
 
-        private async Task<JudgeResult> RunSubmissionAsync(Contest contest, Problem problem, Submission submission)
+        private async Task<JudgeResult> RunSubmissionAsync
+            (Contest contest, Problem problem, Submission submission, Box box)
         {
             ContestRunnerBase runner;
             switch (contest.Mode)
             {
                 case ContestMode.Practice:
-                    runner = new PracticeRunner(contest, problem, submission, Provider);
+                    runner = new PracticeRunner(contest, problem, submission, box, Provider);
                     break;
                 case ContestMode.OneShot:
-                    runner = new OneShotRunner(contest, problem, submission, Provider);
+                    runner = new OneShotRunner(contest, problem, submission, box, Provider);
                     break;
                 case ContestMode.UntilFail:
-                    runner = new UntilFailRunner(contest, problem, submission, Provider);
+                    runner = new UntilFailRunner(contest, problem, submission, box, Provider);
                     break;
                 case ContestMode.SampleOnly:
-                    runner = new SampleOnlyRunner(contest, problem, submission, Provider);
+                    runner = new SampleOnlyRunner(contest, problem, submission, box, Provider);
                     break;
                 default:
                     throw new Exception($"Unknown contest mode ${contest.Mode}");
