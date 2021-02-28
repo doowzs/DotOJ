@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Shared.Models;
@@ -11,13 +10,13 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes
 {
     public class JavaRunner : Base.Runner
     {
-        public JavaRunner(Contest contest, Problem problem, Submission submission, IServiceProvider provider)
-            : base(contest, problem, submission, provider)
+        public JavaRunner(Contest contest, Problem problem, Submission submission, Box box, IServiceProvider provider)
+            : base(contest, problem, submission, box, provider)
         {
             Logger = provider.GetRequiredService<ILogger<JavaRunner>>();
         }
 
-        protected override async Task<JudgeResult> CompileAsync()
+        protected override async Task<bool> CompileAsync()
         {
             var file = Path.Combine(Jail, "Main.java");
             var program = Convert.FromBase64String(Submission.Program.Code);
@@ -26,71 +25,33 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes
                 await stream.WriteAsync(program);
             }
 
-            var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "isolate",
-                    Arguments = $"--cg -b {BoxId} -s -E PATH=/bin:/usr/bin -d /etc" +
-                                " -c jail -i /dev/null -r compiler_output" +
-                                " -p120 -f 409600 --cg-timing -t 15.0 -x 0 -w 20.0 --cg-mem=512000" +
-                                " --run -- /usr/bin/javac " +
-                                LanguageOptions.LanguageOptionsDict[Language.Java].CompilerOptions + " Main.java"
-                }
-            };
-            process.Start();
-            await process.WaitForExitAsync();
-            if (process.ExitCode == 0)
-            {
-                return null;
-            }
-            else if (process.ExitCode != 1)
-            {
-                throw new Exception($"Isolate error ExitCode={process.ExitCode}.");
-            }
-
-            Logger.LogInformation($"Compilation ERROR gcc exited with non-zero code.");
-            var compilerOutputFile = Path.Combine(Box, "compiler_output");
-            await using var compilerOutputStream = new FileStream(compilerOutputFile, FileMode.Open);
-            using var compilerOutputReader = new StreamReader(compilerOutputStream);
-            var compilerOutputString = await compilerOutputReader.ReadToEndAsync();
-            if (compilerOutputString.Length > 4096)
-            {
-                compilerOutputString = compilerOutputString.Substring(0, 4096)
-                    + "\n\n*** Output trimmed due to excessive length of 4096 characters. ***";
-            }
-
-            return new JudgeResult
-            {
-                Verdict = Verdict.CompilationError,
-                Time = null,
-                Memory = null,
-                FailedOn = 0,
-                Score = 0,
-                Message = compilerOutputString
-            };
+            var options = LanguageOptions.LanguageOptionsDict[Language.Java].CompilerOptions;
+            return await Box.ExecuteAsync(
+                "/usr/bin/javac " + options + " Main.java",
+                bind: new[] {"/etc"},
+                chroot: "jail",
+                stderr: "compiler_output",
+                proc: 120,
+                time: 15.0f,
+                memory: 512000
+            ) == 0;
         }
 
         protected override async Task ExecuteProgramAsync(string meta, int bytes)
         {
-            var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "isolate",
-                    Arguments = $"--cg -b {BoxId} -s -M {meta} -c jail" +
-                                $" -d /box={Box}:norec -d /box/jail={Jail}:rw -d /etc" +
-                                $" -i jail/input -o jail/output -r jail/stderr -p20 -f {bytes}" +
-                                $" --cg-timing -t {TimeLimit} -x 0 -w {TimeLimit + 3.0f} --cg-mem=512000" +
-                                " --run -- /usr/bin/java Main"
-                }
-            };
-            process.Start();
-            await process.WaitForExitAsync();
-            if (process.ExitCode != 0 && process.ExitCode != 1)
-            {
-                throw new Exception($"Isolate error ExitCode={process.ExitCode}.");
-            }
+            await Box.ExecuteAsync(
+                "/usr/bin/java Main",
+                meta: meta,
+                chroot: "jail",
+                bind: new[] {"/etc"},
+                stdin: "jail/input",
+                stdout: "jail/output",
+                stderr: "jail/stderr",
+                proc: 20,
+                disk: bytes,
+                time: TimeLimit,
+                memory: MemoryLimit
+            );
         }
     }
 }

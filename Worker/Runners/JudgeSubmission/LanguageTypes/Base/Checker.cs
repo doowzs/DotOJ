@@ -85,37 +85,18 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
 
         private async Task<bool> CheckTestCaseOutputSpecialJudgeAsync(string answer)
         {
-            var file = Path.Combine(Box, "answer");
+            var file = Path.Combine(Root, "answer");
             await using (var stream = new FileStream(file, FileMode.Create, FileAccess.Write))
             await using (var writer = new StreamWriter(stream))
             {
                 await writer.WriteAsync(answer);
             }
-
-            var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "isolate",
-                    Arguments = $"--cg -b {BoxId} -s -E PATH=/usr/bin/ -i /dev/null -r checker_message" +
-                                $" -p1 -f 409600 --cg-timing -t {TimeLimit} -x 0 -w {TimeLimit + 3.0f} -k 128000 --cg-mem={MemoryLimit}" +
-                                " --run -- checker ./jail/input ./jail/output answer"
-                }
-            };
-            process.Start();
-            await process.WaitForExitAsync();
-            if (process.ExitCode == 0)
-            {
-                return true;
-            }
-            else if (process.ExitCode == 1)
-            {
-                return false;
-            }
-            else
-            {
-                throw new Exception($"SPJ isolate error ExitCode={process.ExitCode}.");
-            }
+            return await Box.ExecuteAsync(
+                "checker jail/input jail/output answer",
+                stderr: "checker_message",
+                time: TimeLimit,
+                memory: MemoryLimit
+            ) == 0;
         }
     }
 }

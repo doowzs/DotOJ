@@ -25,73 +25,37 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
 
         protected int MemoryLimit => Problem.MemoryLimit;
 
-        protected string BoxId => _options.Value?.BoxId ?? "0";
-
         private readonly IOptions<WorkerConfig> _options;
+        protected readonly Box Box;
         protected ILogger Logger;
-        protected string Box;
-        protected string Jail;
+        protected string Root => Box.Root;
+        protected string Jail => Path.Combine(Root, "jail");
 
         public Func<Contest, Problem, Submission, Task<JudgeResult>> BeforeStartDelegate = null;
         public Func<Contest, Problem, Submission, bool, Task<JudgeResult>> BeforeTestGroupDelegate = null;
         public Func<Contest, Problem, Submission, Run, Task<JudgeResult>> OnRunFailedDelegate = null;
 
-        protected Runner(Contest contest, Problem problem, Submission submission, IServiceProvider provider)
+        protected Runner(Contest contest, Problem problem, Submission submission, Box box, IServiceProvider provider)
         {
             Contest = contest;
             Problem = problem;
             Submission = submission;
-
+            Box = box;
             _options = provider.GetRequiredService<IOptions<WorkerConfig>>();
             Logger = provider.GetRequiredService<ILogger<Runner>>();
         }
 
         public async Task<JudgeResult> RunSubmissionAsync()
         {
-            await InitAsync();
-            var result = await InnerRunSubmissionAsync();
-            await CleanupAsync();
-            return result;
-        }
-
-        private async Task InitAsync()
-        {
-            var cleaner = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "isolate",
-                    Arguments = $"--cg -b {BoxId} --cleanup"
-                }
-            };
-            cleaner.Start();
-            await cleaner.WaitForExitAsync();
-
-            var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "isolate",
-                    Arguments = $"--cg -b {BoxId} --init",
-                    RedirectStandardOutput = true
-                }
-            };
-            process.Start();
-            await process.WaitForExitAsync();
-            Box = Path.Combine((await process.StandardOutput.ReadToEndAsync()).Trim(), "box");
-            Jail = Path.Combine(Box, "jail");
             if (!Directory.Exists(Jail))
             {
                 Directory.CreateDirectory(Jail);
             }
-
-            Logger.LogInformation($"Isolated initialized with Path={Box}.");
+            var result = await InnerRunSubmissionAsync();
+            return result;
         }
 
-        protected virtual Task<JudgeResult> CompileAsync()
-        {
-            return Task.FromResult<JudgeResult>(null);
-        }
+        protected abstract Task<bool> CompileAsync();
 
         private async Task PrepareCheckerAsync()
         {
@@ -99,40 +63,37 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
             var binary = Path.Combine(_options.Value.DataPath, "tests", Problem.Id.ToString(), "checker");
             if (File.Exists(binary) && File.GetLastWriteTimeUtc(binary) > Problem.UpdatedAt)
             {
-                File.Copy(binary, Path.Combine(Box, "checker"));
+                File.Copy(binary, Path.Combine(Root, "checker"));
                 return;
             }
 
-            File.Copy("Resources/testlib/testlib.h", Path.Combine(Box, "testlib.h"));
-            var checker = Path.Combine(Box, "checker.cpp");
+            File.Copy("Resources/testlib/testlib.h", Path.Combine(Root, "testlib.h"));
+            var checker = Path.Combine(Root, "checker.cpp");
             await using (var stream = new FileStream(checker, FileMode.Create, FileAccess.Write))
             {
                 await stream.WriteAsync(Convert.FromBase64String(Problem.SpecialJudgeProgram.Code));
             }
 
-            var process = new Process
+            var options = LanguageOptions.LanguageOptionsDict[Language.Cpp].CompilerOptions;
+            var exitCode = await Box.ExecuteAsync(
+                $"/usr/bin/g++ {options} -o checker checker.cpp",
+                bind: new[] {"/etc"},
+                chroot: "jail",
+                stderr: "compiler_output",
+                proc: 120,
+                time: 15.0f,
+                memory: 512000
+            );
+            if (exitCode != 0)
             {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "isolate",
-                    Arguments = $"--cg -b {BoxId} -s -E PATH=/usr/bin/ -i /dev/null -r compiler_output" +
-                                " -p120 -f 409600 --cg-timing -t 15.0 -x 0 -w 20.0 -k 128000 --cg-mem=512000" +
-                                " --run -- /usr/bin/g++ " +
-                                LanguageOptions.LanguageOptionsDict[Language.Cpp].CompilerOptions +
-                                " checker.cpp -o checker"
-                }
-            };
-            process.Start();
-            await process.WaitForExitAsync();
-            if (process.ExitCode != 0)
-            {
-                throw new Exception($"Prepare checker error ExitCode={process.ExitCode}.");
+                throw new Exception($"Prepare checker error ExitCode={exitCode}.\n"
+                                    + (await Box.ReadFileAsync("compiler_output")).Substring(0, 4096));
             }
 
             // Cache the binary file for later usage.
             try
             {
-                File.Copy(Path.Combine(Box, "checker"), binary, true);
+                File.Copy(Path.Combine(Root, "checker"), binary, true);
             }
             catch (Exception)
             {
@@ -177,7 +138,7 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
                 Message = ""
             };
 
-            var meta = Path.Combine(Box, "meta");
+            var meta = Path.Combine(Root, "meta");
             var bytes = 0;
             if (inline)
             {
@@ -211,7 +172,7 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
             var lines = await File.ReadAllLinesAsync(meta);
             foreach (var line in lines)
             {
-                var idx = line.IndexOf(":");
+                var idx = line.IndexOf(':');
                 if (idx >= 0)
                 {
                     var key = line.Substring(0, idx);
@@ -300,13 +261,23 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
                 }
             }
 
-            stopWatch.Start();
-            result = await CompileAsync();
-            stopWatch.Stop();
-            Logger.LogInformation($"Compile program complete TimeElapsed={stopWatch.Elapsed}.");
-            if (result != null)
+            if (!await CompileAsync())
             {
-                return result;
+                var output = await Box.ReadFileAsync("compiler_output");
+                if (output.Length > 4096)
+                {
+                    output = output.Substring(0, 4096)
+                             + "\n*** Output trimmed due to excessive length of 4096 characters. ***";
+                }
+                return new JudgeResult
+                {
+                    Verdict = Verdict.CompilationError,
+                    Time = null,
+                    Memory = null,
+                    FailedOn = 0,
+                    Score = 0,
+                    Message = output
+                };
             }
 
             if (Problem.HasSpecialJudge)
@@ -396,22 +367,6 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
                 Score = count * 100 / total,
                 Message = string.Empty
             };
-        }
-
-        private async Task CleanupAsync()
-        {
-            var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "isolate",
-                    Arguments = $"-b {BoxId} --cleanup",
-                    RedirectStandardOutput = true
-                }
-            };
-            process.Start();
-            await process.WaitForExitAsync();
-            Box = Path.Combine(await process.StandardOutput.ReadToEndAsync(), "box");
         }
     }
 }
