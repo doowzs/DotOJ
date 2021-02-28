@@ -1,14 +1,20 @@
 # Changelog
 
-## latest
+## 1.5.0 - 2021-02-28
+
+### Added
+
+- Added lab problems which accepts archive submission and custom judging.
 
 ### Changed
 
 - Changed file naming rules when exporting submissions.
+- Refactored major implementations of runners.
 
 ### Fixed
 
 - Fixed wrong predicate when exporting accepted submissions.
+- Fixed no compiler output for C# Roslyn compiler.
 
 ## 1.4.2 - 2021-02-25
 
@@ -38,7 +44,6 @@ This version contains breaking changes.
 - Fixed null reference errors in angular app.
 - Fixed admin button showing up in non-admin users' menus.
 - Fixed wrong contest mode description in contest management page.
-- Fixed no compiler output for C# Roslyn compiler.
 
 ## 1.3.1 - 2021-01-17
 
