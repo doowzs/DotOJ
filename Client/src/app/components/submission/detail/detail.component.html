@@ -18,10 +18,9 @@
     <h3>Message</h3>
     <pre>{{ submission.message }}</pre>
   </div>
-  <div class="m-3">
+  <div class="m-3" *ngIf="!!submission.program.languageInfo.mode">
     <h3>Source</h3>
-    <div *ngIf="!!submission.program.languageInfo.mode"
-         [ngStyle]="{'height': standalone ? 'calc(100vh - 79px)' : '80vh'}">
+    <div [ngStyle]="{'height': standalone ? 'calc(100vh - 79px)' : '80vh'}">
       <editor [disabled]="true" [submissionId]="submissionId" [program]="submission.program"></editor>
     </div>
   </div>

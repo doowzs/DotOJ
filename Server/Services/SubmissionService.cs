@@ -53,7 +53,17 @@ namespace Server.Services
                 return true;
             }
 
+            if (await Manager.IsInRoleAsync(user, ApplicationRoles.SubmissionManager))
+            {
+                return true;
+            }
+
             var problem = await Context.Problems.FindAsync(submission.ProblemId);
+            if (problem.Type != ProblemType.Ordinary)
+            {
+                return false; // Cannot view lab submissions
+            }
+
             var contest = await Context.Contests.FindAsync(problem.ContestId);
             if (DateTime.Now.ToUniversalTime() > contest.EndTime)
             {
@@ -252,9 +262,9 @@ namespace Server.Services
                 throw new NotFoundException();
             }
 
+            await Context.Entry(submission).Reference(s => s.Problem).LoadAsync();
             await EnsureUserCanViewSubmissionAsync(submission);
             await Context.Entry(submission).Reference(s => s.User).LoadAsync();
-            await Context.Entry(submission).Reference(s => s.Problem).LoadAsync();
             return new SubmissionViewDto(submission, Config);
         }
 
