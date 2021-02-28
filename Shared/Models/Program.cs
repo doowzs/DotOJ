@@ -52,8 +52,7 @@ namespace Shared.Models
                 Models.Language.Rust => ".rs",
                 Models.Language.CSharp => ".cs",
                 Models.Language.Haskell => ".hs",
-                Models.Language.LabArchive =>
-                    throw new Exception("Lab archive does not have source file extension."),
+                Models.Language.LabArchive => ".zip",
                 _ => ".txt"
             };
         }
@@ -64,8 +63,7 @@ namespace Shared.Models
             {
                 Models.Language.Python => "# ",
                 Models.Language.Haskell => "-- ",
-                Models.Language.LabArchive =>
-                    throw new Exception("Lab archive does not have source file comment sign."),
+                Models.Language.LabArchive => "",
                 _ => "// "
             };
         }
