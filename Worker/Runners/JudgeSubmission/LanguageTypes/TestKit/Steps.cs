@@ -14,6 +14,11 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.TestKit
         {
             foreach (var step in stage.Steps)
             {
+                if (step.Title.ToLower().Equals("compile"))
+                {
+                    step.Bail = true;
+                }
+
                 if (IsStudentInGroups(step.Groups))
                 {
                     var score = 0;
@@ -37,6 +42,7 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.TestKit
                                 score = Math.Min(score, step.Score);
                             }
                         }
+
                         if (!stage.Title.ToLower().Equals("compile") && !step.Title.ToLower().Equals("compile"))
                         {
                             var output = await _box.ReadFileAsync(Path.Combine(Jail, "stderr_validate"));
@@ -44,6 +50,7 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.TestKit
                             {
                                 output = output.Substring(0, 64) + "***";
                             }
+
                             if (!stage.Hidden && !step.Hidden)
                             {
                                 message = $"Step {stage.Title}.{step.Title}: {score}/{step.Score}\n{output}";
@@ -52,12 +59,13 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.TestKit
                     }
                     else if (stage.Title.ToLower().Equals("compile") || step.Title.ToLower().Equals("compile"))
                     {
-                        var output = await _box.ReadFileAsync("compiler_output");
+                        var output = await _box.ReadFileAsync("stdout") + await _box.ReadFileAsync("stderr");
                         if (output.Length > 4096)
                         {
                             output = output.Substring(0, 4096)
                                      + "\n*** Output trimmed due to excessive length of 4096 characters. ***";
                         }
+
                         verdict = Verdict.CompilationError;
                         message = $"Step {stage.Title}.{step.Title}: Compile Error:\n{output}";
                     }
