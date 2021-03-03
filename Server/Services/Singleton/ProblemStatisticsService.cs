@@ -29,19 +29,35 @@ namespace Server.Services.Singleton
         {
             using var scope = _factory.CreateScope();
             var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+            var problem = await context.Problems.FindAsync(problemId);
+            var contest = await context.Contests.FindAsync(problem.ContestId);
+
             var totalSubmissions = await context.Submissions
-                .Where(s => s.ProblemId == problemId && s.Verdict >= Verdict.Accepted).CountAsync();
+                .Where(s => s.CreatedAt >= contest.BeginTime &&
+                            s.ProblemId == problemId &&
+                            s.Verdict >= Verdict.Accepted)
+                .CountAsync();
             var acceptedSubmissions = await context.Submissions
-                .Where(s => s.ProblemId == problemId && s.Verdict == Verdict.Accepted).CountAsync();
+                .Where(s => s.CreatedAt >= contest.BeginTime &&
+                            s.ProblemId == problemId &&
+                            s.Verdict == Verdict.Accepted)
+                .CountAsync();
             var totalContestants = await context.Submissions
-                .Where(s => s.ProblemId == problemId && s.Verdict >= Verdict.Accepted)
+                .Where(s => s.CreatedAt >= contest.BeginTime &&
+                            s.ProblemId == problemId &&
+                            s.Verdict >= Verdict.Accepted)
                 .Select(s => s.UserId).Distinct().CountAsync();
             var acceptedContestants = await context.Submissions
-                .Where(s => s.ProblemId == problemId && s.Verdict == Verdict.Accepted)
+                .Where(s => s.CreatedAt >= contest.BeginTime &&
+                            s.ProblemId == problemId &&
+                            s.Verdict == Verdict.Accepted)
                 .Select(s => s.UserId).Distinct().CountAsync();
 
             var byVerdict = await context.Submissions
-                .Where(s => s.ProblemId == problemId && s.Verdict >= Verdict.Accepted)
+                .Where(s => s.CreatedAt >= contest.BeginTime &&
+                            s.ProblemId == problemId &&
+                            s.Verdict >= Verdict.Accepted)
                 .GroupBy(s => s.Verdict)
                 .Select(g => new {Key = g.Key, Value = g.Count()})
                 .ToDictionaryAsync(p => p.Key, q => q.Value);
@@ -93,6 +109,10 @@ namespace Server.Services.Singleton
             }
 
             var problem = await context.Problems.FindAsync(submission.ProblemId);
+            var contest = await context.Contests.FindAsync(problem.ContestId);
+            var now = DateTime.Now.ToUniversalTime();
+            if (now < contest.BeginTime) return;
+
             if (await _cache.TryGetValueAsync(problem.Id) is (true, var ps))
             {
                 var attempted = await context.Submissions
@@ -109,6 +129,7 @@ namespace Server.Services.Singleton
                 {
                     byVerdict[submission.Verdict] = 1;
                 }
+
                 var statistics = new ProblemStatistics
                 {
                     TotalSubmissions = ps.TotalSubmissions + 1,
