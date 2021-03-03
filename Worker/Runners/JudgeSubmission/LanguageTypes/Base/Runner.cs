@@ -199,7 +199,6 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
             var exitCode = await Box.ExecuteAsync(
                 $"/usr/bin/g++ {options} -o checker checker.cpp",
                 bind: new[] {"/etc"},
-                chroot: "jail",
                 stderr: "compiler_output",
                 proc: 120,
                 time: 15.0f,
