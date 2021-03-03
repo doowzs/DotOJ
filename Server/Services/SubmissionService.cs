@@ -154,7 +154,8 @@ namespace Server.Services
 
             var currentUser = await Manager.GetUserAsync(Accessor.HttpContext.User);
             bool canViewHiddenSubmissions = await Manager.IsInRoleAsync(currentUser, ApplicationRoles.Administrator) ||
-                                            await Manager.IsInRoleAsync(currentUser, ApplicationRoles.ContestManager);
+                                            await Manager.IsInRoleAsync(currentUser, ApplicationRoles.ContestManager) ||
+                                            await Manager.IsInRoleAsync(currentUser, ApplicationRoles.SubmissionManager);
             if (!canViewHiddenSubmissions)
             {
                 submissions = submissions.Where(s => !s.Hidden);
