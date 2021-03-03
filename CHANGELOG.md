@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.5.4 - 2021-03-01
+## 1.5.5 - 2021-03-01
 
 ### Added
 
@@ -18,6 +18,7 @@
 - Fixed wrong predicate when exporting accepted submissions.
 - Fixed no compiler output for C# Roslyn compiler.
 - Fixed editing testkit lab problem in client.
+- Fixed substring handling and checker compiling in worker.
 
 ## 1.4.2 - 2021-02-25
 
