@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.5.1 - 2021-03-01
+## 1.5.2 - 2021-03-01
 
 ### Added
 
@@ -10,11 +10,13 @@
 
 - Changed file naming rules when exporting submissions.
 - Refactored major implementations of runners.
+- Submissions before contest will not appear in statistics.
 
 ### Fixed
 
 - Fixed wrong predicate when exporting accepted submissions.
 - Fixed no compiler output for C# Roslyn compiler.
+- Fixed editing testkit lab problem in client.
 
 ## 1.4.2 - 2021-02-25
 
