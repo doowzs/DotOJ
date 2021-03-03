@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.5.8 - 2021-03-03
+## 1.5.9 - 2021-03-04
 
 ### Added
 
@@ -13,6 +13,7 @@
 - Submissions before contest will not appear in statistics.
 - Submission manager can view all submissions before contest begins.
 - Lab problem judging will fail on compile steps even in non-compile stages.
+- Use tencent nuget mirror when building env container.
 
 ### Fixed
 
