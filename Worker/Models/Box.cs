@@ -151,13 +151,19 @@ namespace Worker.Models
         public async Task<string> ReadFileAsync(string file)
         {
             if (!File.Exists(Path.Combine(Root, file))) return string.Empty;
-            char[] buffer = new char[1024];
-            var stream = new FileStream(Path.Combine(Root, file), FileMode.Open);
-            var reader = new StreamReader(stream, Encoding.UTF8);
-            var length = await reader.ReadBlockAsync(buffer, 0, 1024);
-            char[] result = new char[length];
-            Array.Copy(buffer, result, length);
-            return new string(result);
+            var builder = new StringBuilder();
+            var buffer = new char[1024];
+            await using var stream = new FileStream(Path.Combine(Root, file), FileMode.Open);
+            using var reader = new StreamReader(stream, Encoding.UTF8);
+            while (true)
+            {
+                var length = await reader.ReadBlockAsync(buffer, 0, 1024);
+                if (length == 0) break;
+                var result = new char[length];
+                Array.Copy(buffer, result, length);
+                builder.Append(new string(result));
+            }
+            return builder.ToString();
         }
 
         public async Task<Dictionary<string, string>> ReadDictAsync(string file)

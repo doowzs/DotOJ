@@ -207,8 +207,13 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
             );
             if (exitCode != 0)
             {
-                throw new Exception($"Prepare checker error ExitCode={exitCode}.\n"
-                                    + (await Box.ReadFileAsync("compiler_output")).Substring(0, 4096));
+                var message = await Box.ReadFileAsync("compiler_output");
+                if (message.Length > 4096)
+                {
+                    message = message.Substring(0, 4096)
+                              + "\n*** Output trimmed due to excessive length of 4096 characters. ***";
+                }
+                throw new Exception($"Prepare checker error ExitCode={exitCode}.\n{message}");
             }
 
             // Cache the binary file for later usage.
@@ -286,22 +291,7 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
                 run.Stderr = await reader.ReadToEndAsync();
             }
 
-            var dict = new Dictionary<string, string>();
-            var lines = await File.ReadAllLinesAsync(meta);
-            foreach (var line in lines)
-            {
-                var idx = line.IndexOf(':');
-                if (idx >= 0)
-                {
-                    var key = line.Substring(0, idx);
-                    var value = line.Substring(idx + 1);
-                    if (!dict.ContainsKey(key))
-                    {
-                        dict.Add(key, value);
-                    }
-                }
-            }
-
+            var dict = await Box.ReadDictAsync(meta);
             if (dict.ContainsKey("status"))
             {
                 switch (dict["status"])
