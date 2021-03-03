@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.5.6 - 2021-03-01
+## 1.5.7 - 2021-03-01
 
 ### Added
 
@@ -19,6 +19,7 @@
 - Fixed no compiler output for C# Roslyn compiler.
 - Fixed substring handling and checker compiling in worker.
 - Fixed editing testkit lab problems in client.
+- Fixed not opening manifest.json in read only mode.
 
 ## 1.4.2 - 2021-02-25
 
