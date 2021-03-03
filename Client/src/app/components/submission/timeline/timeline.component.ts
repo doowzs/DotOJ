@@ -34,7 +34,6 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
   public contestId: number;
   public contest: ContestViewDto;
   public problem: ProblemViewDto;
-  public begun: boolean = true;
 
   public userId: Observable<string>;
   public pageIndex: number = 1;
@@ -62,7 +61,6 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
     this.contestService.getSingle(this.contestId, false)
       .subscribe(contest => {
         this.contest = contest;
-        this.begun = moment().isAfter(this.contest.beginTime);
       });
     interval(2000)
       .pipe(takeUntil(this.destroy$))
