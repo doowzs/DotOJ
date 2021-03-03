@@ -69,7 +69,7 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.TestKit
             }
 
             _kit = Path.Combine(_options.Value.DataPath, "tests", _problem.Id.ToString());
-            await using (var stream = new FileStream(Path.Combine(_kit, "manifest.json"), FileMode.Open))
+            await using (var stream = new FileStream(Path.Combine(_kit, "manifest.json"), FileMode.Open, FileAccess.Read))
             using (var reader = new StreamReader(stream))
             {
                 _manifest = JsonConvert.DeserializeObject<Manifest>(await reader.ReadToEndAsync());
