@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.5.2 - 2021-03-01
+## 1.5.3 - 2021-03-01
 
 ### Added
 
@@ -11,6 +11,7 @@
 - Changed file naming rules when exporting submissions.
 - Refactored major implementations of runners.
 - Submissions before contest will not appear in statistics.
+- Submission manager can view all submissions before contest begins.
 
 ### Fixed
 
