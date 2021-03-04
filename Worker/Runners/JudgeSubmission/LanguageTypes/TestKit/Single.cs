@@ -17,8 +17,8 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.TestKit
         {
             var meta = Path.Combine(Root, $"meta{affix}");
             var stdin = string.IsNullOrEmpty(config.Input) ? "/dev/null" : config.Input;
-            var stdout = $"stdout{affix}";
-            var stderr = $"stderr{affix}";
+            var stdout = Path.Combine(Jail, $"stdout{affix}");
+            var stderr = Path.Combine(Jail, $"stderr{affix}");
             var time = config.Time ?? _manifest.Default?.Time ?? 5000;
             var memory = config.Memory ?? _manifest.Default?.Memory ?? 512000;
             var thread = config.Thread ?? _manifest.Default?.Thread ?? 5;
