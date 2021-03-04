@@ -68,8 +68,8 @@
         <verdict [submission]="submission"></verdict>
       </td>
       <td>{{ submission.score }}</td>
-      <td>{{ submission.time }}</td>
-      <td>{{ submission.memory }}</td>
+      <td>{{ submission.time }}{{ !!submission.time ? 'ms' : '' }}</td>
+      <td>{{ submission.memory }}{{ !!submission.memory ? 'KiB' : '' }}</td>
       <td>
         <a *ngIf="submission.viewable; else cannotView"
            [href]="'/submission/' + submission.id"
@@ -78,7 +78,7 @@
         </a>
         <ng-template #cannotView>{{ submission.languageInfo.name }}</ng-template>
       </td>
-      <td>{{ submission.codeBytes }}</td>
+      <td>{{ submission.codeBytes }}{{ !!submission.codeBytes ? 'B' : '' }}</td>
       <td>{{ submission.createdAtMoment.format('YYYY-MM-DD HH:mm') }}</td>
     </tr>
     </tbody>

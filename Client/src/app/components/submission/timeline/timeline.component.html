@@ -40,10 +40,10 @@
           <td>{{ submission.score }}</td>
           <ng-container *ngIf="problem.type === 0">
             <td [ngClass]="{'text-danger': !!problem && submission.time >= problem.timeLimit}">
-              {{ submission.time }}
+              {{ submission.time }}ms
             </td>
             <td [ngClass]="{'text-danger': !!problem && submission.memory >= problem.memoryLimit}">
-              {{ submission.memory }}
+              {{ submission.memory }}KiB
             </td>
           </ng-container>
           <td>
