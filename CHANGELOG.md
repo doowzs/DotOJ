@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.5.16 - 2021-03-04
+## 1.5.17 - 2021-03-04
 
 ### Added
 
@@ -24,6 +24,7 @@
 - Fixed substring handling and checker compiling in worker.
 - Fixed editing testkit lab problems in client.
 - Fixed not opening manifest.json in read only mode.
+- Fixed problem statistics not invalidated after updating related data.
 
 ## 1.4.2 - 2021-02-25
 

@@ -178,6 +178,7 @@ namespace Server.Services.Admin
             Context.Problems.Update(problem);
             await Context.SaveChangesAsync();
 
+            await _statisticsService.InvalidStatisticsAsync(problem.Id);
             await LogInformation($"UpdateProblem Id={problem.Id} Contest={problem.ContestId} Title={problem.Id} " +
                                  $"HasSpecialJudge={problem.HasSpecialJudge} HasHacking={problem.HasHacking}");
             return new ProblemEditDto(problem);
@@ -190,6 +191,7 @@ namespace Server.Services.Admin
             Context.Problems.Attach(problem);
             Context.Problems.Remove(problem);
             await Context.SaveChangesAsync();
+            await _statisticsService.InvalidStatisticsAsync(problem.Id);
             await LogInformation($"DeleteProblem Id={problem.Id}");
         }
 

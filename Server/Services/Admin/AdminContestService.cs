@@ -7,7 +7,9 @@ using Shared.DTOs;
 using Shared.Generics;
 using Shared.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Server.Exceptions;
+using Server.Services.Singleton;
 
 namespace Server.Services.Admin
 {
@@ -30,9 +32,11 @@ namespace Server.Services.Admin
     public class AdminContestService : LoggableService<AdminContestService>, IAdminContestService
     {
         private const int PageSize = 20;
+        private readonly ProblemStatisticsService _problemStatisticsService;
 
         public AdminContestService(IServiceProvider provider) : base(provider)
         {
+            _problemStatisticsService = provider.GetRequiredService<ProblemStatisticsService>();
         }
 
         private async Task EnsureContestExistsAsync(int id)
@@ -179,6 +183,12 @@ namespace Server.Services.Admin
             Context.Contests.Update(contest);
             await Context.SaveChangesAsync();
 
+            await Context.Entry(contest).Collection(c => c.Problems).LoadAsync();
+            foreach (var problem in contest.Problems)
+            {
+                await _problemStatisticsService.InvalidStatisticsAsync(problem.Id);
+            }
+
             await LogInformation($"UpdateContest Id={contest.Id} Title={contest.Title} " +
                                  $"IsPublic={contest.IsPublic} Mode={contest.Mode}");
             return new ContestEditDto(contest);
@@ -189,6 +199,13 @@ namespace Server.Services.Admin
             await EnsureContestExistsAsync(id);
             var contest = new Contest {Id = id};
             Context.Contests.Attach(contest);
+
+            await Context.Entry(contest).Collection(c => c.Problems).LoadAsync();
+            foreach (var problem in contest.Problems)
+            {
+                await _problemStatisticsService.InvalidStatisticsAsync(problem.Id);
+            }
+            
             Context.Contests.Remove(contest);
             await Context.SaveChangesAsync();
             await LogInformation($"DeleteContest Id={id}");

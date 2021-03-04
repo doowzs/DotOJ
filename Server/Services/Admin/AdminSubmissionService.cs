@@ -195,6 +195,7 @@ namespace Server.Services.Admin
             await registration.RebuildStatisticsAsync(Context);
             await Context.SaveChangesAsync();
 
+            await _problemStatisticsService.InvalidStatisticsAsync(submission.ProblemId);
             await LogInformation($"UpdateSubmission Id={submission.Id} Verdict={submission.Verdict}");
             await Context.Entry(submission).Reference(s => s.User).LoadAsync();
             return new SubmissionEditDto(submission);
@@ -217,6 +218,7 @@ namespace Server.Services.Admin
                 await Context.SaveChangesAsync();
             }
 
+            await _problemStatisticsService.InvalidStatisticsAsync(submission.ProblemId);
             await LogInformation($"DeleteSubmission Id={id}");
         }
 
