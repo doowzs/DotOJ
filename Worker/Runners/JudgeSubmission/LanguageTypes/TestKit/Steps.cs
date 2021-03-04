@@ -57,7 +57,7 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.TestKit
                                 message = $"Step {stage.Title}.{step.Title}: {score}/{step.Score}";
                                 if (!string.IsNullOrEmpty(output))
                                 {
-                                    message += ": " + output;
+                                    message += ": " + output.TrimEnd();
                                 }
                             }
                         }
