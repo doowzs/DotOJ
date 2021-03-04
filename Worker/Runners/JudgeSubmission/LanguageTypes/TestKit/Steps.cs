@@ -53,7 +53,11 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.TestKit
 
                             if (!stage.Hidden && !step.Hidden)
                             {
-                                message = $"Step {stage.Title}.{step.Title}: {score}/{step.Score}\n{output}";
+                                message = $"Step {stage.Title}.{step.Title}: {score}/{step.Score}";
+                                if (!string.IsNullOrEmpty(output))
+                                {
+                                    message += ": " + output;
+                                }
                             }
                         }
                     }
