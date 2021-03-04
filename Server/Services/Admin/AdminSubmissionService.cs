@@ -273,20 +273,17 @@ namespace Server.Services.Admin
                 using var scope = Provider.CreateScope();
                 var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                 var producer = scope.ServiceProvider.GetRequiredService<JobRequestProducer>();
-                var submissionIds = submissions.Select(s => s.Id).ToList();
-                var reloadedSubmissions = await context.Submissions
-                    .Where(s => submissionIds.Contains(s.Id)).ToListAsync();
-                foreach (var reloadedSubmission in reloadedSubmissions)
+                foreach (var submission in submissions)
                 {
+                    var reloadedSubmission = await context.Submissions.FindAsync(submission.Id);
                     if (await producer.SendAsync(JobType.JudgeSubmission,
                         reloadedSubmission.Id, reloadedSubmission.RequestVersion + 1))
                     {
                         reloadedSubmission.Verdict = Verdict.InQueue;
+                        context.Update(reloadedSubmission);
+                        await context.SaveChangesAsync();
                     }
                 }
-
-                context.UpdateRange(reloadedSubmissions);
-                await context.SaveChangesAsync();
             });
 
             await LogInformation($"RejudgeSubmissions ContestId={contestId} " +
