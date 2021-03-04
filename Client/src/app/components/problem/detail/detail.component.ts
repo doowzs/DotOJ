@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, OnDestroy } from '@angular/core';
+﻿import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
@@ -13,6 +13,7 @@ import { AuthorizeService, IUser } from '../../../../api-authorization/authorize
 import { ProblemService } from '../../../services/problem.service';
 import { ContestService } from '../../../services/contest.service';
 import { SubmissionService } from "../../../services/submission.service";
+import {SubmissionTimelineComponent} from "../../submission/timeline/timeline.component";
 import {
   faArrowLeft, faArrowRight,
   faBoxes,
@@ -23,6 +24,7 @@ import {
   faPaperPlane, faRedo,
   faSdCard,
   faStopwatch,
+  faSyncAlt,
   faTimes
 } from '@fortawesome/free-solid-svg-icons';
 import {ChartOptions} from "chart.js";
@@ -45,8 +47,11 @@ export class ProblemDetailComponent implements OnInit, OnDestroy {
   faRedo = faRedo;
   faSdCard = faSdCard;
   faStopwatch = faStopwatch;
+  faSyncAlt = faSyncAlt;
   faTimes = faTimes;
   faPaperPlane = faPaperPlane;
+
+  @ViewChild('timeline') timeline: SubmissionTimelineComponent;
 
   public user: IUser;
   public loading = true;

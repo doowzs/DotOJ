@@ -142,9 +142,23 @@
         </a>
         <ng-template ngbNavContent>
           <div class="border p-3">
-            <h3>Timeline</h3>
-            <app-submission-timeline [problemId]="problemId"></app-submission-timeline>
-            <h3>Statistics</h3>
+            <h3>
+              Timeline
+              <span class="float-right">
+                <a href="javascript:void(0)" class="text-secondary" (click)="timeline.loadSubmissions(problemId)">
+                  <fa-icon [icon]="faSyncAlt"></fa-icon>Refresh
+                </a>
+              </span>
+            </h3>
+            <app-submission-timeline [problemId]="problemId" #timeline></app-submission-timeline>
+            <h3>
+              Statistics
+              <span class="float-right">
+                <a href="javascript:void(0)" class="text-secondary" (click)="loadProblem()">
+                  <fa-icon [icon]="faSyncAlt"></fa-icon>Refresh
+                </a>
+              </span>
+            </h3>
             <canvas baseChart chartType="doughnut" [legend]="true" height="80px"
                     [data]="statsChartData"
                     [labels]="statsChartLabels"

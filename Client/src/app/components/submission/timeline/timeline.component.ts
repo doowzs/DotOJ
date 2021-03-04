@@ -2,7 +2,6 @@ import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@
 import { ActivatedRoute } from "@angular/router";
 import { interval, Observable, Subject } from 'rxjs';
 import { map, take, takeUntil } from 'rxjs/operators';
-import * as moment from "moment";
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SubmissionDetailComponent } from '../detail/detail.component';
@@ -109,7 +108,7 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
       .subscribe(problem => this.problem = problem);
   }
 
-  private loadSubmissions(problemId: number): void {
+  public loadSubmissions(problemId: number): void {
     if (!!this.contestantId) {
       this.loadSubmissionsInner(problemId, null, this.contestantId);
     } else {
