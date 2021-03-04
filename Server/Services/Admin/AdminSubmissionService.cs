@@ -159,22 +159,12 @@ namespace Server.Services.Admin
             await Context.Submissions.AddAsync(submission);
             await Context.SaveChangesAsync();
 
-            _ = Task.Run(async () =>
-            {
-                using var scope = Provider.CreateScope();
-                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                var producer = scope.ServiceProvider.GetRequiredService<JobRequestProducer>();
-                var service = scope.ServiceProvider.GetRequiredService<ProblemStatisticsService>();
-                var reloadedSubmission = await context.Submissions.FindAsync(submission.Id);
-                if (await producer.SendAsync(JobType.JudgeSubmission,
-                    reloadedSubmission.Id, reloadedSubmission.RequestVersion + 1))
-                {
-                    reloadedSubmission.Verdict = Verdict.InQueue;
-                    context.Update(reloadedSubmission);
-                    await context.SaveChangesAsync();
-                    await service.InvalidStatisticsAsync(submission.ProblemId);
-                }
-            });
+            var producer = Provider.GetRequiredService<JobRequestProducer>();
+            if (await producer.SendAsync(JobType.JudgeSubmission, submission.Id, 1)) {
+                submission.Verdict = Verdict.InQueue;
+                Context.Update(submission);
+                await Context.SaveChangesAsync();
+            }
 
             await Context.Entry(submission).Reference(s => s.User).LoadAsync();
             var result = new SubmissionInfoDto(submission, true);

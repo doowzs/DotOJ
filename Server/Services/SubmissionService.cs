@@ -7,7 +7,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Shared;
 using Shared.DTOs;
 using Shared.Generics;
 using Shared.RabbitMQ;
@@ -301,20 +300,13 @@ namespace Server.Services
             };
             await Context.Submissions.AddAsync(submission);
             await Context.SaveChangesAsync();
-
-            _ = Task.Run(async () =>
-            {
-                using var scope = Provider.CreateScope();
-                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                var producer = scope.ServiceProvider.GetRequiredService<JobRequestProducer>();
-                var reloadedSubmission = await context.Submissions.FindAsync(submission.Id);
-                if (await producer.SendAsync(JobType.JudgeSubmission, reloadedSubmission.Id, 1))
-                {
-                    reloadedSubmission.Verdict = Verdict.InQueue;
-                    context.Update(reloadedSubmission);
-                    await context.SaveChangesAsync();
-                }
-            });
+            
+            var producer = Provider.GetRequiredService<JobRequestProducer>();
+            if (await producer.SendAsync(JobType.JudgeSubmission, submission.Id, 1)) {
+                submission.Verdict = Verdict.InQueue;
+                Context.Update(submission);
+                await Context.SaveChangesAsync();
+            }
 
             await Context.Entry(submission).Reference(s => s.User).LoadAsync();
             var result = new SubmissionInfoDto(submission, true);
@@ -418,19 +410,12 @@ namespace Server.Services
                 await file.CopyToAsync(stream);
             }
 
-            _ = Task.Run(async () =>
-            {
-                using var scope = Provider.CreateScope();
-                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                var producer = scope.ServiceProvider.GetRequiredService<JobRequestProducer>();
-                var reloadedSubmission = await context.Submissions.FindAsync(submission.Id);
-                if (await producer.SendAsync(JobType.JudgeSubmission, reloadedSubmission.Id, 1))
-                {
-                    reloadedSubmission.Verdict = Verdict.InQueue;
-                    context.Update(reloadedSubmission);
-                    await context.SaveChangesAsync();
-                }
-            });
+            var producer = Provider.GetRequiredService<JobRequestProducer>();
+            if (await producer.SendAsync(JobType.JudgeSubmission, submission.Id, 1)) {
+                submission.Verdict = Verdict.InQueue;
+                Context.Update(submission);
+                await Context.SaveChangesAsync();
+            }
 
             await LogInformation($"CreateSubmission Id={submission.Id} ProblemId={problem.Id}" +
                                  $" ContestantId={user.ContestantId} Language={Language.LabArchive}");
