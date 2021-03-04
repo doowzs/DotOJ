@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using Shared.Models;
 using Worker.Models;
 
@@ -27,6 +28,7 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.TestKit
                         if (result.Verdict == Verdict.CompilationError ||
                             (result.Verdict != Verdict.Accepted && stage.Bail))
                         {
+                            _logger.LogInformation($"Judging stopped due to failure on bailed stage.");
                             yield break;
                         }
                     }

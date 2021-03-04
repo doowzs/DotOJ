@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using Shared.Archives.v2.TestKit;
 using Shared.Models;
 using Worker.Models;
@@ -74,6 +75,8 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.TestKit
                         message = $"Step {stage.Title}.{step.Title}: Compile Error:\n{output}";
                     }
 
+                    _logger.LogInformation($"Step {stage.Title}.{step.Title} OK Verdict={verdict} Score={score}");
+
                     var failed = verdict != Verdict.Accepted;
                     yield return new JudgeResult
                     {
@@ -83,7 +86,11 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.TestKit
                         Score = score,
                         Message = message
                     };
-                    if (failed && step.Bail) yield break;
+                    if (failed && step.Bail)
+                    {
+                        _logger.LogInformation($"Rest of stage {stage.Title} skipped due to failure on bailed step.");
+                        yield break;
+                    }
                 }
             }
         }
