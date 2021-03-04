@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.5.13 - 2021-03-04
+## 1.5.14 - 2021-03-04
 
 ### Added
 
@@ -15,6 +15,7 @@
 - Use tencent nuget mirror when building env container.
 - Some required fields of lab problems are now filled in client.
 - Lab problem judging will stop on failure of compile steps and stages.
+- Showing units of time, memory and code length on submission list and timeline.
 
 ### Fixed
 
