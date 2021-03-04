@@ -15,7 +15,7 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.TestKit
     {
         private async Task<Verdict> RunSingleAsync([NotNull] Config config, string affix = "")
         {
-            var meta = Path.Combine(Root, "meta{affix}");
+            var meta = Path.Combine(Root, $"meta{affix}");
             var stdin = string.IsNullOrEmpty(config.Input) ? "/dev/null" : config.Input;
             var stdout = $"stdout{affix}";
             var stderr = $"stderr{affix}";
