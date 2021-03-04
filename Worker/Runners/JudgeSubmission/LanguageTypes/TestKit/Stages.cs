@@ -24,7 +24,8 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.TestKit
                     await foreach (var result in RunStepsAsync(stage))
                     {
                         yield return result;
-                        if (result.Verdict != Verdict.Accepted && stage.Bail)
+                        if (result.Verdict == Verdict.CompilationError ||
+                            (result.Verdict != Verdict.Accepted && stage.Bail))
                         {
                             yield break;
                         }

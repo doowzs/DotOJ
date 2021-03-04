@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.5.10 - 2021-03-04
+## 1.5.11 - 2021-03-04
 
 ### Added
 
@@ -12,9 +12,9 @@
 - Refactored major implementations of runners.
 - Submissions before contest will not appear in statistics.
 - Submission manager can view all submissions before contest begins.
-- Lab problem judging will fail on compile steps even in non-compile stages.
 - Use tencent nuget mirror when building env container.
 - Some required fields of lab problems are now filled in client.
+- Lab problem judging will stop on failure of compile steps and stages.
 
 ### Fixed
 
