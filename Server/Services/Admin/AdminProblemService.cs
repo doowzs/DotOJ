@@ -166,33 +166,15 @@ namespace Server.Services.Admin
             problem.Title = dto.Title;
             problem.Type = dto.Type;
             problem.Description = dto.Description;
-            switch (problem.Type)
-            {
-                case ProblemType.Ordinary:
-                    problem.InputFormat = dto.InputFormat;
-                    problem.OutputFormat = dto.OutputFormat;
-                    problem.FootNote = dto.FootNote;
-                    problem.TimeLimit = dto.TimeLimit.GetValueOrDefault();
-                    problem.MemoryLimit = dto.MemoryLimit.GetValueOrDefault();
-                    problem.HasSpecialJudge = dto.HasSpecialJudge;
-                    problem.SpecialJudgeProgram = dto.HasSpecialJudge ? dto.SpecialJudgeProgram : null;
-                    problem.HasHacking = false;
-                    problem.SampleCases = dto.SampleCases;
-                    break;
-                case ProblemType.TestKitLab:
-                    problem.InputFormat = string.Empty;
-                    problem.OutputFormat = string.Empty;
-                    problem.FootNote = null;
-                    problem.TimeLimit = 0;
-                    problem.MemoryLimit = 0;
-                    problem.HasSpecialJudge = false;
-                    problem.SpecialJudgeProgram = null;
-                    problem.HasHacking = false;
-                    problem.SampleCases = new List<TestCase>();
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
+            problem.InputFormat = dto.InputFormat;
+            problem.OutputFormat = dto.OutputFormat;
+            problem.FootNote = dto.FootNote;
+            problem.TimeLimit = dto.TimeLimit.GetValueOrDefault();
+            problem.MemoryLimit = dto.MemoryLimit.GetValueOrDefault();
+            problem.HasSpecialJudge = dto.HasSpecialJudge;
+            problem.SpecialJudgeProgram = dto.HasSpecialJudge ? dto.SpecialJudgeProgram : null;
+            problem.HasHacking = false;
+            problem.SampleCases = dto.SampleCases;
             Context.Problems.Update(problem);
             await Context.SaveChangesAsync();
 
