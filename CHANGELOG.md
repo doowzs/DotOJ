@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.5.21 - 2021-03-04
+## 1.5.22 - 2021-03-04
 
 ### Added
 
@@ -16,6 +16,7 @@
 - Some required fields of lab problems are now filled in client.
 - Lab problem judging will stop on failure of compile steps and stages.
 - Showing units of time, memory and code length on submission list and timeline.
+- Submit token will not be invalidated after consuming.
 
 ### Fixed
 

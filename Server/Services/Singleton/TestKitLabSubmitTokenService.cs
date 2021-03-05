@@ -66,7 +66,7 @@ namespace Server.Services.Singleton
 
         public async Task<(string UserId, int ProblemId)> ConsumeTokenAsync(string token)
         {
-            return await _cache.TryRemoveAsync(token) is (true, var value)
+            return await _cache.TryGetValueAsync(token) is (true, var value)
                 ? (value.UserId, value.ProblemId)
                 : (null, 0);
         }
