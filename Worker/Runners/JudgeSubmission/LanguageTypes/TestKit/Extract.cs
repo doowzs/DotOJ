@@ -40,7 +40,7 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.TestKit
             else
             {
                 var folder = info.GetDirectories()[0].Name;
-                Directory.Move(Path.Combine(Root, "extract", folder, ".git"), Path.Combine(Jail, ".git"));
+                Directory.Move(Path.Combine(Root, "extract", folder, folder == ".git" ? "" : ".git"), Path.Combine(Jail, ".git"));
                 return null;
             }
         }
