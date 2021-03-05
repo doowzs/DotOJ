@@ -68,7 +68,7 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.TestKit
                     }
                     else
                     {
-                        var output = await _box.ReadFileAsync("stdout") + await _box.ReadFileAsync("stderr");
+                        var output = await _box.ReadFileAsync(Path.Combine(Jail, "stderr"));
                         if (output.Length > 4096)
                         {
                             output = output.Substring(0, 4096)
