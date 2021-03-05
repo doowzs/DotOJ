@@ -52,7 +52,9 @@ namespace Server.Services
                 return true;
             }
 
-            if (await Manager.IsInRoleAsync(user, ApplicationRoles.SubmissionManager))
+            if (await Manager.IsInRoleAsync(user, ApplicationRoles.Administrator) ||
+                await Manager.IsInRoleAsync(user, ApplicationRoles.ContestManager) ||
+                await Manager.IsInRoleAsync(user, ApplicationRoles.SubmissionManager))
             {
                 return true;
             }
