@@ -116,10 +116,16 @@ namespace Server.Services.Singleton
             if (await _cache.TryGetValueAsync(problem.Id) is (true, var ps))
             {
                 var attempted = await context.Submissions
-                    .AnyAsync(s => s.Id != submission.Id && s.UserId == submission.UserId);
+                    .AnyAsync(s => s.Id != submission.Id &&
+                                   s.UserId == submission.UserId &&
+                                   s.ProblemId == submission.ProblemId &&
+                                   s.CreatedAt >= contest.BeginTime);
                 var solved = await context.Submissions
-                    .AnyAsync(s => s.Id != submission.Id && s.UserId == submission.UserId
-                                                         && s.Verdict == Verdict.Accepted);
+                    .AnyAsync(s => s.Id != submission.Id &&
+                                   s.UserId == submission.UserId &&
+                                   s.ProblemId == submission.ProblemId &&
+                                   s.CreatedAt >= contest.BeginTime &&
+                                   s.Verdict == Verdict.Accepted);
                 var byVerdict = new Dictionary<Verdict, int>(ps.ByVerdict);
                 if (byVerdict.ContainsKey(submission.Verdict))
                 {
@@ -136,7 +142,7 @@ namespace Server.Services.Singleton
                     AcceptedSubmissions = ps.AcceptedSubmissions + (submission.Verdict == Verdict.Accepted ? 1 : 0),
                     TotalContestants = ps.TotalContestants + (attempted ? 0 : 1),
                     AcceptedContestants = ps.AcceptedContestants + (solved ? 0 : 1),
-                    ByVerdict = ps.ByVerdict,
+                    ByVerdict = byVerdict,
                     UpdatedAt = DateTime.Now.ToUniversalTime()
                 };
                 await _cache.TryUpdateAsync(problem.Id, statistics);
