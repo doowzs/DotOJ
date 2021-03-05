@@ -141,7 +141,8 @@ namespace Server.Services.Singleton
                     TotalSubmissions = ps.TotalSubmissions + 1,
                     AcceptedSubmissions = ps.AcceptedSubmissions + (submission.Verdict == Verdict.Accepted ? 1 : 0),
                     TotalContestants = ps.TotalContestants + (attempted ? 0 : 1),
-                    AcceptedContestants = ps.AcceptedContestants + (solved ? 0 : 1),
+                    AcceptedContestants = ps.AcceptedContestants +
+                                          (solved ? 0 : (submission.Verdict == Verdict.Accepted ? 1 : 0)),
                     ByVerdict = byVerdict,
                     UpdatedAt = DateTime.Now.ToUniversalTime()
                 };
