@@ -106,7 +106,13 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.TestKit
             return new JudgeResult
             {
                 Verdict = verdict,
-                FailedOn = null,
+                FailedOn = verdict switch
+                {
+                    Verdict.Rejected => 0,
+                    Verdict.Failed => 0,
+                    Verdict.Accepted => null,
+                    _ => 1
+                },
                 Time = null,
                 Memory = null,
                 Score = score * 100 / total,

@@ -62,7 +62,11 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.TestKit
                             }
                         }
                     }
-                    else if (stage.Title.ToLower().Equals("compile") || step.Title.ToLower().Equals("compile"))
+                    else if (!stage.Title.ToLower().Equals("compile") && !step.Title.ToLower().Equals("compile"))
+                    {
+                        message = $"Step {stage.Title}.{step.Title}: {verdict.ToString()}";
+                    }
+                    else
                     {
                         var output = await _box.ReadFileAsync("stdout") + await _box.ReadFileAsync("stderr");
                         if (output.Length > 4096)
@@ -72,7 +76,7 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.TestKit
                         }
 
                         verdict = Verdict.CompilationError;
-                        message = $"Step {stage.Title}.{step.Title}: Compile Error:\n{output}";
+                        message = $"Step {stage.Title}.{step.Title}: {verdict.ToString()}\n{output}";
                     }
 
                     _logger.LogInformation($"Step {stage.Title}.{step.Title} OK Verdict={verdict} Score={score}");
