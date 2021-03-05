@@ -92,6 +92,28 @@ namespace Server.Controllers.Api.v1
                 return Unauthorized(e.Message);
             }
         }
+        
+        [HttpGet("{id:int}/download")]
+        [Produces(MediaTypeNames.Application.Octet)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult> DownloadSubmission(int id)
+        {
+            try
+            {
+                var (bytes, filename) = await _service.DownloadSubmissionAsync(id);
+                return File(bytes, MediaTypeNames.Application.Octet, filename);
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized(e.Message);
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+        }
 
         [HttpPost]
         [Consumes(MediaTypeNames.Application.Json)]

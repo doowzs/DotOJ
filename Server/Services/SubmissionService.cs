@@ -29,6 +29,7 @@ namespace Server.Services
         public Task<List<SubmissionInfoDto>> GetBatchSubmissionInfosAsync(IEnumerable<int> ids);
         public Task<SubmissionInfoDto> GetSubmissionInfoAsync(int id);
         public Task<SubmissionViewDto> GetSubmissionViewAsync(int id);
+        public Task<(byte[], string)> DownloadSubmissionAsync(int id);
         public Task<SubmissionInfoDto> CreateSubmissionAsync(SubmissionCreateDto dto);
         public Task<string> GetTestKitLabSubmitTokenAsync(int problemId);
         public Task<string> CreateTestKitLabSubmissionAsync(string token, IFormFile file);
@@ -138,6 +139,7 @@ namespace Server.Services
                     {
                         throw new ValidationException("Invalid program code.");
                     }
+
                     break;
                 case ProblemType.TestKitLab:
                     throw new ValidationException("Cannot submit testkit lab problems through this API.");
@@ -156,7 +158,8 @@ namespace Server.Services
             var currentUser = await Manager.GetUserAsync(Accessor.HttpContext.User);
             bool canViewHiddenSubmissions = await Manager.IsInRoleAsync(currentUser, ApplicationRoles.Administrator) ||
                                             await Manager.IsInRoleAsync(currentUser, ApplicationRoles.ContestManager) ||
-                                            await Manager.IsInRoleAsync(currentUser, ApplicationRoles.SubmissionManager);
+                                            await Manager.IsInRoleAsync(currentUser,
+                                                ApplicationRoles.SubmissionManager);
             if (!canViewHiddenSubmissions)
             {
                 submissions = submissions.Where(s => !s.Hidden);
@@ -270,6 +273,32 @@ namespace Server.Services
             return new SubmissionViewDto(submission, Config);
         }
 
+        public async Task<(byte[], string)> DownloadSubmissionAsync(int id)
+        {
+            var submission = await Context.Submissions.FindAsync(id);
+            if (submission == null)
+            {
+                throw new NotFoundException();
+            }
+
+            await Context.Entry(submission).Reference(s => s.Problem).LoadAsync();
+            await EnsureUserCanViewSubmissionAsync(submission);
+
+            var filename = submission.User.ContestantId + '-' + submission.Id +
+                           submission.Program.GetSourceFileExtension();
+            switch (submission.Problem.Type)
+            {
+                case ProblemType.Ordinary:
+                    return (Convert.FromBase64String(submission.Program.Code), filename);
+                case ProblemType.TestKitLab:
+                    var path = Path.Combine(Config.Value.DataPath, "submissions", submission.Id.ToString());
+                    var file = Encoding.UTF8.GetString(Convert.FromBase64String(submission.Program.Code));
+                    return (await File.ReadAllBytesAsync(Path.Combine(path, file)), filename);
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
         public async Task<SubmissionInfoDto> CreateSubmissionAsync(SubmissionCreateDto dto)
         {
             var contest = await ValidateSubmissionCreateDtoAsync(dto);
@@ -279,7 +308,8 @@ namespace Server.Services
                 .Where(s => s.UserId == user.Id)
                 .OrderByDescending(s => s.Id)
                 .FirstOrDefaultAsync();
-            if (lastSubmission != null && (DateTime.Now.ToUniversalTime() - lastSubmission.CreatedAt).TotalSeconds < 5)
+            if (lastSubmission != null &&
+                (DateTime.Now.ToUniversalTime() - lastSubmission.CreatedAt).TotalSeconds < 5)
             {
                 throw new TooManyRequestsException("Cannot submit twice between 5 seconds.");
             }
@@ -302,9 +332,10 @@ namespace Server.Services
             };
             await Context.Submissions.AddAsync(submission);
             await Context.SaveChangesAsync();
-            
+
             var producer = Provider.GetRequiredService<JobRequestProducer>();
-            if (await producer.SendAsync(JobType.JudgeSubmission, submission.Id, 1)) {
+            if (await producer.SendAsync(JobType.JudgeSubmission, submission.Id, 1))
+            {
                 submission.Verdict = Verdict.InQueue;
                 Context.Update(submission);
                 await Context.SaveChangesAsync();
@@ -413,7 +444,8 @@ namespace Server.Services
             }
 
             var producer = Provider.GetRequiredService<JobRequestProducer>();
-            if (await producer.SendAsync(JobType.JudgeSubmission, submission.Id, 1)) {
+            if (await producer.SendAsync(JobType.JudgeSubmission, submission.Id, 1))
+            {
                 submission.Verdict = Verdict.InQueue;
                 Context.Update(submission);
                 await Context.SaveChangesAsync();

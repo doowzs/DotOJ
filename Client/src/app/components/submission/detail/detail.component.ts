@@ -5,6 +5,7 @@ import { Title } from '@angular/platform-browser';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { SubmissionViewDto } from '../../../../interfaces/submission.interfaces';
 import { SubmissionService } from '../../../services/submission.service';
+import { faDownload } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-submission-detail',
@@ -12,6 +13,7 @@ import { SubmissionService } from '../../../services/submission.service';
   styleUrls: ['./detail.component.css']
 })
 export class SubmissionDetailComponent implements OnInit {
+  faDownload = faDownload;
 
   @Input() submissionId: number;
   @Input() standalone: boolean = true;
@@ -39,5 +41,9 @@ export class SubmissionDetailComponent implements OnInit {
           this.unauthorized = true;
         }
       });
+  }
+
+  public downloadSubmission() {
+    window.open('/api/v1/submission/' + this.submissionId + '/download', '_blank');
   }
 }

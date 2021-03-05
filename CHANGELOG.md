@@ -1,10 +1,11 @@
 # Changelog
 
-## 1.5.22 - 2021-03-04
+## 1.5.23 - 2021-03-04
 
 ### Added
 
 - Added lab problems which accepts archive submission and custom judging.
+- Added feature to download viewable submissions as file or zip archive.
 
 ### Changed
 

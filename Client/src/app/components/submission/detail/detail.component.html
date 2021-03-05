@@ -19,9 +19,15 @@
       <h3>Message</h3>
       <pre>{{ submission.message }}</pre>
     </div>
-    <div *ngIf="!!submission.program.languageInfo.mode">
-      <h3>Source</h3>
-      <div [ngStyle]="{'height': standalone ? 'calc(100vh - 79px)' : '80vh'}">
+    <div>
+      <h3>
+        Source
+        <button class="float-right btn btn-sm btn-outline-primary" (click)="downloadSubmission()">
+          <fa-icon [icon]="faDownload"></fa-icon>Download
+        </button>
+      </h3>
+      <div *ngIf="!!submission.program.languageInfo.mode"
+           [ngStyle]="{'height': standalone ? 'calc(100vh - 79px)' : '80vh'}">
         <editor [disabled]="true" [submissionId]="submissionId" [program]="submission.program"></editor>
       </div>
     </div>
