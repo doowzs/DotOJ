@@ -26,7 +26,7 @@ case "$ACTION" in
   ;;
 "package")
   cd Dockerize
-  cp ../WebApp/appsettings.json.example ./webapp/appsettings.json
+  cp ../Server/appsettings.json.example ./webapp/appsettings.json
   cp ../Worker/appsettings.json.example ./worker/appsettings.json
   cp env-example .env
   sed -i 's/WEBAPP_VERSION=/WEBAPP_VERSION='"$TAG"'/' .env
