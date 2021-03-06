@@ -25,24 +25,37 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.TestKit
             }
             catch (InvalidDataException)
             {
-                return JudgeResult.NewRejectedResult("E: Could not extract a corrupted zip archive.");
+                return JudgeResult.NewRejectedResult("E: The zip archive is corrupted and cannot be extracted.");
             }
             catch (Exception e)
             {
-                return JudgeResult.NewFailedResult($"E: Cannot extract zip archive: {e.Message}");
+                return JudgeResult.NewFailedResult($"E: Failed to extract zip archive: {e.Message}");
             }
 
             var info = new DirectoryInfo(Path.Combine(Root, "extract"));
-            if (info.GetDirectories().Length != 1)
+            var target = string.Empty;
+            if (info.GetDirectories().Any(d => d.Name.Equals(".git")))
             {
-                return JudgeResult.NewRejectedResult("E: None or multiple project folders found in submitted archive.");
+                target = Path.Combine(Root, "extract", ".git");
+            }
+            else if (info.GetDirectories().Length == 1)
+            {
+                var folder = info.GetDirectories()[0].Name;
+                target = Path.Combine(Root, "extract", folder, ".git");
+                if (!Directory.Exists(target))
+                {
+                    return JudgeResult.NewRejectedResult("E: Could not find git repository." +
+                                                         $" There is no .git in folder {folder}.");
+                }
             }
             else
             {
-                var folder = info.GetDirectories()[0].Name;
-                Directory.Move(Path.Combine(Root, "extract", folder, folder == ".git" ? "" : ".git"), Path.Combine(Jail, ".git"));
-                return null;
+                return JudgeResult.NewRejectedResult("E: Could not find git repository." +
+                                                     " There is none or more than one folders in zip archive.");
             }
+
+            Directory.Move(target, Path.Combine(Jail, ".git"));
+            return null;
         }
 
         private async Task<JudgeResult> RestoreGitRepositoryAsync()

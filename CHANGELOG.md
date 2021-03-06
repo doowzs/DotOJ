@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.5.23 - 2021-03-04
+## 1.5.24 - 2021-03-04
 
 ### Added
 
@@ -27,6 +27,7 @@
 - Fixed editing testkit lab problems in client.
 - Fixed not opening manifest.json in read only mode.
 - Fixed problem statistics not invalidated after updating related data.
+- Fixed copying .git folder when it does not exist for lab problems.
 
 ## 1.4.2 - 2021-02-25
 
