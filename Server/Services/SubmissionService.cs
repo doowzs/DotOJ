@@ -283,6 +283,7 @@ namespace Server.Services
 
             await Context.Entry(submission).Reference(s => s.Problem).LoadAsync();
             await EnsureUserCanViewSubmissionAsync(submission);
+            await Context.Entry(submission).Reference(s => s.User).LoadAsync();
 
             var filename = submission.User.ContestantId + '-' + submission.Id +
                            submission.Program.GetSourceFileExtension();
