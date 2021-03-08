@@ -17,7 +17,7 @@ Dependencies: docker, docker-compose.
 Optional dependencies: openssl.
 
 1. Run `web/cert.sh` to create a signing certificate for web service or provide with an existing one.
-2. Start DB service with `docker-compose up -d mariadb` and wait it to initialize.
+2. Start DB and MQ services with `docker-compose up -d mariadb rabbitmq` and wait them to initialize.
 3. Start all the rest services with `docker-compose up -d`.
 
 ## References
