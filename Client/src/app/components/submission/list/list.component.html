@@ -67,7 +67,7 @@
       <td>
         <verdict [submission]="submission"></verdict>
       </td>
-      <td>{{ submission.score }}</td>
+      <td>{{ submission.score === 0 && submission.failedOn === 0 ? '' : submission.score }}</td>
       <td>{{ submission.time }}{{ !!submission.time ? 'ms' : '' }}</td>
       <td>{{ submission.memory }}{{ !!submission.memory ? 'KiB' : '' }}</td>
       <td>

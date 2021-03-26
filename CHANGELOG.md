@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.5.25 - 2021-03-04
+## 1.5.26 - 2021-03-26
 
 ### Added
 
@@ -18,6 +18,7 @@
 - Lab problem judging will stop on failure of compile steps and stages.
 - Showing units of time, memory and code length on submission list and timeline.
 - Submit token will not be invalidated after consuming.
+- If submission failed on samples, a score of 0 will not be shown.
 
 ### Fixed
 

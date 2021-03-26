@@ -37,7 +37,7 @@
           <td>
             <verdict [submission]="submission"></verdict>
           </td>
-          <td>{{ submission.score }}</td>
+          <td>{{ submission.score === 0 && submission.failedOn === 0 ? '' : submission.score }}</td>
           <ng-container *ngIf="problem.type === 0">
             <td [ngClass]="{'text-danger': !!problem && submission.time >= problem.timeLimit}">
               {{ submission.time }}{{ !!submission.time ? 'ms' : '' }}
