@@ -18,6 +18,7 @@ import { MainHeaderComponent } from './components/headers/main/main.component';
 import { ContestHeaderComponent } from './components/headers/contest/contest.component';
 import { MainFooterComponent } from './components/footers/main/main.component';
 import { WelcomePageComponent } from './components/welcome/page/page.component';
+import { WelcomeExamComponent } from './components/welcome/exam/exam.component';
 import { WelcomeBulletinsComponent } from './components/welcome/bulletins/bulletins.component';
 import { WelcomeContestsComponent } from './components/welcome/contests/contests.component';
 import { ContestListComponent } from './components/contest/list/list.component';
@@ -54,6 +55,7 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     ContestHeaderComponent,
     MainFooterComponent,
     WelcomePageComponent,
+    WelcomeExamComponent,
     WelcomeBulletinsComponent,
     WelcomeContestsComponent,
     ContestListComponent,

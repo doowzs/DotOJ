@@ -3,25 +3,28 @@ import { interval, Subject } from "rxjs";
 import { take, takeUntil } from "rxjs/operators";
 import * as moment from 'moment';
 
-import { ContestInfoDto } from '../../../../interfaces/contest.interfaces';
 import { AuthorizeService } from "../../../../api-authorization/authorize.service";
+import { ContestInfoDto } from '../../../../interfaces/contest.interfaces';
 import { ContestService } from '../../../services/contest.service';
-import { faBoxOpen, faClock, faLock, faSignInAlt } from '@fortawesome/free-solid-svg-icons';
-import { ApplicationConfigService } from "../../../services/config.service";
+import { ApplicationConfigService } from '../../../services/config.service';
+import {
+  faSignInAlt,
+} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
-  selector: 'app-welcome-contests',
-  templateUrl: './contests.component.html',
-  styleUrls: ['./contests.component.css']
+  selector: 'app-welcome-exam',
+  templateUrl: './exam.component.html',
+  styleUrls: ['./exam.component.css']
 })
-export class WelcomeContestsComponent implements OnInit, OnDestroy {
-  faBoxOpen = faBoxOpen;
-  faClock = faClock;
-  faLock = faLock;
+export class WelcomeExamComponent implements OnInit, OnDestroy {
   faSignInAlt = faSignInAlt;
 
-  public privileged = false;
-  public contests: ContestInfoDto[];
+  public examId: number;
+  public examLink: string;
+  public loading: boolean = false;
+  public contest: ContestInfoDto;
+  public anonymous: boolean = true;
+  public privileged: boolean = false;
   public now: moment.Moment;
   private destroy$ = new Subject();
 
@@ -30,19 +33,28 @@ export class WelcomeContestsComponent implements OnInit, OnDestroy {
     private service: ContestService,
     private config: ApplicationConfigService
   ) {
+    this.loading = true;
+    this.examId = this.config.examId;
+    this.examLink = `/contest/${this.examId}`;
   }
 
   ngOnInit() {
     this.auth.getUser()
       .pipe(take(1))
       .subscribe(user => {
+        this.anonymous = !user;
         this.privileged = user &&
           (user.roles.indexOf('Administrator') >= 0 ||
             user.roles.indexOf('ContestManager') >= 0);
       });
     this.service.getCurrentList()
       .subscribe(contests => {
-        this.contests = contests;
+        contests.forEach(c => {
+          if (c.id === this.examId) {
+            this.contest = c;
+          }
+        });
+        this.loading = false;
       });
     this.now = moment().add(this.config.diff, 'ms');
     interval(1000)

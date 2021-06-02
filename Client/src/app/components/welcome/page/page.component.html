@@ -1,12 +1,21 @@
 ﻿<app-header-main></app-header-main>
 <div class="container my-5">
-  <div class="row">
-    <div class="col col-12 col-xl-8">
-      <app-welcome-bulletins></app-welcome-bulletins>
+  <ng-container *ngIf="!examId; else examWelcome">
+    <div class="row">
+      <div class="col col-12 col-xl-8">
+        <app-welcome-bulletins></app-welcome-bulletins>
+      </div>
+      <div class="col col-12 col-xl-4">
+        <app-welcome-contests></app-welcome-contests>
+      </div>
     </div>
-    <div class="col col-12 col-xl-4">
-      <app-welcome-contests></app-welcome-contests>
+  </ng-container>
+  <ng-template #examWelcome>
+    <div class="row my-5">
+      <div class="col text-center">
+        <app-welcome-exam></app-welcome-exam>
+      </div>
     </div>
-  </div>
+  </ng-template>
 </div>
 <app-footer-main></app-footer-main>

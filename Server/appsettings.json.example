@@ -6,6 +6,7 @@
     "Host": "https://dotoj",
     "Title": "dotOJ",
     "Author": "dotOJ developers",
+    "ExamId": null,
     "DataPath": "/data",
     "AdminUser": {
       "Email": "admin@dotoj.local",

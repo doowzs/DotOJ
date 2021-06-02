@@ -123,6 +123,9 @@ export class ProblemDetailComponent implements OnInit, OnDestroy {
     this.problemService.getSingle(this.problemId, true)
       .subscribe(problem => {
         this.problem = problem;
+        if (this.problem.contestId !== Number(this.contestId)) {
+          this.router.navigate(['/contest', this.contestId]);
+        }
         this.title.setTitle(problem.title);
         this.loading = false;
         this.statsChartLabels = [];

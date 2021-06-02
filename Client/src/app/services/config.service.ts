@@ -7,6 +7,7 @@ export class ApplicationConfigService {
   public title: string;
   public author: string;
   public version: string;
+  public examId: number;
   public serverTime: string;
   public diff: number;
 

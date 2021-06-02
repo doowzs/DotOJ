@@ -48,6 +48,12 @@ namespace Server.Services
 
             var problem = await Context.Problems.FindAsync(id);
             await Context.Entry(problem).Reference<Contest>(p => p.Contest).LoadAsync();
+
+            if (Config.Value.ExamId.HasValue && problem.ContestId != Config.Value.ExamId.Value)
+            {
+                throw new UnauthorizedAccessException("Not authorized to view this problem.");
+            }
+
             if (problem.Contest.IsPublic)
             {
                 if (DateTime.Now.ToUniversalTime() < problem.Contest.BeginTime)

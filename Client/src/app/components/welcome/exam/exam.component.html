@@ -1,0 +1,47 @@
+<div class="card card-body">
+  <div *ngIf="loading; else examLoaded" class="spinner-border" role="status"></div>
+  <ng-template #examLoaded>
+    <ng-container *ngIf="contest; else examNotFound">
+      <h2 class="my-3">
+        {{ contest.title }}
+      </h2>
+      <p>
+        {{ contest.beginTime.format('YYYY-MM-DD HH:mm') }}
+        - {{ contest.endTime.format('YYYY-MM-DD HH:mm') }}
+      </p>
+      <p class="my-3" *ngIf="anonymous">
+        <a class="btn btn-outline-success" routerLink="/authentication/login">
+          <fa-icon [icon]="faSignInAlt"></fa-icon>登陆系统
+        </a>
+      </p>
+      <p class="my-3" *ngIf="!anonymous">
+        <a *ngIf="canEnterContest(contest); else cannotEnterContest"
+          [class]="'btn btn-' + (privileged && now.isBefore(contest.beginTime) ? 'warning' : 'success')"
+          [routerLink]="['/contest', contest.id]">
+          <fa-icon [icon]="faSignInAlt"></fa-icon>
+          <span>进入考试</span>
+        </a>
+        <ng-template #cannotEnterContest>
+          <a *ngIf="now.isAfter(contest.beginTime); else contestPending" class="btn btn-outline-danger disabled">
+            <fa-icon [icon]="faLock"></fa-icon>
+            <span>没有权限</span>
+          </a>
+          <ng-template #contestPending>
+            <a class="btn btn-outline-secondary disabled">
+              <fa-icon [icon]="faClock"></fa-icon>
+              <span>即将开始</span>
+            </a>
+          </ng-template>
+        </ng-template>
+      </p>
+    </ng-container>
+    <ng-template #examNotFound>
+      <h2 class="my-3">考试已结束</h2>
+      <p class="my-3">
+        <a [href]="examLink" class="btn btn-warning">
+          <fa-icon [icon]="faSignInAlt"></fa-icon>查看结果
+        </a>
+      </p>
+    </ng-template>
+  </ng-template>
+</div>

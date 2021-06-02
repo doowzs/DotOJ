@@ -33,6 +33,7 @@ export class MainHeaderComponent {
   faUserPlus = faUserPlus;
 
   public title: string;
+  public isExamMode: boolean = false;
   public username: Observable<string>;
   public collapse = true;
   public isAuthenticated: Observable<boolean>;
@@ -43,6 +44,7 @@ export class MainHeaderComponent {
     private config: ApplicationConfigService
   ) {
     this.title = config.title;
+    this.isExamMode = !!config.examId;
     this.username = this.auth.getUser().pipe(take(1), map(u => u && u.name));
     this.isAuthenticated = this.auth.isAuthenticated();
     this.canViewAdminPages = this.auth.getUser().pipe(take(1), map(u => u && u.roles.length > 0));

@@ -60,6 +60,11 @@ namespace Server.Services
                 return true;
             }
 
+            if (Config.Value.ExamId.HasValue)
+            {
+                return false;
+            }
+
             var problem = await Context.Problems.FindAsync(submission.ProblemId);
             if (problem.Type != ProblemType.Ordinary)
             {

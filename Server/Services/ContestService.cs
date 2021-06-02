@@ -48,6 +48,11 @@ namespace Server.Services
                 return;
             }
 
+            if (Config.Value.ExamId.HasValue && id != Config.Value.ExamId.Value)
+            {
+                throw new UnauthorizedAccessException("Not authorized to view this contest.");
+            }
+
             var contest = await Context.Contests.FindAsync(id);
             if (contest.IsPublic)
             {

@@ -39,7 +39,7 @@ namespace Server.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required, Display(Name = "用户ID（南京大学学号）")] public string Username { get; set; }
+            [Required, Display(Name = "用户ID（南京大学学工号/考试专用账户名）")] public string Username { get; set; }
 
             [Required, Display(Name = "密码")]
             [DataType(DataType.Password)]

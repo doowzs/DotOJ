@@ -8,10 +8,13 @@ import { ApplicationConfigService } from '../../../services/config.service';
   styleUrls: ['./page.component.css']
 })
 export class WelcomePageComponent {
+  public examId: number;
+
   constructor(
     private title: Title,
     private config: ApplicationConfigService
   ) {
     this.title.setTitle(this.config.title);
+    this.examId = this.config.examId;
   }
 }

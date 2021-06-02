@@ -32,6 +32,9 @@ export class ContestListComponent implements OnInit {
     private config: ApplicationConfigService
   ) {
     this.title.setTitle('Contests');
+    if (!!config.examId) {
+      router.navigate(['/']);
+    }
   }
 
   ngOnInit() {

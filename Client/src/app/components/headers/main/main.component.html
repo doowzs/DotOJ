@@ -30,13 +30,13 @@
             </li>
           </ng-template>
           <ng-template #authenticated>
-            <li class="nav-item mr-2" routerLinkActive="active">
+            <li class="nav-item mr-2" routerLinkActive="active" *ngIf="!isExamMode">
               <a class="nav-link" routerLink="/contests">
                 <fa-icon [icon]="faCalendar"></fa-icon>
                 <span>作业列表</span>
               </a>
             </li>
-            <li class="nav-item mr-2" routerLinkActive="active">
+            <li class="nav-item mr-2" routerLinkActive="active" *ngIf="!isExamMode">
               <a class="nav-link" routerLink="/submissions">
                 <fa-icon [icon]="faPaperPlane"></fa-icon>
                 <span>评测情况</span>

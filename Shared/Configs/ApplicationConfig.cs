@@ -10,6 +10,7 @@ namespace Shared.Configs
         public string Title { get; set; }
         public string Author { get; set; }
         public string DataPath { get; set; }
+        public int? ExamId { get; set; }
         public readonly string Version = "latest"; // injected in Dockerfile.webapp
     }
 
@@ -18,6 +19,7 @@ namespace Shared.Configs
     {
         public string Title { get; }
         public string Author { get; }
+        public int? ExamId { get; }
         public string Version { get; }
         public DateTime ServerTime { get; }
 
@@ -25,6 +27,7 @@ namespace Shared.Configs
         {
             Title = config.Title;
             Author = config.Author;
+            ExamId = config.ExamId;
             Version = config.Version;
             ServerTime = DateTime.Now.ToUniversalTime();
         }
