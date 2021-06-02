@@ -66,12 +66,12 @@
 </header>
 <ng-template #contestEndedModal let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Contest Ended</h4>
+    <h4 class="modal-title" id="modal-basic-title">{{ isExamMode ? '考试结束' : '作业截止' }}</h4>
   </div>
   <div class="modal-body">
-    <p>The contest has ended. Refresh page to view the results.</p>
+    <p>{{ isExamMode ? '考试已经结束' : '作业已经截止' }}，请刷新页面查看结果。</p>
   </div>
   <div class="modal-footer">
-    <a class="btn btn-outline-success" (click)="modal.close()">Done</a>
+    <a class="btn btn-outline-success" (click)="modal.close()">关闭</a>
   </div>
 </ng-template>

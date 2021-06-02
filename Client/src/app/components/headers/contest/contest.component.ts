@@ -41,6 +41,7 @@ export class ContestHeaderComponent implements OnInit, OnDestroy {
   public canViewAdminPages: Observable<boolean>;
   public contestId: number;
   public contest: ContestViewDto;
+  public isExamMode: boolean = false;
   public now: moment.Moment;
   public ended = false;
   public progress = 0;
@@ -61,6 +62,7 @@ export class ContestHeaderComponent implements OnInit, OnDestroy {
     this.username = this.auth.getUser().pipe(take(1), map(u => u && u.name));
     this.canViewAdminPages = this.auth.getUser().pipe(take(1), map(u => u && u.roles.length > 0));
     this.contestId = this.route.snapshot.params.contestId;
+    this.isExamMode = !!config.examId;
     this.now = moment().add(config.diff, 'ms');
 
     interval(1000)

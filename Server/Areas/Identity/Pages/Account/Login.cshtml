@@ -1,5 +1,8 @@
 @page
 @model LoginModel
+@using Shared.Configs
+@using Microsoft.Extensions.Options
+@inject IOptions<ApplicationConfig> Options
 
 @{
     ViewData["Title"] = "登陆";
@@ -13,7 +16,9 @@
                 <hr />
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <div class="form-group">
-                    <label asp-for="Input.Username"></label>
+                    <label asp-for="Input.Username">
+                        用户名（@if (Options.Value.ExamId.HasValue) {<span>考试专用账户</span>} else {<span>南京大学学工号</span>}）
+                    </label>
                     <input asp-for="Input.Username" class="form-control" />
                     <span asp-validation-for="Input.Username" class="text-danger"></span>
                 </div>
@@ -35,9 +40,11 @@
                 </div>
                 <div class="form-group">
                     <p>如果忘记密码，请联系课程助教或系统管理员</p>
-                    <p>
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">注册新用户</a>
-                    </p>
+                    @if (!Options.Value.ExamId.HasValue) {
+                        <p>
+                            <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">注册新用户</a>
+                        </p>
+                    }
                 </div>
             </form>
         </section>

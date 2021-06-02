@@ -1,5 +1,8 @@
 @page
 @model RegisterModel
+@using Shared.Configs
+@using Microsoft.Extensions.Options
+@inject IOptions<ApplicationConfig> Options
 @{
     ViewData["Title"] = "注册";
 }
@@ -8,6 +11,9 @@
 
 <div class="row">
     <div class="col-md-12">
+    @if (Options.Value.ExamId.HasValue) {
+        <p>考试中禁止创建用户</p>
+    } else {
         <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
             <h4>创建一个新用户</h4>
             <hr />
@@ -39,6 +45,7 @@
             </div>
             <button type="submit" class="btn btn-primary">注册</button>
         </form>
+    }
     </div>
 </div>
 
