@@ -11,13 +11,11 @@
   <div *ngIf="contest.hasScoreBonus || contest.hasScoreDecay" class="my-3">
     <div *ngIf="contest.hasScoreBonus" class="alert alert-success my-2">
       <fa-icon [icon]="faArrowAltCircleUp"></fa-icon>
-      If you submit code before {{ contest.scoreBonusTime.format('YYYY-MM-DD HH:mm') }},
-      you will get {{ contest.scoreBonusPercentage }}% score.
+      在{{ contest.scoreBonusTime.format('YYYY-MM-DD HH:mm') }}之前提交的代码将获得{{ contest.scoreBonusPercentage }}%的分数。
     </div>
     <div *ngIf="contest.hasScoreDecay" class="alert alert-danger my-2">
       <fa-icon [icon]="faArrowAltCircleDown"></fa-icon>
-      If you submit code after {{ contest.scoreDecayTime.format('YYYY-MM-DD HH:mm') }},
-      you will get {{ contest.scoreDecayPercentage }}% score.
+      在{{ contest.scoreDecayTime.format('YYYY-MM-DD HH:mm') }}之后提交的代码将获得{{ contest.scoreDecayPercentage }}%的分数。
       <ng-container *ngIf="contest.isScoreDecayLinear">
         <br/>Score of new submissions after that time will decay linearly according to submit time.
       </ng-container>
@@ -26,7 +24,7 @@
   <div class="my-3">
     <span *ngIf="privileged" class="float-right">
       <a class="btn btn-sm btn-outline-danger" [routerLink]="['/admin/contest', contestId]">
-        <fa-icon [icon]="faEdit"></fa-icon><span>Edit Contest</span>
+        <fa-icon [icon]="faEdit"></fa-icon><span>编辑作业</span>
       </a>
     </span>
     <markdown [data]="contest.description" katex></markdown>
@@ -36,20 +34,20 @@
       <h3 class="text-secondary">
         <fa-icon [icon]="faBoxOpen"></fa-icon>
       </h3>
-      <p>This contest has no problem.</p>
+      <p>这个作业没有题目。</p>
     </div>
   </div>
   <ng-template #contestProblems>
     <div class="my-3 card">
       <div class="card-body">
-        <h2>Problems</h2>
+        <h2>题目列表</h2>
         <table class="table my-3">
           <thead>
           <tr>
             <th scope="col">#</th>
-            <th scope="col">Title</th>
-            <th scope="col">Status</th>
-            <th scope="col">Statistics</th>
+            <th scope="col">名称</th>
+            <th scope="col">解决状态</th>
+            <th scope="col">通过人数</th>
           </tr>
           </thead>
           <tbody>
@@ -58,10 +56,10 @@
             <td><a [routerLink]="['/contest', contestId, 'problem', problem.id]">{{ problem.title }}</a></td>
             <td>
             <span *ngIf="problem.solved" class="text-success">
-              <fa-icon [icon]="faCheck"></fa-icon><span>Solved</span>
+              <fa-icon [icon]="faCheck"></fa-icon><span>已解决</span>
             </span>
               <span *ngIf="problem.attempted && !problem.solved" class="text-danger">
-              <fa-icon [icon]="faTimes"></fa-icon><span>Attempted</span>
+              <fa-icon [icon]="faTimes"></fa-icon><span>未解决</span>
             </span>
             </td>
             <td>

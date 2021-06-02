@@ -22,7 +22,6 @@ import { WelcomeBulletinsComponent } from './components/welcome/bulletins/bullet
 import { WelcomeContestsComponent } from './components/welcome/contests/contests.component';
 import { ContestListComponent } from './components/contest/list/list.component';
 import { ContestViewComponent } from './components/contest/view/view.component';
-import { ContestRuleComponent } from './components/contest/rule/rule.component';
 import { ContestDescriptionComponent } from './components/contest/description/description.component';
 import { ContestSubmissionsComponent } from './components/contest/submissions/submissions.component';
 import { ContestStandingsComponent } from './components/contest/standings/standings.component';
@@ -59,7 +58,6 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     WelcomeContestsComponent,
     ContestListComponent,
     ContestViewComponent,
-    ContestRuleComponent,
     ContestDescriptionComponent,
     ContestSubmissionsComponent,
     ContestStandingsComponent,

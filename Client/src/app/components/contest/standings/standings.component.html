@@ -9,29 +9,29 @@
     </p>
   </div>
   <h2>
-    Standings
+    得分排名
     <span class="float-right">
       <button class="btn btn-outline-secondary mr-3" (click)="viewScore = !viewScore">
-        <fa-icon [icon]="faEye"></fa-icon><span>{{ viewScore ? 'Verdict' : 'Score' }}</span>
+        <fa-icon [icon]="faEye"></fa-icon><span>{{ viewScore ? '显示结果' : '显示得分' }}</span>
       </button>
       <button class="btn btn-outline-success mr-3" [disabled]="loading" (click)="exportStandings()">
-        <fa-icon [icon]="faDownload"></fa-icon><span>Export</span>
+        <fa-icon [icon]="faDownload"></fa-icon><span>导出为Excel</span>
       </button>
       <button class="btn btn-outline-primary" [disabled]="loading" (click)="loadRegistrations()">
-        <fa-icon [icon]="faSyncAlt"></fa-icon><span>Refresh</span>
+        <fa-icon [icon]="faSyncAlt"></fa-icon><span>刷新</span>
       </button>
     </span>
   </h2>
   <table *ngIf="contest" class="table table-hover my-3">
     <thead>
     <tr>
-      <th>Rank</th>
-      <th>Contestant</th>
+      <th>排名</th>
+      <th>选手</th>
       <th *ngFor="let problem of contest.problems">
         {{ problem.label }}
       </th>
-      <th>Score</th>
-      <th>Penalties</th>
+      <th>总得分</th>
+      <th>总罚时</th>
     </tr>
     </thead>
     <tbody *ngIf="contest && registrations">
@@ -59,11 +59,10 @@
           <div class="card">
             <div class="card-body">
               <h5 class="text-left">
-                {{ selectedRegistration.contestantName }}'s submissions to Problem {{ selectedProblem.label }}
+                选手{{ selectedRegistration.contestantName }}在题目{{ selectedProblem.label }}中提交的代码
                 <small class="float-right">
                   <a href="javascript:void(0);" class="text-secondary" (click)="selectedRegistration = null">
-                    <fa-icon [icon]="faTimes"></fa-icon>
-                    Close
+                    <fa-icon [icon]="faTimes"></fa-icon>关闭
                   </a>
                 </small>
               </h5>

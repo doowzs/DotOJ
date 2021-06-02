@@ -11,7 +11,7 @@
           <li class="nav-item mr-2" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
             <a class="nav-link" routerLink="/">
               <fa-icon [icon]="faHome"></fa-icon>
-              <span>Home</span>
+              <span>主页</span>
             </a>
           </li>
           <ng-container *ngIf="(isAuthenticated | async) then authenticated else anonymous"></ng-container>
@@ -19,13 +19,13 @@
             <li class="nav-item">
               <a class="nav-link" routerLink="/authentication/register">
                 <fa-icon [icon]="faUserPlus"></fa-icon>
-                <span>Register</span>
+                <span>注册</span>
               </a>
             </li>
             <li class="nav-item">
               <a class="nav-link text-success" routerLink="/authentication/login">
                 <fa-icon [icon]="faSignInAlt"></fa-icon>
-                <span>Login</span>
+                <span>登陆</span>
               </a>
             </li>
           </ng-template>
@@ -33,13 +33,13 @@
             <li class="nav-item mr-2" routerLinkActive="active">
               <a class="nav-link" routerLink="/contests">
                 <fa-icon [icon]="faCalendar"></fa-icon>
-                <span>Contests</span>
+                <span>作业列表</span>
               </a>
             </li>
             <li class="nav-item mr-2" routerLinkActive="active">
               <a class="nav-link" routerLink="/submissions">
                 <fa-icon [icon]="faPaperPlane"></fa-icon>
-                <span>Submissions</span>
+                <span>评测情况</span>
               </a>
             </li>
             <li class="nav-item" ngbDropdown>
@@ -50,16 +50,16 @@
               <div ngbDropdownMenu class="dropdown-menu-right">
                 <a *ngIf="canViewAdminPages | async" ngbDropdownItem routerLink="/admin">
                   <fa-icon [icon]="faTools"></fa-icon>
-                  <span>Admin</span>
+                  <span>管理页面</span>
                 </a>
                 <a ngbDropdownItem routerLink="/authentication/profile">
                   <fa-icon [icon]="faCog"></fa-icon>
-                  <span>Account</span>
+                  <span>账户信息</span>
                 </a>
                 <a ngbDropdownItem class="text-danger"
                    routerLink="/authentication/logout" [state]="{'local': true}">
                   <fa-icon [icon]="faSignOutAlt"></fa-icon>
-                  <span>Logout</span>
+                  <span>登出</span>
                 </a>
               </div>
             </li>

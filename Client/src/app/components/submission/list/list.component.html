@@ -9,15 +9,15 @@
       - {{ contest.endTime.format('YYYY-MM-DD HH:mm') }}
     </p>
   </div>
-  <h2>Submissions</h2>
+  <h2>评测情况</h2>
   <div class="row">
     <div class="col col-12 col-lg-4">
-      <input class="form-control" placeholder="Contestant ID" [(ngModel)]="contestantId"/>
+      <input class="form-control" placeholder="选手ID" [(ngModel)]="contestantId"/>
     </div>
     <div class="col col-12 col-lg-2">
-      <input *ngIf="!inline" class="form-control" placeholder="Problem ID" [(ngModel)]="problemId"/>
+      <input *ngIf="!inline" class="form-control" placeholder="题目编号" [(ngModel)]="problemId"/>
       <select *ngIf="inline && contest" class="form-control custom-select" [(ngModel)]="problemId">
-        <option value="undefined" label="Any Problem"></option>
+        <option value="undefined" label="任意题目"></option>
         <ng-container *ngIf="!!contest">
           <option *ngFor="let problem of contest.problems" [value]="problem.id"
                   [label]="problem.label + ': ' + problem.title"
@@ -27,20 +27,20 @@
     </div>
     <div class="col col-12 col-lg-2">
       <select class="form-control custom-select" [(ngModel)]="verdict">
-        <option value="undefined" label="Any Verdict" selected></option>
+        <option value="undefined" label="任意结果" selected></option>
         <option *ngFor="let verdict of Verdicts" [value]="verdict.code" [label]="verdict.name"></option>
       </select>
     </div>
     <div class="col col-12 col-lg-2">
       <button class="btn btn-outline-success w-100" [disabled]="loading" (click)="onQueryParamsChange()">
         <fa-icon [icon]="faSearch"></fa-icon>
-        <span>Search</span>
+        <span>搜索</span>
       </button>
     </div>
     <div class="col col-12 col-lg-2">
       <button class="btn btn-outline-primary w-100" [disabled]="loading" (click)="loadSubmissions()">
         <fa-icon [icon]="faSyncAlt"></fa-icon>
-        <span>Refresh</span>
+        <span>刷新</span>
       </button>
     </div>
   </div>
@@ -48,15 +48,15 @@
     <thead>
     <tr>
       <th scope="col">#</th>
-      <th scope="col">Contestant</th>
-      <th scope="col">Problem</th>
-      <th scope="col">Verdict</th>
-      <th scope="col">Score</th>
-      <th scope="col">Time</th>
-      <th scope="col">Memory</th>
-      <th scope="col">Language</th>
-      <th scope="col">Bytes</th>
-      <th scope="col">Submitted</th>
+      <th scope="col">选手</th>
+      <th scope="col">题目</th>
+      <th scope="col">评测结果</th>
+      <th scope="col">得分</th>
+      <th scope="col">运行时间</th>
+      <th scope="col">运行内存</th>
+      <th scope="col">编程语言</th>
+      <th scope="col">字节数</th>
+      <th scope="col">提交时间</th>
     </tr>
     </thead>
     <tbody *ngIf="!!list">
@@ -67,7 +67,7 @@
       <td>
         <verdict [submission]="submission"></verdict>
       </td>
-      <td>{{ submission.score === 0 && submission.failedOn === 0 ? '' : submission.score }}</td>
+      <td>{{ submission.score }}</td>
       <td>{{ submission.time }}{{ !!submission.time ? 'ms' : '' }}</td>
       <td>{{ submission.memory }}{{ !!submission.memory ? 'KiB' : '' }}</td>
       <td>

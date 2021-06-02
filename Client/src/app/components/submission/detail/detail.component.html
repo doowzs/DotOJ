@@ -1,6 +1,6 @@
 <div class="modal-header">
   <h2 class="d-flex">
-    Submission #{{ submissionId }}
+    提交#{{ submissionId }}
     <span class="ml-3" *ngIf="submission">
       <verdict [submission]="submission"></verdict>
     </span>
@@ -12,18 +12,18 @@
 <div class="modal-body p-3">
   <ng-container *ngIf="submission">
     <div>
-      <h3>Info</h3>
+      <h3>提交信息</h3>
       <pre>{{ submission.comments }}</pre>
     </div>
     <div *ngIf="!!submission.message">
-      <h3>Message</h3>
+      <h3>评测信息</h3>
       <pre>{{ submission.message }}</pre>
     </div>
     <div>
       <h3>
-        Source
+        源代码
         <button class="float-right btn btn-sm btn-outline-primary" (click)="downloadSubmission()">
-          <fa-icon [icon]="faDownload"></fa-icon>Download
+          <fa-icon [icon]="faDownload"></fa-icon>下载文件
         </button>
       </h3>
       <div *ngIf="!!submission.program.languageInfo.mode"
@@ -33,8 +33,8 @@
     </div>
   </ng-container>
   <ng-container *ngIf="unauthorized">
-    <h3>Unauthorized</h3>
-    <p>Sorry, you are not authorized to view this submission.</p>
+    <h3>无浏览权限</h3>
+    <p>很抱歉，你没有浏览此提交的详细信息的权限。</p>
   </ng-container>
 </div>
 

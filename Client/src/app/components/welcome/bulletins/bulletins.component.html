@@ -1,4 +1,4 @@
-<h2>Bulletins</h2>
+<h2>公告栏</h2>
 <div *ngIf="bulletins == null; else bulletinsLoaded" class="spinner-border" role="status"></div>
 <ng-template #bulletinsLoaded>
   <ng-template #bulletinsEmpty>
@@ -6,7 +6,7 @@
       <h3 class="text-secondary">
         <fa-icon [icon]="faBoxOpen"></fa-icon>
       </h3>
-      <p>No bulletins.</p>
+      <p>目前没有公告。</p>
     </div>
   </ng-template>
   <ng-container *ngIf="bulletins.length > 0; else bulletinsEmpty">

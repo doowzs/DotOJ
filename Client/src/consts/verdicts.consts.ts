@@ -13,51 +13,51 @@ export interface VerdictInfo {
 
 export const Verdicts: VerdictInfo[] = [
   {
-    code: -3, name: 'Rejected', showCase: false, stage: VerdictStage.REJECTED,
-    color: 'secondary', explain: 'This submission cannot be judged and is rejected.'
+    code: -3, name: '拒绝评测', showCase: false, stage: VerdictStage.REJECTED,
+    color: 'secondary', explain: '这份提交的代码无法被评测机评测，因此被拒绝。'
   },
   {
-    code: -2, name: 'Voided', showCase: false, stage: VerdictStage.ERROR,
-    color: 'secondary', explain: 'This submission is voided by a newer submission or manually.'
+    code: -2, name: '提交作废', showCase: false, stage: VerdictStage.ERROR,
+    color: 'secondary', explain: '这份提交被一个新的提交覆盖或被管理员手动作废。'
   },
   {
-    code: -1, name: 'Service Failed', showCase: false, stage: VerdictStage.ERROR,
-    color: 'secondary', explain: 'An internal error occurred in the judging service.'
+    code: -1, name: '评测失败', showCase: false, stage: VerdictStage.ERROR,
+    color: 'secondary', explain: '评测服务遇到内部错误，无法评测代码。'
   },
   {
-    code: 0, name: 'Pending', showCase: false, stage: VerdictStage.RUNNING,
-    color: 'primary', explain: 'Your code is submitted and is waiting to be processed.'
+    code: 0, name: '等待评测', showCase: false, stage: VerdictStage.RUNNING,
+    color: 'primary', explain: '你的代码已提交，正在等待评测。'
   },
   {
-    code: 1, name: 'In Queue', showCase: false, stage: VerdictStage.RUNNING,
-    color: 'primary', explain: 'Your code is submitted and is waiting to be processed.'
+    code: 1, name: '等待队列', showCase: false, stage: VerdictStage.RUNNING,
+    color: 'primary', explain: '你的代码已提交且已经进入评测队列，正在等待评测。'
   },
   {
-    code: 2, name: 'Running', showCase: true, stage: VerdictStage.RUNNING,
-    color: 'primary', explain: 'Your program is running on test cases by the judging service.'
+    code: 2, name: '正在运行', showCase: true, stage: VerdictStage.RUNNING,
+    color: 'primary', explain: '你的程序正在测试数据上运行。'
   },
   {
-    code: 3, name: 'Accepted', showCase: false, stage: VerdictStage.ACCEPTED,
-    color: 'success', explain: 'Your program passed all test cases.'
+    code: 3, name: '答案正确', showCase: false, stage: VerdictStage.ACCEPTED,
+    color: 'success', explain: '你的程序通过了所有的测试用例。'
   },
   {
-    code: 4, name: 'Wrong Answer', showCase: true, stage: VerdictStage.REJECTED,
-    color: 'danger', explain: 'The output of your program does not match expected output.'
+    code: 4, name: '答案错误', showCase: true, stage: VerdictStage.REJECTED,
+    color: 'danger', explain: '你的程序在某些测试用例上输出的答案不正确。'
   },
   {
-    code: 5, name: 'Time Limit Exceeded', showCase: true, stage: VerdictStage.REJECTED,
-    color: 'danger', explain: 'Your program did not terminate before hitting the time limit.'
+    code: 5, name: '时间超限', showCase: true, stage: VerdictStage.REJECTED,
+    color: 'danger', explain: '你的程序在某些测试用例上没有及时结束运行。'
   },
   {
-    code: 6, name: 'Memory Limit Exceeded', showCase: true, stage: VerdictStage.REJECTED,
-    color: 'danger', explain: 'Your program hit the memory limit.'
+    code: 6, name: '内存超限', showCase: true, stage: VerdictStage.REJECTED,
+    color: 'danger', explain: '你的程序在某些测试用例上使用了超出限制的内存。'
   },
   {
-    code: 7, name: 'Compilation Error', showCase: false, stage: VerdictStage.REJECTED,
-    color: 'danger', explain: 'Your code cannot compile.'
+    code: 7, name: '编译错误', showCase: false, stage: VerdictStage.REJECTED,
+    color: 'danger', explain: '你提交的代码无法编译。'
   },
   {
-    code: 8, name: 'Runtime Error', showCase: true, stage: VerdictStage.REJECTED,
-    color: 'danger', explain: 'Your program did not exit normally with exit code 0.'
+    code: 8, name: '运行错误', showCase: true, stage: VerdictStage.REJECTED,
+    color: 'danger', explain: '你的程序没有以0为返回值退出。'
   }
 ];

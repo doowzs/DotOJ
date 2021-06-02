@@ -1,4 +1,4 @@
-<h2>Current Contests</h2>
+<h2>当前作业</h2>
 <div *ngIf="contests == null; else contestsLoaded" class="spinner-border" role="status"></div>
 <ng-template #contestsLoaded>
   <ng-template #contestsEmpty>
@@ -6,7 +6,7 @@
       <h3 class="text-secondary">
         <fa-icon [icon]="faBoxOpen"></fa-icon>
       </h3>
-      <p>No contests now.</p>
+      <p>目前没有作业。</p>
     </div>
   </ng-template>
   <ng-container *ngIf="contests.length; else contestsEmpty">
@@ -18,18 +18,18 @@
              [class]="'btn btn-sm btn-' + (privileged && now.isBefore(contest.beginTime) ? 'warning' : 'success')"
              [routerLink]="['/contest', contest.id]">
             <fa-icon [icon]="faSignInAlt"></fa-icon>
-            <span>Enter</span>
+            <span>进入作业</span>
           </a>
           <ng-template #cannotEnterContest>
             <a *ngIf="now.isAfter(contest.beginTime); else contestPending"
                class="btn btn-sm btn-outline-danger disabled">
               <fa-icon [icon]="faLock"></fa-icon>
-              <span>Private</span>
+              <span>私有作业</span>
             </a>
             <ng-template #contestPending>
               <a class="btn btn-sm btn-outline-secondary disabled">
                 <fa-icon [icon]="faClock"></fa-icon>
-                <span>Pending</span>
+                <span>即将开始</span>
               </a>
             </ng-template>
           </ng-template>

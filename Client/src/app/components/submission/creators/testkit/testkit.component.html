@@ -1,33 +1,33 @@
 <div class="p-4 bg-light d-flex h-100" *ngIf="problem && problem.type === 1">
   <div class="card w-100 justify-content-center align-self-center">
     <div class="card-body">
-      <h3 class="card-title">Making Submit to Lab Problem</h3>
+      <h3 class="card-title">提交实验代码</h3>
       <div class="row my-3">
         <div class="col col-12">
           <input #zipFileInput type="file" accept="application/zip"
                  class="d-none" (change)="createLabSubmission($event)"/>
           <button class="btn btn-success w-100" (click)="zipFileInput.click()">
-            <fa-icon [icon]="faUpload"></fa-icon>Upload Submission
+            <fa-icon [icon]="faUpload"></fa-icon>上传压缩文件
           </button>
         </div>
       </div>
       <div *ngIf="!!error" class="alert alert-danger">
-        Error: {{ error }}
+        遇到错误：{{ error }}
         <a class="float-right text-secondary" href="javascript:void(0)" (click)="error = null">
-          <fa-icon [icon]="faTimes"></fa-icon>Close
+          <fa-icon [icon]="faTimes"></fa-icon>关闭
         </a>
       </div>
       <hr/>
       <p class="mb-1">
-        Your submit token for problem #{{ problem.id }} is:
+        属于你的提交题目#{{ problem.id }}的提交代码：
         <span class="float-right">
           <a href="javascript:void(0)" class="text-secondary" (click)="loadProblemAndToken()">
-            <fa-icon [icon]="faSyncAlt"></fa-icon>Refresh
+            <fa-icon [icon]="faSyncAlt"></fa-icon>刷新
           </a>
         </span>
       </p>
       <h2 class="text-center"><code>{{ token }}</code></h2>
-      <p class="mb-1">Make submission from Linux/macOS command line:</p>
+      <p class="mb-1">在Linux和macOS上通过终端提交代码：</p>
       <ol>
         <li><code>make submit TOKEN={{ token }}</code></li>
         <li><code>curl -X POST -F "TOKEN={{ token }}" -F "FILE=@archive" {{ api }}</code></li>

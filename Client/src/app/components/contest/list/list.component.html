@@ -1,6 +1,6 @@
 <app-header-main></app-header-main>
 <div class="container my-5">
-  <h2>Contests</h2>
+  <h2>作业列表</h2>
   <div *ngIf="list == null; else contestsLoaded" class="spinner-border" role="status"></div>
   <ng-template #contestsLoaded>
     <div *ngIf="list.items.length > 0; else noContests">
@@ -8,10 +8,10 @@
         <thead>
         <tr>
           <th scope="col">#</th>
-          <th scope="col">Title</th>
-          <th scope="col">Type</th>
-          <th scope="col">Status</th>
-          <th scope="col">Period</th>
+          <th scope="col">作业名称</th>
+          <th scope="col">类型</th>
+          <th scope="col">状态</th>
+          <th scope="col">持续时间</th>
         </tr>
         </thead>
         <tbody>
@@ -28,14 +28,14 @@
             </ng-template>
           </td>
           <td>
-            <span *ngIf="contest.isPublic" class="text-success">Public</span>
-            <span *ngIf="!contest.isPublic" class="text-danger">Private</span>
+            <span *ngIf="contest.isPublic" class="text-success">公开</span>
+            <span *ngIf="!contest.isPublic" class="text-danger">私有</span>
           </td>
           <td>
-            <span *ngIf="now < contest.beginTime; else contestStarted" class="text-info">Pending</span>
+            <span *ngIf="now < contest.beginTime; else contestStarted" class="text-info">尚未开始</span>
             <ng-template #contestStarted>
-              <span *ngIf="now <= contest.endTime" class="text-success">Running</span>
-              <span *ngIf="now > contest.endTime">Ended</span>
+              <span *ngIf="now <= contest.endTime" class="text-success">正在进行</span>
+              <span *ngIf="now > contest.endTime">已经结束</span>
             </ng-template>
           </td>
           <td>

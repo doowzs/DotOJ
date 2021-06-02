@@ -3,32 +3,32 @@
     <h3>
       <fa-icon [icon]="faBoxOpen"></fa-icon>
     </h3>
-    <p>You haven't tried this problem.</p>
+    <p>你还没有尝试过这道题目。</p>
   </div>
   <ng-template #submissionsTable>
     <div class="my-3">
       <div class="alert alert-info" *ngIf="this.averageTime != null && this.averageTime >= 0">
         <fa-icon [icon]="faClock"></fa-icon>
-        Average waiting time:
+        平均等待时长（仅供参考）：
         <span *ngIf="this.averageTime >= 60; else lessThanAMinute">
-          {{ (this.averageTime - (this.averageTime % 60)) / 60 + 1 }} minutes
+          {{ (this.averageTime - (this.averageTime % 60)) / 60 + 1 }}分钟。
         </span>
         <ng-template #lessThanAMinute>
-          less than one minute
+          小于1分钟。
         </ng-template>
       </div>
       <table class="table table-sm table-hover">
         <thead>
         <tr>
           <th scope="col">#</th>
-          <th scope="col">Verdict</th>
-          <th scope="col">Score</th>
+          <th scope="col">评测结果</th>
+          <th scope="col">得分</th>
           <ng-container *ngIf="problem.type === 0">
-            <th scope="col">Time</th>
-            <th scope="col">Memory</th>
+            <th scope="col">运行时间</th>
+            <th scope="col">运行内存</th>
           </ng-container>
-          <th scope="col">Lang</th>
-          <th scope="col">Submitted</th>
+          <th scope="col">编程语言</th>
+          <th scope="col">提交时间</th>
         </tr>
         </thead>
         <tbody>
@@ -37,7 +37,9 @@
           <td>
             <verdict [submission]="submission"></verdict>
           </td>
-          <td>{{ submission.score === 0 && submission.failedOn === 0 ? '' : submission.score }}</td>
+          <td [ngClass]="{'text-danger': submission.score === 0 && submission.failedOn === 0}">
+            {{ submission.score === 0 && submission.failedOn === 0 ? 'S' : submission.score }}
+          </td>
           <ng-container *ngIf="problem.type === 0">
             <td [ngClass]="{'text-danger': !!problem && submission.time >= problem.timeLimit}">
               {{ submission.time }}{{ !!submission.time ? 'ms' : '' }}

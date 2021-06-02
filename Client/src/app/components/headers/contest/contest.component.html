@@ -6,8 +6,8 @@
            [routerLink]="atContestRoot ? ['/contests'] : ['/contest', contestId]">
           <fa-icon [icon]="faArrowLeft"></fa-icon>
         </a>
-        {{ contest == null ? "Loading..." : contest.title }}
-        <span *ngIf="ended === true" class="badge">Practice Mode</span>
+        {{ contest == null ? "正在加载..." : contest.title }}
+        <span *ngIf="ended === true" class="badge">练习模式</span>
       </span>
       <button class="navbar-toggler" type="button" (click)="collapse = !collapse">
         <fa-icon [icon]="faBars" class="mr-0"></fa-icon>
@@ -22,19 +22,19 @@
           <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
             <a class="nav-link mr-2" [routerLink]="['/contest', contestId]">
               <fa-icon [icon]="faStream"></fa-icon>
-              <span>Index</span>
+              <span>题目列表</span>
             </a>
           </li>
           <li class="nav-item" routerLinkActive="active">
             <a class="nav-link mr-2" [routerLink]="['/contest', contestId, 'submissions']">
               <fa-icon [icon]="faPaperPlane"></fa-icon>
-              <span>Submissions</span>
+              <span>评测情况</span>
             </a>
           </li>
           <li class="nav-item" routerLinkActive="active">
             <a class="nav-link mr-2" [routerLink]="['/contest', contestId, 'standings']">
               <fa-icon [icon]="faTrophy"></fa-icon>
-              <span>Standings</span>
+              <span>得分排名</span>
             </a>
           </li>
           <li class="nav-item" ngbDropdown>
@@ -45,16 +45,16 @@
             <div ngbDropdownMenu class="dropdown-menu-right">
               <a *ngIf="canViewAdminPages" ngbDropdownItem routerLink="/admin">
                 <fa-icon [icon]="faTools"></fa-icon>
-                <span>Admin</span>
+                <span>管理页面</span>
               </a>
               <a ngbDropdownItem routerLink="/authentication/profile">
                 <fa-icon [icon]="faCog"></fa-icon>
-                <span>Account</span>
+                <span>账户信息</span>
               </a>
               <a ngbDropdownItem class="text-danger"
                  routerLink="/authentication/logout" [state]="{'local': true}">
                 <fa-icon [icon]="faSignOutAlt"></fa-icon>
-                <span>Logout</span>
+                <span>登出</span>
               </a>
             </div>
           </li>
