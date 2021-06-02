@@ -35,19 +35,19 @@ namespace Server.Areas.Identity.Pages.Account.Manage
         {
             [Required]
             [DataType(DataType.Password)]
-            [Display(Name = "Current password")]
+            [Display(Name = "当前密码")]
             public string OldPassword { get; set; }
 
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.",
+            [StringLength(100, ErrorMessage = "{0}的长度应该介于{2}和{1}字符之间。",
                 MinimumLength = 6)]
             [DataType(DataType.Password)]
-            [Display(Name = "New password")]
+            [Display(Name = "新密码")]
             public string NewPassword { get; set; }
 
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm new password")]
-            [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
+            [Display(Name = "确认新密码")]
+            [Compare("NewPassword", ErrorMessage = "两次输入的新密码不一致。")]
             public string ConfirmPassword { get; set; }
         }
 

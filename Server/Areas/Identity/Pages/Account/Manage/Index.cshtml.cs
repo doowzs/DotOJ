@@ -20,9 +20,9 @@ namespace Server.Areas.Identity.Pages.Account.Manage
             _signInManager = signInManager;
         }
 
-        public string Email { get; set; }
-        public string Username { get; set; }
-        [Display(Name = "Contestant ID")] public string ContestantId { get; set; }
+        [Display(Name = "邮件地址")] public string Email { get; set; }
+        [Display(Name = "用户名")] public string Username { get; set; }
+        [Display(Name = "选手ID（南京大学学工号）")] public string ContestantId { get; set; }
 
         [TempData] public string StatusMessage { get; set; }
 
@@ -32,7 +32,7 @@ namespace Server.Areas.Identity.Pages.Account.Manage
         {
             [Required]
             [StringLength(20, ErrorMessage = "The {0} must be at most {1} characters long.")]
-            [Display(Name = "Contestant Name")]
+            [Display(Name = "选手名称")]
             public string ContestantName { get; set; }
         }
 
