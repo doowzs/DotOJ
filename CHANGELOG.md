@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.6.0 - 2021-06-03
+
+### Added
+
+- Added exam mode where only one contest is accessible.
+
+### Changed
+
+- Changed display language to Simplified Chinese.
+
 ## 1.5.26 - 2021-03-26
 
 ### Added
