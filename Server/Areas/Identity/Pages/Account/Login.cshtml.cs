@@ -39,13 +39,13 @@ namespace Server.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required, Display(Name = "Contestant ID (NJU-ID)")] public string Username { get; set; }
+            [Required, Display(Name = "用户ID（南京大学学号）")] public string Username { get; set; }
 
-            [Required]
+            [Required, Display(Name = "密码")]
             [DataType(DataType.Password)]
             public string Password { get; set; }
 
-            [Display(Name = "Remember me?")] public bool RememberMe { get; set; }
+            [Display(Name = "保持登录状态")] public bool RememberMe { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)

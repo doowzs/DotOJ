@@ -2,7 +2,7 @@
 @model LoginModel
 
 @{
-    ViewData["Title"] = "Log in";
+    ViewData["Title"] = "登陆";
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -31,12 +31,12 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <button type="submit" class="btn btn-primary">Log in</button>
+                    <button type="submit" class="btn btn-primary">登陆</button>
                 </div>
                 <div class="form-group">
-                    <p>Contact TA if you forget your password</p>
+                    <p>如果忘记密码，请联系课程助教或系统管理员</p>
                     <p>
-                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">Register as a new user</a>
+                        <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl">注册新用户</a>
                     </p>
                 </div>
             </form>

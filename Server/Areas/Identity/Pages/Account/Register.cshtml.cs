@@ -46,31 +46,31 @@ namespace Server.Areas.Identity.Pages.Account
         {
             [Required]
             [EmailAddress]
-            [Display(Name = "Email")]
+            [Display(Name = "邮件地址")]
             public string Email { get; set; }
 
             [Required]
-            [StringLength(50, ErrorMessage = "The {0} must be at most {1} characters long.")]
+            [StringLength(50, ErrorMessage = "{0}至多只能包含{1}个字符。")]
             [DataType(DataType.Text)]
-            [Display(Name = "Contestant ID (NJUID)")]
+            [Display(Name = "用户ID（南京大学学工号）")]
             public string ContestantId { get; set; }
 
             [Required]
-            [StringLength(20, ErrorMessage = "The {0} must be at most {1} characters long.")]
+            [StringLength(20, ErrorMessage = "{0}最多只能包含{1}个字符。")]
             [DataType(DataType.Text)]
-            [Display(Name = "Contestant Name (Nickname)")]
+            [Display(Name = "用户名（选手昵称）")]
             public string ContestantName { get; set; }
 
             [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.",
+            [StringLength(100, ErrorMessage = "{0}的长度需要介于{2}和{1}字符之间。",
                 MinimumLength = 6)]
             [DataType(DataType.Password)]
-            [Display(Name = "Password")]
+            [Display(Name = "密码")]
             public string Password { get; set; }
 
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+            [Display(Name = "确认密码")]
+            [Compare("Password", ErrorMessage = "两次输入的密码不匹配。")]
             public string ConfirmPassword { get; set; }
         }
 
