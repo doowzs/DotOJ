@@ -8,6 +8,8 @@ import { ContestInfoDto } from '../../../../interfaces/contest.interfaces';
 import { ContestService } from '../../../services/contest.service';
 import { ApplicationConfigService } from '../../../services/config.service';
 import {
+  faClock,
+  faLock,
   faSignInAlt,
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -17,6 +19,8 @@ import {
   styleUrls: ['./exam.component.css']
 })
 export class WelcomeExamComponent implements OnInit, OnDestroy {
+  faClock = faClock;
+  faLock = faLock;
   faSignInAlt = faSignInAlt;
 
   public examId: number;

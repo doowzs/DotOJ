@@ -4,7 +4,7 @@
   </h1>
   <h3 class="text-secondary">遇到错误</h3>
   <p>错误信息：<code>{{ message.getValue() }}</code></p>
-  <p><a class="btn btn-secondary" routerLink="/"><fa-icon [icon]="faHome"></fa-icon>Back Home</a></p>
+  <p><a class="btn btn-secondary" routerLink="/"><fa-icon [icon]="faHome"></fa-icon>返回主页</a></p>
   <div class="alert alert-warning py-3 my-5" role="alert">
     <p><fa-icon [icon]="faClock"></fa-icon>请首先检查系统时间是否正确，OAuth对密钥有效期有严格要求。</p>
     <p>浏览器时间：{{ localNow.format('YYYY-MM-DD HH:mm:ss') }}</p>
