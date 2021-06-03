@@ -29,7 +29,7 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes
                 $"/usr/bin/pylint3 -E main.py",
                 bind: new[] {"/etc"},
                 chroot: "jail",
-                stderr: "compiler_output",
+                stdout: "compiler_output", // pylint prints to stdout
                 proc: 120,
                 time: 15.0f,
                 memory: 512000
