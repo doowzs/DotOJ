@@ -24,7 +24,29 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes
             {
                 await stream.WriteAsync(program);
             }
-            return true;
+            
+            if (await Box.ExecuteAsync(
+                $"/usr/bin/pylint3 -E main.py",
+                bind: new[] {"/etc"},
+                chroot: "jail",
+                stderr: "compiler_output",
+                proc: 120,
+                time: 15.0f,
+                memory: 512000
+            ) != 0)
+            {
+                return false;
+            }
+
+            return await Box.ExecuteAsync(
+                $"/usr/bin/python3 -m py_compile main.py",
+                bind: new[] {"/etc"},
+                chroot: "jail",
+                stderr: "compiler_output",
+                proc: 120,
+                time: 15.0f,
+                memory: 512000
+            ) == 0;
         }
 
         protected override async Task ExecuteProgramAsync(string meta, int bytes)
