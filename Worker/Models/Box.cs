@@ -10,7 +10,7 @@ namespace Worker.Models
 {
     public sealed class Box : IDisposable, IAsyncDisposable
     {
-        private static string Id { get; set; }
+        public static string Id { get; set; }
         public static string Root { get; private set; }
 
         private Box()
@@ -43,7 +43,7 @@ namespace Worker.Models
                 throw new Exception($"E: Cannot initialize isolate. Hostname exited with code {process.ExitCode}.\n" + builder);
             }
 
-            Id = builder.ToString().Split(".").ToList().Last();
+            Id = builder.ToString().Trim().Split(".").ToList().Last();
             Root = Path.Combine("/var/local/lib/isolate", Id, "box");
         }
 

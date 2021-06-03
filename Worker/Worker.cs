@@ -31,6 +31,7 @@ namespace Worker
             _logger.LogInformation($"Worker {_options.Value.Name} is starting");
             
             await Box.InitBoxAsync(); // Use ip obtained by $(hostname -i) as the unique ID of worker
+            _logger.LogInformation($"Worker initialized BoxId={Box.Id}");
 
             var factory = new RabbitMqConnectionFactory(scope.ServiceProvider);
             var requestConsumer = scope.ServiceProvider.GetRequiredService<JobRequestConsumer>();
