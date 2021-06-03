@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.6.1 - 2021-06-03
+## 1.6.2 - 2021-06-03
 
 ### Added
 
@@ -9,6 +9,7 @@
 ### Changed
 
 - Changed display language to Simplified Chinese.
+- Python3 are now judged with Pylint and pre-compile.
 
 ## 1.5.26 - 2021-03-26
 

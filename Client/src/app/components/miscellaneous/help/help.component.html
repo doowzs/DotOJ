@@ -105,7 +105,7 @@ public class Main &#123;
               <h3 class="my-3">Python 3 [5.0倍运行时间限制]</h3>
               <ul>
                 <li>运行环境：Python 3.8+</li>
-                <li>注意事项：Python代码只能解释执行，且评测程序<strong>不会提供任何运行错误的报错信息</strong></li>
+                <li>注意事项：Python代码在执行前会使用Pylint进行检测并编译为pyc文件，如果Pylint认为代码不正确则视为编译错误</li>
                 <li>
                   参考程序：
                   <pre class="border" lang="python">print(sum(int(x) for x in input().split(' ')))</pre>
