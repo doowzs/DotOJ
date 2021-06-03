@@ -86,9 +86,9 @@ services:
     mem_swappiness: 0
     volumes:
       - ./worker/appsettings.json:/app/appsettings.json:ro
-        - ${DATA_PATH_HOST}/data/tests:/data/tests:ro
-        - ${DATA_PATH_HOST}/data/submissions:/data/submissions:ro
-        - ${DATA_PATH_HOST}/data/plagiarisms:/data/plagiarisms
+      - ${DATA_PATH_HOST}/data/tests:/data/tests:ro
+      - ${DATA_PATH_HOST}/data/submissions:/data/submissions:ro
+      - ${DATA_PATH_HOST}/data/plagiarisms:/data/plagiarisms
     <<: *default-logging
     networks:
       - backend
