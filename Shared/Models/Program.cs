@@ -24,7 +24,7 @@ namespace Shared.Models
         Voided = -2,
         Failed = -1,
         Pending = 0,
-        InQueue = 1,
+        // InQueue = 1, [deprecated]
         Running = 2,
         Accepted = 3,
         WrongAnswer = 4,

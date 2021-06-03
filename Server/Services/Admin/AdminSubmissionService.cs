@@ -34,11 +34,13 @@ namespace Server.Services.Admin
     public class AdminSubmissionService : LoggableService<AdminSubmissionService>, IAdminSubmissionService
     {
         private const int PageSize = 50;
-        private readonly ProblemStatisticsService _problemStatisticsService;
+        private readonly BackgroundTaskQueue<JobRequestMessage> _queue;
+        private readonly ProblemStatisticsService _statistics;
 
         public AdminSubmissionService(IServiceProvider provider) : base(provider)
         {
-            _problemStatisticsService = provider.GetRequiredService<ProblemStatisticsService>();
+            _queue = provider.GetRequiredService<BackgroundTaskQueue<JobRequestMessage>>();
+            _statistics = provider.GetRequiredService<ProblemStatisticsService>();
         }
 
         private async Task EnsureSubmissionExists(int id)
@@ -158,13 +160,7 @@ namespace Server.Services.Admin
             };
             await Context.Submissions.AddAsync(submission);
             await Context.SaveChangesAsync();
-
-            var producer = Provider.GetRequiredService<JobRequestProducer>();
-            if (await producer.SendAsync(JobType.JudgeSubmission, submission.Id, 1)) {
-                submission.Verdict = Verdict.InQueue;
-                Context.Update(submission);
-                await Context.SaveChangesAsync();
-            }
+            _queue.EnqueueTask(new JobRequestMessage(JobType.JudgeSubmission, submission.Id, 1));
 
             await Context.Entry(submission).Reference(s => s.User).LoadAsync();
             var result = new SubmissionInfoDto(submission, true);
@@ -195,7 +191,7 @@ namespace Server.Services.Admin
             await registration.RebuildStatisticsAsync(Context);
             await Context.SaveChangesAsync();
 
-            await _problemStatisticsService.InvalidStatisticsAsync(submission.ProblemId);
+            await _statistics.InvalidStatisticsAsync(submission.ProblemId);
             await LogInformation($"UpdateSubmission Id={submission.Id} Verdict={submission.Verdict}");
             await Context.Entry(submission).Reference(s => s.User).LoadAsync();
             return new SubmissionEditDto(submission);
@@ -218,7 +214,7 @@ namespace Server.Services.Admin
                 await Context.SaveChangesAsync();
             }
 
-            await _problemStatisticsService.InvalidStatisticsAsync(submission.ProblemId);
+            await _statistics.InvalidStatisticsAsync(submission.ProblemId);
             await LogInformation($"DeleteSubmission Id={id}");
         }
 
@@ -254,29 +250,17 @@ namespace Server.Services.Admin
             foreach (var submission in submissions)
             {
                 submission.ResetVerdictFields();
-                await _problemStatisticsService.InvalidStatisticsAsync(submission.ProblemId);
+                await _statistics.InvalidStatisticsAsync(submission.ProblemId);
             }
 
             Context.UpdateRange(submissions);
             await Context.SaveChangesAsync();
-
-            _ = Task.Run(async () =>
+            foreach (var submission in submissions)
             {
-                using var scope = Provider.CreateScope();
-                var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                var producer = scope.ServiceProvider.GetRequiredService<JobRequestProducer>();
-                foreach (var submission in submissions)
-                {
-                    var reloadedSubmission = await context.Submissions.FindAsync(submission.Id);
-                    if (await producer.SendAsync(JobType.JudgeSubmission,
-                        reloadedSubmission.Id, reloadedSubmission.RequestVersion + 1))
-                    {
-                        reloadedSubmission.Verdict = Verdict.InQueue;
-                        context.Update(reloadedSubmission);
-                        await context.SaveChangesAsync();
-                    }
-                }
-            });
+                var reloadedSubmission = await Context.Submissions.FindAsync(submission.Id);
+                _queue.EnqueueTask(new JobRequestMessage(JobType.JudgeSubmission,
+                        reloadedSubmission.Id, reloadedSubmission.RequestVersion + 1));
+            }
 
             await LogInformation($"RejudgeSubmissions ContestId={contestId} " +
                                  $"ProblemId={problemId} SubmissionId={submissionId}");

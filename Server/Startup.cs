@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Shared;
 using Shared.Configs;
+using Shared.Generics;
 using Shared.Models;
 using Shared.RabbitMQ;
 using IdentityServer4.Extensions;
@@ -27,7 +28,8 @@ using Notification.Providers;
 using Server.RabbitMQ;
 using Server.Services;
 using Server.Services.Admin;
-using Server.Services.Background;
+using Server.Services.Background.Cron;
+using Server.Services.Background.Queue;
 using Server.Services.Singleton;
 
 namespace Server
@@ -147,6 +149,10 @@ namespace Server
             // Background cron job services. Note that these services cannot start until DB is migrated.
             services.AddHostedService<WorkerStatisticsBackgroundService>();
             services.AddHostedService<PlagiarismCleanerBackgroundService>();
+
+            // Background task queue services.
+            services.AddSingleton<BackgroundTaskQueue<JobRequestMessage>>();
+            services.AddHostedService<JobRequestBackgroundService>();
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "wwwroot/dist"; });

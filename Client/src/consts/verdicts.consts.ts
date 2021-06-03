@@ -28,10 +28,12 @@ export const Verdicts: VerdictInfo[] = [
     code: 0, name: '等待评测', showCase: false, stage: VerdictStage.RUNNING,
     color: 'primary', explain: '你的代码已提交，正在等待评测。'
   },
+  /* code=1 is now deprecated
   {
     code: 1, name: '等待队列', showCase: false, stage: VerdictStage.RUNNING,
     color: 'primary', explain: '你的代码已提交且已经进入评测队列，正在等待评测。'
   },
+  */
   {
     code: 2, name: '正在运行', showCase: true, stage: VerdictStage.RUNNING,
     color: 'primary', explain: '你的程序正在测试数据上运行。'

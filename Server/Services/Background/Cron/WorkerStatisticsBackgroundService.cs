@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Server.Services.Singleton;
 
-namespace Server.Services.Background
+namespace Server.Services.Background.Cron
 {
     public class WorkerStatisticsBackgroundService : CronJobService
     {

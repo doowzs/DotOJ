@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Shared;
-using Shared.Models;
-using Shared.RabbitMQ;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Nito.AsyncEx;
 using Server.RabbitMQ;
+using Shared;
+using Shared.Generics;
+using Shared.Models;
+using Shared.RabbitMQ;
 
 namespace Server.Services.Singleton
 {
@@ -18,7 +19,7 @@ namespace Server.Services.Singleton
     {
         private readonly IServiceScopeFactory _factory;
         private readonly ILogger<WorkerStatisticsService> _logger;
-        private readonly JobRequestProducer _producer;
+        private readonly BackgroundTaskQueue<JobRequestMessage> _queue;
 
         private readonly AsyncReaderWriterLock _lock = new();
         private readonly Dictionary<string, (string Token, DateTime TimeStamp)> _dictionary = new();
@@ -27,7 +28,7 @@ namespace Server.Services.Singleton
         {
             _factory = provider.GetRequiredService<IServiceScopeFactory>();
             _logger = provider.GetRequiredService<ILogger<WorkerStatisticsService>>();
-            _producer = provider.GetRequiredService<JobRequestProducer>();
+            _queue = provider.GetRequiredService<BackgroundTaskQueue<JobRequestMessage>>();
         }
 
         public async Task<int> GetAvailableWorkerCountAsync()
@@ -60,20 +61,13 @@ namespace Server.Services.Singleton
 
             foreach (var submission in submissions)
             {
-                // Trigger a rejudge for failed submissions
-                if (await _producer.SendAsync(JobType.JudgeSubmission, submission.Id, submission.RequestVersion + 1))
-                {
-                    submission.Verdict = Verdict.InQueue;
-                    await problemStatisticsService.InvalidStatisticsAsync(submission.ProblemId);
-                }
-                else
-                {
-                    submission.Verdict = Verdict.Pending;
-                }
+                _queue.EnqueueTask(new JobRequestMessage(JobType.JudgeSubmission, submission.Id, submission.RequestVersion + 1));
             }
 
-            context.UpdateRange(submissions);
-            await context.SaveChangesAsync();
+            foreach (var submission in submissions)
+            {
+                await problemStatisticsService.InvalidStatisticsAsync(submission.ProblemId);
+            }
 
             #endregion
 
@@ -85,7 +79,7 @@ namespace Server.Services.Singleton
             foreach (var plagiarism in plagiarisms)
             {
                 plagiarism.CheckedBy = null;
-                await _producer.SendAsync(JobType.CheckPlagiarism, plagiarism.Id, plagiarism.RequestVersion + 1);
+                _queue.EnqueueTask(new JobRequestMessage(JobType.CheckPlagiarism, plagiarism.Id, plagiarism.RequestVersion + 1));
             }
             context.UpdateRange(plagiarisms);
             await context.SaveChangesAsync();
@@ -115,35 +109,6 @@ namespace Server.Services.Singleton
 
             #endregion
 
-            #region Try send judge request for pending and stuck submissions
-
-            var submissions = await context.Submissions
-                .Where(s => s.Verdict == Verdict.Pending ||
-                            (s.Verdict == Verdict.InQueue &&
-                             s.UpdatedAt <= now.AddMinutes(-2) &&
-                             s.UpdatedAt >= now.AddMinutes(-4)))
-                .ToListAsync(stoppingToken);
-            foreach (var submission in submissions)
-            {
-                if (await _producer.SendAsync(JobType.JudgeSubmission, submission.Id, submission.RequestVersion + 1))
-                {
-                    if (submission.Verdict != Verdict.InQueue)
-                    {
-                        submission.Verdict = Verdict.InQueue;
-                    }
-                    await problemStatisticsService.InvalidStatisticsAsync(submission.ProblemId);
-                }
-                else
-                {
-                    submission.Verdict = Verdict.Pending;
-                }
-            }
-
-            context.UpdateRange(submissions);
-            await context.SaveChangesAsync(stoppingToken);
-
-            #endregion
-
             #region Try send check request for pending and stuck plagiarisms
 
             var plagiarisms = await context.Plagiarisms
@@ -154,7 +119,7 @@ namespace Server.Services.Singleton
                 .ToListAsync(stoppingToken);
             foreach (var plagiarism in plagiarisms)
             {
-                await _producer.SendAsync(JobType.CheckPlagiarism, plagiarism.Id, plagiarism.RequestVersion + 1);
+                _queue.EnqueueTask(new JobRequestMessage(JobType.CheckPlagiarism, plagiarism.Id, plagiarism.RequestVersion + 1));
             }
 
             #endregion

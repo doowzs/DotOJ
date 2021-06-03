@@ -38,11 +38,13 @@ namespace Server.Services
     public class SubmissionService : LoggableService<SubmissionService>, ISubmissionService
     {
         private const int PageSize = 50;
-        private readonly TestKitLabSubmitTokenService _tokenService;
+        private readonly BackgroundTaskQueue<JobRequestMessage> _queue;
+        private readonly TestKitLabSubmitTokenService _token;
 
         public SubmissionService(IServiceProvider provider) : base(provider)
         {
-            _tokenService = provider.GetRequiredService<TestKitLabSubmitTokenService>();
+            _queue = provider.GetRequiredService<BackgroundTaskQueue<JobRequestMessage>>();
+            _token = provider.GetRequiredService<TestKitLabSubmitTokenService>();
         }
 
         private async Task<Boolean> IsSubmissionViewableAsync(Submission submission)
@@ -338,14 +340,7 @@ namespace Server.Services
             };
             await Context.Submissions.AddAsync(submission);
             await Context.SaveChangesAsync();
-
-            var producer = Provider.GetRequiredService<JobRequestProducer>();
-            if (await producer.SendAsync(JobType.JudgeSubmission, submission.Id, 1))
-            {
-                submission.Verdict = Verdict.InQueue;
-                Context.Update(submission);
-                await Context.SaveChangesAsync();
-            }
+            _queue.EnqueueTask(new JobRequestMessage(JobType.JudgeSubmission, submission.Id, 1));
 
             await Context.Entry(submission).Reference(s => s.User).LoadAsync();
             var result = new SubmissionInfoDto(submission, true);
@@ -363,12 +358,12 @@ namespace Server.Services
             }
 
             var user = await Manager.GetUserAsync(Accessor.HttpContext.User);
-            return await _tokenService.GetOrGenerateToken(user.Id, problemId);
+            return await _token.GetOrGenerateToken(user.Id, problemId);
         }
 
         public async Task<string> CreateTestKitLabSubmissionAsync(string token, IFormFile file)
         {
-            var (userId, problemId) = await _tokenService.ConsumeTokenAsync(token);
+            var (userId, problemId) = await _token.ConsumeTokenAsync(token);
             if (userId is null)
             {
                 throw new UnauthorizedAccessException("Unauthorized: Invalid submit token.");
@@ -449,14 +444,8 @@ namespace Server.Services
                 await file.CopyToAsync(stream);
             }
 
-            var producer = Provider.GetRequiredService<JobRequestProducer>();
-            if (await producer.SendAsync(JobType.JudgeSubmission, submission.Id, 1))
-            {
-                submission.Verdict = Verdict.InQueue;
-                Context.Update(submission);
-                await Context.SaveChangesAsync();
-            }
-
+            _queue.EnqueueTask(new JobRequestMessage(JobType.JudgeSubmission, submission.Id, 1));
+            
             await LogInformation($"CreateSubmission Id={submission.Id} ProblemId={problem.Id}" +
                                  $" ContestantId={user.ContestantId} Language={Language.LabArchive}");
             return $"Accepted submission #{submission.Id} for contestant {user.ContestantId}.";

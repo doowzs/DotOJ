@@ -20,9 +20,8 @@ namespace Server.RabbitMQ
             _factory = provider.GetRequiredService<IServiceScopeFactory>();
         }
 
-        public async Task<bool> SendAsync(JobType jobType, int targetId, int requestVersion)
+        public async Task<bool> SendAsync(JobRequestMessage message)
         {
-            var message = new JobRequestMessage(jobType, targetId, requestVersion);
             var serialized = JsonConvert.SerializeObject(message);
             var body = Encoding.UTF8.GetBytes(serialized);
 
@@ -32,8 +31,8 @@ namespace Server.RabbitMQ
             {
                 Channel.BasicPublish("", Queue, null, body);
                 await queueStatisticsService.AddJobRequestAsync(message);
-                Logger.LogDebug($"SendJobRequestMessage JobType={jobType}" +
-                                $" TargetId={targetId} RequestVersion={requestVersion}");
+                Logger.LogDebug($"SendJobRequestMessage JobType={message.JobType}" +
+                                $" TargetId={message.TargetId} RequestVersion={message.RequestVersion}");
                 return true;
             }
             catch (Exception e)

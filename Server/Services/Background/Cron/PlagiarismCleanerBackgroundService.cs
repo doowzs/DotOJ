@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Server.Services.Background
+namespace Server.Services.Background.Cron
 {
     public class PlagiarismCleanerBackgroundService : CronJobService
     {

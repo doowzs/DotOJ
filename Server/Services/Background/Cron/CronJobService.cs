@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Timer = System.Timers.Timer;
 
-namespace Server.Services.Background
+namespace Server.Services.Background.Cron
 {
     public abstract class CronJobService : BackgroundService
     {

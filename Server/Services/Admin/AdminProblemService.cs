@@ -39,14 +39,14 @@ namespace Server.Services.Admin
     {
         private const int PageSize = 20;
         private readonly IOptions<ApplicationConfig> _options;
-        private readonly JobRequestProducer _producer;
-        private readonly ProblemStatisticsService _statisticsService;
+        private readonly BackgroundTaskQueue<JobRequestMessage> _queue;
+        private readonly ProblemStatisticsService _statistics;
 
         public AdminProblemService(IServiceProvider provider) : base(provider)
         {
             _options = provider.GetRequiredService<IOptions<ApplicationConfig>>();
-            _producer = provider.GetRequiredService<JobRequestProducer>();
-            _statisticsService = provider.GetRequiredService<ProblemStatisticsService>();
+            _queue = provider.GetRequiredService<BackgroundTaskQueue<JobRequestMessage>>();
+            _statistics = provider.GetRequiredService<ProblemStatisticsService>();
         }
 
         private async Task EnsureProblemExists(int id)
@@ -117,7 +117,7 @@ namespace Server.Services.Admin
             List<ProblemInfoDto> problemInfos = new();
             foreach (var problem in paginated.Items)
             {
-                var statistics = await _statisticsService.GetStatisticsAsync(problem.Id);
+                var statistics = await _statistics.GetStatisticsAsync(problem.Id);
                 problemInfos.Add(new ProblemInfoDto(problem, false, false, statistics));
             }
             return new PaginatedList<ProblemInfoDto>
@@ -178,7 +178,7 @@ namespace Server.Services.Admin
             Context.Problems.Update(problem);
             await Context.SaveChangesAsync();
 
-            await _statisticsService.InvalidStatisticsAsync(problem.Id);
+            await _statistics.InvalidStatisticsAsync(problem.Id);
             await LogInformation($"UpdateProblem Id={problem.Id} Contest={problem.ContestId} Title={problem.Id} " +
                                  $"HasSpecialJudge={problem.HasSpecialJudge} HasHacking={problem.HasHacking}");
             return new ProblemEditDto(problem);
@@ -191,7 +191,7 @@ namespace Server.Services.Admin
             Context.Problems.Attach(problem);
             Context.Problems.Remove(problem);
             await Context.SaveChangesAsync();
-            await _statisticsService.InvalidStatisticsAsync(problem.Id);
+            await _statistics.InvalidStatisticsAsync(problem.Id);
             await LogInformation($"DeleteProblem Id={problem.Id}");
         }
 
@@ -324,8 +324,7 @@ namespace Server.Services.Admin
             await Context.Plagiarisms.AddAsync(plagiarism);
             await Context.SaveChangesAsync();
 
-            _ = Task.Run(async () => { await _producer.SendAsync(JobType.CheckPlagiarism, plagiarism.Id, 1); });
-
+            _queue.EnqueueTask(new JobRequestMessage(JobType.CheckPlagiarism, plagiarism.Id, 1));
             return new PlagiarismInfoDto(plagiarism);
         }
     }

@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.6.3 - 2021-06-03
+## 1.6.4 - 2021-06-04
 
 ### Added
 
@@ -10,6 +10,12 @@
 
 - Changed display language to Simplified Chinese.
 - Python3 are now judged with Pylint and pre-compile.
+- Use `docker-compose up --scale` to create multiple workers easily.
+- Worker's Box IDs are now determined by unique IP addresses of workers.
+
+### Fixed
+
+- Should rely on HostingEnvironment to run background tasks.
 
 ## 1.5.26 - 2021-03-26
 
