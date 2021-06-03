@@ -4,7 +4,6 @@
   },
   "Worker": {
     "Name": "local",
-    "BoxId": "0",
     "DataPath": "/data"
   },
   "RabbitMQ": {

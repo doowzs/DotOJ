@@ -27,7 +27,7 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.TestKit
         private readonly IOptions<WorkerConfig> _options;
 
         private string DataPath => _options.Value?.DataPath ?? "/data";
-        private string Root => _box.Root;
+        private string Root => Box.Root;
         private string Jail => Path.Combine(Root, "jail");
 
         private string _kit = string.Empty;

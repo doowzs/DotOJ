@@ -10,25 +10,53 @@ namespace Worker.Models
 {
     public sealed class Box : IDisposable, IAsyncDisposable
     {
-        private string Id { get; set; }
-        public string Root { get; private set; }
+        private static string Id { get; set; }
+        public static string Root { get; private set; }
 
-        private Box(string id, string root)
+        private Box()
         {
-            Id = id;
-            Root = root;
         }
 
-        public static async Task<Box> GetBoxAsync(string id)
+        public static async Task InitBoxAsync()
         {
-            await CleanUpBoxAsync(id);
+            var builder = new StringBuilder();
+            var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "hostname",
+                    Arguments = "-i",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true
+                }
+            };
+            process.OutputDataReceived += new DataReceivedEventHandler(
+                delegate(object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
+            process.ErrorDataReceived += new DataReceivedEventHandler(
+                delegate(object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
+            process.Start();
+            process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
+            await process.WaitForExitAsync();
+            if (process.ExitCode != 0)
+            {
+                throw new Exception($"E: Cannot initialize isolate. Hostname exited with code {process.ExitCode}.\n" + builder);
+            }
+
+            Id = builder.ToString().Split(".").ToList().Last();
+            Root = Path.Combine("/var/local/lib/isolate", Id, "box");
+        }
+
+        public static async Task<Box> GetBoxAsync()
+        {
+            await CleanUpBoxAsync();
             var builder = new StringBuilder();
             var process = new Process
             {
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "isolate",
-                    Arguments = $"--cg -b {id} --init",
+                    Arguments = $"--cg -b {Id} --init",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true
                 }
@@ -43,10 +71,10 @@ namespace Worker.Models
             {
                 throw new Exception($"E: Isolate init exited with code {process.ExitCode}.\n" + builder);
             }
-            return new Box(id, Path.Combine((await process.StandardOutput.ReadToEndAsync()).Trim(), "box"));
+            return new Box();
         }
 
-        public static async Task CleanUpBoxAsync(string id)
+        public static async Task CleanUpBoxAsync()
         {
             var builder = new StringBuilder();
             var process = new Process
@@ -54,7 +82,7 @@ namespace Worker.Models
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "isolate",
-                    Arguments = $"-b {id} --cleanup",
+                    Arguments = $"-b {Id} --cleanup",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true
                 }
@@ -178,12 +206,12 @@ namespace Worker.Models
         // This is a sealed class so we don't have to implement virtual disposers.
         public void Dispose()
         {
-            CleanUpBoxAsync(Id).Wait();
+            CleanUpBoxAsync().Wait();
         }
 
         public async ValueTask DisposeAsync()
         {
-            await CleanUpBoxAsync(Id);
+            await CleanUpBoxAsync();
         }
     }
 }

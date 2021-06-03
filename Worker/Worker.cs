@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Worker.Models;
 using Worker.RabbitMQ;
 
 namespace Worker
@@ -28,6 +29,8 @@ namespace Worker
         {
             using var scope = _factory.CreateScope();
             _logger.LogInformation($"Worker {_options.Value.Name} is starting");
+            
+            await Box.InitBoxAsync(); // Use ip obtained by $(hostname -i) as the unique ID of worker
 
             var factory = new RabbitMqConnectionFactory(scope.ServiceProvider);
             var requestConsumer = scope.ServiceProvider.GetRequiredService<JobRequestConsumer>();

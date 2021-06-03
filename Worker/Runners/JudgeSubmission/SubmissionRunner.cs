@@ -53,7 +53,7 @@ namespace Worker.Runners.JudgeSubmission
                 var stopwatch = Stopwatch.StartNew();
 
                 JudgeResult result;
-                await using (var box = await Box.GetBoxAsync(Options.Value.BoxId ?? "0"))
+                await using (var box = await Box.GetBoxAsync())
                 {
                     result = await this.RunSubmissionAsync(contest, problem, submission, box);
                 }

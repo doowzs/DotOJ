@@ -6,7 +6,6 @@ namespace Shared.Configs
     public class WorkerConfig
     {
         public string Name { get; set; }
-        public string BoxId { get; set; }
         public string DataPath { get; set; }
     }
 }
