@@ -27,7 +27,9 @@
     </ItemGroup>
     <ItemGroup>
         <Content Remove="appsettings.json" />
-        <None Include="appsettings.json" />
+        <Content Include="appsettings.json.example">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Notification\Notification.csproj" />
