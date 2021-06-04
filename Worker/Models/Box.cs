@@ -10,6 +10,7 @@ namespace Worker.Models
 {
     public sealed class Box : IDisposable, IAsyncDisposable
     {
+        public static string Hostname { get; set; }
         public static string Id { get; set; }
         public static string Root { get; private set; }
 
@@ -31,9 +32,9 @@ namespace Worker.Models
                 }
             };
             process.OutputDataReceived += new DataReceivedEventHandler(
-                delegate(object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
+                delegate (object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
             process.ErrorDataReceived += new DataReceivedEventHandler(
-                delegate(object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
+                delegate (object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
             process.Start();
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
@@ -43,7 +44,8 @@ namespace Worker.Models
                 throw new Exception($"E: Cannot initialize isolate. Hostname exited with code {process.ExitCode}.\n" + builder);
             }
 
-            Id = builder.ToString().Trim().Split(".").ToList().Last();
+            Hostname = builder.ToString().Trim();
+            Id = Hostname.Split(".").ToList().Last();
             Root = Path.Combine("/var/local/lib/isolate", Id, "box");
         }
 
@@ -62,9 +64,9 @@ namespace Worker.Models
                 }
             };
             process.OutputDataReceived += new DataReceivedEventHandler(
-                delegate(object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
+                delegate (object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
             process.ErrorDataReceived += new DataReceivedEventHandler(
-                delegate(object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
+                delegate (object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
             process.Start();
             await process.WaitForExitAsync();
             if (process.ExitCode != 0)
@@ -88,9 +90,9 @@ namespace Worker.Models
                 }
             };
             process.OutputDataReceived += new DataReceivedEventHandler(
-                delegate(object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
+                delegate (object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
             process.ErrorDataReceived += new DataReceivedEventHandler(
-                delegate(object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
+                delegate (object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
             process.Start();
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
@@ -159,9 +161,9 @@ namespace Worker.Models
                 }
             };
             process.OutputDataReceived += new DataReceivedEventHandler(
-                delegate(object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
+                delegate (object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
             process.ErrorDataReceived += new DataReceivedEventHandler(
-                delegate(object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
+                delegate (object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
             process.Start();
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
