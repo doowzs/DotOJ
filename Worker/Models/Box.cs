@@ -10,6 +10,7 @@ namespace Worker.Models
 {
     public sealed class Box : IDisposable, IAsyncDisposable
     {
+        public static string Hostname { get; set; }
         public static string Id { get; set; }
         public static string Root { get; private set; }
 
