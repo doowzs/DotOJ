@@ -1,10 +1,11 @@
 # Changelog
 
-## 1.6.5 - 2021-06-04
+## 1.6.6 - 2021-06-04
 
 ### Added
 
 - Added exam mode where only one contest is accessible.
+- Added support for Github Actions and binary releases.
 
 ### Changed
 
