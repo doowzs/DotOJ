@@ -25,7 +25,7 @@ namespace Worker.Models
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    FileName = "hostname",
+                    FileName = "/bin/hostname",
                     Arguments = "-i",
                     RedirectStandardOutput = true,
                     RedirectStandardError = true
