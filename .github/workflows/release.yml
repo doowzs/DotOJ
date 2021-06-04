@@ -1,0 +1,38 @@
+name: build-release
+
+on:
+  release:
+    types:
+      - created
+
+jobs:
+  build:
+    runs-on: debian-latest
+    steps:
+      - name: checkout source code
+        uses: actions/checkout@v2
+      - name: setup dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 5.0.x
+      - name: setup nodejs
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14.x
+      - name: restore nuget packages
+        run: dotnet restore
+      - name: build webapp
+        run: |
+          dotnet publish Server -c Release -o /tmp/webapp
+          tar czv webapp.tar.gz -C /tmp webapp
+      - name: build worker
+        run: |
+          dotnet publish Worker -c Release -o /tmp/worker
+          tar czv worker.tar.gz -C /tmp worker
+      - name: upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifacts
+          path: |
+            webapp.tar.gz
+            worker.tar.gz
