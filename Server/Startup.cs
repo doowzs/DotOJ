@@ -307,6 +307,7 @@ namespace Server
                 var password = Configuration["Application:AdminUser:Password"];
                 if (!await userManager.CheckPasswordAsync(adminUser, password))
                 {
+                    logger.LogInformation("Resetting password for admin user.");
                     var token = await userManager.GeneratePasswordResetTokenAsync(adminUser);
                     var result = await userManager.ResetPasswordAsync(adminUser, token, password);
                     if (!result.Succeeded)
