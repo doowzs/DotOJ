@@ -23,6 +23,7 @@ import 'ace-builds/src-noconflict/mode-rust';
 import { faCheck, faFolderOpen, faUpload } from '@fortawesome/free-solid-svg-icons';
 import { Base64 } from 'js-base64';
 import { Title } from '@angular/platform-browser';
+import { kMaxLength } from 'buffer';
 
 const EditorLanguageKey: string = 'editor-language';
 const EditorCodeKey = (problemId: number): string => 'editor-code-' + problemId.toString();
@@ -35,7 +36,7 @@ export class EditorComponent implements AfterViewInit, AfterViewChecked, OnChang
   faCheck = faCheck;
   faFolderOpen = faFolderOpen;
   faUpload = faUpload;
-  Languages = Languages;
+  Languages = Languages.filter(l => !!l.mode);
 
   static globalId: number = 0;
 
