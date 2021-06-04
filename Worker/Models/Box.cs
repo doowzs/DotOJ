@@ -17,38 +17,19 @@ namespace Worker.Models
         {
         }
 
-        public static async Task InitBoxAsync()
+        public static void InitBoxAsync(string id)
         {
-            var builder = new StringBuilder();
-            var process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    FileName = "hostname",
-                    Arguments = "-i",
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true
-                }
-            };
-            process.OutputDataReceived += new DataReceivedEventHandler(
-                delegate(object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
-            process.ErrorDataReceived += new DataReceivedEventHandler(
-                delegate(object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
-            process.Start();
-            process.BeginOutputReadLine();
-            process.BeginErrorReadLine();
-            await process.WaitForExitAsync();
-            if (process.ExitCode != 0)
-            {
-                throw new Exception($"E: Cannot initialize isolate. Hostname exited with code {process.ExitCode}.\n" + builder);
-            }
-
-            Id = builder.ToString().Trim().Split(".").ToList().Last();
+            Id = id;
             Root = Path.Combine("/var/local/lib/isolate", Id, "box");
         }
 
         public static async Task<Box> GetBoxAsync()
         {
+            if (Id == null)
+            {
+                throw new ArgumentNullException(nameof(Id));
+            }
+
             await CleanUpBoxAsync();
             var builder = new StringBuilder();
             var process = new Process
@@ -62,9 +43,9 @@ namespace Worker.Models
                 }
             };
             process.OutputDataReceived += new DataReceivedEventHandler(
-                delegate(object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
+                delegate (object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
             process.ErrorDataReceived += new DataReceivedEventHandler(
-                delegate(object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
+                delegate (object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
             process.Start();
             await process.WaitForExitAsync();
             if (process.ExitCode != 0)
@@ -76,6 +57,11 @@ namespace Worker.Models
 
         public static async Task CleanUpBoxAsync()
         {
+            if (Id == null)
+            {
+                throw new ArgumentNullException(nameof(Id));
+            }
+
             var builder = new StringBuilder();
             var process = new Process
             {
@@ -88,9 +74,9 @@ namespace Worker.Models
                 }
             };
             process.OutputDataReceived += new DataReceivedEventHandler(
-                delegate(object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
+                delegate (object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
             process.ErrorDataReceived += new DataReceivedEventHandler(
-                delegate(object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
+                delegate (object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
             process.Start();
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();
@@ -159,9 +145,9 @@ namespace Worker.Models
                 }
             };
             process.OutputDataReceived += new DataReceivedEventHandler(
-                delegate(object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
+                delegate (object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
             process.ErrorDataReceived += new DataReceivedEventHandler(
-                delegate(object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
+                delegate (object sender, DataReceivedEventArgs args) { builder.Append(args.Data); });
             process.Start();
             process.BeginOutputReadLine();
             process.BeginErrorReadLine();

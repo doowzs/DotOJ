@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.6.4 - 2021-06-04
+## 1.6.5 - 2021-06-04
 
 ### Added
 
@@ -12,10 +12,7 @@
 - Python3 are now judged with Pylint and pre-compile.
 - Use `docker-compose up --scale` to create multiple workers easily.
 - Worker's Box IDs are now determined by unique IP addresses of workers.
-
-### Fixed
-
-- Should rely on HostingEnvironment to run background tasks.
+- Job requests are now dispatched to RebbitMQ in a background queue.
 
 ## 1.5.26 - 2021-03-26
 

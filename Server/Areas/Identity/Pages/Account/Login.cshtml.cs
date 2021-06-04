@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
@@ -75,9 +76,10 @@ namespace Server.Areas.Identity.Pages.Account
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
                 var result = await _signInManager.PasswordSignInAsync(Input.Username, Input.Password, Input.RememberMe,
                     lockoutOnFailure: false);
+                var now = DateTime.Now.ToUniversalTime();
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User logged in.");
+                    _logger.LogInformation($"User {Input.Username} logged in at {now:yyyy-MM-dd HH:mm:ss}.");
                     return LocalRedirect(returnUrl);
                 }
 
@@ -88,7 +90,7 @@ namespace Server.Areas.Identity.Pages.Account
 
                 if (result.IsLockedOut)
                 {
-                    _logger.LogWarning("User account locked out.");
+                    _logger.LogWarning($"User {Input.Username} locked out at {now:yyyy-MM-dd HH:mm:ss}.");
                     return RedirectToPage("./Lockout");
                 }
                 else
