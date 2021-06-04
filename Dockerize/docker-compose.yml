@@ -8,14 +8,10 @@ x-logging: &default-logging
       max-size: "10m"
 
 networks:
-  frontend:
-    driver: ${NETWORKS_DRIVER}
-  backend:
+  default:
     driver: ${NETWORKS_DRIVER}
 
 volumes:
-  caddy:
-    driver: ${VOLUMES_DRIVER}
   mariadb:
     driver: ${VOLUMES_DRIVER}
   rabbitmq:
@@ -26,21 +22,6 @@ volumes:
     driver: ${VOLUMES_DRIVER}
 
 services:
-  caddy:
-    image: caddy:2-alpine
-    volumes:
-      - ./caddy:/etc/caddy
-      - ${DATA_PATH_HOST}/caddy:/data
-      - ${DATA_PATH_HOST}/static:/var/www/static:ro
-    <<: *default-logging
-    ports:
-      - "${CADDY_HTTP_PORT}:80"
-      - "${CADDY_HTTPS_PORT}:443"
-      - "${CADDY_ADMIN_PORT}:2019"
-    networks:
-      - frontend
-      - backend
-
   mariadb:
     image: mariadb:10
     environment:
@@ -52,7 +33,7 @@ services:
     ports:
       - "${MARIADB_PORT}:3306"
     networks:
-      - backend
+      - default
         
   rabbitmq:
     image: rabbitmq:3-management-alpine
@@ -64,7 +45,7 @@ services:
       - "${RABBITMQ_PORT}:5672"
       - "${RABBITMQ_MANAGEMENT_PORT}:15672"
     networks:
-      - backend
+      - default
 
   webapp:
     image: ccr.ccs.tencentyun.com/dotoj/webapp:${WEBAPP_VERSION}
@@ -77,8 +58,10 @@ services:
       - ${DATA_PATH_HOST}/data/submissions:/data/submissions
       - ${DATA_PATH_HOST}/data/plagiarisms:/data/plagiarisms
     <<: *default-logging
+    ports:
+      - "${HTTP_PORT_HOST}:80"
     networks:
-      - backend
+      - default
 
   worker:
     image: ccr.ccs.tencentyun.com/dotoj/worker:${WORKER_VERSION}
@@ -91,4 +74,4 @@ services:
       - ${DATA_PATH_HOST}/data/plagiarisms:/data/plagiarisms
     <<: *default-logging
     networks:
-      - backend
+      - default
