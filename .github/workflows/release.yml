@@ -30,12 +30,12 @@ jobs:
         run: dotnet restore
       - name: Build webapp
         run: |
-          dotnet publish Server -c Release -o /tmp/webapp
-          tar czf webapp-${{ steps.tag.outputs.result }}-linux-amd64.tar.gz -C /tmp webapp
+          dotnet publish Server -c Release -o /tmp/Webapp
+          tar czf webapp-${{ steps.tag.outputs.result }}-linux-amd64.tar.gz -C /tmp Webapp
       - name: Build worker
         run: |
-          dotnet publish Worker -c Release -o /tmp/worker
-          tar czf worker-${{ steps.tag.outputs.result }}-linux-amd64.tar.gz -C /tmp worker
+          dotnet publish Worker -c Release -o /tmp/Worker
+          tar czf worker-${{ steps.tag.outputs.result }}-linux-amd64.tar.gz -C /tmp Worker
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
