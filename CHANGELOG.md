@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.6.6 - 2021-06-04
+## 1.6.7 - 2021-06-06
 
 ### Added
 
@@ -14,6 +14,10 @@
 - Use `docker-compose up --scale` to create multiple workers easily.
 - Worker's Box IDs are now determined by unique IP addresses of workers.
 - Job requests are now dispatched to RebbitMQ in a background queue.
+
+### Fixed
+
+- Fixed handling negative interval in cron job background service.
 
 ## 1.5.26 - 2021-03-26
 

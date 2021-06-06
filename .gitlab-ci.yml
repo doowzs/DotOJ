@@ -79,7 +79,7 @@ build:worker:
     - docker:dind
   <<: *docker-login
   script:
-    - ./release.sh worker ${WORKER_IMAGE} development-${CI_COMMIT_BRANCH}-${CI_COMMIT_SHA} ${CI_COMMIT_TAG}
+    - ./release.sh worker ${WORKER_IMAGE} development-${CI_COMMIT_BRANCH}-${CI_COMMIT_SHA} ${CI_COMMIT_TAG:1}
 
 release:package:
   only:
@@ -92,7 +92,7 @@ release:package:
     - sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
     - apk add zip
   script:
-    - ./release.sh package release.zip development-${CI_COMMIT_BRANCH}-${CI_COMMIT_SHA} ${CI_COMMIT_TAG}
+    - ./release.sh package release.zip development-${CI_COMMIT_BRANCH}-${CI_COMMIT_SHA} ${CI_COMMIT_TAG:1}
   artifacts:
     paths:
       - ./release.zip

@@ -5,7 +5,7 @@ name: default
 
 trigger:
   ref:
-    - refs/tags/**
+    - refs/tags/v*
 
 environment:
   CI_REGISTRY: ccr.ccs.tencentyun.com
@@ -43,7 +43,7 @@ steps:
     commands:
       - chmod +x ./release.sh
       - echo "$CI_REGISTRY_PASS" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
-      - ./release.sh webapp $WEBAPP_IMAGE development-$DRONE_COMMIT_BRANCH-$(echo $DRONE_COMMIT_SHA | cut -c 1-8) $DRONE_TAG
+      - ./release.sh webapp $WEBAPP_IMAGE development-$DRONE_COMMIT_BRANCH-$(echo $DRONE_COMMIT_SHA | cut -c 1-8) ${DRONE_TAG:1}
   - name: build-worker
     image: docker:stable
     volumes:
@@ -57,7 +57,7 @@ steps:
     commands:
       - chmod +x ./release.sh
       - echo "$CI_REGISTRY_PASS" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
-      - ./release.sh worker $WORKER_IMAGE development-$DRONE_COMMIT_BRANCH-$(echo $DRONE_COMMIT_SHA | cut -c 1-8) $DRONE_TAG
+      - ./release.sh worker $WORKER_IMAGE development-$DRONE_COMMIT_BRANCH-$(echo $DRONE_COMMIT_SHA | cut -c 1-8) ${DRONE_TAG:1}
 
 services:
   - name: docker

@@ -12,12 +12,7 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v2
       - name: Extract tag name
-        id: tag
-        uses: actions/github-script@v4
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            return context.payload.ref.replace(/\/refs\/tags\//, '');
+        run: echo "TAG=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
       - name: Setup dotnet
         uses: actions/setup-dotnet@v1
         with:
@@ -31,16 +26,16 @@ jobs:
       - name: Build webapp
         run: |
           dotnet publish Server -c Release -o /tmp/Webapp
-          tar czf webapp-${{ steps.tag.outputs.result }}-linux-amd64.tar.gz -C /tmp Webapp
+          tar czf webapp-${{ env.TAG }}-linux-amd64.tar.gz -C /tmp Webapp
       - name: Build worker
         run: |
           dotnet publish Worker -c Release -o /tmp/Worker
-          tar czf worker-${{ steps.tag.outputs.result }}-linux-amd64.tar.gz -C /tmp Worker
+          tar czf worker-${{ env.TAG }}-linux-amd64.tar.gz -C /tmp Worker
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            webapp-${{ steps.tag.outputs.result }}-linux-amd64.tar.gz
-            worker-${{ steps.tag.outputs.result }}-linux-amd64.tar.gz
+            webapp-${{ env.TAG }}-linux-amd64.tar.gz
+            worker-${{ env.TAG }}-linux-amd64.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
