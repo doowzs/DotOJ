@@ -43,28 +43,30 @@ namespace Server.Services.Background.Cron
             if (next.HasValue)
             {
                 var delay = next.Value - DateTimeOffset.Now;
-                if (delay.TotalMilliseconds < 0)
+                if (delay.TotalMilliseconds < 1e-5)
                 {
                     await ScheduleAsync(cancellationToken);
                 }
-
-                _timer = new Timer(delay.TotalMilliseconds);
-                _timer.Elapsed += async (sender, args) =>
+                else
                 {
-                    _timer.Dispose();
-                    _timer = null;
-
-                    if (!cancellationToken.IsCancellationRequested)
+                    _timer = new Timer(delay.TotalMilliseconds);
+                    _timer.Elapsed += async (sender, args) =>
                     {
-                        await ExecuteAsync(cancellationToken);
-                    }
+                        _timer.Dispose();
+                        _timer = null;
 
-                    if (!cancellationToken.IsCancellationRequested)
-                    {
-                        await ScheduleAsync(cancellationToken);
-                    }
-                };
-                _timer.Start();
+                        if (!cancellationToken.IsCancellationRequested)
+                        {
+                            await ExecuteAsync(cancellationToken);
+                        }
+
+                        if (!cancellationToken.IsCancellationRequested)
+                        {
+                            await ScheduleAsync(cancellationToken);
+                        }
+                    };
+                    _timer.Start();
+                }
             }
         }
 
