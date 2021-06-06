@@ -11,6 +11,13 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@v2
+      - name: Extract tag name
+        id: tag
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            return context.payload.ref.replace(/\/refs\/tags\//, '');
       - name: Setup dotnet
         uses: actions/setup-dotnet@v1
         with:
@@ -24,16 +31,16 @@ jobs:
       - name: Build webapp
         run: |
           dotnet publish Server -c Release -o /tmp/webapp
-          tar czf webapp.tar.gz -C /tmp webapp
+          tar czf webapp-${{ steps.tag.outputs.result }}-linux-amd64.tar.gz -C /tmp webapp
       - name: Build worker
         run: |
           dotnet publish Worker -c Release -o /tmp/worker
-          tar czf worker.tar.gz -C /tmp worker
+          tar czf worker-${{ steps.tag.outputs.result }}-linux-amd64.tar.gz -C /tmp worker
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            webapp.tar.gz
-            worker.tar.gz
+            webapp-${{ steps.tag.outputs.result }}-linux-amd64.tar.gz
+            worker-${{ steps.tag.outputs.result }}-linux-amd64.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
