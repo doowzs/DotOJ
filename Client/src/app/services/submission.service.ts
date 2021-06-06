@@ -25,25 +25,25 @@ export class SubmissionService {
   public getPaginatedList(contestId: number | null, userId: string | null, contestantId: string | null, problemId: number | null,
                           verdict: number | null, pageSize: number | null, pageIndex: number | null): Observable<PaginatedList<SubmissionInfoDto>> {
     let params = new HttpParams();
-    if (contestId) {
+    if (contestId !== null) {
       params = params.set('contestId', contestId.toString());
     }
-    if (userId) {
+    if (userId !== null) {
       params = params.set('userId', userId);
     }
-    if (contestantId) {
+    if (contestantId !== null) {
       params = params.set('contestantId', contestantId);
     }
-    if (problemId) {
+    if (problemId !== null) {
       params = params.set('problemId', problemId.toString());
     }
-    if (verdict) {
+    if (verdict !== null) {
       params = params.set('verdict', verdict.toString());
     }
-    if (pageSize) {
+    if (pageSize !== null) {
       params = params.set('pageSize', pageSize.toString());
     }
-    if (pageIndex) {
+    if (pageIndex !== null) {
       params = params.set('pageIndex', pageIndex.toString());
     }
 
