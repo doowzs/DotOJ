@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.6.7 - 2021-06-06
+## 1.6.8 - 2021-06-06
 
 ### Added
 
@@ -18,6 +18,7 @@
 ### Fixed
 
 - Fixed handling negative interval in cron job background service.
+- Fixed handling null value in client submission service.
 
 ## 1.5.26 - 2021-03-26
 
