@@ -100,9 +100,11 @@ export class SubmissionListComponent implements OnInit, OnDestroy {
 
   public loadSubmissions() {
     this.loading = true;
-    const problemId = this.problemId === '' ? null : Number(this.problemId);
-    const verdict = this.verdict === '' ? null : Number(this.verdict);
-    this.service.getPaginatedList(this.contestId, null, this.contestantId, problemId, verdict, null, this.pageIndex)
+    const contestId = typeof this.contestId === `undefined` ? null : Number(this.contestId);
+    const contestantId = this.contestantId ?? null;
+    const problemId = typeof this.problemId === `undefined` ? null : Number(this.problemId);
+    const verdict = typeof this.verdict === `undefined` ? null : Number(this.verdict);
+    this.service.getPaginatedList(contestId, null, contestantId, problemId, verdict, null, this.pageIndex)
       .subscribe(list => {
         this.list = list;
         this.loading = false;
