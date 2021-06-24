@@ -118,7 +118,9 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
                     FailedOn = null,
                     Score = 0,
                     Message = $"Input:\n{Encoding.UTF8.GetString(Convert.FromBase64String(Submission.Program.Input))}\n\n" +
-                              (run.Verdict == Verdict.Accepted ? $"Output:\n{run.Stdout}" : $"Error: {run.Verdict}")
+                              (run.Verdict == Verdict.Accepted
+                                  ? $"Standard Output:\n{run.Stdout}\n\nStandard Error:\n{run.Stderr}"
+                                  : $"Failed: {run.Verdict}")
                 };
             }
 
