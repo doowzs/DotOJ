@@ -10,6 +10,7 @@
 
 - Fixed Chinese page title of submission and standing pages.
 - Fixed length limit of base64 encoded program code.
+- Fixed counting custom tests into problem statistics.
 
 ## 1.6.9 - 2021-06-11
 
