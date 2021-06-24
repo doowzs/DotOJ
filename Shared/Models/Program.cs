@@ -39,8 +39,8 @@ namespace Shared.Models
     public class Program
     {
         [Required] public Language? Language { get; set; }
-        [Required, MaxLength(40960)] public string Code { get; set; }
-        [MaxLength(4096)] public string Input { get; set; }
+        [Required, MaxLength(54616) /* base64 of 40960 */] public string Code { get; set; }
+        [MaxLength(5464) /* base64 of 4096 */] public string Input { get; set; }
 
         public string GetSourceFileExtension()
         {
