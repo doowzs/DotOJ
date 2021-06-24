@@ -52,7 +52,7 @@ export class ContestStandingsComponent implements OnInit {
         this.service.getSingle(this.contestId)
           .subscribe(contest => {
             this.contest = contest;
-            this.title.setTitle(contest.title + ' - Standings');
+            this.title.setTitle(contest.title + ' - 得分排名');
             this.loadRegistrations();
           });
       });

@@ -57,7 +57,7 @@ export class SubmissionListComponent implements OnInit, OnDestroy {
     this.verdict = this.route.snapshot.queryParams.verdict;
     this.pageIndex = this.route.snapshot.queryParams.pageIndex ?? 1;
     if (!this.contestId && !this.inline) {
-      this.title.setTitle('Submissions');
+      this.title.setTitle('评测情况');
     }
   }
 
@@ -67,7 +67,7 @@ export class SubmissionListComponent implements OnInit, OnDestroy {
       this.contestService.getSingle(this.contestId)
         .subscribe(contest => {
           this.contest = contest;
-          this.title.setTitle(contest.title + ' - Submissions');
+          this.title.setTitle(contest.title + ' - 评测情况');
           this.loadSubmissions();
         });
     } else {

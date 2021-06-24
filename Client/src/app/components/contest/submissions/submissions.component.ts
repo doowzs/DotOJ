@@ -14,7 +14,7 @@ export class ContestSubmissionsComponent {
     private title: Title,
     private route: ActivatedRoute,
   ) {
-    this.title.setTitle('Submissions');
+    this.title.setTitle('评测情况');
     this.contestId = this.route.snapshot.parent.params.contestId;
   }
 }
