@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.7.0 - 2021-06-24
+
+### Added
+
+- Added custom input tests to test programs.
+
+### Fixed
+
+- Fixed Chinese page title of submission and standing pages.
+- Fixed length limit of base64 encoded program code.
+
 ## 1.6.9 - 2021-06-11
 
 ### Added
