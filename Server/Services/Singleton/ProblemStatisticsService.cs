@@ -33,31 +33,34 @@ namespace Server.Services.Singleton
             var problem = await context.Problems.FindAsync(problemId);
             var contest = await context.Contests.FindAsync(problem.ContestId);
 
+            System.Linq.Expressions.Expression<Func<Submission, bool>> totalPredicate =
+                (s) => s.CreatedAt >= contest.BeginTime &&
+                       s.ProblemId == problemId &&
+                       (s.Verdict == Verdict.Accepted || (s.Verdict != Verdict.Accepted && s.FailedOn > 0));
+            System.Linq.Expressions.Expression<Func<Submission, bool>> acceptedPredicate =
+                (s) => s.CreatedAt >= contest.BeginTime &&
+                       s.ProblemId == problemId &&
+                       s.Verdict == Verdict.Accepted;
+
             var totalSubmissions = await context.Submissions
-                .Where(s => s.CreatedAt >= contest.BeginTime &&
-                            s.ProblemId == problemId &&
-                            s.Verdict >= Verdict.Accepted)
+                .Where(totalPredicate)
                 .CountAsync();
             var acceptedSubmissions = await context.Submissions
-                .Where(s => s.CreatedAt >= contest.BeginTime &&
-                            s.ProblemId == problemId &&
-                            s.Verdict == Verdict.Accepted)
+                .Where(acceptedPredicate)
                 .CountAsync();
             var totalContestants = await context.Submissions
-                .Where(s => s.CreatedAt >= contest.BeginTime &&
-                            s.ProblemId == problemId &&
-                            s.Verdict >= Verdict.Accepted)
-                .Select(s => s.UserId).Distinct().CountAsync();
+                .Where(totalPredicate)
+                .Select(s => s.UserId)
+                .Distinct()
+                .CountAsync();
             var acceptedContestants = await context.Submissions
-                .Where(s => s.CreatedAt >= contest.BeginTime &&
-                            s.ProblemId == problemId &&
-                            s.Verdict == Verdict.Accepted)
-                .Select(s => s.UserId).Distinct().CountAsync();
+                .Where(acceptedPredicate)
+                .Select(s => s.UserId)
+                .Distinct()
+                .CountAsync();
 
             var byVerdict = await context.Submissions
-                .Where(s => s.CreatedAt >= contest.BeginTime &&
-                            s.ProblemId == problemId &&
-                            s.Verdict >= Verdict.Accepted)
+                .Where(totalPredicate)
                 .GroupBy(s => s.Verdict)
                 .Select(g => new {Key = g.Key, Value = g.Count()})
                 .ToDictionaryAsync(p => p.Key, q => q.Value);
@@ -107,6 +110,8 @@ namespace Server.Services.Singleton
                 context.Update(submission);
                 await context.SaveChangesAsync();
             }
+
+            if (submission.Program.Input != null) return; // ignore custom tests
 
             var problem = await context.Problems.FindAsync(submission.ProblemId);
             var contest = await context.Contests.FindAsync(problem.ContestId);
