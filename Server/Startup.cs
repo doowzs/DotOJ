@@ -85,6 +85,16 @@ namespace Server
                 };
             });
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("default", policy =>
+                {
+                    policy.WithOrigins("*")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
+
             services.AddIdentityServer()
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>()
                 .AddProfileService<ProfileService>();
@@ -190,6 +200,7 @@ namespace Server
             }
 
             app.UseRouting();
+            app.UseCors("default");
 
             app.UseAuthentication()
                 .UseCookiePolicy(new CookiePolicyOptions

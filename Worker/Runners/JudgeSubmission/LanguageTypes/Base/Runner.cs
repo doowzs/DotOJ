@@ -87,6 +87,41 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
                 };
             }
 
+            if (Submission.Program.Input != null)
+            {
+                stopWatch.Reset();
+                stopWatch.Start();
+
+                var test = new TestCase
+                {
+                    Input = Submission.Program.Input,
+                    Output = new string(' ', 5464) // 4096 chars
+                };
+                var run = await RunTestCaseAsync(true, 0, test);
+                var ok = run.Verdict == Verdict.Accepted;
+                
+                stopWatch.Stop();
+                Logger.LogInformation($"SelfTest OK Verdict={run.Verdict} Time={run.Time} Memory={run.Memory}" +
+                                      $" TimeElapsed={stopWatch.Elapsed}");
+                
+                if (run.Stdout.Length > 4096)
+                {
+                    run.Stdout = run.Stdout.Substring(0, 4096)
+                                 + "\n*** Output trimmed due to excessive length of 4096 characters. ***";
+                }
+
+                return new JudgeResult
+                {
+                    Verdict = ok ? Verdict.CustomInputOk : run.Verdict,
+                    Time = run.Time,
+                    Memory = run.Memory,
+                    FailedOn = null,
+                    Score = 0,
+                    Message = $"Input:\n{Encoding.UTF8.GetString(Convert.FromBase64String(Submission.Program.Input))}\n\n" +
+                              (run.Verdict == Verdict.Accepted ? $"Output:\n{run.Stdout}" : $"Error: {run.Verdict}")
+                };
+            }
+
             if (Problem.HasSpecialJudge)
             {
                 stopWatch.Reset();

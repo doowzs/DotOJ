@@ -8,6 +8,8 @@ import {
   Output,
   SimpleChanges
 } from '@angular/core';
+import { Title } from '@angular/platform-browser';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { Program } from '../../interfaces/submission.interfaces';
 import { LanguageInfo, Languages } from '../../consts/languages.consts';
@@ -20,10 +22,8 @@ import 'ace-builds/src-noconflict/mode-haskell';
 import 'ace-builds/src-noconflict/mode-java';
 import 'ace-builds/src-noconflict/mode-python';
 import 'ace-builds/src-noconflict/mode-rust';
-import { faCheck, faFolderOpen, faUpload } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faFolderOpen, faFlask, faTimes, faUpload } from '@fortawesome/free-solid-svg-icons';
 import { Base64 } from 'js-base64';
-import { Title } from '@angular/platform-browser';
-import { kMaxLength } from 'buffer';
 
 const EditorLanguageKey: string = 'editor-language';
 const EditorCodeKey = (problemId: number): string => 'editor-code-' + problemId.toString();
@@ -35,6 +35,8 @@ const EditorCodeKey = (problemId: number): string => 'editor-code-' + problemId.
 export class EditorComponent implements AfterViewInit, AfterViewChecked, OnChanges, OnDestroy {
   faCheck = faCheck;
   faFolderOpen = faFolderOpen;
+  faFlask = faFlask;
+  faTimes = faTimes;
   faUpload = faUpload;
   Languages = Languages.filter(l => !!l.mode);
 
@@ -51,10 +53,12 @@ export class EditorComponent implements AfterViewInit, AfterViewChecked, OnChang
 
   public editor: ace.Ace.Editor;
   public language: LanguageInfo;
+  public input: string;
 
   constructor(
     private title: Title,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private modal: NgbModal
   ) {
     this.instanceId = 'editor-' + (++EditorComponent.globalId).toString();
     if (this.program) {
@@ -144,12 +148,22 @@ export class EditorComponent implements AfterViewInit, AfterViewChecked, OnChang
     }
   }
 
-  public submitCode() {
+  public openTestInputModal(content: any) {
+    this.saveCode(this.problemId);
+    this.modal.open(content, { backdrop: 'static', ariaLabelledBy: 'test-input-modal-title', centered: true });
+  }
+
+  public submitCode(hasInput: boolean) {
     if (this.disabled || !this.language || !this.editor.getValue()) return;
     this.saveCode(this.problemId);
-    this.submit.next({
+
+    const submission: Program = {
       language: this.language.code,
       code: Base64.encode(this.editor.getValue())
-    });
+    };
+    if (hasInput) {
+      submission.input = Base64.encode(this.input);
+    }
+    this.submit.next(submission);
   }
 }

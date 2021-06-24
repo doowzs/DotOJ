@@ -18,6 +18,7 @@ namespace Shared.DTOs
         public int ProblemId { get; }
         public Language Language { get; }
         public int? CodeBytes { get; }
+        public bool HasInput { get; }
         public Verdict Verdict { get; }
         public int? Time { get; }
         public int? Memory { get; }
@@ -39,6 +40,7 @@ namespace Shared.DTOs
             ProblemId = submission.ProblemId;
             Language = submission.Program.Language.GetValueOrDefault();
             CodeBytes = submission.Program.Language == Language.LabArchive ? null : (3 * count / 4 - padding);
+            HasInput = submission.Program.Input != null;
             Verdict = submission.Verdict;
             Time = submission.Time;
             Memory = submission.Memory;

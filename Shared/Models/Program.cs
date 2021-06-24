@@ -31,7 +31,8 @@ namespace Shared.Models
         TimeLimitExceeded = 5,
         MemoryLimitExceeded = 6,
         CompilationError = 7,
-        RuntimeError = 8
+        RuntimeError = 8,
+        CustomInputOk = 9,
     }
 
     [NotMapped]
@@ -39,6 +40,7 @@ namespace Shared.Models
     {
         [Required] public Language? Language { get; set; }
         [Required, MaxLength(40960)] public string Code { get; set; }
+        [MaxLength(4096)] public string Input { get; set; }
 
         public string GetSourceFileExtension()
         {

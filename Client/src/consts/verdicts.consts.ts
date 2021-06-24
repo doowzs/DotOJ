@@ -61,5 +61,9 @@ export const Verdicts: VerdictInfo[] = [
   {
     code: 8, name: '运行错误', showCase: true, stage: VerdictStage.REJECTED,
     color: 'danger', explain: '你的程序没有以0为返回值退出。'
+  },
+  {
+    code: 9, name: '测试完成', showCase: false, stage: VerdictStage.ACCEPTED,
+    color: 'success', explain: '你提交的自定义测试成功完成。'
   }
 ];

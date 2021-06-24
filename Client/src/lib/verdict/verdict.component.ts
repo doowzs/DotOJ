@@ -15,6 +15,10 @@ export class VerdictComponent {
   constructor() {
   }
 
+  public getSubmissionVerdict(): string {
+    return this.submission.verdictInfo.name;
+  }
+
   public getSubmissionPct(): string {
     const verdict = this.submission.verdictInfo;
     if (verdict.stage === VerdictStage.RUNNING && this.submission.progress) {

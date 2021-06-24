@@ -23,6 +23,7 @@
           <th scope="col">#</th>
           <th scope="col">评测结果</th>
           <th scope="col">得分</th>
+          <th scope="col">标记</th>
           <ng-container *ngIf="problem.type === 0">
             <th scope="col">运行时间</th>
             <th scope="col">运行内存</th>
@@ -37,15 +38,22 @@
           <td>
             <verdict [submission]="submission"></verdict>
           </td>
-          <td [ngClass]="{'text-danger': submission.score === 0 && submission.failedOn === 0}">
-            {{ submission.score === 0 && submission.failedOn === 0 ? 'S' : submission.score }}
+          <td>
+            <ng-container *ngIf="!submission.hasInput">{{ submission.score }}</ng-container>
+          </td>
+          <td>
+            <span *ngIf="!submission.hasInput && submission.score === 0 && submission.failedOn === 0"
+              class="text-danger">
+              S
+            </span>
+            <span *ngIf="submission.hasInput">T</span>
           </td>
           <ng-container *ngIf="problem.type === 0">
             <td [ngClass]="{'text-danger': !!problem && submission.time >= problem.timeLimit}">
-              {{ submission.time }}{{ !!submission.time ? 'ms' : '' }}
+              {{ submission.time }}{{ submission.time != null ? 'ms' : '' }}
             </td>
             <td [ngClass]="{'text-danger': !!problem && submission.memory >= problem.memoryLimit}">
-              {{ submission.memory }}{{ !!submission.memory ? 'KiB' : '' }}
+              {{ submission.memory }}{{ submission.memory != null ? 'KiB' : '' }}
             </td>
           </ng-container>
           <td>

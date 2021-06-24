@@ -1,4 +1,4 @@
 <span [class]="(badge ? 'badge badge-' : 'text-') + submission.verdictInfo.color">
-  {{ submission.verdictInfo.name }}
+  {{ getSubmissionVerdict() }}
   <span *ngIf="!simple && getSubmissionPct() as pct"><br *ngIf="pct.length > 8"/>{{ pct }}</span>
 </span>

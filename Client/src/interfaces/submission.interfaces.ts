@@ -7,6 +7,7 @@ export interface Program {
   language: number;
   languageInfo?: LanguageInfo;
   code: string;
+  input?: string;
 }
 
 export interface SubmissionInfoDto {
@@ -18,6 +19,7 @@ export interface SubmissionInfoDto {
   language: number;
   languageInfo?: LanguageInfo;
   codeBytes: number;
+  hasInput: boolean;
   verdict: number;
   verdictInfo?: VerdictInfo;
   time: number;
@@ -40,6 +42,7 @@ export interface SubmissionViewDto {
   contestantName: string;
   problemId: number;
   program: Program;
+  hasInput: boolean;
   codeBytes: number;
   verdict: number;
   verdictInfo: VerdictInfo;
@@ -95,6 +98,8 @@ export const mapSubmissionViewDtoFields = (submission: SubmissionViewDto): Submi
   submission.program.languageInfo = Languages.find(l => l.code === submission.program.language);
   submission.program.code = Base64.decode(submission.program.code);
   submission.codeBytes = new Blob([submission.program.code]).size;
+  submission.hasInput = !!submission.program.input;
+  console.log(submission.hasInput);
   submission.message = Base64.decode(submission.message ?? '');
   submission.createdAt = moment.utc(submission.createdAt).local();
   submission.createdAtMoment = moment.utc(submission.createdAt).local();
