@@ -1,0 +1,116 @@
+# 配置文件
+
+## Docker项目配置
+
+```dotenv title=/env-example
+WEBAPP_VERSION=
+WORKER_VERSION=
+
+HTTP_PORT_HOST=80
+DATA_PATH_HOST=./data
+
+VOLUMES_DRIVER=local
+NETWORKS_DRIVER=bridge
+COMPOSE_FILE=docker-compose.yml
+COMPOSE_PATH_SEPARATOR=:
+COMPOSE_PROJECT_NAME=judge
+
+MARIADB_PORT=3306
+MARIADB_ROOT_PASSWORD=root
+
+RABBITMQ_PORT=5672
+RABBITMQ_MANAGEMENT_PORT=15672
+```
+
+最上面的两行是WebApp和Worker容器的版本，填入不同的值会拉取不同的容器镜像。
+
+接下来的两行分别是宿主机上HTTP服务监听端口和宿主机上的数据存放目录。
+
+中间一段不需要修改，最下面两段分别是数据库和消息队列的配置。
+
+Worker实例的数量是在启动命令中配置的，如`./start.sh 3`启动3个Worker，推荐设置为CPU核心的数量，避免评测进程相互挤占资源全部TLE。
+
+
+## WebApp配置
+
+```json title=/webapp/
+"ConnectionStrings": {
+  "MySqlConnection": "Server=mariadb;Uid=webapp;Pwd=webapp;Database=judge;"
+}
+```
+
+`ConnectionStrings`配置数据库连接，在Docker容器中其他容器可以直接通过名称访问，因此数据库的地址是`mariadb`，无需修改。
+
+```json title=/webapp/appsettings.json
+"Application": {
+  "Host": "https://dotoj",
+  "Title": "dotOJ",
+  "Author": "dotOJ developers",
+  "ExamId": null,
+  "DataPath": "/data",
+  "AdminUser": {
+    "Email": "admin@dotoj.local",
+    "Password": "password",
+    "ContestantId": "admin",
+    "ContestantName": "admin"
+  }
+}
+```
+
+`Application`配置应用程序，其中`Host`表示OJ的访问地址，必须与实际地址完全一致，否则会导致用户无法登录；
+`Title`、`Author`控制页面顶部和底部的信息，可自行更改；
+`ExamId`控制考试模式，如果该项设定为某个值，则系统中不能注册用户，所有用户只能访问该ID对应的作业，且不可以查看别人的提交；
+`DataPath`控制存储文件的目录，该目录表示容器内部的文件目录，请不要修改；
+`AdminUser`表示管理员用户的信息，OJ第一次启动时会根据此处的内容创建管理员账户，之后每次重启都会更新管理员账户的密码，请修改为需要使用的值。
+
+```json title=/webapp/appsettings.json
+"RabbitMQ": {
+  "HostName": "rabbitmq",
+  "Port": 5672,
+  "UserName": "webapp",
+  "Password": "webapp"
+}
+```
+
+`RabbitMQ`配置消息队列连接，无需修改。
+
+```json title=/webapp/appsettings.json
+"Notification": {
+  "DingTalk": {
+    "Enabled": false,
+    "Token": "",
+    "Secret": "",
+    "Admins": []
+  }
+}
+```
+
+`Notification`配置消息推送，当OJ出现某些错误时可以通过钉钉推送消息到群组，
+如需使用请填写钉钉机器人的相关信息，并在`Admin`中填入需要机器人at的账号。
+（实际上这个功能就用了一个月，之后就没用过。）
+
+```json title=/webapp/appsettings.json
+"Logging": {
+  "LogLevel": {
+    "Default": "Information",
+    "Microsoft": "Warning",
+    "Microsoft.Hosting.Lifetime": "Information",
+    "IdentityServer4": "Warning"
+  }
+}
+```
+
+`Logging`控制Docker容器日志的级别。其余设置请保持默认值。
+
+## Worker配置
+
+Worker配置的大部分内容与WebApp是相同的，且不需要修改。
+
+```json title=/worker/appsettings.json
+"Worker": {
+  "Name": "local",
+  "DataPath": "/srv/judge/data/data"
+}
+```
+
+Worker配置中的`Name`表示评测机名称前缀，`DataPath`不需要修改。

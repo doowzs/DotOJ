@@ -1,0 +1,30 @@
+# Sidebar navigation
+
+- label: "项目简介"
+  link: "/"
+- label: "上手指南"
+  link: "/start"
+- label: "安装配置"
+  items:
+    - label: "模块介绍"
+      link: "/config/components"
+    - label: "配置文件"
+      link: "/config/appsettings"
+    - label: "系统管理"
+      link: "/config/administration"
+    - label: "HTTPS配置"
+      link: "/config/reverse-proxy"
+- label: "使用样例"
+  items:
+    - label: "教学使用"
+      link: "/examples/course"
+    - label: "考试使用"
+      link: "/examples/exam"
+- label: "开发指南"
+  items:
+    - label: "环境配置"
+      link: "/develop/environment"
+    - label: "自动集成"
+      link: "/develop/continuous-integration"
+    - label: "代码提交流程解释"
+      link: "/develop/submission"

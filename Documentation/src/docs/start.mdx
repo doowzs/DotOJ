@@ -1,0 +1,42 @@
+# 上手指南
+
+问题求解OJ（DotOJ）在设计时就主要考虑以Docker为软件的安装分发方式，
+因此问题求解OJ必须要在安装有Docker的Linux服务器上运行。
+
+## 硬件需求
+
+1. 必须是AMD64架构的CPU（由于编译设备有限，仅支持x86_64）
+2. 至少1G内存和20GB的硬盘存储
+3. 至少有1个可从校园网访问的网络端口
+4. 安装有GNU/Linux操作系统
+
+推荐配置：创建虚拟机，分配2个vCPU和2GB的内存，至少40GB存储空间，
+分配至少2个可从校园网访问的网络端口，安装Debian 10操作系统。
+
+需要注意的是，配置虚拟机的端口映射时，**千万不要把虚拟机内部的80或443端口映射出来**，映射该端口会导致HTTPS配置异常复杂，具体原因请见对应页面。
+例如，如果宿主机的8085、28085端口用于该OJ，则可以把8085映射到虚拟机的8085（HTTP/HTTPS，推荐使用相同的值），把28085映射到虚拟机的22端口（SSH）。
+
+## 安装启动（方式一）
+
+1. 将服务器连接至互联网
+  - 对于宿舍或办公室内、插网线联网的服务器，可登陆BRAS
+  - 对于院系或研究所提供的服务器，无法连接BRAS，需要靠宿舍或办公室内的电脑提供HTTP代理上网
+  - 在下面的步骤中，需要访问以下互联网资源：
+    - Debian软件源
+    - Docker Hub或其镜像
+    - GitHub
+    - 腾讯云容器服务：`https://ccr.ccs.tencentyun.com`
+2. 执行系统更新，安装Docker（Docker的安装请参考[清华源的教程](https://mirrors.tuna.tsinghua.edu.cn/help/docker-ce/)，不能安装Debian官方软件源中的上古版本）
+3. 安装`docker-compose`（请参考[Docker官方教程](https://docs.docker.com/compose/install/)）
+4. 下载DotOJ的源代码，运行`./release.sh package oj.zip 1.7.1`生成配置文件压缩包
+5. 将压缩包拷贝到服务器上，解压缩并进行配置
+  - 将`env-example`复制为`.env`
+  - 运行`webapp`文件夹下的`cert.sh`
+  - 修改`webapp`文件夹下的`appsettings.json`配置文件
+6. 执行`start.sh`启动问题求解OJ，执行`stop.sh`停止问题求解OJ
+
+## 安装启动（方式二）
+
+1. 下载DotOJ的编译结果
+2. 安装系统依赖，包括所需编程语言的编译器、MariaDB、RabbitMQ等
+3. 手动启动所有服务

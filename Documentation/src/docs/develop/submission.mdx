@@ -1,0 +1,17 @@
+# 代码提交流程解释
+
+## 提交代码到服务器
+
+1. 首先创建一个包含代码的提交对象，其格式由`Shared.DTOs.SubmissionCreateDto`定义，包含题目的ID和程序对象。
+2. Client使用Axios，将该对象转换为JSON文本作为请求体，使用POST方式请求到`/api/v1/submission`。
+3. Server通过中间件确认请求用户的身份和权限，匹配路由找到`Server.Controllers.Api.v1.SubmissionController.CreateSubmission`函数。
+4. Controller将该JSON文本转变为DTO对象，转交给`Server.Services.SubmissionService.CreateSubmissionAsync`函数执行。
+5. Service首先检查该用户和提交是否合法（例如是否能够提交作业、是否过于频繁等），检查通过后创建`Shared.Models.Submission`对象并存入数据库。
+6. 在`CreateSubmissionAsync`函数中调用后台队列添加一个任务，此时Service不等待后台队列的返回结果，创建一个`Shared.DTOs.SubmissionInfoDto`对象并返回。
+7. Controller收到Service返回的对象，返回HTTP 201给客户端，客户端收到消息将新的提交展示给用户。
+8. 回到第6步中创建的任务，后台队列对应的线程`Server.Services.Background.Queue.JobRequestBackgroundService`从队列中提取一个消息对象，将该消息对象传给
+   `Server.RabbitMQ.JobRequestProducer`处理，Producer将该消息转换为文本并传输到对应的消息队列频道上。
+9. Worker保持对JobRequest频道的监听（`Worker.RabbitMQ.JobRequestConsumer`），
+   当有消息传输到频道上时，消息队列会触发某一个Worker的回调函数`RunSubmissionAsync`，该函数中会根据JobType确定要判题还是查重。
+10. Worker创建`Worker.Runners.JudgeSubmission.SubmissionRunner`对象，然后根据题目的类型创建不同的子对象，对后完成判题（这部分逻辑就自己看吧）。
+11. 完成判题后Worker也会发一个消息到JobCompleted频道上，然后Server确认该判题任务已经成功完成。如果Server重启，可以根据该消息有没有收到来进行重测。

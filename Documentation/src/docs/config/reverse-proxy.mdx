@@ -1,0 +1,30 @@
+# HTTPS配置
+
+由于ASP.NET糟糕的内置HTTPS（自签发证书），开发时不得不将内置的HTTPS功能全部停用。
+要让问题求解OJ支持HTTPS访问，必须通过HTTP服务器的反向代理功能实现。
+
+HTTP服务器的反向代理功能实际上是当服务器收到一个HTTPS包的时候，
+将其内容重新打包成一个HTTP包发送给真正的服务提供者，
+然后将其返回结果也重新打包成HTTPS包返回给用户。（非常好理解）
+
+常见的HTTP服务器有Nginx、Apache、Caddy。推荐使用Caddy或者Apache来完成HTTPS的配置。
+Caddy的好处在于其易用性，如果OJ部署在一个公网服务器上，Caddy甚至可以自动完成HTTPS证书的申请；
+而Apache使用XML文件进行配置，zty固有的偏见认为Nginx实在是非常难用。
+以下是用Caddy作为HTTP服务器进行配置的流程，Apache和Nginx的配置过程大同小异。
+
+此外，虚拟机的端口映射千万不要把虚拟机的80/443映射成校园网访问的端口，
+这是因为HTTP服务器不允许在80端口使用HTTPS协议，不允许在443端口使用HTTP协议，
+如果设置了这两个端口，就会导致配置异常复杂，必须使用一些奇技淫巧来绕过这些限制。
+推荐将虚拟机HTTP/HTTPS服务的端口号设置为与校园网访问的相同端口号。
+
+1. 安装Caddy（Caddy内置了反向代理程序，无需单独安装启用）
+2. 申请HTTPS证书（如果需要njujb.com的子域名请和zty联系）
+3. 将HTTPS证书拷贝到服务器上，并配置Caddy将外部端口的请求反向代理到内部WebApp的端口。
+   例如，服务器8085端口可以从外部访问，而.env文件中配置WebApp监听80端口，则可以使用如下配置：
+
+```caddyfile title=/etc/caddy/caddyfile
+https://oj.njujb.com:8085 {
+  tls njujb.key njujb.crt # 证书文件
+  reverse_proxy * http://localhost:8000
+}
+```

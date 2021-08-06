@@ -1,0 +1,25 @@
+# 环境配置
+
+与部署不同，开发环境中的WebApp是由Server和Client两个部分组成的。
+Server和Worker使用C#编写，Client使用TypeScript编写。
+
+要进行代码开发你需要安装以下依赖：
+
+1. .NET 5 SDK
+2. NodeJS + npm
+3. MariaDB或MySQL（可以使用Docker容器）
+4. RabbitMQ（也可以使用Docker容器）
+
+操作系统中具有以上依赖后，在根目录运行`dotnet restore`安装C#依赖，
+进入Client文件夹，执行`npm install`安装node依赖。
+安装完所有依赖后，将`appsettings.json.example`复制为`appsettings.json`，并修改对应的配置。
+此时需要特别注意数据库地址、消息队列地址和数据保存目录的地址，开发产生的数据会保存在本地磁盘上。
+
+全部配置结束后，进入Server文件夹，执行`dotnet run`会同时启动Server和Client。
+Server第一次启动后会自动尝试进行数据库迁移，如果数据库或消息队列的配置有误则会直接报错退出。
+如果成功启动，访问`http://localhost:5000`应该可以看到OJ主页，随后你就可以进行开发了。
+
+特别的，如果需要对评测机进行开发，必须采用GNU/Linux作为操作系统，安装Isolate，具体操作为：
+
+1. 进入源代码中的Isolate文件夹
+2. 执行`make isolate && make install`

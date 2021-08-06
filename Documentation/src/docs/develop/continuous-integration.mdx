@@ -1,0 +1,13 @@
+# 自动集成
+
+问题求解OJ具备三种不同平台的CI/CD配置：
+
+1. GitLab CI（.gitlab-ci.yml）
+2. Drone CI（.drone.yml）
+3. GitHub Actions（.github/workflows）
+
+前两个文件是完成相同功能的，他们会创建一个安装所有依赖的环境容器，然后在该容器基础上继续创建WebApp和Worker容器，推送到腾讯云镜像仓库。
+
+第三个文件是GitHub上的自动编译，会编译AMD64 Linux上可直接运行的二进制文件，可以直接下载使用。
+
+此部分涉及到镜像仓库的身份认证，如需要使用请与zty直接联系。
