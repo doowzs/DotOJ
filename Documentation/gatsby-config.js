@@ -4,12 +4,12 @@ module.exports = {
     defaultTitle: `问题求解OJ`,
     siteTitleShort: `问题求解OJ`,
     siteDescription: `问题求解OJ的简陋文档`,
-    siteUrl: `https://doowzs.github.io/dotoj-manual`,
+    siteUrl: `https://doowzs.github.io/DotOJ`,
     siteAuthor: `Tianyun Zhang`,
     siteImage: ``,
     siteLanguage: `zh_CN`,
     themeColor: `#8257E6`,
-    basePath: `/dotoj-manual`,
+    basePath: `/DotOJ`,
   },
   flags: { PRESERVE_WEBPACK_CACHE: true },
   plugins: [
@@ -44,7 +44,7 @@ module.exports = {
     {
       resolve: `gatsby-plugin-canonical-urls`,
       options: {
-        siteUrl: `https://doowzs.github.io/dotoj-manual`,
+        siteUrl: `https://doowzs.github.io/DotOJ`,
       },
     },
     `gatsby-plugin-offline`,
