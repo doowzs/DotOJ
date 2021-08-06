@@ -1,4 +1,5 @@
 module.exports = {
+  pathPrefix: `/DotOJ`,
   siteMetadata: {
     siteTitle: `问题求解OJ`,
     defaultTitle: `问题求解OJ`,
@@ -9,7 +10,7 @@ module.exports = {
     siteImage: ``,
     siteLanguage: `zh_CN`,
     themeColor: `#8257E6`,
-    basePath: `/DotOJ`,
+    basePath: `/`,
   },
   flags: { PRESERVE_WEBPACK_CACHE: true },
   plugins: [
@@ -18,8 +19,8 @@ module.exports = {
       options: {
         configPath: `src/config`,
         docsPath: `src/docs`,
-        repositoryUrl: `https://github.com/rocketseat/gatsby-themes`,
-        baseDir: `examples/gatsby-theme-docs`,
+        repositoryUrl: `https://github.com/doowzs/DotOJ`,
+        baseDir: `Documentation`,
       },
     },
     {
