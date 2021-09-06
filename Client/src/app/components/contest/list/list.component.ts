@@ -6,7 +6,7 @@ import * as moment from 'moment';
 
 import { PaginatedList } from '../../../../interfaces/pagination.interfaces';
 import { ContestInfoDto } from '../../../../interfaces/contest.interfaces';
-import { AuthorizeService } from "../../../../api-authorization/authorize.service";
+import { AuthorizeService } from "../../../../auth/authorize.service";
 import { ContestService } from '../../../services/contest.service';
 import { ApplicationConfigService } from '../../../services/config.service';
 import { faBoxOpen } from '@fortawesome/free-solid-svg-icons';

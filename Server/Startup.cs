@@ -1,5 +1,4 @@
 using System;
-using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,8 +8,7 @@ using Shared.Configs;
 using Shared.Generics;
 using Shared.Models;
 using Shared.RabbitMQ;
-using IdentityServer4.Extensions;
-using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -23,6 +21,7 @@ using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using Notification;
 using Notification.Providers;
 using Server.RabbitMQ;
@@ -36,17 +35,12 @@ namespace Server
 {
     public class Startup
     {
+        private IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-
-            // See https://github.com/dotnet/aspnetcore/issues/14160
-            // Also https://github.com/AzureAD/azure-activedirectory-identitymodel-extensions-for-dotnet/issues/415
-            // JwtSecurityTokenHandler.DefaultInboundClaimTypeMap = new Dictionary<string, string>();
-            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Remove(JwtRegisteredClaimNames.Sub);
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -68,46 +62,27 @@ namespace Server
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddTransient<IUserValidator<ApplicationUser>, CustomUserValidator>();
-            services.ConfigureApplicationCookie(options =>
-            {
-                options.Events.OnRedirectToLogin = context =>
-                {
-                    if (context.Request.Path.StartsWithSegments("/api")
-                        && context.Response.StatusCode == StatusCodes.Status200OK)
-                    {
-                        context.Response.Clear();
-                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                        return Task.CompletedTask;
-                    }
 
-                    context.Response.Redirect(context.RedirectUri);
-                    return Task.CompletedTask;
-                };
-            });
-
-            services.AddCors(options =>
-            {
-                options.AddPolicy("default", policy =>
-                {
-                    policy.WithOrigins("*")
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                });
-            });
-
-            services.AddIdentityServer()
-                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>()
-                .AddProfileService<ProfileService>();
-
-            // See https://stackoverflow.com/questions/52526186/net-core-identity
-            // and https://stackoverflow.com/questions/60184703/net-core-3-1-403.
+            var jwtTokenConfig = Configuration.GetSection("jwtToken").Get<JwtTokenConfig>();
             services.AddAuthentication(options =>
                 {
-                    options.DefaultAuthenticateScheme = IdentityConstants.ApplicationScheme;
-                    options.DefaultChallengeScheme = IdentityConstants.ApplicationScheme;
-                    options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 })
-                .AddIdentityServerJwt();
+                .AddJwtBearer(builder =>
+                {
+                    builder.RequireHttpsMetadata = false;
+                    builder.SaveToken = true;
+                    builder.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = jwtTokenConfig.Issuer,
+                        ValidAudience = jwtTokenConfig.Audience,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtTokenConfig.Secret))
+                    };
+                });
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("ManageUsers",
@@ -123,15 +98,16 @@ namespace Server
                     });
             });
             services.AddControllersWithViews().AddNewtonsoftJson();
-            services.AddRazorPages();
 
             services.AddOptions();
             services.Configure<ApplicationConfig>(Configuration.GetSection("Application"));
+            services.Configure<JwtTokenConfig>(Configuration.GetSection("jwtToken"));
             services.Configure<RabbitMqConfig>(Configuration.GetSection("RabbitMQ"));
             services.Configure<NotificationConfig>(Configuration.GetSection("Notification"));
 
             services.AddHttpClient(); // IHttpClientFactory
 
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IBulletinService, BulletinService>();
             services.AddScoped<IContestService, ContestService>();
             services.AddScoped<IProblemService, ProblemService>();
@@ -174,12 +150,6 @@ namespace Server
         {
             ConfigureDatabase(provider).Wait();
 
-            app.Use(async (ctx, next) =>
-            {
-                ctx.SetIdentityServerOrigin(Configuration["Application:Host"]);
-                await next();
-            });
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -188,10 +158,8 @@ namespace Server
             else
             {
                 app.UseExceptionHandler("/Error");
-                // app.UseHsts();
             }
 
-            // app.UseHttpsRedirection();
             app.UseStaticFiles(); // wwwroot
 
             if (!env.IsDevelopment())
@@ -200,14 +168,9 @@ namespace Server
             }
 
             app.UseRouting();
-            app.UseCors("default");
+            app.UseCors(builder => { builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader(); });
 
-            app.UseAuthentication()
-                .UseCookiePolicy(new CookiePolicyOptions
-                {
-                    MinimumSameSitePolicy = SameSiteMode.Lax
-                });
-            app.UseIdentityServer();
+            app.UseAuthentication();
             app.UseAuthorization();
 
             // Handle plagiarism report static files.
@@ -221,10 +184,9 @@ namespace Server
                 RequestPath = "/plagiarisms",
                 OnPrepareResponse = async (ctx) =>
                 {
-                    var authorized = ctx.Context.User.IsAuthenticated() &&
-                                     (ctx.Context.User.IsInRole(ApplicationRoles.Administrator) ||
-                                      ctx.Context.User.IsInRole(ApplicationRoles.ContestManager) ||
-                                      ctx.Context.User.IsInRole(ApplicationRoles.SubmissionManager));
+                    var authorized = ctx.Context.User.IsInRole(ApplicationRoles.Administrator)
+                                     || ctx.Context.User.IsInRole(ApplicationRoles.ContestManager)
+                                     || ctx.Context.User.IsInRole(ApplicationRoles.SubmissionManager);
                     if (!authorized)
                     {
                         const string unauthorizedBody = "Unauthorized";

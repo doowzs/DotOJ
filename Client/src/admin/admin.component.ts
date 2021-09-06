@@ -1,7 +1,7 @@
 ﻿import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
-import { AuthorizeService, IUser } from '../api-authorization/authorize.service';
+import { AuthorizeService, IUser } from '../auth/authorize.service';
 import {
   faBars,
   faCalendar,

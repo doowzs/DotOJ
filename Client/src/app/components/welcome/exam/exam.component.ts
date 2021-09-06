@@ -3,7 +3,7 @@ import { interval, Subject } from "rxjs";
 import { take, takeUntil } from "rxjs/operators";
 import * as moment from 'moment';
 
-import { AuthorizeService } from "../../../../api-authorization/authorize.service";
+import { AuthorizeService } from "../../../../auth/authorize.service";
 import { ContestInfoDto } from '../../../../interfaces/contest.interfaces';
 import { ContestService } from '../../../services/contest.service';
 import { ApplicationConfigService } from '../../../services/config.service';

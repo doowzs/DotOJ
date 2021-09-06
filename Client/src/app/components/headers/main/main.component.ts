@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 
 import { ApplicationConfigService } from '../../../services/config.service';
-import { AuthorizeService } from '../../../../api-authorization/authorize.service';
+import { AuthorizeService } from '../../../../auth/authorize.service';
 import {
   faBars,
   faCalendar,
@@ -45,7 +45,7 @@ export class MainHeaderComponent {
   ) {
     this.title = config.title;
     this.isExamMode = !!config.examId;
-    this.username = this.auth.getUser().pipe(take(1), map(u => u && u.name));
+    this.username = this.auth.getUser().pipe(take(1), map(u => u && u.username));
     this.isAuthenticated = this.auth.isAuthenticated();
     this.canViewAdminPages = this.auth.getUser().pipe(take(1), map(u => u && u.roles.length > 0));
   }

@@ -9,7 +9,7 @@ import * as moment from 'moment';
 import { LanguageInfo } from '../../../../consts/languages.consts';
 import { ProblemViewDto } from '../../../../interfaces/problem.interfaces';
 import { ContestViewDto } from '../../../../interfaces/contest.interfaces';
-import { AuthorizeService, IUser } from '../../../../api-authorization/authorize.service';
+import { AuthorizeService, IUser } from '../../../../auth/authorize.service';
 import { ProblemService } from '../../../services/problem.service';
 import { ContestService } from '../../../services/contest.service';
 import { SubmissionService } from "../../../services/submission.service";

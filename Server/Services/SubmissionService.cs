@@ -11,12 +11,10 @@ using Shared.DTOs;
 using Shared.Generics;
 using Shared.RabbitMQ;
 using Shared.Models;
-using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Server.Exceptions;
-using Server.RabbitMQ;
 using Server.Services.Singleton;
 
 namespace Server.Services
@@ -324,7 +322,7 @@ namespace Server.Services
 
             var submission = new Submission
             {
-                UserId = Accessor.HttpContext.User.GetSubjectId(),
+                UserId = Accessor.HttpContext.User.Identity.Name,
                 ProblemId = dto.ProblemId.GetValueOrDefault(),
                 Program = dto.Program,
                 Verdict = Verdict.Pending,

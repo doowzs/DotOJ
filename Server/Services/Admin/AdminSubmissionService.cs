@@ -4,16 +4,13 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Shared;
 using Shared.DTOs;
 using Shared.Generics;
 using Shared.Models;
 using Shared.RabbitMQ;
-using IdentityServer4.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Server.Exceptions;
-using Server.RabbitMQ;
 using Server.Services.Singleton;
 
 namespace Server.Services.Admin
@@ -144,7 +141,7 @@ namespace Server.Services.Admin
 
             var submission = new Submission
             {
-                UserId = Accessor.HttpContext.User.GetSubjectId(),
+                UserId = Accessor.HttpContext.User.Identity.Name,
                 ProblemId = dto.ProblemId.GetValueOrDefault(),
                 Program = dto.Program,
                 Hidden = true,
@@ -174,7 +171,7 @@ namespace Server.Services.Admin
             await EnsureSubmissionExists(id);
             await ValidateSubmissionEditDto(dto);
 
-            var user = await Manager.FindByIdAsync(Accessor.HttpContext.User.GetSubjectId());
+            var user = await Manager.FindByIdAsync(Accessor.HttpContext.User.Identity.Name);
             var submission = await Context.Submissions.FindAsync(id);
             submission.Verdict = dto.Verdict.GetValueOrDefault();
             submission.Time = submission.Memory = null;

@@ -4,7 +4,7 @@ import { take, takeUntil } from "rxjs/operators";
 import * as moment from 'moment';
 
 import { ContestInfoDto } from '../../../../interfaces/contest.interfaces';
-import { AuthorizeService } from "../../../../api-authorization/authorize.service";
+import { AuthorizeService } from "../../../../auth/authorize.service";
 import { ContestService } from '../../../services/contest.service';
 import { faBoxOpen, faClock, faLock, faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 import { ApplicationConfigService } from "../../../services/config.service";

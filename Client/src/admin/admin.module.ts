@@ -12,8 +12,8 @@ import { DatetimeModule } from '../lib/datetime/datetime.module';
 import { EditorModule } from '../lib/editor/editor.module';
 import { VditorModule } from '../lib/vditor/vditor.module';
 
-import { AuthorizeGuard } from '../api-authorization/authorize.guard';
-import { ApiAuthorizationModule } from '../api-authorization/api-authorization.module';
+import { AuthorizeGuard } from '../auth/authorize.guard';
+import { AuthModule } from '../auth/auth.module';
 
 import { AdminGuard } from './admin.guard';
 import { AdminComponent } from './admin.component';
@@ -130,7 +130,7 @@ import { VerdictModule } from '../lib/verdict/verdict.module';
         ]
       }
     ]),
-    ApiAuthorizationModule,
+    AuthModule,
     NgbModule,
     FontAwesomeModule,
     MarkdownModule.forChild(),

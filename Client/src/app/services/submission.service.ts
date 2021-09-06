@@ -4,7 +4,7 @@ import { Observable, Subject } from 'rxjs';
 import { map, take, tap } from 'rxjs/operators';
 
 import { Program, SubmissionInfoDto, SubmissionViewDto } from '../../interfaces/submission.interfaces';
-import { AuthorizeService } from '../../api-authorization/authorize.service';
+import { AuthorizeService } from '../../auth/authorize.service';
 import { PaginatedList } from '../../interfaces/pagination.interfaces';
 import { mapSubmissionInfoDtoFields, mapSubmissionViewDtoFields } from '../../interfaces/submission.interfaces';
 
@@ -19,7 +19,7 @@ export class SubmissionService {
     private http: HttpClient,
     private auth: AuthorizeService,
   ) {
-    this.userId = this.auth.getUser().pipe(take(1), map(u => u && u.sub));
+    this.userId = this.auth.getUser().pipe(take(1), map(u => u && u.id));
   }
 
   public getPaginatedList(contestId: number | null, userId: string | null, contestantId: string | null, problemId: number | null,

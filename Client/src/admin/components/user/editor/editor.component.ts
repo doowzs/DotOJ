@@ -5,7 +5,7 @@ import { map, take } from 'rxjs/operators';
 
 import { UserEditDto } from '../../../../interfaces/user.interfaces';
 import { AdminUserService } from '../../../services/user.service';
-import { AuthorizeService } from '../../../../api-authorization/authorize.service';
+import { AuthorizeService } from '../../../../auth/authorize.service';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 
@@ -31,7 +31,7 @@ export class AdminUserEditorComponent implements OnInit {
   ) {
     this.edit = this.route.snapshot.queryParams.edit ?? false;
     this.userId = this.route.snapshot.params.userId;
-    this.sub = this.auth.getUser().pipe(take(1), map(u => u && u.sub));
+    this.sub = this.auth.getUser().pipe(take(1), map(u => u && u.id));
   }
 
   ngOnInit() {

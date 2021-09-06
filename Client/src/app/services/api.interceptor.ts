@@ -11,7 +11,7 @@ export class ApplicationApiInterceptor implements HttpInterceptor {
     if (req.url.startsWith('[root]')) {
       req = req.clone({ url: this.baseUrl + req.url.substr(6) });
     } else {
-      req = req.clone({ url: this.baseUrl + 'api/v1' + req.url });
+      req = req.clone({ url: this.baseUrl + 'api/v2' + req.url });
     }
     return next.handle(req);
   }

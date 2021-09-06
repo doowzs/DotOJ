@@ -3,7 +3,7 @@ import { CanActivate, ActivatedRouteSnapshot, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { map, take, tap } from 'rxjs/operators';
 
-import { AuthorizeService } from '../api-authorization/authorize.service';
+import { AuthorizeService } from '../auth/authorize.service';
 
 @Injectable({
   providedIn: 'root'

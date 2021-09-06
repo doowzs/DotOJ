@@ -11,7 +11,6 @@ import { Verdicts, VerdictStage } from '../../../../consts/verdicts.consts';
 import { PaginatedList } from '../../../../interfaces/pagination.interfaces';
 import { ContestViewDto } from '../../../../interfaces/contest.interfaces';
 import { SubmissionInfoDto } from '../../../../interfaces/submission.interfaces';
-import { AuthorizeService, IUser } from '../../../../api-authorization/authorize.service';
 import { ContestService } from '../../../services/contest.service';
 import { SubmissionService } from '../../../services/submission.service';
 import { faSearch, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
@@ -28,7 +27,6 @@ export class SubmissionListComponent implements OnInit, OnDestroy {
 
   @Input() inline: boolean = false;
 
-  public user: IUser;
   public contestId: number | null = null;
   public contest: ContestViewDto;
 
@@ -48,7 +46,6 @@ export class SubmissionListComponent implements OnInit, OnDestroy {
     private router: Router,
     private service: SubmissionService,
     private contestService: ContestService,
-    private auth: AuthorizeService,
     private modal: NgbModal
   ) {
     this.contestId = this.route.snapshot.parent.params.contestId;
@@ -62,7 +59,6 @@ export class SubmissionListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.auth.getUser().pipe(take(1)).subscribe(user => this.user = user);
     if (this.contestId) {
       this.contestService.getSingle(this.contestId)
         .subscribe(contest => {

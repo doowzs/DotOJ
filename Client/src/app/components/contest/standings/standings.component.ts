@@ -8,7 +8,7 @@ import { Column } from 'exceljs';
 
 import { ContestViewDto } from '../../../../interfaces/contest.interfaces';
 import { ProblemInfoDto } from '../../../../interfaces/problem.interfaces';
-import { AuthorizeService } from '../../../../api-authorization/authorize.service';
+import { AuthorizeService } from '../../../../auth/authorize.service';
 import { ContestService } from '../../../services/contest.service';
 import { RegistrationInfoDto } from '../../../../interfaces/registration.interfaces';
 import { faDownload, faEye, faSyncAlt, faTimes } from '@fortawesome/free-solid-svg-icons';
@@ -48,7 +48,7 @@ export class ContestStandingsComponent implements OnInit {
     this.authorize.getUser()
       .pipe(take(1))
       .subscribe(user => {
-        this.userId = user && user.sub;
+        this.userId = user && user.id;
         this.service.getSingle(this.contestId)
           .subscribe(contest => {
             this.contest = contest;

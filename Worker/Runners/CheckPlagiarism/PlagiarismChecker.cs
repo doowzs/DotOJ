@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using System.Transactions;
 using Shared.Models;
 using Shared.RabbitMQ;
-using IdentityServer4.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
@@ -53,11 +52,11 @@ namespace Worker.Runners.CheckPlagiarism
 
             Dictionary<string, Tuple<string, List<Submission>>> groups = new()
             {
-                {"c/c++", Tuple.Create("c_cpp", new List<Submission>())},
-                {"java11", Tuple.Create("java", new List<Submission>())},
-                {"python3", Tuple.Create("python", new List<Submission>())},
-                {"c#-1.2", Tuple.Create("csharp", new List<Submission>())},
-                {"text", Tuple.Create("others", new List<Submission>())}
+                { "c/c++", Tuple.Create("c_cpp", new List<Submission>()) },
+                { "java11", Tuple.Create("java", new List<Submission>()) },
+                { "python3", Tuple.Create("python", new List<Submission>()) },
+                { "c#-1.2", Tuple.Create("csharp", new List<Submission>()) },
+                { "text", Tuple.Create("others", new List<Submission>()) }
             };
             foreach (var submission in submissions)
             {
@@ -101,7 +100,7 @@ namespace Worker.Runners.CheckPlagiarism
             var results = new List<PlagiarismResult>();
             foreach (var group in groups)
             {
-                if (!group.Value.Item2.IsNullOrEmpty() && group.Value.Item2.Count > 0)
+                if (group.Value.Item2 != null && group.Value.Item2.Count > 0)
                 {
                     Logger.LogInformation($"CheckPlagiarism Id={plagiarism.Id}" +
                                           $" Group={group.Key} TimeElapsed={stopwatch.Elapsed}");
@@ -127,6 +126,7 @@ namespace Worker.Runners.CheckPlagiarism
                     Context.Update(plagiarism);
                     await Context.SaveChangesAsync();
                 }
+
                 scope.Complete();
             }
 
@@ -206,6 +206,7 @@ namespace Worker.Runners.CheckPlagiarism
                         await writer.WriteLineAsync($"Stderr of process:\n" +
                                                     $"{string.Concat(stderr.ToString().Split('\n').Select(s => "    " + s + "\n"))}");
                     }
+
                     await writer.FlushAsync();
                     writer.Close();
                 }

@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Shared.DTOs;
 using Shared.Generics;
 using Shared.Models;
-using IdentityServer4.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Server.Exceptions;
@@ -75,7 +74,7 @@ namespace Server.Services
 
         public async Task<PaginatedList<ProblemInfoDto>> GetPaginatedProblemInfosAsync(int? pageIndex)
         {
-            var userId = Accessor.HttpContext.User.GetSubjectId();
+            var userId = Accessor.HttpContext.User.Identity.Name;
             var problems = await Context.Problems.PaginateAsync(pageIndex ?? 1, PageSize);
             var infos = new List<ProblemInfoDto>();
             foreach (var problem in problems.Items)
@@ -95,7 +94,6 @@ namespace Server.Services
             await EnsureProblemExistsAsync(id);
             await EnsureUserCanViewProblemAsync(id);
 
-            var userId = Accessor.HttpContext.User.GetSubjectId();
             var problem = await Context.Problems.FindAsync(id);
             await Context.Entry(problem).Collection(p => p.Submissions).LoadAsync();
             problem.Submissions = problem.Submissions.Where(s => !s.Hidden).ToList();

@@ -6,7 +6,7 @@ import * as moment from 'moment';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ContestViewDto } from '../../../../interfaces/contest.interfaces';
-import { AuthorizeService } from '../../../../api-authorization/authorize.service';
+import { AuthorizeService } from '../../../../auth/authorize.service';
 import { ApplicationConfigService } from '../../../services/config.service';
 import { ContestService } from '../../../services/contest.service';
 import {
@@ -59,7 +59,7 @@ export class ContestHeaderComponent implements OnInit, OnDestroy {
     private service: ContestService,
     private modal: NgbModal,
   ) {
-    this.username = this.auth.getUser().pipe(take(1), map(u => u && u.name));
+    this.username = this.auth.getUser().pipe(take(1), map(u => u && u.username));
     this.canViewAdminPages = this.auth.getUser().pipe(take(1), map(u => u && u.roles.length > 0));
     this.contestId = this.route.snapshot.params.contestId;
     this.isExamMode = !!config.examId;

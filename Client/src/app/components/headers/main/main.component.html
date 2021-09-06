@@ -16,14 +16,14 @@
           </li>
           <ng-container *ngIf="(isAuthenticated | async) then authenticated else anonymous"></ng-container>
           <ng-template #anonymous>
-            <li class="nav-item" *ngIf="!isExamMode">
-              <a class="nav-link" routerLink="/authentication/register">
+            <!--<li class="nav-item" *ngIf="!isExamMode">
+              <a class="nav-link" routerLink="/auth/register">
                 <fa-icon [icon]="faUserPlus"></fa-icon>
                 <span>注册</span>
               </a>
-            </li>
+            </li>-->
             <li class="nav-item">
-              <a class="nav-link text-success" routerLink="/authentication/login">
+              <a class="nav-link text-success" routerLink="/auth/login">
                 <fa-icon [icon]="faSignInAlt"></fa-icon>
                 <span>登陆</span>
               </a>
@@ -52,12 +52,12 @@
                   <fa-icon [icon]="faTools"></fa-icon>
                   <span>管理页面</span>
                 </a>
-                <a ngbDropdownItem routerLink="/authentication/profile">
+                <!--<a ngbDropdownItem routerLink="/authentication/profile">
                   <fa-icon [icon]="faCog"></fa-icon>
                   <span>账户信息</span>
-                </a>
+                </a>-->
                 <a ngbDropdownItem class="text-danger"
-                   routerLink="/authentication/logout" [state]="{'local': true}">
+                   routerLink="/auth/logout" [state]="{'local': true}">
                   <fa-icon [icon]="faSignOutAlt"></fa-icon>
                   <span>登出</span>
                 </a>

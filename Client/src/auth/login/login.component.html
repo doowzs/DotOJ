@@ -1,0 +1,14 @@
+<div style="margin:1em;">
+  <h1>请登录OJ</h1>
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <div>
+      <label for="username">学号：</label>
+      <input id="username" type="text" formControlName="username"/>
+    </div>
+    <div>
+      <label for="password">密码：</label>
+      <input id="password" type="password" formControlName="password"/>
+    </div>
+    <button>登录！</button>
+  </form>
+</div>

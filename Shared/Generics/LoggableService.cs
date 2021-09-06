@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,13 +38,13 @@ namespace Shared.Generics
             if (_user != null) return;
 
             var context = Accessor.HttpContext;
-            if (context == null || !context.User.IsAuthenticated())
+            if (context == null || context.User.Identity == null || !context.User.Identity.IsAuthenticated)
             {
                 _user = null;
             }
             else
             {
-                _user = await Manager.FindByIdAsync(context.User.GetSubjectId());
+                _user = await Manager.FindByIdAsync(context.User.Identity.Name);
             }
         }
 

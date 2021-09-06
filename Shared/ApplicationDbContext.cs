@@ -2,16 +2,14 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using IdentityServer4.EntityFramework.Options;
-using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Shared.Generics;
 using Shared.Models;
 
 namespace Shared
 {
-    public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public DbSet<Bulletin> Bulletins { get; set; }
         public DbSet<Contest> Contests { get; set; }
@@ -21,8 +19,7 @@ namespace Shared
         public DbSet<SubmissionReview> SubmissionReviews { get; set; }
         public DbSet<Plagiarism> Plagiarisms { get; set; }
 
-        public ApplicationDbContext(DbContextOptions options, IOptions<OperationalStoreOptions> operationalStoreOptions)
-            : base(options, operationalStoreOptions)
+        public ApplicationDbContext(DbContextOptions options) : base(options)
         {
         }
 

@@ -16,15 +16,15 @@
           <li class="nav-item" ngbDropdown>
             <a class="nav-link" ngbDropdownToggle>
               <fa-icon [icon]="faUser"></fa-icon>
-              <span>{{ user.name }}</span>
+              <span>{{ user.username }}</span>
             </a>
             <div ngbDropdownMenu class="dropdown-menu-right">
-              <a ngbDropdownItem routerLink="/authentication/profile">
+              <!--<a ngbDropdownItem routerLink="/authentication/profile">
                 <fa-icon [icon]="faCog"></fa-icon>
                 <span>Account</span>
-              </a>
+              </a>-->
               <a ngbDropdownItem class="text-danger"
-                 routerLink="/authentication/logout" [state]="{'local': true}">
+                 routerLink="/auth/logout" [state]="{'local': true}">
                 <fa-icon [icon]="faSignOutAlt"></fa-icon>
                 <span>Logout</span>
               </a>

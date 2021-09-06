@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Shared.DTOs;
 using Shared.Generics;
 using Shared.Models;
-using IdentityServer4.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Server.Exceptions;
@@ -82,9 +81,9 @@ namespace Server.Services
                 .ThenBy(c => c.BeginTime)
                 .ThenBy(c => c.Id)
                 .ToListAsync();
-            if (Accessor.HttpContext.User.IsAuthenticated())
+            if (Accessor.HttpContext.User.Identity.IsAuthenticated)
             {
-                var userId = Accessor.HttpContext.User.GetSubjectId();
+                var userId = Accessor.HttpContext.User.Identity.Name;
                 var infos = new List<ContestInfoDto>();
                 foreach (var contest in contests)
                 {
@@ -108,9 +107,9 @@ namespace Server.Services
                 .OrderByDescending(c => c.Id)
                 .PaginateAsync(pageIndex ?? 1, PageSize);
             IList<ContestInfoDto> infos;
-            if (Accessor.HttpContext.User.IsAuthenticated())
+            if (Accessor.HttpContext.User.Identity.IsAuthenticated)
             {
-                var userId = Accessor.HttpContext.User.GetSubjectId();
+                var userId = Accessor.HttpContext.User.Identity.Name;
                 infos = new List<ContestInfoDto>();
                 foreach (var contest in contests.Items)
                 {
@@ -141,9 +140,9 @@ namespace Server.Services
             await Context.Entry(contest).Collection(c => c.Problems).LoadAsync();
 
             IList<ProblemInfoDto> problemInfos;
-            if (Accessor.HttpContext.User.IsAuthenticated())
+            if (Accessor.HttpContext.User.Identity.IsAuthenticated)
             {
-                var userId = Accessor.HttpContext.User.GetSubjectId();
+                var userId = Accessor.HttpContext.User.Identity.Name;
                 problemInfos = new List<ProblemInfoDto>();
                 foreach (var problem in contest.Problems)
                 {

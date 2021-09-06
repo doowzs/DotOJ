@@ -11,7 +11,7 @@ import { SubmissionInfoDto } from '../../../../interfaces/submission.interfaces'
 import { VerdictStage } from '../../../../consts/verdicts.consts';
 import { ApplicationService } from "../../../services/application.service";
 import { SubmissionService } from '../../../services/submission.service';
-import { AuthorizeService } from '../../../../api-authorization/authorize.service';
+import { AuthorizeService } from '../../../../auth/authorize.service';
 import { ProblemViewDto } from '../../../../interfaces/problem.interfaces';
 import { ProblemService } from '../../../services/problem.service';
 import { ContestViewDto } from "../../../../interfaces/contest.interfaces";
@@ -53,7 +53,7 @@ export class SubmissionTimelineComponent implements OnInit, OnChanges, OnDestroy
     private modal: NgbModal
   ) {
     this.contestId = this.route.snapshot.parent.params.contestId;
-    this.userId = this.auth.getUser().pipe(take(1), map(u => u && u.sub));
+    this.userId = this.auth.getUser().pipe(take(1), map(u => u && u.id));
   }
 
   ngOnInit() {

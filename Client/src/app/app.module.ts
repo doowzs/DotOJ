@@ -5,9 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
-import { AuthorizeGuard } from 'src/api-authorization/authorize.guard';
-import { AuthorizeInterceptor } from 'src/api-authorization/authorize.interceptor';
-import { ApiAuthorizationModule } from 'src/api-authorization/api-authorization.module';
+import { AuthModule} from "src/auth/auth.module";
 import { AdminModule } from 'src/admin/admin.module';
 
 import { NoCommaPipe } from './pipes/no-comma.pipe';
@@ -42,6 +40,8 @@ import { ChartsModule } from 'ng2-charts';
 import { MarkdownModule } from '../lib/markdown/markdown.module';
 import { EditorModule } from '../lib/editor/editor.module';
 import { VerdictModule } from '../lib/verdict/verdict.module';
+import {AuthorizeGuard} from "../auth/authorize.guard";
+import {AuthorizeInterceptor} from "../auth/authorize.interceptor";
 
 const loadApplicationConfig = (service: ApplicationConfigService) => {
   return () => service.loadApplicationConfig();
@@ -94,8 +94,8 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
       { path: 'submissions', component: SubmissionListComponent, canActivate: [AuthorizeGuard] },
       { path: 'submission/:submissionId', component: SubmissionDetailComponent, canActivate: [AuthorizeGuard] }
     ]),
+    AuthModule,
     AdminModule,
-    ApiAuthorizationModule,
     ClipboardModule,
     NgbModule,
     FontAwesomeModule,
