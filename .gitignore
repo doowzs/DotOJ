@@ -2,7 +2,6 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=dotnetcore,aspnetcore,angular,jetbrains,code
 
 release.zip
-appsettings.json
 
 ### Angular ###
 ## Angular ##
