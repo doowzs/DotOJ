@@ -26,14 +26,11 @@
         <PackageReference Include="RabbitMQ.Client" Version="6.2.1" />
     </ItemGroup>
     <ItemGroup>
-        <Content Remove="appsettings.json" />
-        <Content Include="appsettings.json.example">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-    </ItemGroup>
-    <ItemGroup>
         <ProjectReference Include="..\Notification\Notification.csproj" />
         <ProjectReference Include="..\Shared\Shared.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Migrations" />
     </ItemGroup>
 
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('..\Client\node_modules') ">

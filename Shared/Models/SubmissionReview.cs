@@ -16,6 +16,6 @@ namespace Shared.Models
 
         [Required] public int? Score { get; set; }
 
-        [Column("program", TypeName = "text")]public string Comments { get; set; }
+        [Column("program", TypeName = "text")] public string Comments { get; set; }
     }
 }
