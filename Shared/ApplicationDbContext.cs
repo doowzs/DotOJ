@@ -18,6 +18,8 @@ namespace Shared
         public DbSet<Registration> Registrations { get; set; }
         public DbSet<Problem> Problems { get; set; }
         public DbSet<Submission> Submissions { get; set; }
+
+        public DbSet<SubmissionReview> SubmissionReviews { get; set; }
         public DbSet<Plagiarism> Plagiarisms { get; set; }
 
         public ApplicationDbContext(DbContextOptions options, IOptions<OperationalStoreOptions> operationalStoreOptions)
@@ -36,7 +38,7 @@ namespace Shared
 
             // Setup composite key for Registration.
             builder.Entity<Registration>()
-                .HasKey(ar => new {ar.UserId, ar.ContestId});
+                .HasKey(ar => new { ar.UserId, ar.ContestId });
         }
 
         public override int SaveChanges(bool acceptAllChangesOnSuccess)
@@ -62,10 +64,10 @@ namespace Shared
             {
                 if (entry.State == EntityState.Added)
                 {
-                    ((ModelWithTimestamps) entry.Entity).CreatedAt = now;
+                    ((ModelWithTimestamps)entry.Entity).CreatedAt = now;
                 }
 
-                ((ModelWithTimestamps) entry.Entity).UpdatedAt = now;
+                ((ModelWithTimestamps)entry.Entity).UpdatedAt = now;
             }
         }
     }
