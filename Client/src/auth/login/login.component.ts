@@ -9,10 +9,11 @@ import {ActivatedRoute, Route, Router} from "@angular/router";
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
+
 export class LoginComponent {
 
   loginForm = this.formBuilder.group({
-    username: '',
+    username: '',  
     password: ''
   });
 
@@ -30,7 +31,8 @@ export class LoginComponent {
         this.router.navigateByUrl(this.route.snapshot.queryParams.redirect ?? '/', {
           replaceUrl: true
         });
+      }, error => {
+        alert(error.error);
       });
   }
-
 }

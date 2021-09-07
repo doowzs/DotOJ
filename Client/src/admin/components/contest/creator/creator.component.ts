@@ -16,7 +16,7 @@ export class AdminContestCreatorComponent {
   ) {
   }
 
-  public createContest(contest: ContestEditDto) {
+  public (contest: ContestEditDto) {
     this.service.createSingle(contest)
       .subscribe(() => {
         this.router.navigate(['/admin/contest']);
