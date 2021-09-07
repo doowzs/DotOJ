@@ -1,35 +1,29 @@
-<html>
-
-<body>
-  <div class="form-side">
+<div class="form-side">
+</div>
+<div class="form-wrapper">
+  <div class="header">
+    login
   </div>
-  <div class="form-wrapper">
-    <div class="header">
-      login
-    </div>
-    <div class="input-wrapper">
-      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <div class="border-wrapper">
-          <input type="text" name="username" class="border-item" placeholder="请输入南京大学学工号（eg.211200000）"
-            autocomplete="off" onfocus="this.placeholder=''" onblur="this.placeholder='请输入南京大学学工号（eg.211200000）'"
-            formControlName="username">
-        </div>
-        <div class="border-wrapper">
-          <input type="password" name="password" class="border-item" placeholder="请输入密码" autocomplete="off"
-            onfocus="this.placeholder=''" onblur="this.placeholder='请输入密码'" formControlName="password">
-        </div>
-        <br />
-        <div class="action">
-          <button class="btn">login</button>
-        </div>
-      </form>
-      <div class="icon-wrapper">
-        <div class="find-password" (click)="tips()">找回密码</div>
-        <div class="space">&nbsp; &nbsp;&nbsp; &nbsp; </div>
-        <div class="register" (click)="tips()">注册新用户</div>
+  <div class="input-wrapper">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <div class="border-wrapper">
+        <input type="text" name="username" class="border-item" placeholder="请输入南京大学学工号（eg.211200000）"
+               autocomplete="off" onfocus="this.placeholder=''" onblur="this.placeholder='请输入南京大学学工号（eg.211200000）'"
+               formControlName="username">
       </div>
+      <div class="border-wrapper">
+        <input type="password" name="password" class="border-item" placeholder="请输入密码" autocomplete="off"
+               onfocus="this.placeholder=''" onblur="this.placeholder='请输入密码'" formControlName="password">
+      </div>
+      <br/>
+      <div class="action">
+        <button class="btn">login</button>
+      </div>
+    </form>
+    <div class="icon-wrapper">
+      <a class="find-password" href="javascript:void(0)" (click)="tips()">找回密码</a>
+      <div>&nbsp; &nbsp;&nbsp; &nbsp;</div>
+      <a class="register" href="javascript:void(0)" (click)="tips()">注册新用户</a>
     </div>
   </div>
-</body>
-
-</html>
+</div>

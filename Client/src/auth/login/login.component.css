@@ -1,22 +1,3 @@
-* {
-  margin: 0;
-  padding: 0;
-}
-
-html {
-  height: 100%;
-}
-
-body {
-  height: 100%;
-  font-family: JetBrains Mono Medium;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* background-color: #0e92b3; */
-  background-color: #ffffff;
-  background-size: 100% 100%;
-}
 
 .form-side {
   background-color: rgba(224, 228, 247, 0.8);
@@ -48,7 +29,7 @@ body {
 .form-wrapper .header {
   text-align: center;
   font-size: 25px;
-  font-family: fantasy;
+  font-family: 黑体;
   text-transform: uppercase;
   line-height: 100px;
 }
@@ -120,11 +101,11 @@ body {
 }
 
 .form-wrapper .icon-wrapper .find-password {
-  cursor: pointer;
+  color: white;
 }
 
 .form-wrapper .icon-wrapper .register {
-  cursor: pointer;
+  color: white;
 }
 
 .form-wrapper .icon-wrapper i {
