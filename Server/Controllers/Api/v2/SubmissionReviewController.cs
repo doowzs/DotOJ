@@ -29,15 +29,15 @@ namespace Server.Controllers.Api.v2
             _logger = logger;
         }
 
-        [HttpGet("{id:int}")]
+        [HttpGet]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<List<SubmissionInfoDto>>> GetSubmissionReviewAsync(int problemId)
+        public async Task<ActionResult<List<SubmissionInfoDto>>> ListSubmissionsReview(int problemId)
         {
             try
             {
-                return Ok(await _service.GetSubmissionsReviewAsync(problemId));
+                return Ok(await _service.GetToSubmissionsReviewListAsync(problemId));
             }
             catch (ValidationException e)
             {

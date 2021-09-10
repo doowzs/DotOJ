@@ -112,6 +112,7 @@ namespace Server
             services.AddScoped<IContestService, ContestService>();
             services.AddScoped<IProblemService, ProblemService>();
             services.AddScoped<ISubmissionService, SubmissionService>();
+            services.AddScoped<ISubmissionReviewService, SubmissionReviewService>();
 
             services.AddScoped<IAdminUserService, AdminUserService>();
             services.AddScoped<IAdminBulletinService, AdminBulletinService>();

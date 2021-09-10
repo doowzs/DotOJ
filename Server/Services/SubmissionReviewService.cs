@@ -21,19 +21,18 @@ namespace Server.Services
 {
     public interface ISubmissionReviewService
     {
-        public Task<List<SubmissionInfoDto>> GetSubmissionsReviewAsync(int problemId);
+        public Task<List<SubmissionInfoDto>> GetToSubmissionsReviewListAsync(int problemId);
        
     }
 
     public class SubmissionReviewService : LoggableService<SubmissionReviewService>, ISubmissionReviewService
     {
-        private readonly ProblemStatisticsService _statisticsService;
         public SubmissionReviewService(IServiceProvider provider) : base(provider)
         {
-            _statisticsService = provider.GetRequiredService<ProblemStatisticsService>();
+            
         }
         
-        private async Task<Boolean> IsSubmissionReviewViewableAsync(Submission submission)
+        private async Task<Boolean> CanSubmissionReviewAsync(Submission submission)
         {
             var user = await Manager.GetUserAsync(Accessor.HttpContext.User);
             if (submission.UserId == user.Id)   
@@ -59,9 +58,9 @@ namespace Server.Services
             }
             
             var registerRole = await Context.Registrations
-                .FirstAsync(r => r.ContestId == contest.Id && r.UserId == submission.UserId);
+                .FirstOrDefaultAsync(r => r.ContestId == contest.Id && r.UserId == submission.UserId);
 
-            if (registerRole.IsContestManager)
+            if (registerRole == null || registerRole.IsContestManager)
             {
                 return false; // Cannot review ContestManager's code
             }
@@ -69,7 +68,7 @@ namespace Server.Services
             return true;
         }
 
-        private async Task<List<SubmissionInfoDto>> GetLegalSubmissionsReviewAsync(int problemId)
+        private async Task<List<SubmissionInfoDto>> GetToLegalSubmissionsReviewListAsync(int problemId)
         {
             
             var submissions = await Context.Submissions
@@ -78,61 +77,49 @@ namespace Server.Services
                 .Include(s => s.User)
                 .OrderBy(s => s.Id)
                 .ToListAsync();
-
-            var legalSubbmissons = new List<SubmissionInfoDto>();
-            var dict = new Dictionary<string, int>();
-            var dictSorted = new Dictionary<SubmissionInfoDto, int>();
+            
+            var contestantIdDict = new Dictionary<string, int>();
+            var submissionInfoDtoDict = new Dictionary<SubmissionInfoDto, int>();
             
             foreach (var submission in submissions)
             {
-                if (!dict.ContainsKey(submission.User.ContestantId))
+                if (!contestantIdDict.ContainsKey(submission.User.ContestantId))
                 {
-                    if (await IsSubmissionReviewViewableAsync(submission))
+                    if (await CanSubmissionReviewAsync(submission))
                     {
                         var count = await Context.SubmissionReviews
                             .Where(s => s.SubmissionId == submission.Id)
                             .CountAsync();
 
-                        dict.Add(submission.User.ContestantId, count);
+                        contestantIdDict.Add(submission.User.ContestantId, count);
                         var submissionDto = new SubmissionInfoDto(submission, true);
-                        dictSorted.Add(submissionDto, count);
-                        legalSubbmissons.Add(submissionDto);
+                        submissionInfoDtoDict.Add(submissionDto, count);
                     }
                 }
             }
 
-            dictSorted = dictSorted.OrderBy(f => f.Key).ToDictionary(f => f.Key, f => f.Value);
-
-            var cnt = 0;
-            legalSubbmissons = new List<SubmissionInfoDto>();
-            
-            foreach (var item in dictSorted)
-            {
-                legalSubbmissons.Add(item.Key);
-                cnt = cnt + 1;
-                if (cnt == 5)
-                {
-                    break;
-                }
-            }
-            return legalSubbmissons;
+            var legalSubmissions = submissionInfoDtoDict
+                .OrderBy(p => p.Value)
+                .Take(5)
+                .Select(p => p.Key)
+                .ToList();
+            return legalSubmissions;
         }
 
-        public async Task<List<SubmissionInfoDto>> GetSubmissionsReviewAsync(int problemId)
+        public async Task<List<SubmissionInfoDto>> GetToSubmissionsReviewListAsync(int problemId)
         {
             var user = await Manager.GetUserAsync(Accessor.HttpContext.User);
-
-            var count = await Context.Submissions
+            
+            if (! await  Context.Submissions
                 .Where(s => s.ProblemId == problemId
                             && s.UserId == user.Id
                             && s.Verdict == Verdict.Accepted)
-                .CountAsync();
-            if (count == 0)
+                .AnyAsync())
             {
                 throw new ValidationException("Cannot review before pass the problem.");
             }
             
-            var submissions = await GetLegalSubmissionsReviewAsync(problemId);
+            var submissions = await GetToLegalSubmissionsReviewListAsync(problemId);
             
             if (submissions.Count < 5)
             {
