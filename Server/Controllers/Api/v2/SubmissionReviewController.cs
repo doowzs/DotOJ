@@ -37,7 +37,7 @@ namespace Server.Controllers.Api.v2
         {
             try
             {
-                return Ok(await _service.GetToSubmissionsReviewListAsync(problemId));
+                return Ok(await _service.GetSubmissionsToReviewListAsync(problemId));
             }
             catch (ValidationException e)
             {

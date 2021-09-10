@@ -21,7 +21,7 @@ namespace Server.Services
 {
     public interface ISubmissionReviewService
     {
-        public Task<List<SubmissionInfoDto>> GetToSubmissionsReviewListAsync(int problemId);
+        public Task<List<SubmissionInfoDto>> GetSubmissionsToReviewListAsync(int problemId);
        
     }
 
@@ -68,7 +68,7 @@ namespace Server.Services
             return true;
         }
 
-        private async Task<List<SubmissionInfoDto>> GetToLegalSubmissionsReviewListAsync(int problemId)
+        private async Task<List<SubmissionInfoDto>> GetLegalSubmissionsToReviewListAsync(int problemId)
         {
             
             var submissions = await Context.Submissions
@@ -106,7 +106,7 @@ namespace Server.Services
             return legalSubmissions;
         }
 
-        public async Task<List<SubmissionInfoDto>> GetToSubmissionsReviewListAsync(int problemId)
+        public async Task<List<SubmissionInfoDto>> GetSubmissionsToReviewListAsync(int problemId)
         {
             var user = await Manager.GetUserAsync(Accessor.HttpContext.User);
             
@@ -119,7 +119,7 @@ namespace Server.Services
                 throw new ValidationException("Cannot review before pass the problem.");
             }
             
-            var submissions = await GetToLegalSubmissionsReviewListAsync(problemId);
+            var submissions = await GetLegalSubmissionsToReviewListAsync(problemId);
             
             if (submissions.Count < 5)
             {
