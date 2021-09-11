@@ -47,12 +47,12 @@
                 <fa-icon [icon]="faTools"></fa-icon>
                 <span>管理页面</span>
               </a>
-              <a ngbDropdownItem routerLink="/authentication/profile">
+              <!--<a ngbDropdownItem routerLink="/auth/profile">
                 <fa-icon [icon]="faCog"></fa-icon>
                 <span>账户信息</span>
-              </a>
+              </a>-->
               <a ngbDropdownItem class="text-danger"
-                 routerLink="/authentication/logout" [state]="{'local': true}">
+                 routerLink="/auth/logout" [state]="{'local': true}">
                 <fa-icon [icon]="faSignOutAlt"></fa-icon>
                 <span>登出</span>
               </a>
