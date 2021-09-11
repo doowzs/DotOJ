@@ -21,7 +21,7 @@ export class SubmissionReviewService {
   public getReviewList(problemId: number): Observable<SubmissionViewDto[]> {
     try {
       let params = new HttpParams();
-      params.append("problemId", problemId.toString());
+      params = params.set("problemId", problemId.toString());
       return this.http.get<SubmissionViewDto[]>('/submissionReview', {params: params});
     } catch (err) {
       throw err;
