@@ -187,6 +187,7 @@ namespace Server.Services.Admin
             var problem = await Context.Problems.FindAsync(submission.ProblemId);
             var registration = await Context.Registrations.FindAsync(submission.UserId, problem.ContestId);
             await registration.RebuildStatisticsAsync(Context);
+            Context.Update(registration);
             await Context.SaveChangesAsync();
 
             await _statistics.InvalidStatisticsAsync(submission.ProblemId);
