@@ -44,7 +44,8 @@ namespace Shared.Generics
             }
             else
             {
-                _user = await Manager.FindByIdAsync(context.User.Identity.Name);
+                var user = await Manager.GetUserAsync(Accessor.HttpContext.User);
+                _user = await Manager.FindByIdAsync(user.Id);
             }
         }
 

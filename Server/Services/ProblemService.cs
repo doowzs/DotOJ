@@ -74,7 +74,8 @@ namespace Server.Services
 
         public async Task<PaginatedList<ProblemInfoDto>> GetPaginatedProblemInfosAsync(int? pageIndex)
         {
-            var userId = Accessor.HttpContext.User.Identity.Name;
+            var user = await Manager.GetUserAsync(Accessor.HttpContext.User);
+            var userId = user.Id;
             var problems = await Context.Problems.PaginateAsync(pageIndex ?? 1, PageSize);
             var infos = new List<ProblemInfoDto>();
             foreach (var problem in problems.Items)

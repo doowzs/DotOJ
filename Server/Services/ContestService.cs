@@ -81,9 +81,11 @@ namespace Server.Services
                 .ThenBy(c => c.BeginTime)
                 .ThenBy(c => c.Id)
                 .ToListAsync();
+            var user = await Manager.GetUserAsync(Accessor.HttpContext.User);
+            
             if (Accessor.HttpContext.User.Identity.IsAuthenticated)
             {
-                var userId = Accessor.HttpContext.User.Identity.Name;
+                var userId = user.Id;
                 var infos = new List<ContestInfoDto>();
                 foreach (var contest in contests)
                 {
@@ -107,9 +109,10 @@ namespace Server.Services
                 .OrderByDescending(c => c.Id)
                 .PaginateAsync(pageIndex ?? 1, PageSize);
             IList<ContestInfoDto> infos;
+            var user = await Manager.GetUserAsync(Accessor.HttpContext.User);
             if (Accessor.HttpContext.User.Identity.IsAuthenticated)
             {
-                var userId = Accessor.HttpContext.User.Identity.Name;
+                var userId = user.Id;
                 infos = new List<ContestInfoDto>();
                 foreach (var contest in contests.Items)
                 {
@@ -140,9 +143,11 @@ namespace Server.Services
             await Context.Entry(contest).Collection(c => c.Problems).LoadAsync();
 
             IList<ProblemInfoDto> problemInfos;
+            var user = await Manager.GetUserAsync(Accessor.HttpContext.User);
+           
             if (Accessor.HttpContext.User.Identity.IsAuthenticated)
             {
-                var userId = Accessor.HttpContext.User.Identity.Name;
+                var userId = user.Id;
                 problemInfos = new List<ProblemInfoDto>();
                 foreach (var problem in contest.Problems)
                 {
