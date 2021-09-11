@@ -172,7 +172,7 @@ namespace Server.Services.Admin
             await EnsureSubmissionExists(id);
             await ValidateSubmissionEditDto(dto);
 
-            var user = await Manager.FindByIdAsync(Accessor.HttpContext.User.Identity.Name);
+            var user = await Manager.GetUserAsync(Accessor.HttpContext.User);
             var submission = await Context.Submissions.FindAsync(id);
             submission.Verdict = dto.Verdict.GetValueOrDefault();
             submission.Time = submission.Memory = null;
