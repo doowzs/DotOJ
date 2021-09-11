@@ -322,7 +322,7 @@ namespace Server.Services
 
             var submission = new Submission
             {
-                UserId = Accessor.HttpContext.User.Identity.Name,
+                UserId = user.Id,
                 ProblemId = dto.ProblemId.GetValueOrDefault(),
                 Program = dto.Program,
                 Verdict = Verdict.Pending,

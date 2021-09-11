@@ -138,10 +138,11 @@ namespace Server.Services.Admin
         public async Task<SubmissionInfoDto> CreateSubmissionAsync(SubmissionCreateDto dto)
         {
             await ValidateSubmissionCreateDtoAsync(dto);
-
+            var user = await Manager.GetUserAsync(Accessor.HttpContext.User);
+            
             var submission = new Submission
             {
-                UserId = Accessor.HttpContext.User.Identity.Name,
+                UserId = user.Id,
                 ProblemId = dto.ProblemId.GetValueOrDefault(),
                 Program = dto.Program,
                 Hidden = true,
