@@ -48,6 +48,7 @@
             <th scope="col">名称</th>
             <th scope="col">解决状态</th>
             <th scope="col">通过人数</th>
+            <th scope="col">代码互评</th>
           </tr>
           </thead>
           <tbody>
@@ -66,6 +67,9 @@
             <span *ngIf="problem.totalContestants > 0">
               {{ problem.acceptedContestants }} / {{ problem.totalContestants }}
             </span>
+            </td>
+            <td>
+              <a [routerLink]="['/contest', contestId, 'problem', problem.id, 'submissionReview']">进入互评</a>
             </td>
           </tr>
           </tbody>

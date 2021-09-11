@@ -16,6 +16,7 @@ namespace Shared
         public DbSet<Registration> Registrations { get; set; }
         public DbSet<Problem> Problems { get; set; }
         public DbSet<Submission> Submissions { get; set; }
+        
         public DbSet<SubmissionReview> SubmissionReviews { get; set; }
         public DbSet<Plagiarism> Plagiarisms { get; set; }
 

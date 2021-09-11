@@ -21,7 +21,7 @@ namespace Server.Services
 {
     public interface ISubmissionReviewService
     {
-        public Task<List<SubmissionInfoDto>> GetSubmissionsToReviewListAsync(int problemId);
+        public Task<List<SubmissionViewDto>> GetSubmissionsToReviewListAsync(int problemId);
        
     }
 
@@ -68,7 +68,7 @@ namespace Server.Services
             return true;
         }
 
-        private async Task<List<SubmissionInfoDto>> GetLegalSubmissionsToReviewListAsync(int problemId)
+        private async Task<List<SubmissionViewDto>> GetLegalSubmissionsToReviewListAsync(int problemId)
         {
             
             var submissions = await Context.Submissions
@@ -79,7 +79,7 @@ namespace Server.Services
                 .ToListAsync();
             
             var contestantIdDict = new Dictionary<string, int>();
-            var submissionInfoDtoDict = new Dictionary<SubmissionInfoDto, int>();
+            var submissionViewDtoDict = new Dictionary<SubmissionViewDto, int>();
             
             foreach (var submission in submissions)
             {
@@ -92,13 +92,13 @@ namespace Server.Services
                             .CountAsync();
 
                         contestantIdDict.Add(submission.User.ContestantId, count);
-                        var submissionDto = new SubmissionInfoDto(submission, true);
-                        submissionInfoDtoDict.Add(submissionDto, count);
+                        var submissionDto = new SubmissionViewDto(submission, Config);
+                        submissionViewDtoDict.Add(submissionDto, count);
                     }
                 }
             }
 
-            var legalSubmissions = submissionInfoDtoDict
+            var legalSubmissions = submissionViewDtoDict
                 .OrderBy(p => p.Value)
                 .Take(5)
                 .Select(p => p.Key)
@@ -106,7 +106,7 @@ namespace Server.Services
             return legalSubmissions;
         }
 
-        public async Task<List<SubmissionInfoDto>> GetSubmissionsToReviewListAsync(int problemId)
+        public async Task<List<SubmissionViewDto>> GetSubmissionsToReviewListAsync(int problemId)
         {
             var user = await Manager.GetUserAsync(Accessor.HttpContext.User);
             

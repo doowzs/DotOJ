@@ -42,6 +42,7 @@ import { EditorModule } from '../lib/editor/editor.module';
 import { VerdictModule } from '../lib/verdict/verdict.module';
 import {AuthorizeGuard} from "../auth/authorize.guard";
 import {AuthorizeInterceptor} from "../auth/authorize.interceptor";
+import {SubmissionReviewDetailComponent} from "./components/subbmisionReview/detail/detail.component";
 
 const loadApplicationConfig = (service: ApplicationConfigService) => {
   return () => service.loadApplicationConfig();
@@ -69,6 +70,7 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     SubmissionTestKitCreatorComponent,
     SubmissionTimelineComponent,
     SubmissionDetailComponent,
+    SubmissionReviewDetailComponent,
     HelpComponent,
     ChangelogComponent
   ],
@@ -87,12 +89,13 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
         children: [
           { path: '', pathMatch: 'full', component: ContestDescriptionComponent },
           { path: 'problem/:problemId', component: ProblemDetailComponent },
+          { path: 'problem/:problemId/submissionReview', component: SubmissionReviewDetailComponent },
           { path: 'submissions', component: ContestSubmissionsComponent },
           { path: 'standings', component: ContestStandingsComponent }
         ]
       },
       { path: 'submissions', component: SubmissionListComponent, canActivate: [AuthorizeGuard] },
-      { path: 'submission/:submissionId', component: SubmissionDetailComponent, canActivate: [AuthorizeGuard] }
+      { path: 'submission/:submissionId', component: SubmissionDetailComponent, canActivate: [AuthorizeGuard] },
     ]),
     AuthModule,
     AdminModule,

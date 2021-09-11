@@ -33,7 +33,7 @@ namespace Server.Controllers.Api.v2
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<List<SubmissionInfoDto>>> ListSubmissionsReview(int problemId)
+        public async Task<ActionResult<List<SubmissionViewDto>>> ListSubmissionsReview(int problemId)
         {
             try
             {
