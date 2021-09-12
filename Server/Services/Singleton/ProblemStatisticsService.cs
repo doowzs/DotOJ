@@ -143,7 +143,11 @@ namespace Server.Services.Singleton
 
                 var statistics = new ProblemStatistics
                 {
-                    TotalSubmissions = ps.TotalSubmissions + 1,
+                    TotalSubmissions = ps.TotalSubmissions +
+                                       (submission.Verdict == Verdict.Accepted ||
+                                        (submission.Verdict != Verdict.Accepted && submission.FailedOn > 0)
+                                           ? 1
+                                           : 0),
                     AcceptedSubmissions = ps.AcceptedSubmissions + (submission.Verdict == Verdict.Accepted ? 1 : 0),
                     TotalContestants = ps.TotalContestants + (attempted ? 0 : 1),
                     AcceptedContestants = ps.AcceptedContestants +
