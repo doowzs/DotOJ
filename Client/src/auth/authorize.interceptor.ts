@@ -5,6 +5,9 @@ import {Observable, throwError} from 'rxjs';
 import {catchError, mergeMap} from 'rxjs/operators';
 import {AuthorizeService} from './authorize.service';
 
+export const SkipInjectTokenHeader = 'X-Skip-Inject-Token';
+export const SkipErrorRedirectHeader = 'X-Skip-Error-Redirect';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -16,13 +19,15 @@ export class AuthorizeInterceptor implements HttpInterceptor {
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    return this.authorize.getAccessToken()
-      .pipe(mergeMap(token => this.processRequestWithToken(token, req, next)));
+    if (req.headers.has(SkipInjectTokenHeader)) {
+      const headers = req.headers.delete(SkipInjectTokenHeader);
+      return next.handle(req.clone({headers}));
+    } else {
+      return this.authorize.getAccessToken()
+        .pipe(mergeMap(token => this.processRequestWithToken(token, req, next)));
+    }
   }
 
-  // Checks if there is an access_token available in the authorize service
-  // and adds it to the request in case it's targeted at the same origin as the
-  // single page application.
   private processRequestWithToken(token: string, req: HttpRequest<any>, next: HttpHandler) {
     if (!!token) {
       req = req.clone({
@@ -32,12 +37,17 @@ export class AuthorizeInterceptor implements HttpInterceptor {
       });
     }
 
-    return next.handle(req).pipe(catchError(err => {
-      if (err.status === 401) {
-        console.log('Unauthorized access, redirect user to login.');
-        this.router.navigate(['/auth/login']);
-      }
-      return throwError(err);
-    }));
+    if (req.headers.has(SkipErrorRedirectHeader)) {
+      const headers = req.headers.delete(SkipErrorRedirectHeader);
+      return next.handle(req.clone({headers}));
+    } else {
+      return next.handle(req).pipe(catchError(err => {
+        if (err.status === 401) {
+          console.log('Unauthorized access, redirect user to login.');
+          this.router.navigate(['/auth/login']);
+        }
+        return throwError(err);
+      }));
+    }
   }
 }
