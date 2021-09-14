@@ -76,8 +76,6 @@ namespace Server.Services
             return new LoginResponseDto
             {
                 Id = user.Id,
-                ContestId = user.ContestantId,
-                ContestName = user.ContestantName,
                 Username = user.ContestantId,
                 FullName = user.ContestantName,
                 Roles = (await Manager.GetRolesAsync(user)).ToList(),
