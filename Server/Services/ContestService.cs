@@ -155,7 +155,12 @@ namespace Server.Services
                     var attempted = await query.AnyAsync(s => s.UserId == userId);
                     var solved = await query.AnyAsync(s => s.UserId == userId && s.Verdict == Verdict.Accepted);
                     var statistics = await _statisticsService.GetStatisticsAsync(problem.Id);
-                    problemInfos.Add(new ProblemInfoDto(problem, attempted, solved, statistics));
+                    var reviews = await Context.SubmissionReviews
+                        .Where(s => s.UserId == userId)
+                        .Include(s => s.Submission)
+                        .ToListAsync();
+                    var scored = reviews.Exists(s => s.Submission.ProblemId == problem.Id);
+                    problemInfos.Add(new ProblemInfoDto(problem, attempted, solved, scored, statistics));
                 }
             }
             else

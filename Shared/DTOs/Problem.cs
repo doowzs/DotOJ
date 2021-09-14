@@ -24,6 +24,7 @@ namespace Shared.DTOs
         public string Title { get; }
         public bool Attempted { get; }
         public bool Solved { get; }
+        public bool Scored { get; }
         public int TotalContestants { get; }
         public int AcceptedContestants { get; }
 
@@ -35,15 +36,17 @@ namespace Shared.DTOs
             Title = problem.Title;
             Attempted = false;
             Solved = false;
+            Scored = false;
             TotalContestants = 0;
             AcceptedContestants = 0;
         }
 
-        public ProblemInfoDto(Problem problem, bool attempted, bool solved, 
+        public ProblemInfoDto(Problem problem, bool attempted, bool solved, bool scored,
             ProblemStatistics statistics) : this(problem)
         {
             Attempted = attempted;
             Solved = solved;
+            Scored = scored;
             TotalContestants = statistics.TotalContestants;
             AcceptedContestants = statistics.AcceptedContestants;
         }

@@ -23,6 +23,9 @@
   </div>
   <div class="my-3">
     <span *ngIf="privileged" class="float-right">
+      <button class="btn btn-sm btn-outline-danger mr-2" [disabled]="loading" (click)="exportReviews()">
+        <fa-icon [icon]="faDownload"></fa-icon><span>导出互评结果到Excel</span>
+      </button>
       <a class="btn btn-sm btn-outline-danger" [routerLink]="['/admin/contest', contestId]">
         <fa-icon [icon]="faEdit"></fa-icon><span>编辑作业</span>
       </a>
@@ -41,39 +44,82 @@
     <div class="my-3 card">
       <div class="card-body">
         <h2>题目列表</h2>
-        <table class="table my-3">
-          <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">名称</th>
-            <th scope="col">解决状态</th>
-            <th scope="col">通过人数</th>
-            <th scope="col">代码互评</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr *ngFor="let problem of contest.problems">
-            <th scope="row">{{ problem.label }}</th>
-            <td><a [routerLink]="['/contest', contestId, 'problem', problem.id]">{{ problem.title }}</a></td>
-            <td>
-            <span *ngIf="problem.solved" class="text-success">
+        <div *ngIf="examId==null; else examMode">
+          <table class="table my-3">
+            <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">名称</th>
+              <th scope="col">解决状态</th>
+              <th scope="col">通过人数</th>
+              <th scope="col">代码互评</th>
+              <th scope="col">互评反馈</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let problem of contest.problems">
+              <th scope="row">{{ problem.label }}</th>
+              <td><a [routerLink]="['/contest', contestId, 'problem', problem.id]">{{ problem.title }}</a></td>
+              <td>
+              <span *ngIf="problem.solved && !problem.scored" class="text-purple">
+              <fa-icon [icon]="faClipboardCheck"></fa-icon><span> 待互评</span>
+            </span>
+                <span *ngIf="problem.solved && problem.scored" class="text-success">
               <fa-icon [icon]="faCheck"></fa-icon><span>已解决</span>
             </span>
-              <span *ngIf="problem.attempted && !problem.solved" class="text-danger">
-              <fa-icon [icon]="faTimes"></fa-icon><span>未解决</span>
+                <span *ngIf="problem.attempted && !problem.solved" class="text-danger">
+              <fa-icon [icon]="faTimes"></fa-icon><span>未通过</span>
             </span>
-            </td>
-            <td>
+              </td>
+              <td>
             <span *ngIf="problem.totalContestants > 0">
               {{ problem.acceptedContestants }} / {{ problem.totalContestants }}
             </span>
-            </td>
-            <td>
-              <a [routerLink]="['/contest', contestId, 'problem', problem.id, 'submissionReview']">进入互评</a>
-            </td>
-          </tr>
-          </tbody>
-        </table>
+              </td>
+              <td>
+              <span *ngIf="problem.scored" class="text-success" >
+              <span>提交成功</span>
+            </span>
+                <a *ngIf="!problem.scored"
+                   [routerLink]="['/contest', contestId, 'problem', problem.id, 'submissionReview']">进入互评</a>
+              </td>
+              <td>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <ng-template #examMode>
+          <table class="table my-3">
+            <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">名称</th>
+              <th scope="col">解决状态</th>
+              <th scope="col">通过人数</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let problem of contest.problems">
+              <th scope="row">{{ problem.label }}</th>
+              <td><a [routerLink]="['/contest', contestId, 'problem', problem.id]">{{ problem.title }}</a></td>
+              <td>
+                <span *ngIf="problem.solved" class="text-success">
+              <fa-icon [icon]="faCheck"></fa-icon><span>已解决</span>
+            </span>
+                <span *ngIf="problem.attempted && !problem.solved" class="text-danger">
+              <fa-icon [icon]="faTimes"></fa-icon><span>未解决</span>
+            </span>
+              </td>
+              <td>
+            <span *ngIf="problem.totalContestants > 0">
+              {{ problem.acceptedContestants }} / {{ problem.totalContestants }}
+            </span>
+              </td>
+            </tr>
+            </tbody>
+          </table>
+        </ng-template>
       </div>
     </div>
   </ng-template>

@@ -27,6 +27,7 @@ export interface ProblemInfoDto {
   title: string;
   attempted: boolean;
   solved: boolean;
+  scored: boolean;
   totalContestants: number;
   acceptedContestants: number;
 }

@@ -118,7 +118,7 @@ namespace Server.Services.Admin
             foreach (var problem in paginated.Items)
             {
                 var statistics = await _statistics.GetStatisticsAsync(problem.Id);
-                problemInfos.Add(new ProblemInfoDto(problem, false, false, statistics));
+                problemInfos.Add(new ProblemInfoDto(problem, false, false, false, statistics));
             }
             return new PaginatedList<ProblemInfoDto>
                 (paginated.TotalItems, paginated.PageIndex, paginated.PageSize, problemInfos);

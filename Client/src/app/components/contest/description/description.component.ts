@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Title } from '@angular/platform-browser';
+import { saveAs } from 'file-saver';
 import * as moment from 'moment';
+import * as excel from 'exceljs';
+import { Column } from 'exceljs';
 
 import { ContestViewDto } from '../../../../interfaces/contest.interfaces';
 import { AuthorizeService, IUser } from '../../../../auth/authorize.service';
@@ -9,13 +12,16 @@ import { ContestService } from '../../../services/contest.service';
 import {
     faArrowAltCircleDown,
     faArrowAltCircleUp,
+    faDownload,
     faBoxOpen,
     faCheck,
+    faClipboardCheck,
     faEdit,
     faTimes,
     faUser
 } from '@fortawesome/free-solid-svg-icons';
 import { take } from 'rxjs/operators';
+import {ApplicationConfigService} from "../../../services/config.service";
 
 @Component({
     selector: 'app-contest-description',
@@ -26,6 +32,8 @@ export class ContestDescriptionComponent implements OnInit {
     faArrowAltCircleDown = faArrowAltCircleDown;
     faArrowAltCircleUp = faArrowAltCircleUp;
     faBoxOpen = faBoxOpen;
+    faDownload = faDownload;
+    faClipboardCheck = faClipboardCheck;
     faCheck = faCheck;
     faEdit = faEdit;
     faTimes = faTimes;
@@ -35,15 +43,18 @@ export class ContestDescriptionComponent implements OnInit {
     public privileged = false;
     public contestId: number;
     public contest: ContestViewDto;
+    public examId: number;
     public ended: boolean;
 
     constructor(
         private title: Title,
         private route: ActivatedRoute,
         private service: ContestService,
-        private auth: AuthorizeService
+        private auth: AuthorizeService,
+        private config: ApplicationConfigService
     ) {
         this.contestId = this.route.snapshot.params.contestId;
+        this.examId = this.config.examId;
     }
 
     ngOnInit() {
@@ -60,5 +71,20 @@ export class ContestDescriptionComponent implements OnInit {
                 this.ended = moment().isAfter(this.contest.endTime);
                 this.title.setTitle(contest.title);
             });
+    }
+    public exportReviews() {
+      const workbook = new excel.Workbook();
+      const sheet = workbook.addWorksheet(this.contest.title);
+      sheet.columns = ([
+        {header: 'Rank', key: 'rank'},
+        {header: 'Contestant ID', key: 'id'},
+        {header: 'Contestant Name', key: 'name'},
+      ] as Array<Partial<Column>>).concat(this.contest.problems.map(p => {
+        return {header: p.label + ' - ' + p.title, key: p.label};
+      })).concat([
+        {header: 'Solved', key: 'solved'},
+        {header: 'Score', key: 'score'},
+        {header: 'Penalties', key: 'penalties'}
+      ]);
     }
 }
