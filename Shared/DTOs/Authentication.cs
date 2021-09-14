@@ -13,6 +13,8 @@ namespace Shared.DTOs
     {
         public string Id { get; set; }
         public string Username { get; set; }
+        public string ContestId { get; set; }
+        public string ContestName { get; set; }
         public string FullName { get; set; }
         public List<string> Roles { get; set; }
         public string Token { get; set; }
