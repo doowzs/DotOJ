@@ -14,3 +14,18 @@
   color: white;
   border: 1px solid #29A645;
 }
+.cross-validation-error textarea {
+  border-left: 5px solid red;
+}
+
+.cross-validation-correct textarea {
+  border-left: 5px solid #29A645;
+}
+
+.cross-validation-error input {
+  border-left: 5px solid red;
+}
+
+.cross-validation-correct input {
+  border-left: 5px solid #29A645;
+}

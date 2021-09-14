@@ -29,15 +29,19 @@ import {SubmissionService} from "../../../services/submission.service";
 export class SubmissionReviewDetailComponent implements OnInit {
   faEdit = faEdit;
   reviewForm = this.formBuilder.group({
-    scores: this.formBuilder.array([""]),
-    comments: this.formBuilder.array([""])
+    scores: this.formBuilder.array(
+      [this.formBuilder.control("", [Validators.required, Validators.min(0), Validators.max(10)])]
+    ),
+    comments: this.formBuilder.array(
+      [this.formBuilder.control("", [Validators.required, Validators.minLength(5), Validators.maxLength(10000)])]
+    )
   });
 
   public user: IUser;
   public submissions: SubmissionViewDto[];
   public contestId: number;
   public problemId: number;
-  public jumpAddress: string;
+  public errorMessage: string;
   public reviewId: number;
   public reviewMap: Map<number, number>;
 
@@ -49,9 +53,9 @@ export class SubmissionReviewDetailComponent implements OnInit {
     private service: SubmissionReviewService,
     private formBuilder: FormBuilder
   ) {
+    this.errorMessage = null;
     this.problemId = this.route.snapshot.params.problemId;
     this.contestId = this.route.parent.snapshot.params.contestId;
-    this.jumpAddress = '/contest/' + this.contestId;
   }
 
   get scores() {
@@ -76,9 +80,11 @@ export class SubmissionReviewDetailComponent implements OnInit {
           this.reviewMap.set(submission.id, count);
         }
         for (let i = 1; i < submissions.length; i = i + 1) {
-          this.scores.push(this.formBuilder.control(''));
-          this.comments.push(this.formBuilder.control(''));
+          this.scores.push(this.formBuilder.control("", [Validators.required, Validators.min(0), Validators.max(10)]));
+          this.comments.push(this.formBuilder.control("", [Validators.required, Validators.minLength(5), Validators.maxLength(10000)]));
         }
+      },(err) => {
+        this.errorMessage = err.error;
       });
   }
 
@@ -95,6 +101,15 @@ export class SubmissionReviewDetailComponent implements OnInit {
   }
 
   onSubmit() {
-    alert("提交成功！");
+    if (this.submissions != null) {
+      let r = this.submissions[1];
+      for (let i = 0; i < this.submissions.length; i = i + 1) {
+        this.service.createSingleReview(this.submissions[i].id, this.problemId, this.scores.controls[i].value, this.comments.controls[i].value)
+          .subscribe(message => {
+              alert(message);
+          });
+      }
+    }
   }
+
 }

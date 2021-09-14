@@ -44,5 +44,22 @@ namespace Server.Controllers.Api.v2
                 return BadRequest(e.Message);
             }
         }
+      
+        [HttpPost]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<string>> CreateSubmissionReview(SubmissionReviewCreateDto reviewDto)
+        {
+            try
+            {
+                return Ok(await _service.CreateSubmissionReviewAsync(reviewDto));
+            }
+            catch (ValidationException e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+        
     }
 }

@@ -22,7 +22,7 @@ namespace Server.Services
     public interface ISubmissionReviewService
     {
         public Task<List<SubmissionViewDto>> GetSubmissionsToReviewListAsync(int problemId);
-       
+        public Task<string> CreateSubmissionReviewAsync(SubmissionReviewCreateDto reviewDto);
     }
 
     public class SubmissionReviewService : LoggableService<SubmissionReviewService>, ISubmissionReviewService
@@ -116,17 +116,58 @@ namespace Server.Services
                             && s.Verdict == Verdict.Accepted)
                 .AnyAsync())
             {
-                throw new ValidationException("Cannot review before pass the problem.");
+                throw new ValidationException("请先通过此题");
             }
             
             var submissions = await GetLegalSubmissionsToReviewListAsync(problemId);
             
-            if (submissions.Count < 5)
+            if (submissions.Count < 3)
             {
-                throw new ValidationException($"Waiting : {submissions.Count}/5.");
+                throw new ValidationException($"Waiting : {submissions.Count}/3.");
             }
 
             return submissions;
+        }
+
+        public async Task<string> CreateSubmissionReviewAsync(SubmissionReviewCreateDto reviewDto)
+        {
+            var message = "提交成功";
+            
+            var user = await Manager.GetUserAsync(Accessor.HttpContext.User);
+            if (! await  Context.Submissions
+                .Where(s => s.ProblemId == reviewDto.ProblemId
+                            && s.UserId == user.Id
+                            && s.Verdict == Verdict.Accepted)
+                .AnyAsync())
+            {
+                throw new ValidationException("请先通过此题");
+            }
+
+            if (reviewDto.SubmissionId == 0)
+            {
+                throw new ValidationException("请提供有效提交");
+            }
+
+
+            if (await Context.SubmissionReviews
+                .Include(s => s.Submission)
+                .Where(s => s.SubmissionId == reviewDto.SubmissionId
+                            && s.UserId == user.Id)
+                .AnyAsync())
+            {
+                throw new ValidationException("请不要重复提交");
+            }
+
+            var review = new SubmissionReview
+            {
+                UserId = user.Id,
+                SubmissionId = reviewDto.SubmissionId,
+                Score = reviewDto.Score,
+                Comments = reviewDto.Comments
+            };
+            await Context.SubmissionReviews.AddAsync(review);
+            await Context.SaveChangesAsync();
+            return message;
         }
     }
 }
