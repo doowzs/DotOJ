@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { APP_INITIALIZER, NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 
@@ -75,6 +75,7 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     ChangelogComponent
   ],
   imports: [
+    ReactiveFormsModule,
     BrowserAnimationsModule,
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     FormsModule,

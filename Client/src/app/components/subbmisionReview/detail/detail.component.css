@@ -1,0 +1,16 @@
+.turnColor {
+  background-color: #007BFF;
+  color: white;
+}
+
+.form-style {
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding-left:5px;
+}
+
+.review-submit {
+  background-color: #29A645;
+  color: white;
+  border: 1px solid #29A645;
+}

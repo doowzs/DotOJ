@@ -1,7 +1,78 @@
-<div class="container my-5" >
-  <div class="text-center">
-    <h2>
-      322
-    </h2>
+<div class="container my-5" xmlns="http://www.w3.org/1999/html">
+  <div *ngIf="reviewId === 0; else review">
+    <div class="text-center">
+      <h2>
+        代码互评部分注意事项
+      </h2>
+      <span class="float-md-none">
+      <a class="btn btn-sm btn-outline-danger" (click)="GetNext()">
+        <fa-icon [icon]="faEdit"></fa-icon><span>开始互评</span>
+      </a>
+    </span>
+    </div>
   </div>
+  <ng-template #review>
+    <div *ngFor="let submission of submissions">
+         <span *ngIf="reviewId != reviewMap.get(submission.id)" class="float-lg-left">
+            <button class="btn btn-sm btn-outline-primary" (click)="GetReview(reviewMap.get(submission.id))">
+          {{reviewMap.get(submission.id)}}
+            </button>
+         </span>
+      <span *ngIf="reviewId == reviewMap.get(submission.id)" class="float-lg-left">
+        <button class="turnColor btn btn-sm btn-outline-primary" (click)="GetReview(reviewMap.get(submission.id))">
+          {{reviewMap.get(submission.id)}}
+        </button>
+        </span>
+    </div>
+    <br/>
+    <br/>
+    <div *ngFor="let submission of submissions; let i=index">
+      <div *ngIf="reviewMap.get(submission.id) == reviewId">
+        <h2>代码评分 #{{reviewMap.get(submission.id)}}</h2>
+        <div *ngIf="!!submission.program.languageInfo.mode"
+             [ngStyle]="{'height':'calc(100vh - 279px)'}">
+          <editor [disabled]="true" [submissionId]="submission.id" [program]="submission.program"></editor>
+        </div>
+      </div>
+    </div>
+    <br/>
+    <br/>
+    <form [formGroup]="reviewForm">
+      <div formArrayName="scores">
+        <div *ngFor="let submission of submissions; let i=index">
+          <div *ngIf="reviewMap.get(submission.id) == reviewId">
+            <p>1，评分
+              <br/>
+              <input class="form-style" type="number" min="0" max="10" [formControlName]="i"></p>
+          </div>
+        </div>
+      </div>
+      <div formArrayName="comments">
+        <div *ngFor="let submission of submissions; let i=index">
+          <div *ngIf="reviewMap.get(submission.id) == reviewId">
+            <p>2，对于这份代码，您有什么建议？</p>
+            <textarea class="form-style" rows="5" cols="70%" [formControlName]="i"> </textarea>
+          </div>
+        </div>
+      </div>
+      {{reviewForm.value | json }}
+    <br/>
+    <span *ngIf="reviewId != 1 && reviewId != submissions.length">
+        <button class="float-left btn btn-sm btn-outline-primary" (click)="GetPre()">
+          上一份
+        </button>
+      </span>
+    <span *ngIf="reviewId != submissions.length">
+        <button class="float-right btn btn-sm btn-outline-primary" (click)="GetNext()">
+          下一份
+        </button>
+      </span>
+    <div *ngIf="reviewId == submissions.length" class="text-center">
+      <button type="submit" [disabled]="!reviewForm.valid" (click)="onSubmit()" class="review-submit btn btn-sm btn-outline-primary">
+        提交
+      </button>
+    </div>
+    </form>
+    <br/>
+  </ng-template>
 </div>

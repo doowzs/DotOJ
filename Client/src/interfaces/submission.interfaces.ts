@@ -93,6 +93,25 @@ export const mapSubmissionInfoDtoFields = (submission: SubmissionInfoDto): Submi
   return submission;
 };
 
+export const mapSubmissionViewDtoListFields = (submissions: SubmissionViewDto[]): SubmissionViewDto[] => {
+  for (let submission of submissions) {
+    submission.verdictInfo = Verdicts.find(v => v.code === submission.verdict);
+    submission.program.languageInfo = Languages.find(l => l.code === submission.program.language);
+    submission.program.code = Base64.decode(submission.program.code);
+    submission.codeBytes = new Blob([submission.program.code]).size;
+    submission.hasInput = !!submission.program.input;
+    console.log(submission.hasInput);
+    submission.message = Base64.decode(submission.message ?? '');
+    submission.createdAt = moment.utc(submission.createdAt).local();
+    submission.createdAtMoment = moment.utc(submission.createdAt).local();
+    if (submission.judgedAt) {
+      submission.judgedAt = moment.utc(submission.judgedAt).local();
+      submission.judgedAtMoment = moment.utc(submission.judgedAt).local();
+    }
+  }
+  return submissions;
+};
+
 export const mapSubmissionViewDtoFields = (submission: SubmissionViewDto): SubmissionViewDto => {
   submission.verdictInfo = Verdicts.find(v => v.code === submission.verdict);
   submission.program.languageInfo = Languages.find(l => l.code === submission.program.language);
