@@ -113,6 +113,7 @@ namespace Server
             services.AddScoped<IProblemService, ProblemService>();
             services.AddScoped<ISubmissionService, SubmissionService>();
             services.AddScoped<ISubmissionReviewService, SubmissionReviewService>();
+            services.AddScoped<IReviewFeedBackService, ReviewFeedBackService>();
 
             services.AddScoped<IAdminUserService, AdminUserService>();
             services.AddScoped<IAdminBulletinService, AdminBulletinService>();

@@ -84,6 +84,8 @@
                    [routerLink]="['/contest', contestId, 'problem', problem.id, 'submissionReview']">进入互评</a>
               </td>
               <td>
+                <a *ngIf="problem.scored"
+                   [routerLink]="['/contest', contestId, 'problem', problem.id, 'reviewFeedback']">查看反馈</a>
               </td>
             </tr>
             </tbody>
