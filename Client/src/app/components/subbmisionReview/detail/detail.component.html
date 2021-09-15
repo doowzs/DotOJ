@@ -8,7 +8,7 @@
       <a *ngIf="errorMessage === null" class="btn btn-sm btn-outline-danger" (click)="GetNext()">
         <fa-icon [icon]="faEdit"></fa-icon><span>开始互评</span>
       </a>
-        <div *ngIf="errorMessage != null" class="alert alert-danger">
+        <div *ngIf="errorMessage !== null" class="alert alert-danger">
           {{errorMessage}}
       </div>
     </span>
@@ -17,7 +17,7 @@
   <ng-template #review>
     <div *ngIf="!!submissions">
       <div *ngFor="let submission of submissions">
-         <span *ngIf="reviewId != reviewMap.get(submission.id)" class="float-lg-left">
+         <span *ngIf="reviewId !== reviewMap.get(submission.id)" class="float-lg-left">
             <button class="btn btn-sm btn-outline-primary" (click)="GetReview(reviewMap.get(submission.id))">
           {{reviewMap.get(submission.id)}}
             </button>
@@ -80,12 +80,12 @@
           </div>
         </div>
         <br/>
-        <span *ngIf="reviewId != 1 && reviewId != submissions.length">
+        <span *ngIf="reviewId !== 1 && reviewId !== submissions.length">
         <button class="float-left btn btn-sm btn-outline-primary" (click)="GetPre()">
           上一份
         </button>
       </span>
-        <span *ngIf="reviewId != submissions.length">
+        <span *ngIf="reviewId !== submissions.length">
         <button class="float-right btn btn-sm btn-outline-primary" (click)="GetNext()">
           下一份
         </button>
