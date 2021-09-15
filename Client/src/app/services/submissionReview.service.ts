@@ -27,7 +27,7 @@ export class SubmissionReviewService {
     }
   }
 
-  public createSingleReview(submissionId: number, problemId: number, score: number, comments: string): Observable<string> {
+  public createReview(submissionId: number[], problemId: number, score: number[], comments: string[]): Observable<string> {
     try {
       return this.http.post<string>('/submissionReview', {
         submissionId: submissionId,

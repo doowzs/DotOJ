@@ -35,7 +35,7 @@ namespace Server.Services
         private async Task<Boolean> CanSubmissionReviewAsync(Submission submission)
         {
             var user = await Manager.GetUserAsync(Accessor.HttpContext.User);
-            if (submission.UserId == user.Id)   
+           if (submission.UserId == user.Id)   
             {
                 return false; // Cannot review your code
             }
@@ -143,29 +143,35 @@ namespace Server.Services
                 throw new ValidationException("请先通过此题");
             }
 
-            if (reviewDto.SubmissionId == 0)
+            if (reviewDto.SubmissionId.Count == 0)
             {
                 throw new ValidationException("请提供有效提交");
             }
 
-
-            if (await Context.SubmissionReviews
-                .Include(s => s.Submission)
-                .Where(s => s.SubmissionId == reviewDto.SubmissionId
-                            && s.UserId == user.Id)
-                .AnyAsync())
+            for (var i = 0; i < reviewDto.SubmissionId.Count; i++)
             {
-                throw new ValidationException("请不要重复提交");
+                var submissionId = reviewDto.SubmissionId[i];
+                var score = reviewDto.Score[i];
+                var comment = reviewDto.Comments[i];
+                if (await Context.SubmissionReviews
+                    .Include(s => s.Submission)
+                    .Where(s => s.SubmissionId == submissionId
+                                && s.UserId == user.Id)
+                    .AnyAsync())
+                {
+                    throw new ValidationException("请不要重复提交");
+                }
+
+                var review = new SubmissionReview
+                {
+                    UserId = user.Id,
+                    SubmissionId = submissionId,
+                    Score = score,
+                    Comments = comment
+                };
+                await Context.SubmissionReviews.AddAsync(review);
             }
-
-            var review = new SubmissionReview
-            {
-                UserId = user.Id,
-                SubmissionId = reviewDto.SubmissionId,
-                Score = reviewDto.Score,
-                Comments = reviewDto.Comments
-            };
-            await Context.SubmissionReviews.AddAsync(review);
+           
             await Context.SaveChangesAsync();
             return message;
         }

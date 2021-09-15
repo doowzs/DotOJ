@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 using Shared.Models;
 
 namespace Shared.DTOs
@@ -20,10 +21,10 @@ namespace Shared.DTOs
     public class SubmissionReviewCreateDto
     {
       
-        [Required] public int SubmissionId { get; set; }
+        [Required] public List<int> SubmissionId { get; set; }
         [Required] public int? ProblemId { get; set; }
-        [Required] public int? Score { get; set; }
-        [Required] public string Comments { get; set; }
+        [Required] public List<int> Score { get; set; }
+        [Required] public List<string> Comments { get; set; }
 
         public SubmissionReviewCreateDto()
         {

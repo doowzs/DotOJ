@@ -44,7 +44,9 @@ export class SubmissionReviewDetailComponent implements OnInit {
   public errorMessage: string;
   public reviewId: number;
   public reviewMap: Map<number, number>;
-
+  public score: number[];
+  public comment: string[];
+  public submissionId: number[];
 
   constructor(
     private title: Title,
@@ -70,6 +72,9 @@ export class SubmissionReviewDetailComponent implements OnInit {
   ngOnInit() {
     this.title.setTitle('代码互评');
     this.reviewId = 0;
+    this.score = [];
+    this.comment = [];
+    this.submissionId = [];
     this.service.getReviewList(this.problemId)
       .subscribe(submissions => {
         this.submissions = submissions;
@@ -102,13 +107,15 @@ export class SubmissionReviewDetailComponent implements OnInit {
 
   onSubmit() {
     if (this.submissions != null) {
-      let r = this.submissions[1];
       for (let i = 0; i < this.submissions.length; i = i + 1) {
-        this.service.createSingleReview(this.submissions[i].id, this.problemId, this.scores.controls[i].value, this.comments.controls[i].value)
+        this.comment.push(this.comments.controls[i].value);
+        this.score.push(this.scores.controls[i].value);
+        this.submissionId.push(this.submissions[i].id);
+      }
+      this.service.createReview(this.submissionId, this.problemId, this.score, this.comment)
           .subscribe(message => {
               alert(message);
           });
-      }
     }
   }
 
