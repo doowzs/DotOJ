@@ -1,8 +1,9 @@
 <div class="container my-5" xmlns="http://www.w3.org/1999/html">
-  <div *ngIf="feedbacks.length == 0" class="alert alert-danger">
+  <div *ngIf="!!feedbacks">
+  <div *ngIf="feedbacks.length === 0" class="alert alert-danger">
       您目前没有收到互评反馈
   </div>
-  <div *ngIf="feedbacks.length != 0" class="alert alert-success">
+  <div *ngIf="feedbacks.length !== 0" class="alert alert-success">
     您已收到{{feedbacks.length}}份互评反馈
   </div>
   <br/>
@@ -16,5 +17,6 @@
     <div>建议: {{feedback.comments}}</div>
     <br/>
     <br/>
+  </div>
   </div>
 </div>

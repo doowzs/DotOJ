@@ -18,7 +18,6 @@ export class ReviewFeedbackDetailComponent implements OnInit {
   public problemId: number;
   public errorMessage: string;
   public reviewId: number;
-  public reviewMap: Map<number, number>;
 
 
   constructor(
