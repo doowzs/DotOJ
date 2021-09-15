@@ -18,6 +18,7 @@ namespace Server.Services
         public Task<PaginatedList<ContestInfoDto>> GetPaginatedContestInfosAsync(int? pageIndex);
         public Task<ContestViewDto> GetContestViewAsync(int id);
         public Task<List<RegistrationInfoDto>> GetRegistrationInfosAsync(int id);
+        public Task<List<SubmissionReviewInfoDto>> GetReviewListAsync(int id);
     }
 
     public class ContestService : LoggableService<ContestService>, IContestService
@@ -82,7 +83,7 @@ namespace Server.Services
                 .ThenBy(c => c.Id)
                 .ToListAsync();
             var user = await Manager.GetUserAsync(Accessor.HttpContext.User);
-            
+
             if (Accessor.HttpContext.User.Identity.IsAuthenticated)
             {
                 var userId = user.Id;
@@ -144,7 +145,7 @@ namespace Server.Services
 
             IList<ProblemInfoDto> problemInfos;
             var user = await Manager.GetUserAsync(Accessor.HttpContext.User);
-           
+
             if (Accessor.HttpContext.User.Identity.IsAuthenticated)
             {
                 var userId = user.Id;
@@ -181,6 +182,35 @@ namespace Server.Services
                 .Include(r => r.User)
                 .Select(r => new RegistrationInfoDto(r))
                 .ToListAsync();
+        }
+
+        public async Task<List<SubmissionReviewInfoDto>> GetReviewListAsync(int id)
+        {
+            var contest = await Context.Contests
+                .Where(s => s.Id == id)
+                .Include(s => s.Problems)
+                .FirstOrDefaultAsync();
+
+            var reviews = Context.SubmissionReviews
+                .Include(s => s.User)
+                .Include(s => s.Submission)
+                .ToList();
+
+            var legalReviews = new List<SubmissionReviewInfoDto>();
+            if (contest != null)
+            {
+                foreach (var problem in contest.Problems)
+                {
+                    var currentReviews = reviews.FindAll(s => s.Submission.ProblemId == problem.Id);
+                    foreach (var review in currentReviews)
+                    {
+                        legalReviews.Add(new SubmissionReviewInfoDto(review.Score,
+                            review.Comments
+                            , new SubmissionViewDto(review.Submission, Config), review.User.ContestantId));
+                    }
+                }
+            }
+            return legalReviews;
         }
     }
 }

@@ -30,13 +30,11 @@ namespace Server.Services
                 reviews =  reviews.FindAll(s => s.Submission.ProblemId == problemId 
                                                   && s.Submission.UserId == user.Id);
                 var reviewInfoDtoList = new List<SubmissionReviewInfoDto>();
-                Console.Write("9");
                 foreach (var review in reviews)
                 {
                     reviewInfoDtoList.Add(new SubmissionReviewInfoDto(review.Score, review.Comments,
-                        new SubmissionViewDto(review.Submission, Config)));
+                        new SubmissionViewDto(review.Submission, Config), user.ContestantId));
                 }
-                Console.Write("8");
                 return reviewInfoDtoList;
             }
             else

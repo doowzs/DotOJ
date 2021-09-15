@@ -60,10 +60,10 @@ namespace Server.Services
             var registerRole = await Context.Registrations
                 .FirstOrDefaultAsync(r => r.ContestId == contest.Id && r.UserId == submission.UserId);
 
-            if (registerRole == null || registerRole.IsContestManager)
+            /*if (registerRole == null || registerRole.IsContestManager)
             {
                 return false; // Cannot review ContestManager's code
-            }
+            }*/
             
             return true;
         }

@@ -6,13 +6,14 @@ namespace Shared.DTOs
 {
     public class SubmissionReviewInfoDto
     {
-        
+        public string ContestantId { get; set; }
         [Required] public int? Score { get; set; }
         public string Comments { get; set; }
         public SubmissionViewDto Submission { get; set; }
 
-        public SubmissionReviewInfoDto(int? score, string comments, SubmissionViewDto submissionDto)
+        public SubmissionReviewInfoDto(int? score, string comments, SubmissionViewDto submissionDto, string contestantId)
         {
+            ContestantId = contestantId;
             Score = score;
             Comments = comments;
             Submission = submissionDto;

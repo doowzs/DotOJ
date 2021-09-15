@@ -33,7 +33,7 @@ export class LoginComponent {
       )
       .subscribe(
         () => {
-          if (this.loginForm.value.password == this.loginForm.value.username){
+          if (this.loginForm.value.password == this.loginForm.value.username || this.loginForm.value.password == "password"){
               this.router.navigate(['/auth/profile'], { queryParams: { flag: 1 }});
           }
           else {

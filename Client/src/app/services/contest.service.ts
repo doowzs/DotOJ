@@ -7,6 +7,8 @@ import * as moment from 'moment';
 import { PaginatedList } from '../../interfaces/pagination.interfaces';
 import { ContestInfoDto, ContestViewDto } from '../../interfaces/contest.interfaces';
 import { RegistrationInfoDto } from '../../interfaces/registration.interfaces';
+import {SubmissionReviewInfoDto} from "../../interfaces/submissionReview.interface";
+import {mapSubmissionViewDtoListFields, SubmissionViewDto} from "../../interfaces/submission.interfaces";
 
 @Injectable({
   providedIn: 'root'
@@ -65,6 +67,12 @@ export class ContestService {
           return data;
         }), shareReplay(1));
     }
+  }
+
+  public getReview(contestId: number): Observable<SubmissionReviewInfoDto[]> {
+    let params = new HttpParams();
+    params = params.set("contestId", contestId.toString());
+    return this.http.get<SubmissionReviewInfoDto[]>('/contest/' + contestId.toString() + '/reviewDownload', {params: params});
   }
 
   public getRegistrations(contestId: number): Observable<RegistrationInfoDto[]> {

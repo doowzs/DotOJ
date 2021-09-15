@@ -85,5 +85,24 @@ namespace Server.Controllers.Api.v2
                 return Unauthorized(e.Message);
             }
         }
+       
+        [HttpGet("{id:int}/reviewDownload")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<ContestViewDto>> ViewReviewList(int id)
+        {
+            try
+            {
+                return Ok(await _service.GetReviewListAsync(id));
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized(e.Message);
+            }
+        }
     }
 }
