@@ -24,7 +24,9 @@ DotOJ depends on multiple open-source projects:
 
 ## Development
 
-**The judging service depends on control group of Linux kernels.** It is not possible to run workers on Windows or macOS, but the web application is cross-platform.
+**The judging service depends on control group of Linux kernels.**
+Judging service relies on Isolate, which requires CGroupV1 (CGroupV2 cannot be used, see deployment).
+It is not possible to run workers on Windows or macOS, but the web application is cross-platform.
 
 Follow the steps to prepare a dev environment:
 
@@ -36,6 +38,13 @@ Follow the steps to prepare a dev environment:
 4. Run `dotnet run` in `Server` and `Worker` folder to start application. 
 
 ## Deployment
+
+### Prerequisite
+
+You need a GNU/Linux operating system with CGroupV1.
+For Fedora 31+ and Debian 11+, they use CGroupV2 by default.
+You can switch to CGroupV1 by adding `systemd.unified_cgroup_hierarchy=0` to kernel command line.
+Besides that, for Debian 8+, you also need to add `cgroup_enable=memory swapaccount=1` to kernel command line.
 
 ### Docker Containers
 
