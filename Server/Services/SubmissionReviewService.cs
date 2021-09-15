@@ -54,7 +54,7 @@ namespace Server.Services
             var contest = await Context.Contests.FindAsync(problem.ContestId);
             if (DateTime.Now.ToUniversalTime() > contest.EndTime)
             {
-                return false; // Cannot review code after the contest ends
+                return true; // Can review code after the contest ends
             }
             
             var registerRole = await Context.Registrations
