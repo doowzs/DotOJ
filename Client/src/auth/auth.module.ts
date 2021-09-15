@@ -7,7 +7,7 @@ import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
 
 import {LoginComponent} from './login/login.component';
 import {LogoutComponent} from "./logout/logout.component";
-
+import {ProfileComponent} from './profile/profile.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -15,15 +15,23 @@ import {LogoutComponent} from "./logout/logout.component";
     RouterModule.forChild(
       [
         {path: 'auth/login', component: LoginComponent},
-        {path: 'auth/logout', component: LogoutComponent}
+        {path: 'auth/logout', component: LogoutComponent},
+        {path: 'auth/profile', component: ProfileComponent}
       ]
     ),
     FontAwesomeModule,
     FormsModule,
     ReactiveFormsModule
   ],
-  declarations: [LoginComponent],
-  exports: [LoginComponent]
+  declarations:
+    [LoginComponent,
+    ProfileComponent
+    ],
+  exports:
+    [
+      LoginComponent,
+      ProfileComponent,
+    ]
 })
 export class AuthModule {
 }

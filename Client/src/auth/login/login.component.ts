@@ -33,12 +33,17 @@ export class LoginComponent {
       )
       .subscribe(
         () => {
-          this.router.navigateByUrl(
-            this.route.snapshot.queryParams.redirect ?? "/",
-            {
-              replaceUrl: true,
-            }
-          );
+          if (this.loginForm.value.password == this.loginForm.value.username){
+              this.router.navigate(['/auth/profile'], { queryParams: { flag: 1 }});
+          }
+          else {
+            this.router.navigateByUrl(
+              this.route.snapshot.queryParams.redirect ?? "/",
+              {
+                replaceUrl: true,
+              }
+            );
+          }
         },
         (error) => {
           alert(error.error);
@@ -47,6 +52,6 @@ export class LoginComponent {
   }
 
   tips(): void {
-    alert("请联系2021级《问题求解》课程助教191220186。");
+    alert("请联系2021级《问题求解》课程助教朱宇博。");
   }
 }

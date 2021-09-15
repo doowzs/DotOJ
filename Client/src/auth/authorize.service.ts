@@ -53,6 +53,17 @@ export class AuthorizeService {
     }
   }
 
+  public changePassword(oldPassword: string, newPassword: string): Observable<string> {
+    try{
+      return this.http.post<string>('/auth/profile', {
+        oldPassword: oldPassword,
+        newPassword: newPassword
+      });
+    } catch (err) {
+      throw err;
+    }
+  }
+
   public isAuthenticated(): Observable<boolean> {
     return this.getUser().pipe(map(u => !!u && moment.utc().isBefore(moment.utc(u.expires))));
   }

@@ -1,0 +1,39 @@
+<div *ngIf="flag === '1'" class="alert alert-danger text-center">
+    首次登录请修改密码
+  </div>
+  <div class="form-side">
+  </div>
+  <div class="form-wrapper">
+    <div *ngIf="flag !== '1'">
+      <a class="d-none d-lg-inline text-dark"
+         [routerLink]="['/']">
+        <fa-icon [icon]="faArrowLeft"></fa-icon>
+        返回主菜单
+      </a>
+    </div>
+    <div class="header">
+      change password
+    </div>
+    <div class="input-wrapper">
+      <form [formGroup]="changeForm" (ngSubmit)="onSubmit()">
+        <div class="border-wrapper">
+          <input type="password" name="username" class="border-item" placeholder="请输入旧密码"
+                 autocomplete="off" onfocus="this.placeholder=''" onblur="this.placeholder='请输入旧密码'"
+                 formControlName="oldPassword">
+        </div>
+        <div class="border-wrapper">
+          <input type="password" name="username" class="border-item" placeholder="请输入新密码"
+                 autocomplete="off" onfocus="this.placeholder=''" onblur="this.placeholder='请输入新密码'"
+                 formControlName="newPassword">
+        </div>
+        <div class="border-wrapper">
+          <input type="password" name="password" class="border-item" placeholder="请再次输入新密码" autocomplete="off"
+                 onfocus="this.placeholder=''" onblur="this.placeholder='请再次输入新密码'" formControlName="confirmPassword">
+        </div>
+        <br/>
+        <div class="action">
+          <button class="btn">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>

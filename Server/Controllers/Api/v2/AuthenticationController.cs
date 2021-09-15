@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.DependencyInjection;
 using Server.Services;
 using Shared.DTOs;
@@ -44,6 +45,22 @@ namespace Server.Controllers.Api.v2
         public async Task<ActionResult<String>> refresh()
         {
             return Ok(await _service.Refresh());
+        }
+        
+        [HttpPost("profile")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<string>> ChangePassword(ChangePasswordRequestDto dto)
+        {
+            try
+            {
+                return Ok(await _service.ChangePassword(dto));
+            }
+            catch (ValidationException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }

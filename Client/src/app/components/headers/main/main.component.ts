@@ -45,7 +45,7 @@ export class MainHeaderComponent {
   ) {
     this.title = config.title;
     this.isExamMode = !!config.examId;
-    this.username = this.auth.getUser().pipe(take(1), map(u => u && u.username));
+    this.username = this.auth.getUser().pipe(take(1), map(u => u && u.fullName));
     this.isAuthenticated = this.auth.isAuthenticated();
     this.canViewAdminPages = this.auth.getUser().pipe(take(1), map(u => u && u.roles.length > 0));
   }

@@ -59,7 +59,7 @@ export class ContestHeaderComponent implements OnInit, OnDestroy {
     private service: ContestService,
     private modal: NgbModal,
   ) {
-    this.username = this.auth.getUser().pipe(take(1), map(u => u && u.username));
+    this.username = this.auth.getUser().pipe(take(1), map(u => u && u.fullName));
     this.canViewAdminPages = this.auth.getUser().pipe(take(1), map(u => u && u.roles.length > 0));
     this.contestId = this.route.snapshot.params.contestId;
     this.isExamMode = !!config.examId;

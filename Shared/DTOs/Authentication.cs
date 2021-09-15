@@ -9,6 +9,12 @@ namespace Shared.DTOs
         public string Password { get; set; }
     }
 
+    public class ChangePasswordRequestDto
+    {
+        public string OldPassword { get; set; }
+        public string NewPassword { get; set; }
+    }
+
     public class LoginResponseDto
     {
         public string Id { get; set; }
