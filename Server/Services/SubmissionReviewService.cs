@@ -100,7 +100,7 @@ namespace Server.Services
 
             var legalSubmissions = submissionViewDtoDict
                 .OrderBy(p => p.Value)
-                .Take(5)
+                .Take(3)
                 .Select(p => p.Key)
                 .ToList();
             return legalSubmissions;
