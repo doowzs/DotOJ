@@ -47,6 +47,7 @@ export class SubmissionReviewDetailComponent implements OnInit {
   public score: number[];
   public comment: string[];
   public submissionId: number[];
+  public jumpAddress: string;
 
   constructor(
     private title: Title,
@@ -71,6 +72,7 @@ export class SubmissionReviewDetailComponent implements OnInit {
 
   ngOnInit() {
     this.title.setTitle('代码互评');
+    this.jumpAddress = '/contest/' + this.contestId;
     this.reviewId = 0;
     this.score = [];
     this.comment = [];
@@ -115,6 +117,7 @@ export class SubmissionReviewDetailComponent implements OnInit {
       this.service.createReview(this.submissionId, this.problemId, this.score, this.comment)
           .subscribe(message => {
               alert(message);
+            this.router.navigate([this.jumpAddress]);
           });
     }
   }
