@@ -121,7 +121,7 @@ namespace Shared.DTOs
         [Required] public Verdict? Verdict { get; set; }
         public int? Time { get; }
         public int? Memory { get; }
-        public List<int>? FailedOn { get; }
+        public List<int> FailedOn { get; }
         public int? Score { get; }
         [Required] public string Message { get; set; }
         public string JudgedBy { get; }

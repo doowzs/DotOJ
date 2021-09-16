@@ -36,7 +36,7 @@ namespace Server.Services.Singleton
             System.Linq.Expressions.Expression<Func<Submission, bool>> totalPredicate =
                 (s) => s.CreatedAt >= contest.BeginTime &&
                        s.ProblemId == problemId &&
-                       (s.Verdict == Verdict.Accepted || (s.Verdict != Verdict.Accepted && (s.FailedOn.Count > 0 && s.FailedOn[0] > 0)));
+                       (s.Verdict == Verdict.Accepted || (s.FailedOn != null && s.FailedOn.Any(f => f > 0)));
             System.Linq.Expressions.Expression<Func<Submission, bool>> acceptedPredicate =
                 (s) => s.CreatedAt >= contest.BeginTime &&
                        s.ProblemId == problemId &&
@@ -145,7 +145,7 @@ namespace Server.Services.Singleton
                 {
                     TotalSubmissions = ps.TotalSubmissions +
                                        (submission.Verdict == Verdict.Accepted ||
-                                        (submission.Verdict != Verdict.Accepted && (submission.FailedOn != null && submission.FailedOn.Count > 0 && submission.FailedOn[0] > 0))
+                                        (submission.Verdict != Verdict.Accepted && (submission.FailedOn != null && submission.FailedOn.Any(f => f > 0)))
                                            ? 1
                                            : 0),
                     AcceptedSubmissions = ps.AcceptedSubmissions + (submission.Verdict == Verdict.Accepted ? 1 : 0),

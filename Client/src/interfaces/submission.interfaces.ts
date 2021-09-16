@@ -71,7 +71,7 @@ export interface SubmissionEditDto {
   verdictInfo: VerdictInfo;
   time: number;
   memory: number;
-  failedOn: number;
+  failedOn: number[];
   score: number;
   message: string;
   judgedBy: string;
