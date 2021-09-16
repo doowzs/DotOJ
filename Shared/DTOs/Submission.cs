@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Options;
@@ -44,7 +45,10 @@ namespace Shared.DTOs
             Verdict = submission.Verdict;
             Time = submission.Time;
             Memory = submission.Memory;
-            FailedOn = submission.FailedOn > 0 ? 1 : 0; // Hide this info from users
+            FailedOn = (submission.FailedOn != null) ? (submission.FailedOn.Count > 0 && submission.FailedOn[0] != 0) ?
+                1 :
+                0 : 
+                null ; // Hide this info from users
             Score = submission.Score;
             Progress = submission.Progress;
             HasMessage = !string.IsNullOrEmpty(submission.Message);
@@ -82,7 +86,10 @@ namespace Shared.DTOs
             Verdict = submission.Verdict;
             Time = submission.Time;
             Memory = submission.Memory;
-            FailedOn = submission.FailedOn > 0 ? 1 : 0; // Hide this info from users
+            FailedOn = (submission.FailedOn != null) ? (submission.FailedOn.Count > 0 && submission.FailedOn[0] != 0) ?
+                    1 :
+                    0 : 
+                null ;  // Hide this info from users
             Score = submission.Score;
             Progress = submission.Progress;
             Message = submission.Message;
@@ -114,7 +121,7 @@ namespace Shared.DTOs
         [Required] public Verdict? Verdict { get; set; }
         public int? Time { get; }
         public int? Memory { get; }
-        public int? FailedOn { get; }
+        public List<int>? FailedOn { get; }
         public int? Score { get; }
         [Required] public string Message { get; set; }
         public string JudgedBy { get; }

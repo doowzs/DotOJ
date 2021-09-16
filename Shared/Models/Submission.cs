@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Microsoft.Extensions.Options;
 using Shared.Configs;
 using Shared.Generics;
+using System.Collections.Generic;
 
 namespace Shared.Models
 {
@@ -51,7 +52,7 @@ namespace Shared.Models
         public Verdict Verdict { get; set; }
         public int? Time { get; set; }
         public int? Memory { get; set; }
-        public int? FailedOn { get; set; }
+        public List<int>? FailedOn { get; set; }
         public int? Score { get; set; }
         public int? Progress { get; set; }
         public string Message { get; set; }

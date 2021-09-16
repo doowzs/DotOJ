@@ -81,7 +81,9 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
                     Verdict = Verdict.CompilationError,
                     Time = null,
                     Memory = null,
-                    FailedOn = 0,
+                    FailedOn = new List<int>(
+                        new int[]{0}
+                        ),
                     Score = 0,
                     Message = output
                 };
@@ -186,7 +188,7 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
             count = runs.Count(r => r.Inline == false && r.Verdict == Verdict.Accepted);
             total = Problem.TestCases.Count;
             int time = 0, memory = 0;
-            var failed = runs.FirstOrDefault(r => r.Verdict > Verdict.Accepted);
+            var failed = runs.FindAll(r => r.Verdict > Verdict.Accepted);
 
             foreach (var run in runs)
             {
@@ -201,13 +203,15 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
                 }
             }
 
+            var failedOnList = failed.Select(s => s.Index).ToList();
+            
             return new JudgeResult
             {
                 // If there was any failure, submission's verdict will be changed from Running.
-                Verdict = failed?.Verdict ?? Verdict.Accepted,
+                Verdict = failed.Count > 0 ? failed[0].Verdict : Verdict.Accepted,
                 Time = time,
                 Memory = memory,
-                FailedOn = failed?.Index,
+                FailedOn = failedOnList,
                 Score = count * 100 / total,
                 Message = string.Empty
             };

@@ -1,4 +1,5 @@
 using Shared.Models;
+using System.Collections.Generic;
 
 namespace Worker.Models
 {
@@ -7,7 +8,7 @@ namespace Worker.Models
         public Verdict Verdict { get; set; }
         public int? Time { get; set; }
         public int? Memory { set; get; }
-        public int? FailedOn { get; set; }
+        public List<int> FailedOn { get; set; }
         public int Score { get; set; }
         public string Message { set; get; }
 
@@ -40,7 +41,9 @@ namespace Worker.Models
             return new JudgeResult
             {
                 Verdict = Verdict.Failed,
-                FailedOn = 0,
+                FailedOn = new List<int>(
+                    new int[]{0}
+                ),
                 Time = null,
                 Memory = null,
                 Score = 0,
@@ -53,7 +56,9 @@ namespace Worker.Models
             return new JudgeResult
             {
                 Verdict = Verdict.Rejected,
-                FailedOn = 0,
+                FailedOn = new List<int>(
+                    new int[]{0}
+                    ),
                 Time = null,
                 Memory = null,
                 Score = 0,

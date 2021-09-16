@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using Shared.Models;
 using Worker.Models;
 
@@ -21,7 +22,9 @@ namespace Worker.Runners.JudgeSubmission.ContestModes
                 Verdict = run.Verdict,
                 Time = run.Time,
                 Memory = run.Memory,
-                FailedOn = run.Index,
+                FailedOn = new List<int>(
+                    new int[]{run.Index}
+                ),
                 Score = 0,
                 Message = run.Message
             });

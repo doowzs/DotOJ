@@ -108,10 +108,16 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.TestKit
                 Verdict = verdict,
                 FailedOn = verdict switch
                 {
-                    Verdict.Rejected => 0,
-                    Verdict.Failed => 0,
+                    Verdict.Rejected => new List<int>(
+                        new int[]{0}
+                    ),
+                    Verdict.Failed => new List<int>(
+                        new int[]{0}
+                    ),
                     Verdict.Accepted => null,
-                    _ => 1
+                    _ => new List<int>(
+                        new int[]{1}
+                    ),
                 },
                 Time = null,
                 Memory = null,
