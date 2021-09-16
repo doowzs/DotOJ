@@ -52,7 +52,7 @@ namespace Shared.Models
         public Verdict Verdict { get; set; }
         public int? Time { get; set; }
         public int? Memory { get; set; }
-        public List<int> FailedOn { get; set; }
+        [NotMapped] public List<int> FailedOn { get; set; }
         public int? Score { get; set; }
         public int? Progress { get; set; }
         public string Message { get; set; }
