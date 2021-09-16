@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Shared.DTOs;
+using Shared.Models;
 using Shared.Generics;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,6 +25,12 @@ namespace Server.Services
             var user = await Manager.GetUserAsync(Accessor.HttpContext.User);
             if (Accessor.HttpContext.User.Identity.IsAuthenticated)
             {
+                if (!(await Manager.IsInRoleAsync(user, ApplicationRoles.Administrator) ||
+                      await Manager.IsInRoleAsync(user, ApplicationRoles.ContestManager) ||
+                      await Manager.IsInRoleAsync(user, ApplicationRoles.SubmissionManager)))
+                {
+                    throw new UnauthorizedAccessException("Can not Download.");
+                }
                 var reviews = await Context.SubmissionReviews
                     .Include(s => s.Submission)
                     .ToListAsync();
