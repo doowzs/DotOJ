@@ -27,7 +27,7 @@
     </div>
     <div class="col col-12 col-lg-2">
       <select class="form-control custom-select" [(ngModel)]="verdict">
-        <option value="undefined" label="任意结果" selected></option>
+        <option value=-10 label="任意结果" selected></option>
         <option *ngFor="let verdict of Verdicts" [value]="verdict.code" [label]="verdict.name"></option>
       </select>
     </div>

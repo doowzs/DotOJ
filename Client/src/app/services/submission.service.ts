@@ -37,7 +37,7 @@ export class SubmissionService {
     if (problemId !== null) {
       params = params.set('problemId', problemId.toString());
     }
-    if (verdict !== null) {
+    if (verdict !== null && verdict != -10) {
       params = params.set('verdict', verdict.toString());
     }
     if (pageSize !== null) {
