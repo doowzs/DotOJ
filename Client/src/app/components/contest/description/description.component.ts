@@ -73,36 +73,36 @@ export class ContestDescriptionComponent implements OnInit {
         this.ended = moment().isAfter(this.contest.endTime);
         this.title.setTitle(contest.title);
       });
-    this.service.getReview(this.contestId)
-      .subscribe(reviews => {
-        this.reviews = reviews;
-      });
   }
 
   public exportReviews() {
-    const workbook = new excel.Workbook();
-    const sheet = workbook.addWorksheet(this.contest.title);
-    sheet.columns = ([
-      {header: 'Contestant ID', key: 'id'},
-      {header: 'object', key: 'name'},
-      {header: 'ProblemId', key: 'problemId'},
-      {header: 'SubmissionId', key: 'submissionId'},
-      {header: 'Score', key: 'score'},
-      {header: 'Comment', key: 'comments'}
-    ]);
-    for (const review of this.reviews.slice(1)) {
-      const row = {
-        id: review.contestantId,
-        name: review.submission.contestantId,
-        problemId: review.submission.problemId,
-        submissionId: review.submission.id,
-        score: review.score,
-        comments: review.comments
-      };
-      sheet.addRow(row);
-    }
-    workbook.xlsx.writeBuffer().then(data => {
-      saveAs(new Blob([data]), this.contest.title + '-reviews.xlsx');
-    });
+    this.service.getReview(this.contestId)
+      .subscribe(reviews => {
+        this.reviews = reviews;
+        const workbook = new excel.Workbook();
+        const sheet = workbook.addWorksheet(this.contest.title);
+        sheet.columns = ([
+          {header: 'Contestant ID', key: 'id'},
+          {header: 'object', key: 'name'},
+          {header: 'ProblemId', key: 'problemId'},
+          {header: 'SubmissionId', key: 'submissionId'},
+          {header: 'Score', key: 'score'},
+          {header: 'Comment', key: 'comments'}
+        ]);
+        for (const review of this.reviews.slice(1)) {
+          const row = {
+            id: review.contestantId,
+            name: review.submission.contestantId,
+            problemId: review.submission.problemId,
+            submissionId: review.submission.id,
+            score: review.score,
+            comments: review.comments
+          };
+          sheet.addRow(row);
+        }
+        workbook.xlsx.writeBuffer().then(data => {
+          saveAs(new Blob([data]), this.contest.title + '-reviews.xlsx');
+        });
+      });
   }
 }

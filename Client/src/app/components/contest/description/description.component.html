@@ -78,7 +78,7 @@
               </td>
               <td>
               <span *ngIf="problem.scored" class="text-success" >
-              <span>提交成功</span>
+                 <a style="color: #29A645" [routerLink]="['/contest', contestId, 'problem', problem.id, 'submissionReview']">提交成功</a>
             </span>
                 <a *ngIf="!problem.scored"
                    [routerLink]="['/contest', contestId, 'problem', problem.id, 'submissionReview']">进入互评</a>

@@ -7,7 +7,7 @@
       您已收到{{feedbacks.length}}份互评反馈
     </div>
     <br/>
-    <div *ngIf="!!feedbacks[0].submission">
+    <div *ngIf="!!feedbacks[0]">
       <div *ngIf="!!feedbacks[0].submission.program.languageInfo.mode && feedbacks.length !== 0"
            [ngStyle]="{'height':'calc(100vh - 479px)'}">
         <editor [disabled]="true" [submissionId]="feedbacks[0].submission.id"

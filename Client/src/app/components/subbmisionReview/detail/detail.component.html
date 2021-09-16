@@ -9,9 +9,9 @@
       <div class="text-left" style="font-size: 15px">
         <p>1， 互评入口将在<strong>通过该道题目</strong>后开启，为了反馈的即时性和有效性，请在通过题目后<strong>立刻进行互评</strong>。</p>
 
-        <p>2， 评分标准为<strong>代码风格、代码可读性等（可自由发挥，需在建议写清理由）</strong>，满分10分。关于风格、可读性建议，请见<a href="https://oj.problemsolving.top/post/notice-2021-1/">此处</a>。</p>
+        <p>2， 评分标准为<strong>代码风格、代码可读性等（可自由发挥，需在建议写清理由）</strong>，满分10分。关于风格、可读性建议，请见<a href="https://oj.problemsolving.top/post/notice-2021-1/">此处</a>。<strong>互评所给分数不计入成绩。</strong></p>
 
-        <p>3， 是否完成互评会计入程序设计部分成绩（提交互评即得分），互评分数不计入成绩</p>
+        <p>3， 是否完成互评会计入程序设计部分成绩（提交互评即得分），完成基础量（3份）即可得到满分。若还想学习他人的代码，可继续参评。</p>
 
         <p>4， 为了达到良好的学习效果，请每位同学<strong>认真评价，文明用语</strong>。在建议中，推荐模版如下：</p>
         <blockquote>
@@ -19,7 +19,7 @@
         <ul><li>优点：（可分点）<ul><li>1.</li><li>2.</li></ul></li><li>缺点：<ul><li>1</li><li>2</li></ul></li></ul>
 
         </blockquote>
-        <p>5，互评时显示的代码，都为已经AC的代码。若你发现互评到的代码有bug，请在建议中指出，并<strong>告诉助教（一定！！）</strong>。若你成功hack，该题可以<strong>以110%的成绩</strong>计入得分，并且我们将构造出能卡掉这份代码的数据，并加入这组数据，重新评测已经通过的所有代码。</p>
+        <p>5，互评时可以对代码<strong>进行hack</strong>，hack成功可加一定分数，详情请见<a href="https://oj.problemsolving.top/post/notice-2021-1/">此处</a>。我们会在结束后将hack成功的数据加入测试数据，并对所有代码重新评测。</p>
       </div>
       <br />
       <br />
@@ -55,6 +55,11 @@
           <div *ngIf="!!submission.program.languageInfo.mode"
                [ngStyle]="{'height':'calc(100vh - 279px)'}">
             <editor [disabled]="true" [submissionId]="submission.id" [program]="submission.program"></editor>
+            <br/>
+            <br/>
+          </div>
+          <div  class="alert alert-success text-center">
+            在线hack功能仍在建设中。若你要对此代码进行hack，请在本地测试，并将hack成功的数据发送给助教：朱宇博 / 张浩宇。
           </div>
         </div>
       </div>

@@ -54,5 +54,26 @@ namespace Server.Controllers.Api.v2
                 return Unauthorized(e.Message);
             }
         }
+        
+        [HttpGet("{id:int}/HackDownload")]
+        [Produces(MediaTypeNames.Application.Json)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<ProblemViewDto>> DownloadHackResult(int id)
+        {
+            try
+            {
+                return Ok(await _service.DownloadHackResultAsync(id));
+            }
+            catch (NotFoundException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                return Unauthorized(e.Message);
+            }
+        }
     }
 }

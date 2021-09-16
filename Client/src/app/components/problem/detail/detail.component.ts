@@ -1,19 +1,22 @@
 ﻿import {Component, OnInit, OnDestroy, ViewChild} from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Title } from '@angular/platform-browser';
-import { Subject } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
-import { Label } from "ng2-charts";
+import {ActivatedRoute, Router} from '@angular/router';
+import {Title} from '@angular/platform-browser';
+import {Subject} from 'rxjs';
+import {saveAs} from 'file-saver';
+import {take, takeUntil} from 'rxjs/operators';
+import {Label} from "ng2-charts";
+import * as excel from 'exceljs';
 import * as moment from 'moment';
 
-import { LanguageInfo } from '../../../../consts/languages.consts';
-import { ProblemViewDto } from '../../../../interfaces/problem.interfaces';
-import { ContestViewDto } from '../../../../interfaces/contest.interfaces';
-import { AuthorizeService, IUser } from '../../../../auth/authorize.service';
-import { ProblemService } from '../../../services/problem.service';
-import { ContestService } from '../../../services/contest.service';
-import { SubmissionService } from "../../../services/submission.service";
+import {LanguageInfo} from '../../../../consts/languages.consts';
+import {ProblemViewDto} from '../../../../interfaces/problem.interfaces';
+import {ContestViewDto} from '../../../../interfaces/contest.interfaces';
+import {AuthorizeService, IUser} from '../../../../auth/authorize.service';
+import {ProblemService} from '../../../services/problem.service';
+import {ContestService} from '../../../services/contest.service';
+import {SubmissionService} from "../../../services/submission.service";
 import {SubmissionTimelineComponent} from "../../submission/timeline/timeline.component";
+import {hackInfo} from "../../../../interfaces/hackScore.interfaces";
 import {
   faArrowLeft, faArrowRight,
   faBoxes,
@@ -24,6 +27,7 @@ import {
   faPaperPlane, faRedo,
   faSdCard,
   faStopwatch,
+  faDownload,
   faSyncAlt,
   faTimes
 } from '@fortawesome/free-solid-svg-icons';
@@ -37,6 +41,7 @@ import {ChartOptions} from "chart.js";
 export class ProblemDetailComponent implements OnInit, OnDestroy {
   faArrowLeft = faArrowLeft;
   faArrowRight = faArrowRight;
+  faDownload = faDownload;
   faBoxes = faBoxes;
   faCoffee = faCoffee;
   faColumns = faColumns;
@@ -63,6 +68,7 @@ export class ProblemDetailComponent implements OnInit, OnDestroy {
   public problemId: number;
   public problem: ProblemViewDto;
   public language: LanguageInfo;
+  public scoreMessage: hackInfo[];
   public activePaneId: number = 1;
 
   public statsChartLabels: Label[] = [];
@@ -143,7 +149,7 @@ export class ProblemDetailComponent implements OnInit, OnDestroy {
   }
 
   public updateRoute() {
-    const queryParams = this.fullscreen ? { fullscreen: this.fullscreen } : {};
+    const queryParams = this.fullscreen ? {fullscreen: this.fullscreen} : {};
     this.router.navigate(['/contest', this.contestId, 'problem', this.problemId], {
       replaceUrl: true,
       queryParams: queryParams
@@ -159,6 +165,31 @@ export class ProblemDetailComponent implements OnInit, OnDestroy {
   public toggleFullscreen() {
     this.fullscreen = !this.fullscreen;
     this.updateRoute();
+  }
+
+
+  public exportScore() {
+    this.problemService.getHackInfo(this.problemId)
+      .subscribe(s => {
+        this.scoreMessage = s;
+
+        const workbook = new excel.Workbook();
+        const sheet = workbook.addWorksheet(this.contest.title);
+        sheet.columns = ([
+          {header: 'TestId', key: 'id'},
+          {header: 'Score', key: 'score'},
+        ]);
+        for (let data of this.scoreMessage.slice(1)) {
+          const row = {
+            id: data.testId,
+            score: data.score
+          };
+          sheet.addRow(row);
+        }
+        workbook.xlsx.writeBuffer().then(data => {
+          saveAs(new Blob([data]), this.contest.title + '-hackScores.xlsx');
+        });
+      });
   }
 }
 

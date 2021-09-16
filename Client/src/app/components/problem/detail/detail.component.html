@@ -30,6 +30,9 @@
       ></option>
     </select>
     <p *ngIf="privileged" class="text-right mt-2">
+      <button class="btn btn-sm btn-outline-danger mr-2" [disabled]="loading" (click)="exportScore()">
+        <fa-icon [icon]="faDownload"></fa-icon><span>导出提交数据到Excel</span>
+      </button>
       <a class="btn btn-sm btn-outline-danger mr-2" [routerLink]="['/admin/problem/', problemId]">
         <fa-icon [icon]="faEdit"></fa-icon>
         <span>编辑题目</span>

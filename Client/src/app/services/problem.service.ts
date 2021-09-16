@@ -1,10 +1,11 @@
 ﻿import { Injectable } from '@angular/core';
-import { HttpClient, } from '@angular/common/http';
+import { HttpClient, HttpParams} from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map, shareReplay } from 'rxjs/operators';
 import { Base64 } from 'js-base64';
 
 import { ProblemViewDto } from '../../interfaces/problem.interfaces';
+import {hackInfo} from "../../interfaces/hackScore.interfaces";
 
 @Injectable({
   providedIn: 'root'
@@ -32,5 +33,11 @@ export class ProblemService {
           return data;
         }), shareReplay(1));
     }
+  }
+
+  public getHackInfo(problemId: number): Observable<hackInfo[]> {
+    let params = new HttpParams();
+    params = params.set("problemId", problemId.toString());
+    return this.http.get<hackInfo[]>('/problem/' + problemId.toString() + '/HackDownload', {params: params});
   }
 }

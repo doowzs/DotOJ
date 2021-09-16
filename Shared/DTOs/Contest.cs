@@ -6,6 +6,21 @@ using Shared.Models;
 
 namespace Shared.DTOs
 {
+    public class HackInfoDto
+    {
+        public int TestId { get; set; }
+        public double Score { get; set; }
+
+        public HackInfoDto()
+        {
+        }
+        
+        public HackInfoDto(int testId, double score)
+        {
+            TestId = testId;
+            Score = score;
+        }
+    }
     public class ContestInfoDto
     {
         public int Id { get; }

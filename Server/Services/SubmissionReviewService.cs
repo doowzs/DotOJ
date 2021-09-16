@@ -35,7 +35,8 @@ namespace Server.Services
         private async Task<Boolean> CanSubmissionReviewAsync(Submission submission)
         {
             var user = await Manager.GetUserAsync(Accessor.HttpContext.User);
-           if (submission.UserId == user.Id)   
+            
+            if (submission.UserId == user.Id)
             {
                 return false; // Cannot review your code
             }
@@ -56,14 +57,17 @@ namespace Server.Services
             {
                 return true; // Can review code after the contest ends
             }
-            
-            var registerRole = await Context.Registrations
-                .FirstOrDefaultAsync(r => r.ContestId == contest.Id && r.UserId == submission.UserId);
 
-            /*if (registerRole == null || registerRole.IsContestManager)
+            if (await Context.SubmissionReviews
+                .Where(s => s.SubmissionId == submission.Id && s.UserId == user.Id)
+                .AnyAsync())
             {
-                return false; // Cannot review ContestManager's code
-            }*/
+                return false;
+            }
+                /*if (registerRole == null || registerRole.IsContestManager)
+                {
+                    return false; // Cannot review ContestManager's code
+                }*/
             
             return true;
         }
