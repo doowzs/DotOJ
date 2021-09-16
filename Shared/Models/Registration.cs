@@ -74,13 +74,13 @@ namespace Shared.Models
                 {
                     acceptedAt = firstSolved.CreatedAt;
                     penalties = await problemSubmissions
-                        .Where(s => s.Verdict > Verdict.Accepted && s.Id < firstSolved.Id && (s.FailedOn != null && s.FailedOn.Any(f => f > 0)))
+                        .Where(s => s.Verdict > Verdict.Accepted && s.Id < firstSolved.Id)
                         .CountAsync();
                 }
                 else
                 {
                     penalties = await problemSubmissions
-                        .Where(s => s.ProblemId == problemId && s.Verdict > Verdict.Accepted && (s.FailedOn != null && s.FailedOn.Any(f => f > 0)))
+                        .Where(s => s.ProblemId == problemId && s.Verdict > Verdict.Accepted)
                         .CountAsync();
                 }
 

@@ -203,7 +203,7 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
                 }
             }
 
-            var failedOnList = failed.Select(s => s.Index).ToList();
+            var failedOnList = failed.Select(s => s.Index).OrderBy(s => s).ToList();
             
             return new JudgeResult
             {

@@ -33,10 +33,12 @@ namespace Server.Services.Singleton
             var problem = await context.Problems.FindAsync(problemId);
             var contest = await context.Contests.FindAsync(problem.ContestId);
 
+        
+                
             System.Linq.Expressions.Expression<Func<Submission, bool>> totalPredicate =
                 (s) => s.CreatedAt >= contest.BeginTime &&
                        s.ProblemId == problemId &&
-                       (s.Verdict == Verdict.Accepted || (s.FailedOn != null && s.FailedOn.Any(f => f > 0)));
+                       (s.Verdict == Verdict.Accepted);
             System.Linq.Expressions.Expression<Func<Submission, bool>> acceptedPredicate =
                 (s) => s.CreatedAt >= contest.BeginTime &&
                        s.ProblemId == problemId &&
@@ -141,11 +143,23 @@ namespace Server.Services.Singleton
                     byVerdict[submission.Verdict] = 1;
                 }
 
+                var realFail = false;
+                if (submission.FailedOn != null)
+                {
+                    foreach (var fail in submission.FailedOn)
+                    {
+                        if (fail > 0)
+                        {
+                            realFail = true;
+                        }
+                    }
+                }
+                
                 var statistics = new ProblemStatistics
                 {
                     TotalSubmissions = ps.TotalSubmissions +
                                        (submission.Verdict == Verdict.Accepted ||
-                                        (submission.Verdict != Verdict.Accepted && (submission.FailedOn != null && submission.FailedOn.Any(f => f > 0)))
+                                        (submission.Verdict != Verdict.Accepted && realFail)
                                            ? 1
                                            : 0),
                     AcceptedSubmissions = ps.AcceptedSubmissions + (submission.Verdict == Verdict.Accepted ? 1 : 0),
