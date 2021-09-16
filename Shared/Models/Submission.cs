@@ -36,7 +36,7 @@ namespace Shared.Models
 
         [NotMapped] public Program Program { get; set; }
 
-        [Required, Column("program", TypeName = "text")]
+        [Required, Column("Program", TypeName = "text")]
         public string ProgramSerialized
         {
             get => JsonConvert.SerializeObject(Program);
@@ -53,6 +53,15 @@ namespace Shared.Models
         public int? Time { get; set; }
         public int? Memory { get; set; }
         [NotMapped] public List<int> FailedOn { get; set; }
+        [Required, Column("FailedOn", TypeName = "text")]
+        public string FailedOnSerialized
+        {
+            get => JsonConvert.SerializeObject(FailedOn);
+            set => FailedOn = string.IsNullOrEmpty(value)
+                ? new List<int>()
+                : JsonConvert.DeserializeObject<List<int>>(value);
+        }
+        
         public int? Score { get; set; }
         public int? Progress { get; set; }
         public string Message { get; set; }
