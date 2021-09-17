@@ -179,9 +179,9 @@ export class ProblemDetailComponent implements OnInit, OnDestroy {
           {header: 'TestId', key: 'id'},
           {header: 'Score', key: 'score'},
         ]);
-        for (let data of this.scoreMessage.slice(1)) {
+        for (let data of this.scoreMessage.slice(0)) {
           const row = {
-            id: data.testId,
+            id: data.test,
             score: data.score
           };
           sheet.addRow(row);

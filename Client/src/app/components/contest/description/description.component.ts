@@ -87,7 +87,7 @@ export class ContestDescriptionComponent implements OnInit {
           {header: 'Score', key: 'score'},
           {header: 'Comment', key: 'comments'}
         ]);
-        for (const review of this.reviews.slice(1)) {
+        for (const review of this.reviews.slice(0)) {
           const row = {
             id: review.contestantId,
             name: review.submission.contestantId,
