@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using Shared.DTOs;
 using Shared.Generics;
@@ -119,6 +120,7 @@ namespace Server.Services
                 throw new UnauthorizedAccessException("Can not Download.");
             }
 
+            var dict = new Dictionary<int, int>();
             var submissions = Context.SubmissionReviews
                 .Join(Context.Submissions,
                     r => r.SubmissionId,
@@ -126,17 +128,21 @@ namespace Server.Services
                     (r, s) => s)
                 .Include(s => s.User)
                 .ToList();
-
+            Console.Write(submissions.Count + "\n");
             var results = new Dictionary<string, double>();
             foreach (var submission in submissions)
             {
-                var failedOn = submission.FailedOn;
-                if (failedOn != null)
+                if (!dict.ContainsKey(submission.Id))
                 {
-                    foreach (var test in failedOn)
+                    dict.Add(submission.Id, 1);
+                    var failedOn = submission.FailedOn;
+                    if (failedOn != null)
                     {
-                        if (!results.TryGetValue(test, out var score)) score = 0;
-                        results[test] = score + 5.0 / failedOn.Count;
+                        foreach (var test in failedOn)
+                        {
+                            if (!results.TryGetValue(test, out var score)) score = 0;
+                            results[test] = score + 5.0 / failedOn.Count;
+                        }
                     }
                 }
             }
