@@ -111,60 +111,37 @@ namespace Server.Services
         public async Task<List<HackInfoDto>> DownloadHackResultAsync(int id)
         {
             var user = await Manager.GetUserAsync(Accessor.HttpContext.User);
-          
+
             if (!(await Manager.IsInRoleAsync(user, ApplicationRoles.Administrator) ||
-                await Manager.IsInRoleAsync(user, ApplicationRoles.ContestManager) ||
-                await Manager.IsInRoleAsync(user, ApplicationRoles.SubmissionManager)))
+                  await Manager.IsInRoleAsync(user, ApplicationRoles.ContestManager) ||
+                  await Manager.IsInRoleAsync(user, ApplicationRoles.SubmissionManager)))
             {
                 throw new UnauthorizedAccessException("Can not Download.");
             }
 
-            var query = Context.Submissions
+            var submissions = Context.SubmissionReviews
+                .Join(Context.Submissions,
+                    r => r.SubmissionId,
+                    s => s.Id,
+                    (r, s) => s)
                 .Include(s => s.User)
-                .Where(s => s.ProblemId == id);
-            
-            var submissions = await query.ToListAsync();
-            
-            var contestantIdDict = new Dictionary<string, int>();
-            var resultDict = new Dictionary<string, double>();
-            
+                .ToList();
+
+            var results = new Dictionary<string, double>();
             foreach (var submission in submissions)
             {
-                if (!contestantIdDict.ContainsKey(submission.User.ContestantId))
+                var failedOn = submission.FailedOn;
+                if (failedOn != null)
                 {
-                    contestantIdDict.Add(submission.User.ContestantId, 1);
-                    
-                    var failSubmission = await query
-                        .Where(s => s.User.ContestantId == submission.User.ContestantId)
-                        .OrderByDescending(s => s.Score)
-                        .FirstOrDefaultAsync();
-
-                    var data  = failSubmission.FailedOn;
-                    if (data != null)
+                    foreach (var test in failedOn)
                     {
-                        foreach (var item in data)
-                        {
-                            if (!resultDict.ContainsKey(item))
-                            {
-                                resultDict.Add(item, 5.0 / data.Count);
-                            }
-                            else
-                            {
-                                var oldScore = resultDict[item];
-                                resultDict.Remove(item);
-                                resultDict.Add(item, oldScore + 5.0 / data.Count);
-                            }
-                        }
+                        if (!results.TryGetValue(test, out var score)) score = 0;
+                        results[test] = score + 5.0 / failedOn.Count;
                     }
                 }
             }
 
-            var hackResult = new List<HackInfoDto>();
-            foreach (var result in resultDict)
-            {
-                hackResult.Add(new HackInfoDto(result.Key, result.Value));
-            }
-            return hackResult;
+            return results.Select(p => new HackInfoDto(p.Key, p.Value)).ToList();
         }
     }
 }
