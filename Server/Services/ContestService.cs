@@ -186,6 +186,13 @@ namespace Server.Services
 
         public async Task<List<SubmissionReviewInfoDto>> GetReviewListAsync(int id)
         {
+            var user = await Manager.GetUserAsync(Accessor.HttpContext.User); 
+            if (!(await Manager.IsInRoleAsync(user, ApplicationRoles.Administrator) ||
+                  await Manager.IsInRoleAsync(user, ApplicationRoles.ContestManager) ||
+                  await Manager.IsInRoleAsync(user, ApplicationRoles.SubmissionManager)))
+            {
+                throw new UnauthorizedAccessException("Can not Download.");
+            }
             var contest = await Context.Contests
                 .Where(s => s.Id == id)
                 .Include(s => s.Problems)
