@@ -34,13 +34,14 @@ namespace Server.Services.Singleton
             var contest = await context.Contests.FindAsync(problem.ContestId);
 
             System.Linq.Expressions.Expression<Func<Submission, bool>> totalPredicate =
-                (s) => s.CreatedAt >= contest.BeginTime &&
+                (s) => s.IsValid &&
                        s.ProblemId == problemId &&
-                       s.IsValid && s.Verdict >= Verdict.Accepted;
+                       s.CreatedAt >= contest.BeginTime;
             System.Linq.Expressions.Expression<Func<Submission, bool>> acceptedPredicate =
-                (s) => s.CreatedAt >= contest.BeginTime &&
+                (s) => s.IsValid &&
                        s.ProblemId == problemId &&
-                       s.IsValid && s.Verdict == Verdict.Accepted;
+                       s.CreatedAt >= contest.BeginTime &&
+                       s.Verdict == Verdict.Accepted;
 
             var totalSubmissions = await context.Submissions
                 .Where(totalPredicate)
@@ -122,12 +123,14 @@ namespace Server.Services.Singleton
             if (await _cache.TryGetValueAsync(problem.Id) is (true, var ps))
             {
                 var attempted = await context.Submissions
-                    .AnyAsync(s => s.Id != submission.Id &&
+                    .AnyAsync(s => s.IsValid &&
+                                   s.Id != submission.Id &&
                                    s.UserId == submission.UserId &&
                                    s.ProblemId == submission.ProblemId &&
                                    s.CreatedAt >= contest.BeginTime);
                 var solved = await context.Submissions
-                    .AnyAsync(s => s.Id != submission.Id &&
+                    .AnyAsync(s => s.IsValid &&
+                                   s.Id != submission.Id &&
                                    s.UserId == submission.UserId &&
                                    s.ProblemId == submission.ProblemId &&
                                    s.CreatedAt >= contest.BeginTime &&
