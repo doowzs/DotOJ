@@ -4,7 +4,6 @@ import {Title} from '@angular/platform-browser';
 import {saveAs} from 'file-saver';
 import * as moment from 'moment';
 import * as excel from 'exceljs';
-import {Column} from 'exceljs';
 
 import {ContestViewDto} from '../../../../interfaces/contest.interfaces';
 import {AuthorizeService, IUser} from '../../../../auth/authorize.service';
@@ -38,7 +37,6 @@ export class ContestDescriptionComponent implements OnInit {
   faCheck = faCheck;
   faEdit = faEdit;
   faTimes = faTimes;
-  faUser = faUser;
 
   public user: IUser;
   public privileged = false;
@@ -67,11 +65,11 @@ export class ContestDescriptionComponent implements OnInit {
         this.privileged = user.roles.indexOf('Administrator') >= 0
           || user.roles.indexOf('ContestManager') >= 0;
       })
-    this.service.getSingle(this.contestId)
+    this.service.getSingle(this.contestId, true)
       .subscribe(contest => {
         this.contest = contest;
         this.ended = moment().isAfter(this.contest.endTime);
-        this.title.setTitle(contest.title);
+        this.title.setTitle(contest.title + ' - 题目列表');
       });
   }
 
@@ -83,7 +81,7 @@ export class ContestDescriptionComponent implements OnInit {
         const sheet = workbook.addWorksheet(this.contest.title);
         sheet.columns = ([
           {header: 'Contestant ID', key: 'id'},
-          {header: 'object', key: 'name'},
+          {header: 'Contestant Name', key: 'name'},
           {header: 'ProblemId', key: 'problemId'},
           {header: 'SubmissionId', key: 'submissionId'},
           {header: 'Score', key: 'score'},
