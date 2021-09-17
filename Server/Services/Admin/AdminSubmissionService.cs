@@ -146,6 +146,7 @@ namespace Server.Services.Admin
                 ProblemId = dto.ProblemId.GetValueOrDefault(),
                 Program = dto.Program,
                 Hidden = true,
+                IsValid = true,
                 Verdict = Verdict.Pending,
                 Time = null,
                 Memory = null,

@@ -72,7 +72,7 @@
         <span *ngIf="!submission.hasInput">{{ submission.score }}</span>
       </td>
       <td>
-        <span *ngIf="!submission.hasInput && submission.score === 0 && submission.failedOn === 0">S</span>
+        <span *ngIf="!submission.hasInput && !submission.isValid">X</span>
         <span *ngIf="submission.hasInput">T</span>
       </td>
       <td>{{ submission.time }}{{ !!submission.time ? 'ms' : '' }}</td>

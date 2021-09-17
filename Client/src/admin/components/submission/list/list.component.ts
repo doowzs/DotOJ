@@ -64,11 +64,11 @@ export class AdminSubmissionListComponent implements OnInit, OnDestroy {
           const updated = updatedSubmissions[i];
           const submission = this.list.items.find(s => s.id === updated.id);
           if (submission) {
+            submission.isValid = updated.isValid;
             submission.verdict = updated.verdict;
             submission.verdictInfo = updated.verdictInfo;
             submission.time = updated.time;
             submission.memory = updated.memory;
-            submission.failedOn = updated.failedOn;
             submission.score = updated.score;
             submission.progress = updated.progress;
             submission.judgedAt = updated.judgedAt;

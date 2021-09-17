@@ -49,25 +49,27 @@ namespace Shared.Models
 
         #region Submission Verdict
 
+        public bool IsValid { get; set; } // equals -> not self-test and (accepted or failed on tests)
         public Verdict Verdict { get; set; }
         public int? Time { get; set; }
         public int? Memory { get; set; }
-        [NotMapped] public List<int> FailedOn { get; set; }
+        [NotMapped] public List<string> FailedOn { get; set; }
+
         [Required, Column("FailedOn", TypeName = "text")]
         public string FailedOnSerialized
         {
             get => JsonConvert.SerializeObject(FailedOn);
             set => FailedOn = string.IsNullOrEmpty(value)
-                ? new List<int>()
-                : JsonConvert.DeserializeObject<List<int>>(value);
+                ? new List<string>()
+                : JsonConvert.DeserializeObject<List<string>>(value);
         }
-        
+
         public int? Score { get; set; }
         public int? Progress { get; set; }
         public string Message { get; set; }
         public string JudgedBy { get; set; }
         public DateTime? JudgedAt { get; set; }
-        
+
         // Two version numbers are used to avoid duplicate message in MQ.
         public int RequestVersion { get; set; }
         public int CompleteVersion { get; set; }
@@ -110,7 +112,8 @@ namespace Shared.Models
                 builder.AppendLine(comment + $"Problem:    No.{ProblemId}");
             }
 
-            builder.AppendLine(comment + $"Verdict:    {Verdict} Score={Score ?? 0} Time={Time ?? 0} Memory={Memory ?? 0}");
+            builder.AppendLine(comment +
+                               $"Verdict:    {Verdict} Score={Score ?? 0} Time={Time ?? 0} Memory={Memory ?? 0}");
             builder.AppendLine(comment + $"Submitted:  {CreatedAt:yyyy-MM-dd HH:mm:ss} (UTC Time)");
             if (JudgedAt.HasValue)
             {
@@ -121,10 +124,12 @@ namespace Shared.Models
             builder.AppendLine(comment + $"  1. {options.Value.Host}/submission/{Id}");
             if (Problem is not null)
             {
-                builder.AppendLine(comment + $"  2. {options.Value.Host}/contest/{Problem.ContestId}/problem/{ProblemId}");
+                builder.AppendLine(comment +
+                                   $"  2. {options.Value.Host}/contest/{Problem.ContestId}/problem/{ProblemId}");
                 if (User is not null)
                 {
-                    builder.AppendLine(comment + $"  3. {options.Value.Host}/contest/{Problem.ContestId}/submissions?problem={ProblemId}&contestantId={User.ContestantId}");
+                    builder.AppendLine(comment +
+                                       $"  3. {options.Value.Host}/contest/{Problem.ContestId}/submissions?problem={ProblemId}&contestantId={User.ContestantId}");
                 }
             }
 

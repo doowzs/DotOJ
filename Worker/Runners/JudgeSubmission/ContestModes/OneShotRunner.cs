@@ -21,6 +21,7 @@ namespace Worker.Runners.JudgeSubmission.ContestModes
             {
                 return Task.FromResult(new JudgeResult
                 {
+                    IsValid = true,
                     Verdict = Verdict.Accepted,
                     Time = null,
                     Memory = null,

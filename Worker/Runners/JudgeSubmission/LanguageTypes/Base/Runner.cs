@@ -43,7 +43,7 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
             Box = box;
             _options = provider.GetRequiredService<IOptions<WorkerConfig>>();
             Logger = provider.GetRequiredService<ILogger<Runner>>();
-            
+
             if (!Directory.Exists(Jail))
             {
                 Directory.CreateDirectory(Jail);
@@ -76,14 +76,14 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
                     output = output.Substring(0, 4096)
                              + "\n*** Output trimmed due to excessive length of 4096 characters. ***";
                 }
+
                 return new JudgeResult
                 {
+                    IsValid = false,
                     Verdict = Verdict.CompilationError,
                     Time = null,
                     Memory = null,
-                    FailedOn = new List<int>(
-                        new int[]{0}
-                        ),
+                    FailedOn = null,
                     Score = 0,
                     Message = output
                 };
@@ -101,11 +101,11 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
                 };
                 var run = await RunTestCaseAsync(true, 0, test);
                 var ok = run.Verdict == Verdict.Accepted;
-                
+
                 stopWatch.Stop();
                 Logger.LogInformation($"SelfTest OK Verdict={run.Verdict} Time={run.Time} Memory={run.Memory}" +
                                       $" TimeElapsed={stopWatch.Elapsed}");
-                
+
                 if (run.Stdout.Length > 4096)
                 {
                     run.Stdout = run.Stdout.Substring(0, 4096)
@@ -114,15 +114,17 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
 
                 return new JudgeResult
                 {
+                    IsValid = false,
                     Verdict = ok ? Verdict.CustomInputOk : run.Verdict,
                     Time = run.Time,
                     Memory = run.Memory,
                     FailedOn = null,
                     Score = 0,
-                    Message = $"Input:\n{Encoding.UTF8.GetString(Convert.FromBase64String(Submission.Program.Input))}\n\n" +
-                              (run.Verdict == Verdict.Accepted
-                                  ? $"Standard Output:\n{run.Stdout}\n\nStandard Error:\n{run.Stderr}"
-                                  : $"Failed: {run.Verdict}")
+                    Message =
+                        $"Input:\n{Encoding.UTF8.GetString(Convert.FromBase64String(Submission.Program.Input))}\n\n" +
+                        (run.Verdict == Verdict.Accepted
+                            ? $"Standard Output:\n{run.Stdout}\n\nStandard Error:\n{run.Stderr}"
+                            : $"Failed: {run.Verdict}")
                 };
             }
 
@@ -203,15 +205,13 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
                 }
             }
 
-            var failedOnList = failed.Select(s => s.Index).OrderBy(s => s).ToList();
-            
             return new JudgeResult
             {
-                // If there was any failure, submission's verdict will be changed from Running.
-                Verdict = failed.Count > 0 ? failed[0].Verdict : Verdict.Accepted,
+                IsValid = true,
+                Verdict = failed.FirstOrDefault()?.Verdict ?? Verdict.Accepted,
                 Time = time,
                 Memory = memory,
-                FailedOn = failedOnList,
+                FailedOn = failed.Select(s => s.Name).ToList(),
                 Score = count * 100 / total,
                 Message = string.Empty
             };
@@ -253,6 +253,7 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
                     message = message.Substring(0, 4096)
                               + "\n*** Output trimmed due to excessive length of 4096 characters. ***";
                 }
+
                 throw new Exception($"Prepare checker error ExitCode={exitCode}.\n{message}");
             }
 
@@ -293,6 +294,7 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
                 Check = false,
                 Inline = inline,
                 Index = index,
+                Name = inline ? $"samples/{index}" : $"tests/{testCase.Input}",
                 Stdout = "",
                 Stderr = "",
                 Verdict = Verdict.Accepted,

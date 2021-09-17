@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Input, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
 import { interval, Subject } from 'rxjs';
-import { take, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SubmissionDetailComponent } from '../detail/detail.component';
@@ -118,11 +118,11 @@ export class SubmissionListComponent implements OnInit, OnDestroy {
           const updated = updatedSubmissions[i];
           const submission = this.list.items.find(s => s.id === updated.id);
           if (submission) {
+            submission.isValid = updated.isValid;
             submission.verdict = updated.verdict;
             submission.verdictInfo = updated.verdictInfo;
             submission.time = updated.time;
             submission.memory = updated.memory;
-            submission.failedOn = updated.failedOn;
             submission.score = updated.score;
             submission.progress = updated.progress;
             submission.judgedAt = updated.judgedAt;

@@ -126,7 +126,7 @@ namespace Server.Services
             var submissions = await query.ToListAsync();
             
             var contestantIdDict = new Dictionary<string, int>();
-            var resultDict = new Dictionary<int, double>();
+            var resultDict = new Dictionary<string, double>();
             
             foreach (var submission in submissions)
             {

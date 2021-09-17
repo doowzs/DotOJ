@@ -28,6 +28,7 @@ export class AdminSubmissionFormComponent implements OnInit, OnChanges {
       problemId: [null],
       language: [null],
       code: [null],
+      isValid: [null],
       verdict: [null, [Validators.required]],
       time: [null],
       memory: [null],
@@ -46,6 +47,7 @@ export class AdminSubmissionFormComponent implements OnInit, OnChanges {
       problemId: this.submission.problemId,
       language: this.submission.program.languageInfo.name,
       code: this.submission.program.code,
+      isValid: this.submission.isValid,
       verdict: this.submission.verdict,
       time: this.submission.time,
       memory: this.submission.memory,
@@ -71,6 +73,7 @@ export class AdminSubmissionFormComponent implements OnInit, OnChanges {
       this.form.get('problemId').disable();
       this.form.get('language').disable();
       this.form.get('code').disable();
+      this.form.get('isValid').disable();
       this.form.get('time').disable();
       this.form.get('memory').disable();
       this.form.get('failedOn').disable();
@@ -89,6 +92,7 @@ export class AdminSubmissionFormComponent implements OnInit, OnChanges {
       contestantName: null,
       problemId: null,
       program: null,
+      isValid: true,
       verdict: data.verdict,
       verdictInfo: null,
       time: null,

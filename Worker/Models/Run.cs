@@ -7,6 +7,7 @@ namespace Worker.Models
         public bool Check { get; set; }
         public bool Inline { get; set; }
         public int Index { get; set; }
+        public string Name { get; set; }
 
         public string Stdout { get; set; }
         public string Stderr { get; set; }

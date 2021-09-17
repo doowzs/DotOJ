@@ -64,6 +64,6 @@ export const Verdicts: VerdictInfo[] = [
   },
   {
     code: 9, name: '测试完成', showCase: false, stage: VerdictStage.ACCEPTED,
-    color: 'Secondary', explain: '你提交的自定义测试成功完成。'
+    color: 'secondary', explain: '你提交的自定义测试成功完成。'
   }
 ];

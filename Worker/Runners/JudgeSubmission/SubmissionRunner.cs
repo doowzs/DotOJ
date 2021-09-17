@@ -78,6 +78,7 @@ namespace Worker.Runners.JudgeSubmission
                         decayPercentage = (int) (progress * (decayPercentage - 100) + 100);
                         decayPercentage = Math.Max(0, Math.Min(decayPercentage, 100));
                     }
+
                     result.Score = result.Score * decayPercentage / 100;
                 }
 
@@ -85,6 +86,7 @@ namespace Worker.Runners.JudgeSubmission
 
                 #region Update judge result of submission
 
+                submission.IsValid = result.IsValid;
                 submission.Verdict = result.Verdict;
                 submission.Time = result.Time;
                 submission.Memory = result.Memory;
@@ -103,6 +105,7 @@ namespace Worker.Runners.JudgeSubmission
                         Context.Submissions.Update(submission);
                         await Context.SaveChangesAsync();
                     }
+
                     scope.Complete();
                 }
 
@@ -133,6 +136,7 @@ namespace Worker.Runners.JudgeSubmission
                 var error = $"Internal error: {e.Message}\n" +
                             $"Occurred at {DateTime.Now:yyyy-MM-dd HH:mm:ss} UTC @ {Options.Value.Name}\n" +
                             $"*** Please report this incident to TA and site administrator ***";
+                submission.IsValid = false;
                 submission.Verdict = Verdict.Failed;
                 submission.Time = submission.Memory = null;
                 submission.FailedOn = null;
@@ -150,6 +154,7 @@ namespace Worker.Runners.JudgeSubmission
                         Context.Submissions.Update(submission);
                         await Context.SaveChangesAsync();
                     }
+
                     scope.Complete();
                 }
 

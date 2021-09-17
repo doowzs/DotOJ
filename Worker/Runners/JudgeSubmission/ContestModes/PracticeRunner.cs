@@ -15,18 +15,18 @@ namespace Worker.Runners.JudgeSubmission.ContestModes
             OnRunFailedDelegate = OnRunFailedImpl;
         }
 
-        public static Task<JudgeResult> OnRunFailedImpl(Contest contest, Problem problem, Submission submission, Run run)
+        public static Task<JudgeResult> OnRunFailedImpl
+            (Contest contest, Problem problem, Submission submission, Run run)
         {
             if (run.Inline || run.Verdict == Verdict.CompilationError)
             {
                 return Task.FromResult(new JudgeResult
                 {
+                    IsValid = false,
                     Verdict = run.Verdict,
                     Time = run.Time,
                     Memory = run.Memory,
-                    FailedOn = new List<int>(
-                        new int[]{0}
-                    ),
+                    FailedOn = new List<string> {run.Name},
                     Score = 0,
                     Message = run.Message
                 });

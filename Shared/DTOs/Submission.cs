@@ -20,10 +20,10 @@ namespace Shared.DTOs
         public Language Language { get; }
         public int? CodeBytes { get; }
         public bool HasInput { get; }
+        public bool IsValid { get; }
         public Verdict Verdict { get; }
         public int? Time { get; }
         public int? Memory { get; }
-        public int? FailedOn { get; }
         public int? Score { get; }
         public int? Progress { get; }
         public bool HasMessage { get; }
@@ -42,13 +42,10 @@ namespace Shared.DTOs
             Language = submission.Program.Language.GetValueOrDefault();
             CodeBytes = submission.Program.Language == Language.LabArchive ? null : (3 * count / 4 - padding);
             HasInput = submission.Program.Input != null;
+            IsValid = submission.IsValid;
             Verdict = submission.Verdict;
             Time = submission.Time;
             Memory = submission.Memory;
-            FailedOn = (submission.FailedOn != null) ? (submission.FailedOn.Count > 0 && submission.FailedOn[0] != 0) ?
-                1 :
-                0 : 
-                null ; // Hide this info from users
             Score = submission.Score;
             Progress = submission.Progress;
             HasMessage = !string.IsNullOrEmpty(submission.Message);
@@ -64,10 +61,10 @@ namespace Shared.DTOs
         public string ContestantName { get; }
         public int ProblemId { get; }
         public Program Program { get; }
+        public bool? IsValid { get; }
         public Verdict? Verdict { get; }
         public int? Time { get; }
         public int? Memory { get; }
-        public int? FailedOn { get; }
         public int? Score { get; }
         public int? Progress { get; }
         public string Message { get; }
@@ -83,13 +80,10 @@ namespace Shared.DTOs
             ContestantName = submission.User.ContestantName;
             ProblemId = submission.ProblemId;
             Program = submission.Program;
+            IsValid = submission.IsValid;
             Verdict = submission.Verdict;
             Time = submission.Time;
             Memory = submission.Memory;
-            FailedOn = (submission.FailedOn != null) ? (submission.FailedOn.Count > 0 && submission.FailedOn[0] != 0) ?
-                    1 :
-                    0 : 
-                null ;  // Hide this info from users
             Score = submission.Score;
             Progress = submission.Progress;
             Message = submission.Message;
@@ -118,10 +112,11 @@ namespace Shared.DTOs
         public string ContestantName { get; }
         public int ProblemId { get; }
         public Program Program { get; }
+        public bool IsValid { get; }
         [Required] public Verdict? Verdict { get; set; }
         public int? Time { get; }
         public int? Memory { get; }
-        public List<int> FailedOn { get; }
+        public List<string> FailedOn { get; }
         public int? Score { get; }
         [Required] public string Message { get; set; }
         public string JudgedBy { get; }
@@ -140,6 +135,7 @@ namespace Shared.DTOs
             ContestantName = submission.User.ContestantName;
             ProblemId = submission.ProblemId;
             Program = submission.Program;
+            IsValid = submission.IsValid;
             Verdict = submission.Verdict;
             Time = submission.Time;
             Memory = submission.Memory;

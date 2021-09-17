@@ -65,11 +65,13 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.TestKit
                 {
                     return restore;
                 }
+
                 _message.AppendLine(restore?.Message);
             }
 
             _kit = Path.Combine(_options.Value.DataPath, "tests", _problem.Id.ToString());
-            await using (var stream = new FileStream(Path.Combine(_kit, "manifest.json"), FileMode.Open, FileAccess.Read))
+            await using (var stream =
+                new FileStream(Path.Combine(_kit, "manifest.json"), FileMode.Open, FileAccess.Read))
             using (var reader = new StreamReader(stream))
             {
                 _manifest = JsonConvert.DeserializeObject<Manifest>(await reader.ReadToEndAsync());
@@ -87,6 +89,7 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.TestKit
                 {
                     verdict = result.Verdict;
                 }
+
                 score += result.Score;
                 if (result.Message is not null)
                 {
@@ -105,19 +108,14 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.TestKit
 
             return new JudgeResult
             {
+                IsValid = verdict >= Verdict.Accepted && verdict < Verdict.CustomInputOk,
                 Verdict = verdict,
                 FailedOn = verdict switch
                 {
-                    Verdict.Rejected => new List<int>(
-                        new int[]{0}
-                    ),
-                    Verdict.Failed => new List<int>(
-                        new int[]{0}
-                    ),
+                    Verdict.Rejected => null,
+                    Verdict.Failed => null,
                     Verdict.Accepted => null,
-                    _ => new List<int>(
-                        new int[]{1}
-                    ),
+                    _ => null,
                 },
                 Time = null,
                 Memory = null,

@@ -361,6 +361,7 @@ namespace Server.Migrations
                     Hidden = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     Program = table.Column<string>(type: "text", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    IsValid = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     Verdict = table.Column<int>(type: "int", nullable: false),
                     Time = table.Column<int>(type: "int", nullable: true),
                     Memory = table.Column<int>(type: "int", nullable: true),

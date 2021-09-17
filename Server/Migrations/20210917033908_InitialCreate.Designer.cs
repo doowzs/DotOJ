@@ -9,7 +9,7 @@ using Shared;
 namespace Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210916144233_InitialCreate")]
+    [Migration("20210917033908_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -480,6 +480,9 @@ namespace Server.Migrations
                         .HasColumnName("FailedOn");
 
                     b.Property<bool>("Hidden")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsValid")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<DateTime?>("JudgedAt")

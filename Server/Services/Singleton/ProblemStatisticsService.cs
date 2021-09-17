@@ -33,16 +33,14 @@ namespace Server.Services.Singleton
             var problem = await context.Problems.FindAsync(problemId);
             var contest = await context.Contests.FindAsync(problem.ContestId);
 
-        
-                
             System.Linq.Expressions.Expression<Func<Submission, bool>> totalPredicate =
                 (s) => s.CreatedAt >= contest.BeginTime &&
                        s.ProblemId == problemId &&
-                       (s.Verdict == Verdict.Accepted);
+                       s.IsValid && s.Verdict >= Verdict.Accepted;
             System.Linq.Expressions.Expression<Func<Submission, bool>> acceptedPredicate =
                 (s) => s.CreatedAt >= contest.BeginTime &&
                        s.ProblemId == problemId &&
-                       s.Verdict == Verdict.Accepted;
+                       s.IsValid && s.Verdict == Verdict.Accepted;
 
             var totalSubmissions = await context.Submissions
                 .Where(totalPredicate)
@@ -113,7 +111,8 @@ namespace Server.Services.Singleton
                 await context.SaveChangesAsync();
             }
 
-            if (submission.Program.Input != null) return; // ignore custom tests
+            // ignore custom tests and invalid submissions
+            if (submission.Program.Input != null || !submission.IsValid) return;
 
             var problem = await context.Problems.FindAsync(submission.ProblemId);
             var contest = await context.Contests.FindAsync(problem.ContestId);
@@ -143,25 +142,9 @@ namespace Server.Services.Singleton
                     byVerdict[submission.Verdict] = 1;
                 }
 
-                var realFail = false;
-                if (submission.FailedOn != null)
-                {
-                    foreach (var fail in submission.FailedOn)
-                    {
-                        if (fail > 0)
-                        {
-                            realFail = true;
-                        }
-                    }
-                }
-                
                 var statistics = new ProblemStatistics
                 {
-                    TotalSubmissions = ps.TotalSubmissions +
-                                       (submission.Verdict == Verdict.Accepted ||
-                                        (submission.Verdict != Verdict.Accepted && realFail)
-                                           ? 1
-                                           : 0),
+                    TotalSubmissions = ps.TotalSubmissions + 1,
                     AcceptedSubmissions = ps.AcceptedSubmissions + (submission.Verdict == Verdict.Accepted ? 1 : 0),
                     TotalContestants = ps.TotalContestants + (attempted ? 0 : 1),
                     AcceptedContestants = ps.AcceptedContestants +

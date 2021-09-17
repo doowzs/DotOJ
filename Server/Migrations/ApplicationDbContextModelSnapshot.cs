@@ -480,6 +480,9 @@ namespace Server.Migrations
                     b.Property<bool>("Hidden")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<bool>("IsValid")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<DateTime?>("JudgedAt")
                         .HasColumnType("datetime(6)");
 

@@ -25,7 +25,7 @@ export class VerdictComponent {
       return this.submission.progress + '%';
     } else if (verdict.stage === VerdictStage.REJECTED && this.submission.score == null && this.submission.progress) {
       return '(Running ' + this.submission.progress + '%)';
-    } else if (this.submission.failedOn > 0 && this.submission.score >= 0 && verdict.showCase) {
+    } else if (this.submission.isValid && this.submission.score >= 0 && verdict.showCase) {
       if (verdict.stage === VerdictStage.REJECTED) {
         return (100 - this.submission.score) + '%';
       } else {

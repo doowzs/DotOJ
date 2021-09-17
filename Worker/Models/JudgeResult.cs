@@ -1,3 +1,4 @@
+using System;
 using Shared.Models;
 using System.Collections.Generic;
 
@@ -5,15 +6,17 @@ namespace Worker.Models
 {
     public class JudgeResult
     {
+        public bool IsValid { get; set; }
         public Verdict Verdict { get; set; }
         public int? Time { get; set; }
         public int? Memory { set; get; }
-        public List<int> FailedOn { get; set; }
+        public List<String> FailedOn { get; set; }
         public int Score { get; set; }
         public string Message { set; get; }
 
         public static readonly JudgeResult NoTestCaseFailure = new JudgeResult
         {
+            IsValid = false,
             Verdict = Verdict.Failed,
             Time = null, Memory = null,
             FailedOn = null, Score = 0,
@@ -22,6 +25,7 @@ namespace Worker.Models
 
         public static readonly JudgeResult TimeoutFailure = new JudgeResult
         {
+            IsValid = false,
             Verdict = Verdict.Failed,
             Time = null, Memory = null,
             FailedOn = null, Score = 0,
@@ -30,6 +34,7 @@ namespace Worker.Models
 
         public static readonly JudgeResult UnknownLanguageFailure = new JudgeResult
         {
+            IsValid = false,
             Verdict = Verdict.Failed,
             Time = null, Memory = null,
             FailedOn = null, Score = 0,
@@ -40,10 +45,9 @@ namespace Worker.Models
         {
             return new JudgeResult
             {
+                IsValid = false,
                 Verdict = Verdict.Failed,
-                FailedOn = new List<int>(
-                    new int[]{0}
-                ),
+                FailedOn = null,
                 Time = null,
                 Memory = null,
                 Score = 0,
@@ -55,10 +59,9 @@ namespace Worker.Models
         {
             return new JudgeResult
             {
+                IsValid = false,
                 Verdict = Verdict.Rejected,
-                FailedOn = new List<int>(
-                    new int[]{0}
-                    ),
+                FailedOn = null,
                 Time = null,
                 Memory = null,
                 Score = 0,

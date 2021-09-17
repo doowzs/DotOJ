@@ -30,9 +30,6 @@
         <ProjectReference Include="..\Shared\Shared.csproj" />
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="Migrations" />
-    </ItemGroup>
-    <ItemGroup>
       <_ContentIncludedByDefault Remove="Areas\Identity\Pages\Account\Login.cshtml" />
       <_ContentIncludedByDefault Remove="Areas\Identity\Pages\Account\Manage\ChangePassword.cshtml" />
       <_ContentIncludedByDefault Remove="Areas\Identity\Pages\Account\Manage\DeletePersonalData.cshtml" />

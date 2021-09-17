@@ -42,10 +42,7 @@
             <ng-container *ngIf="!submission.hasInput">{{ submission.score }}</ng-container>
           </td>
           <td>
-            <span *ngIf="!submission.hasInput && submission.score === 0 && submission.failedOn === 0"
-              class="text-danger">
-              S
-            </span>
+            <span *ngIf="!submission.hasInput && !submission.isValid" class="text-danger">X</span>
             <span *ngIf="submission.hasInput">T</span>
           </td>
           <ng-container *ngIf="problem.type === 0">
