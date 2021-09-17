@@ -120,29 +120,24 @@ namespace Server.Services
                 throw new UnauthorizedAccessException("Can not Download.");
             }
 
-            var dict = new Dictionary<int, int>();
             var submissions = Context.SubmissionReviews
                 .Join(Context.Submissions,
                     r => r.SubmissionId,
                     s => s.Id,
                     (r, s) => s)
                 .Include(s => s.User)
+                .Distinct()
                 .ToList();
-            Console.Write(submissions.Count + "\n");
             var results = new Dictionary<string, double>();
             foreach (var submission in submissions)
             {
-                if (!dict.ContainsKey(submission.Id))
+                var failedOn = submission.FailedOn;
+                if (failedOn != null)
                 {
-                    dict.Add(submission.Id, 1);
-                    var failedOn = submission.FailedOn;
-                    if (failedOn != null)
+                    foreach (var test in failedOn)
                     {
-                        foreach (var test in failedOn)
-                        {
-                            if (!results.TryGetValue(test, out var score)) score = 0;
-                            results[test] = score + 5.0 / failedOn.Count;
-                        }
+                        if (!results.TryGetValue(test, out var score)) score = 0;
+                        results[test] = score + 10.0 / failedOn.Count;
                     }
                 }
             }
