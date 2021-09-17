@@ -1,4 +1,4 @@
 export interface hackInfo {
-  testId: number;
+  testId: string;
   score: number;
 }
