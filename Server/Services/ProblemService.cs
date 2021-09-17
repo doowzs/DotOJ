@@ -131,9 +131,9 @@ namespace Server.Services
             var results = new Dictionary<string, double>();
             foreach (var submission in submissions)
             {
-                var failedOn = submission.FailedOn;
                 if (failedOn != null)
                 {
+                    var failedOn = submission.FailedOn;
                     foreach (var test in failedOn)
                     {
                         if (!results.TryGetValue(test, out var score)) score = 0;
