@@ -211,9 +211,16 @@ namespace Server.Services
                     var currentReviews = reviews.FindAll(s => s.Submission.ProblemId == problem.Id);
                     foreach (var review in currentReviews)
                     {
-                        legalReviews.Add(new SubmissionReviewInfoDto(review.Score,
-                            review.Comments
-                            , new SubmissionViewDto(review.Submission, Config), review.User.ContestantId));
+                        var submission = await Context.Submissions
+                            .Where(s => s.Id == review.Submission.Id)
+                            .Include(s => s.User)
+                            .FirstOrDefaultAsync();
+                        if (submission != null)
+                        {
+                            legalReviews.Add(new SubmissionReviewInfoDto(review.Score,
+                                review.Comments
+                                , new SubmissionViewDto(submission, Config), review.User.ContestantId));
+                        }
                     }
                 }
             }
