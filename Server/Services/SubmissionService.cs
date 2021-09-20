@@ -59,6 +59,11 @@ namespace Server.Services
             {
                 return true;
             }
+            
+            if (submission.Verdict == Verdict.CustomInputOk)
+            {
+                return false;
+            }
 
             if (Config.Value.ExamId.HasValue)
             {

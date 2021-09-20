@@ -89,6 +89,7 @@ namespace Server.Controllers.Api.v2
         [HttpGet("{id:int}/reviewDownload")]
         [Produces(MediaTypeNames.Application.Json)]
         [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<ContestViewDto>> ViewReviewList(int id)
         {
             try

@@ -48,7 +48,7 @@ export class EditorComponent implements AfterViewInit, AfterViewChecked, OnChang
   @Input() submissionId: number;
   @Input() program: Program;
   @Input() disabled: boolean;
-
+  @Input() hacked: boolean;
   @Output() submit = new EventEmitter<Program>();
 
   public editor: ace.Ace.Editor;
@@ -154,9 +154,8 @@ export class EditorComponent implements AfterViewInit, AfterViewChecked, OnChang
   }
 
   public submitCode(hasInput: boolean) {
-    if (this.disabled || !this.language || !this.editor.getValue()) return;
-    this.saveCode(this.problemId);
-
+    if ((this.disabled && !this.hacked) || !this.language || !this.editor.getValue()) return;
+    if (!this.hacked) this.saveCode(this.problemId);
     const submission: Program = {
       language: this.language.code,
       code: Base64.encode(this.editor.getValue())

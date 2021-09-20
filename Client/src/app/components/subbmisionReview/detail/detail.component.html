@@ -53,13 +53,35 @@
         <div *ngIf="reviewMap.get(submission.id) === reviewId">
           <h2>代码评分 #{{reviewMap.get(submission.id)}}</h2>
           <div *ngIf="!!submission.program.languageInfo.mode"
-               [ngStyle]="{'height':'calc(100vh - 279px)'}">
-            <editor [disabled]="true" [submissionId]="submission.id" [program]="submission.program"></editor>
+               [ngStyle]="{'height':'calc(100vh - 379px)'}">
+            <editor [disabled]="true" [hacked]="true"  [problemId]="problemId" [program]="submission.program" (submit)="submit($event)"></editor>
             <br/>
             <br/>
           </div>
+          <br/>
+          <br/>
+          <br/>
+          <br/>
           <div  class="alert alert-success text-center">
-            在线hack功能仍在建设中。若你要对此代码进行hack，请在本地测试，并将hack成功的数据发送给助教：朱宇博 / 张浩宇。
+            若你要进行hack，点击自定测试，输入测试数据，自定测试结果会出现在下方，你需点开结果自行判断输出是否正确。
+          </div>
+          <div  class="alert alert-success text-center">
+          以下是你本题的所有提交记录，方便你作对比。
+          </div>
+          <h3>
+            提交列表
+            <span class="float-right">
+                <a href="javascript:void(0)" class="text-secondary" style="font-size: 1rem;"
+                   (click)="timeline.loadSubmissions(problemId)">
+                  <fa-icon [icon]="faSyncAlt"></fa-icon>刷新
+                </a>
+              </span>
+          </h3>
+          <app-submission-timeline [problemId]="problemId" #timeline></app-submission-timeline>
+          <br/>
+          <br/>
+          <div  class="alert alert-success text-center">
+            在线hack功能仍在建设中。若你要对此代码进行hack，请将hack成功的数据发送给助教：朱宇博 / 张浩宇。
           </div>
         </div>
       </div>

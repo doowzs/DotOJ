@@ -14,11 +14,12 @@ import {
   faBoxOpen,
   faCheck,
   faEdit,
+  faSyncAlt,
   faTimes,
   faUser
 } from '@fortawesome/free-solid-svg-icons';
 import {take} from 'rxjs/operators';
-import {SubmissionViewDto} from "../../../../interfaces/submission.interfaces";
+import {Program, SubmissionViewDto} from "../../../../interfaces/submission.interfaces";
 import {SubmissionService} from "../../../services/submission.service";
 
 @Component({
@@ -28,6 +29,7 @@ import {SubmissionService} from "../../../services/submission.service";
 })
 export class SubmissionReviewDetailComponent implements OnInit {
   faEdit = faEdit;
+  faSyncAlt = faSyncAlt;
   reviewForm = this.formBuilder.group({
     scores: this.formBuilder.array(
       [this.formBuilder.control("", [Validators.required, Validators.min(0), Validators.max(10)])]
@@ -48,12 +50,14 @@ export class SubmissionReviewDetailComponent implements OnInit {
   public comment: string[];
   public submissionId: number[];
   public jumpAddress: string;
+  public submitting = false;
 
   constructor(
     private title: Title,
     private route: ActivatedRoute,
     private router: Router,
     private service: SubmissionReviewService,
+    private createService: SubmissionService,
     private formBuilder: FormBuilder
   ) {
     this.errorMessage = null;
@@ -117,9 +121,22 @@ export class SubmissionReviewDetailComponent implements OnInit {
       this.service.createReview(this.submissionId, this.problemId, this.score, this.comment)
           .subscribe(message => {
               alert(message);
-            this.router.navigate([this.jumpAddress]);
+              this.router.navigate([this.jumpAddress]);
           });
     }
+  }
+
+  public submit(program: Program): void {
+    this.submitting = true;
+    this.createService.createSingle(this.problemId, program)
+      .subscribe(submission => {
+        setTimeout(() => {
+          this.submitting = false;
+        }, 5000);
+      }, error => {
+        console.log(error);
+        this.submitting = false;
+      });
   }
 
 }
