@@ -114,7 +114,7 @@
                    [class.cross-validation-error]="comments.controls[i].invalid && (comments.controls[i].touched || comments.controls[i].dirty)"
                    [class.cross-validation-correct]="!(comments.controls[i].invalid && (comments.controls[i].touched || comments.controls[i].dirty))">
                 <p>2，对于这份代码，您有什么建议？（优点、不足等）</p>
-                <textarea class="form-style" rows="5" cols="70%" [formControlName]="i"> </textarea>
+                <textarea class="form-style" rows="5" cols="70%" [formControlName]="i"  placeholder="显示反馈时支持markdown语法"> </textarea>
                 <div
                   *ngIf="comments.controls[i].invalid && (comments.controls[i].dirty || comments.controls[i].touched)"
                   class="alert alert-danger">

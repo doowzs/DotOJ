@@ -34,7 +34,7 @@
     </div>
   </ng-template>
   <div class="row px-3" style="height: 56px;">
-    <div class="col col-12 col-md-6 col-lg-3 my-2">
+    <div *ngIf="!hacked" class="col col-12 col-md-6 col-lg-3 my-2">
       <select class="form-control custom-select" [ngModel]="language == null ? undefined : language.code"
         (ngModelChange)="changeLanguage($event)">
         <option disabled selected [value]="undefined" label="请选择语言"></option>

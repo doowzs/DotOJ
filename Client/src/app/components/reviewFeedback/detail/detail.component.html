@@ -16,7 +16,8 @@
       <div *ngFor="let feedback of feedbacks; let i=index">
         <h2>互评反馈 #{{i + 1}}</h2>
         <div>得分: {{feedback.score}}</div>
-        <div>建议: {{feedback.comments}}</div>
+        建议：<br/>
+        <markdown [data]="feedback.comments" katex></markdown>
         <br/>
         <br/>
       </div>
