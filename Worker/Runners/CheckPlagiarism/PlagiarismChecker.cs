@@ -40,13 +40,8 @@ namespace Worker.Runners.CheckPlagiarism
             Logger.LogInformation($"CheckPlagiarism Id={plagiarism.Id} Problem={plagiarism.ProblemId}");
             var stopwatch = Stopwatch.StartNew();
 
-            var submissionIds = await Context.Submissions
-                .Where(s => s.ProblemId == plagiarism.ProblemId && s.Verdict == Verdict.Accepted)
-                .GroupBy(s => s.UserId)
-                .Select(g => g.Min(s => s.Id))
-                .ToListAsync();
             var submissions = await Context.Submissions
-                .Where(s => submissionIds.Contains(s.Id))
+                .Where(s => s.ProblemId == plagiarism.ProblemId && s.Verdict == Verdict.Accepted)
                 .Include(s => s.User)
                 .ToListAsync();
 
@@ -150,12 +145,16 @@ namespace Worker.Runners.CheckPlagiarism
 
             try
             {
-                #region Write first accepted submissions into files
+                #region Write All accepted submissions into files
 
                 var suffixes = submissions.Select(s => s.Program.GetSourceFileExtension()).Distinct().ToList();
+                var dict = new Dictionary<string, int>();
+                
                 foreach (var submission in submissions)
                 {
-                    var filename = submission.User.ContestantId + submission.Program.GetSourceFileExtension();
+                    if (!dict.TryGetValue(submission.User.ContestantId, out var times)) times = 0;
+                    dict[submission.User.ContestantId] = times + 1;
+                    var filename = submission.User.ContestantId + "-" + dict[submission.User.ContestantId] + submission.Program.GetSourceFileExtension();
                     var fullPath = Path.Combine(sources, filename);
                     await using var stream = new FileStream(fullPath, FileMode.OpenOrCreate, FileAccess.Write);
                     await stream.WriteAsync(Convert.FromBase64String(submission.Program.Code));
