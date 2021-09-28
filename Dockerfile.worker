@@ -18,10 +18,7 @@ WORKDIR /scripts
 RUN bash ./C-Cpp.sh
 RUN bash ./Java.sh
 RUN bash ./Python.sh
-RUN bash ./Golang.sh
-RUN bash ./Rust.sh
-RUN bash ./CSharp.sh
-RUN bash ./Haskell.sh
+RUN apt-get install -y swi-prolog
 
 WORKDIR /app
 RUN rm -rf /isolate
