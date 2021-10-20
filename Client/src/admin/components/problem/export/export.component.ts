@@ -19,10 +19,10 @@ export class AdminProblemExportComponent {
   }
 
   public exportProblem() {
-    window.open('/api/v1/admin/problem/' + this.problemId + '/export', '_blank');
+    window.open('/api/v2/admin/problem/' + this.problemId + '/export', '_blank');
   }
 
   public exportProblemSubmissions(all: boolean = false) {
-    window.open('/api/v1/admin/problem/' + this.problemId + '/export/submissions?all=' + all, '_blank');
+    window.open('/api/v2/admin/problem/' + this.problemId + '/export/submissions?all=' + all, '_blank');
   }
 }
