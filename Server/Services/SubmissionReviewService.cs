@@ -77,7 +77,7 @@ namespace Server.Services
             
             var submissions = await Context.Submissions
                 .Where(s => s.ProblemId == problemId
-                            && s.Verdict == Verdict.Accepted)
+                            && (s.Verdict == Verdict.Accepted || s.Verdict == Verdict.Voided))
                 .Include(s => s.User)
                 .OrderBy(s => s.Id)
                 .ToListAsync();
