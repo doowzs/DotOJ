@@ -319,20 +319,6 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
             await PrepareTestCaseAsync(inline, testCase);
             await ExecuteProgramAsync(meta, Math.Max(bytes * 2, 10 * 1024 * 1024));
 
-            var output = Path.Combine(Jail, "output");
-            await using (var stream = new FileStream(output, FileMode.Open, FileAccess.Read))
-            using (var reader = new StreamReader(stream))
-            {
-                run.Stdout = await reader.ReadToEndAsync();
-            }
-
-            var stderr = Path.Combine(Jail, "stderr");
-            await using (var stream = new FileStream(stderr, FileMode.Open, FileAccess.Read))
-            using (var reader = new StreamReader(stream))
-            {
-                run.Stderr = await reader.ReadToEndAsync();
-            }
-
             var dict = await Box.ReadDictAsync(meta);
             if (dict.ContainsKey("status"))
             {
@@ -388,6 +374,42 @@ namespace Worker.Runners.JudgeSubmission.LanguageTypes.Base
             if (int.TryParse(dict["cg-mem"], out var memory))
             {
                 run.Memory = Math.Min(memory, MemoryLimit);
+            }
+
+            if (run.Verdict == Verdict.Accepted)
+            {
+                var output = Path.Combine(Jail, "output");
+                var stderr = Path.Combine(Jail, "stderr");
+                var outputInfo = new FileInfo(output);
+                var stderrInfo = new FileInfo(stderr);
+
+                if (outputInfo.Length > Math.Max(bytes * 2, 10 * 1024 * 1024))
+                {
+                    run.Verdict = Verdict.WrongAnswer;
+                    run.Stdout = String.Empty;
+                    run.Message = "Maximum output limit exceeded.";
+                }
+                else
+                {
+                    await using (var stream = new FileStream(output, FileMode.Open, FileAccess.Read))
+                    using (var reader = new StreamReader(stream))
+                    {
+                        run.Stdout = await reader.ReadToEndAsync();
+                    }
+                }
+
+                if (stderrInfo.Length > 10 * 1024 * 1024)
+                {
+                    run.Stderr = "Maximum stderr limit exceeded.";
+                }
+                else
+                {
+                    await using (var stream = new FileStream(stderr, FileMode.Open, FileAccess.Read))
+                    using (var reader = new StreamReader(stream))
+                    {
+                        run.Stderr = await reader.ReadToEndAsync();
+                    }
+                }
             }
 
             return run;
