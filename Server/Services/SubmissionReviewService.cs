@@ -77,7 +77,7 @@ namespace Server.Services
             
             var submissions = await Context.Submissions
                 .Where(s => s.ProblemId == problemId
-                            && (s.Verdict == Verdict.Accepted || s.Verdict == Verdict.Voided))
+                            && s.Verdict == Verdict.Accepted)
                 .Include(s => s.User)
                 .OrderBy(s => s.Id)
                 .ToListAsync();
@@ -157,6 +157,9 @@ namespace Server.Services
                 var submissionId = reviewDto.SubmissionId[i];
                 var score = reviewDto.Score[i];
                 var comment = reviewDto.Comments[i];
+                var codeSpecification = reviewDto.CodeSpecification[i];
+                var timeComplexity = reviewDto.TimeComplexity[i];
+                var spaceComplexity = reviewDto.SpaceComplexity[i];
                 if (await Context.SubmissionReviews
                     .Include(s => s.Submission)
                     .Where(s => s.SubmissionId == submissionId
@@ -171,6 +174,9 @@ namespace Server.Services
                     UserId = user.Id,
                     SubmissionId = submissionId,
                     Score = score,
+                    CodeSpecification = codeSpecification,
+                    TimeComplexity = timeComplexity,
+                    SpaceComplexity = spaceComplexity,
                     Comments = comment
                 };
                 await Context.SubmissionReviews.AddAsync(review);

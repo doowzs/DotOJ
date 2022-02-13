@@ -218,6 +218,9 @@ namespace Server.Services
                         if (submission != null)
                         {
                             legalReviews.Add(new SubmissionReviewInfoDto(review.Score,
+                                review.TimeComplexity,
+                                review.SpaceComplexity,
+                                review.CodeSpecification,
                                 review.Comments
                                 , new SubmissionViewDto(submission, Config), review.User.ContestantId));
                         }

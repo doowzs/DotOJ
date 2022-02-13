@@ -540,7 +540,11 @@ namespace Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<string>("CodeSpecification")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Comments")
+                        .ValueGeneratedOnUpdateSometimes()
                         .HasColumnType("text")
                         .HasColumnName("program");
 
@@ -551,8 +555,17 @@ namespace Server.Migrations
                         .IsRequired()
                         .HasColumnType("int");
 
+                    b.Property<string>("SpaceComplexity")
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("text")
+                        .HasColumnName("program");
+
                     b.Property<int>("SubmissionId")
                         .HasColumnType("int");
+
+                    b.Property<string>("TimeComplexity")
+                        .HasColumnType("text")
+                        .HasColumnName("program");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)");

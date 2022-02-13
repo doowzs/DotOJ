@@ -9,17 +9,22 @@
     <br/>
     <div *ngIf="!!feedbacks[0]">
       <div *ngIf="!!feedbacks[0].submission.program.languageInfo.mode && feedbacks.length !== 0"
-           [ngStyle]="{'height':'calc(100vh - 479px)'}">
+           [ngStyle]="{'height':'calc(100vh - 179px)'}">
         <editor [disabled]="true" [submissionId]="feedbacks[0].submission.id"
                 [program]="feedbacks[0].submission.program"></editor>
       </div>
       <div *ngFor="let feedback of feedbacks; let i=index">
         <h2>互评反馈 #{{i + 1}}</h2>
         <div>得分: {{feedback.score}}</div>
+        <div>时间复杂度: {{feedback.timeComplexity}}</div>
+        <div>空间复杂度: {{feedback.spaceComplexity}}</div>
+        <div>是否规范: {{feedback.codeSpecification}}</div>
+        <div *ngIf="feedback.comments !== ' '">
         建议：<br/>
         <markdown [data]="feedback.comments" katex></markdown>
         <br/>
         <br/>
+      </div>
       </div>
     </div>
   </div>

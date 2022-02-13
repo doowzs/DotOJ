@@ -13,13 +13,9 @@
 
         <p>3， 是否完成互评会计入程序设计部分成绩（提交互评即得分），完成基础量（3份）即可得到满分。若还想学习他人的代码，可继续参评。</p>
 
-        <p>4， 为了达到良好的学习效果，请每位同学<strong>认真评价，文明用语</strong>。在建议中，推荐模版如下：</p>
-        <blockquote>
+        <p>4， 为了达到良好的学习效果，请每位同学<strong>认真评价，文明用语</strong>。
 
-        <ul><li>优点：（可分点）<ul><li>1.</li><li>2.</li></ul></li><li>缺点：<ul><li>1</li><li>2</li></ul></li></ul>
-
-        </blockquote>
-        <p>5，互评时可以对代码<strong>进行hack</strong>，hack成功可加一定分数，详情请见<a href="https://oj.problemsolving.top/post/notice-2021-1/">此处</a>。我们会在结束后将hack成功的数据加入测试数据，并对所有代码重新评测。</p>
+        <p>5，互评时可以对代码<strong>进行hack</strong>，hack成功可加一定分数，详情请见<a href="https://oj.problemsolving.top/post/notice-2021-2/">此处</a>。我们会在结束后将hack成功的数据加入测试数据，并对所有代码重新评测。</p>
       </div>
       <br />
       <br />
@@ -53,7 +49,7 @@
         <div *ngIf="reviewMap.get(submission.id) === reviewId">
           <h2>代码评分 #{{reviewMap.get(submission.id)}}</h2>
           <div *ngIf="!!submission.program.languageInfo.mode"
-               [ngStyle]="{'height':'calc(100vh - 379px)'}">
+               [ngStyle]="{'height':'calc(100vh - 179px)'}">
             <editor [disabled]="true" [hacked]="true"  [problemId]="problemId" [program]="submission.program" (submit)="submit($event)"></editor>
             <br/>
             <br/>
@@ -107,13 +103,69 @@
             </div>
           </div>
         </div>
+        <div formArrayName="timeComplexity_">
+          <div *ngFor="let submission of submissions; let i=index">
+            <div *ngIf="reviewMap.get(submission.id) === reviewId">
+              <div class="cross-validation"
+                   [class.cross-validation-error]="timeComplexity_.controls[i].invalid && (timeComplexity_.controls[i].touched || timeComplexity_.controls[i].dirty)"
+                   [class.cross-validation-correct]="!(timeComplexity_.controls[i].invalid && (timeComplexity_.controls[i].touched || timeComplexity_.controls[i].dirty))">
+                <p>2，这份代码的时间复杂度（最坏情况）是多少？ </p>
+                <textarea class="form-style" rows="5" cols="70%" [formControlName]="i"  placeholder="显示反馈时支持markdown语法"> </textarea>
+                <div
+                  *ngIf="comments.controls[i].invalid && (comments.controls[i].dirty || comments.controls[i].touched)"
+                  class="alert alert-danger">
+                  <span *ngIf="comments.controls[i].errors?.required"> 需在此填写时间复杂度 </span>
+                  <span *ngIf="comments.controls[i].errors?.minlength"> 长度不足 </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div formArrayName="spaceComplexity_">
+          <div *ngFor="let submission of submissions; let i=index">
+            <div *ngIf="reviewMap.get(submission.id) === reviewId">
+              <div class="cross-validation"
+                   [class.cross-validation-error]="spaceComplexity_.controls[i].invalid && (spaceComplexity_.controls[i].touched || spaceComplexity_.controls[i].dirty)"
+                   [class.cross-validation-correct]="!(spaceComplexity_.controls[i].invalid && (spaceComplexity_.controls[i].touched || spaceComplexity_.controls[i].dirty))">
+                <p>3，这份代码的空间复杂度是多少？ </p>
+                <textarea class="form-style" rows="5" cols="70%" [formControlName]="i"  placeholder="显示反馈时支持markdown语法"> </textarea>
+                <div
+                  *ngIf="comments.controls[i].invalid && (comments.controls[i].dirty || comments.controls[i].touched)"
+                  class="alert alert-danger">
+                  <span *ngIf="comments.controls[i].errors?.required"> 需在此填写空间复杂度 </span>
+                  <span *ngIf="comments.controls[i].errors?.minlength"> 长度不足 </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div formArrayName="codeSpecifications">
+          <div *ngFor="let submission of submissions; let i=index">
+            <div *ngIf="reviewMap.get(submission.id) === reviewId">
+              <div class="cross-validation"
+                   [class.cross-validation-error]="spaceComplexity_.controls[i].invalid && (spaceComplexity_.controls[i].touched || spaceComplexity_.controls[i].dirty)"
+                   [class.cross-validation-correct]="!(spaceComplexity_.controls[i].invalid && (spaceComplexity_.controls[i].touched || spaceComplexity_.controls[i].dirty))">
+                <p>4，这份代码的可读性是否较高？ </p>
+                <div *ngFor="let item of items">
+                  <input type="checkbox" [formControlName]="item">
+                  <span>{{ item }}</span>
+                <div
+                  *ngIf="comments.controls[i].invalid && (comments.controls[i].dirty || comments.controls[i].touched)"
+                  class="alert alert-danger">
+                  <span *ngIf="comments.controls[i].errors?.required"> 需在此填写空间复杂度 </span>
+                  <span *ngIf="comments.controls[i].errors?.minlength"> 长度不足 </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <div formArrayName="comments">
           <div *ngFor="let submission of submissions; let i=index">
             <div *ngIf="reviewMap.get(submission.id) === reviewId">
               <div class="cross-validation"
                    [class.cross-validation-error]="comments.controls[i].invalid && (comments.controls[i].touched || comments.controls[i].dirty)"
                    [class.cross-validation-correct]="!(comments.controls[i].invalid && (comments.controls[i].touched || comments.controls[i].dirty))">
-                <p>2，对于这份代码，您有什么建议？（优点、不足等）</p>
+                <p>5，对于这份代码，您有什么建议？（优点、不足等）</p>
                 <textarea class="form-style" rows="5" cols="70%" [formControlName]="i"  placeholder="显示反馈时支持markdown语法"> </textarea>
                 <div
                   *ngIf="comments.controls[i].invalid && (comments.controls[i].dirty || comments.controls[i].touched)"

@@ -27,12 +27,15 @@ export class SubmissionReviewService {
     }
   }
 
-  public createReview(submissionId: number[], problemId: number, score: number[], comments: string[]): Observable<string> {
+  public createReview(submissionId: number[], problemId: number, score: number[], timeComplexity: string[], spaceComplexity: string[], codeSpecification: string[], comments: string[]): Observable<string> {
     try {
       return this.http.post<string>('/submissionReview', {
         submissionId: submissionId,
         problemId: problemId,
         score: score,
+        timeComplexity: timeComplexity,
+        spaceComplexity: spaceComplexity,
+        codeSpecification: codeSpecification,
         comments: comments,
       });
     } catch (err) {

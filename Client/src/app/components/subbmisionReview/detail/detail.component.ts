@@ -35,8 +35,17 @@ export class SubmissionReviewDetailComponent implements OnInit {
       [this.formBuilder.control("", [Validators.required, Validators.min(0), Validators.max(10)])]
     ),
     comments: this.formBuilder.array(
-      [this.formBuilder.control("", [Validators.required, Validators.minLength(5), Validators.maxLength(10000)])]
-    )
+      [this.formBuilder.control("", [])]
+    ),
+    codeSpecifications: this.formBuilder.array(
+      [this.formBuilder.control("", [Validators.required])]
+    ),
+    timeComplexity_: this.formBuilder.array(
+      [this.formBuilder.control("", [Validators.required, Validators.minLength(3), Validators.maxLength(10000)])]
+    ),
+    spaceComplexity_: this.formBuilder.array(
+      [this.formBuilder.control("", [Validators.required, Validators.minLength(3), Validators.maxLength(10000)])]
+    ),
   });
 
   public user: IUser;
@@ -47,10 +56,14 @@ export class SubmissionReviewDetailComponent implements OnInit {
   public reviewId: number;
   public reviewMap: Map<number, number>;
   public score: number[];
+  public codeSpecification: string[];
+  public timeComplexity: string[];
+  public spaceComplexity: string[];
   public comment: string[];
   public submissionId: number[];
   public jumpAddress: string;
   public submitting = false;
+  public items: string[] = ['是', '否'];
 
   constructor(
     private title: Title,
@@ -73,12 +86,26 @@ export class SubmissionReviewDetailComponent implements OnInit {
     return this.reviewForm.get('comments') as FormArray;
   }
 
+  get codeSpecifications() {
+    return this.reviewForm.get('codeSpecifications') as FormArray;
+  }
+
+  get timeComplexity_() {
+    return this.reviewForm.get('timeComplexity_') as FormArray;
+  }
+
+  get spaceComplexity_() {
+    return this.reviewForm.get('spaceCompelexity_') as FormArray;
+  }
 
   ngOnInit() {
     this.title.setTitle('代码互评');
     this.jumpAddress = '/contest/' + this.contestId;
     this.reviewId = 0;
     this.score = [];
+    this.codeSpecification = [];
+    this.timeComplexity = [];
+    this.spaceComplexity = [];
     this.comment = [];
     this.submissionId = [];
     this.service.getReviewList(this.problemId)
@@ -92,7 +119,10 @@ export class SubmissionReviewDetailComponent implements OnInit {
         }
         for (let i = 1; i < submissions.length; i = i + 1) {
           this.scores.push(this.formBuilder.control("", [Validators.required, Validators.min(0), Validators.max(10)]));
-          this.comments.push(this.formBuilder.control("", [Validators.required, Validators.minLength(5), Validators.maxLength(10000)]));
+          this.comments.push(this.formBuilder.control("", []));
+          this.timeComplexity_.push(this.formBuilder.control("", [Validators.required, Validators.minLength(5), Validators.maxLength(10000)]));
+          this.spaceComplexity_.push(this.formBuilder.control("", [Validators.required, Validators.minLength(5), Validators.maxLength(10000)]));
+          this.codeSpecifications.push(this.formBuilder.control("", [Validators.required]));
         }
       },(err) => {
         this.errorMessage = err.error;
@@ -117,8 +147,11 @@ export class SubmissionReviewDetailComponent implements OnInit {
         this.comment.push(this.comments.controls[i].value);
         this.score.push(this.scores.controls[i].value);
         this.submissionId.push(this.submissions[i].id);
+        this.codeSpecification.push(this.codeSpecifications.controls[i].value);
+        this.timeComplexity.push(this.timeComplexity_.controls[i].value);
+        this.spaceComplexity.push(this.spaceComplexity_.controls[i].value);
       }
-      this.service.createReview(this.submissionId, this.problemId, this.score, this.comment)
+      this.service.createReview(this.submissionId, this.problemId, this.score, this.timeComplexity, this.spaceComplexity, this.codeSpecification, this.comment)
           .subscribe(message => {
               alert(message);
               this.router.navigate([this.jumpAddress]);

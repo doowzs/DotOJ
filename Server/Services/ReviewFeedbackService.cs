@@ -33,7 +33,7 @@ namespace Server.Services
                 var reviewInfoDtoList = new List<SubmissionReviewInfoDto>();
                 foreach (var review in reviews)
                 {
-                    reviewInfoDtoList.Add(new SubmissionReviewInfoDto(review.Score, review.Comments,
+                    reviewInfoDtoList.Add(new SubmissionReviewInfoDto(review.Score, review.TimeComplexity, review.SpaceComplexity, review.CodeSpecification, review.Comments,
                         new SubmissionViewDto(review.Submission, Config), user.ContestantId));
                 }
                 return reviewInfoDtoList;

@@ -9,8 +9,8 @@ using Shared;
 namespace Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20210917033908_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20220213163427_initialCreate")]
+    partial class initialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -542,7 +542,11 @@ namespace Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<string>("CodeSpecification")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Comments")
+                        .ValueGeneratedOnUpdateSometimes()
                         .HasColumnType("text")
                         .HasColumnName("program");
 
@@ -553,8 +557,17 @@ namespace Server.Migrations
                         .IsRequired()
                         .HasColumnType("int");
 
+                    b.Property<string>("SpaceComplexity")
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("text")
+                        .HasColumnName("program");
+
                     b.Property<int>("SubmissionId")
                         .HasColumnType("int");
+
+                    b.Property<string>("TimeComplexity")
+                        .HasColumnType("text")
+                        .HasColumnName("program");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)");
