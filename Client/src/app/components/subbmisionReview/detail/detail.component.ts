@@ -34,17 +34,17 @@ export class SubmissionReviewDetailComponent implements OnInit {
     scores: this.formBuilder.array(
       [this.formBuilder.control("", [Validators.required, Validators.min(0), Validators.max(10)])]
     ),
-    comments: this.formBuilder.array(
-      [this.formBuilder.control("", [])]
-    ),
-    codeSpecifications: this.formBuilder.array(
-      [this.formBuilder.control("", [Validators.required])]
-    ),
     timeComplexity_: this.formBuilder.array(
       [this.formBuilder.control("", [Validators.required, Validators.minLength(3), Validators.maxLength(10000)])]
     ),
     spaceComplexity_: this.formBuilder.array(
       [this.formBuilder.control("", [Validators.required, Validators.minLength(3), Validators.maxLength(10000)])]
+    ),
+    codeSpecifications: this.formBuilder.array(
+      [this.formBuilder.control("", [Validators.required])]
+    ),
+    comments: this.formBuilder.array(
+      [this.formBuilder.control("", [])]
     ),
   });
 
@@ -95,7 +95,7 @@ export class SubmissionReviewDetailComponent implements OnInit {
   }
 
   get spaceComplexity_() {
-    return this.reviewForm.get('spaceCompelexity_') as FormArray;
+    return this.reviewForm.get('spaceComplexity_') as FormArray;
   }
 
   ngOnInit() {
