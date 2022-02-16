@@ -10,7 +10,7 @@
         - {{ contest.endTime.format('YYYY-MM-DD HH:mm') }}
       </p>
       <p class="my-3" *ngIf="anonymous">
-        <a class="btn btn-outline-success" routerLink="/authentication/login">
+        <a class="btn btn-outline-success" routerLink="/auth/login">
           <fa-icon [icon]="faSignInAlt"></fa-icon>登陆系统
         </a>
       </p>

@@ -77,7 +77,7 @@
           <br/>
           <br/>
           <div  class="alert alert-success text-center">
-            在线hack功能仍在建设中。若你要对此代码进行hack，请将hack成功的数据发送给助教：朱宇博 / 张浩宇。
+            若你要对此代码进行hack，请将hack成功的数据发送给助教：朱宇博 / 张浩宇。
           </div>
         </div>
       </div>
@@ -112,10 +112,10 @@
                 <p>2，这份代码的时间复杂度（最坏情况）是多少？ </p>
                 <textarea class="form-style" rows="5" cols="70%" [formControlName]="i"  placeholder="显示反馈时支持markdown语法"> </textarea>
                 <div
-                  *ngIf="comments.controls[i].invalid && (comments.controls[i].dirty || comments.controls[i].touched)"
+                  *ngIf="timeComplexity_.controls[i].invalid && (timeComplexity_.controls[i].dirty || timeComplexity_.controls[i].touched)"
                   class="alert alert-danger">
-                  <span *ngIf="comments.controls[i].errors?.required"> 需在此填写时间复杂度 </span>
-                  <span *ngIf="comments.controls[i].errors?.minlength"> 长度不足 </span>
+                  <span *ngIf="timeComplexity_.controls[i].errors?.required"> 需在此填写时间复杂度 </span>
+                  <span *ngIf="timeComplexity_.controls[i].errors?.minlength"> 长度不足 </span>
                 </div>
               </div>
             </div>
@@ -130,10 +130,10 @@
                 <p>3，这份代码的空间复杂度是多少？ </p>
                 <textarea class="form-style" rows="5" cols="70%" [formControlName]="i"  placeholder="显示反馈时支持markdown语法"> </textarea>
                 <div
-                  *ngIf="comments.controls[i].invalid && (comments.controls[i].dirty || comments.controls[i].touched)"
+                  *ngIf="spaceComplexity_.controls[i].invalid && (spaceComplexity_.controls[i].dirty || spaceComplexity_.controls[i].touched)"
                   class="alert alert-danger">
-                  <span *ngIf="comments.controls[i].errors?.required"> 需在此填写空间复杂度 </span>
-                  <span *ngIf="comments.controls[i].errors?.minlength"> 长度不足 </span>
+                  <span *ngIf="spaceComplexity_.controls[i].errors?.required"> 需在此填写空间复杂度 </span>
+                  <span *ngIf="spaceComplexity_.controls[i].errors?.minlength"> 长度不足 </span>
                 </div>
               </div>
             </div>
@@ -143,17 +143,17 @@
           <div *ngFor="let submission of submissions; let i=index">
             <div *ngIf="reviewMap.get(submission.id) === reviewId">
               <div class="cross-validation"
-                   [class.cross-validation-error]="spaceComplexity_.controls[i].invalid && (spaceComplexity_.controls[i].touched || spaceComplexity_.controls[i].dirty)"
-                   [class.cross-validation-correct]="!(spaceComplexity_.controls[i].invalid && (spaceComplexity_.controls[i].touched || spaceComplexity_.controls[i].dirty))">
+                   [class.cross-validation-error]="codeSpecifications.controls[i].invalid && (codeSpecifications.controls[i].touched || codeSpecifications.controls[i].dirty)"
+                   [class.cross-validation-correct]="!(codeSpecifications.controls[i].invalid && (codeSpecifications.controls[i].touched || codeSpecifications.controls[i].dirty))">
                 <p>4，这份代码的可读性是否较高？ </p>
                 <div *ngFor="let item of items">
                   <input type="checkbox" [formControlName]="item">
                   <span>{{ item }}</span>
                 <div
-                  *ngIf="comments.controls[i].invalid && (comments.controls[i].dirty || comments.controls[i].touched)"
+                  *ngIf="codeSpecifications.controls[i].invalid && (codeSpecifications.controls[i].dirty || codeSpecifications.controls[i].touched)"
                   class="alert alert-danger">
-                  <span *ngIf="comments.controls[i].errors?.required"> 需在此填写空间复杂度 </span>
-                  <span *ngIf="comments.controls[i].errors?.minlength"> 长度不足 </span>
+                  <span *ngIf="codeSpecifications.controls[i].errors?.required"> 需在此填写空间复杂度 </span>
+                  <span *ngIf="codeSpecifications.controls[i].errors?.minlength"> 长度不足 </span>
                 </div>
               </div>
             </div>
