@@ -544,7 +544,6 @@ namespace Server.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Comments")
-                        .ValueGeneratedOnUpdateSometimes()
                         .HasColumnType("text")
                         .HasColumnName("program");
 
@@ -556,16 +555,13 @@ namespace Server.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("SpaceComplexity")
-                        .ValueGeneratedOnUpdateSometimes()
-                        .HasColumnType("text")
-                        .HasColumnName("program");
+                        .HasColumnType("longtext");
 
                     b.Property<int>("SubmissionId")
                         .HasColumnType("int");
 
                     b.Property<string>("TimeComplexity")
-                        .HasColumnType("text")
-                        .HasColumnName("program");
+                        .HasColumnType("longtext");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)");

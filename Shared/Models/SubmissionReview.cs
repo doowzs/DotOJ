@@ -17,8 +17,8 @@ namespace Shared.Models
 
         [Required] public int? Score { get; set; }
 
-        [DefaultValue(" "), Column("program", TypeName = "text")] public string TimeComplexity { get; set; }
-        [DefaultValue(" "), Column("program", TypeName = "text")] public string SpaceComplexity { get; set; }
+        [DefaultValue(" ")] public string TimeComplexity { get; set; }
+        [DefaultValue(" ")] public string SpaceComplexity { get; set; }
         
         [DefaultValue(" ")] public string CodeSpecification { get; set; }
         [Column("program", TypeName = "text")] public string Comments { get; set; }
