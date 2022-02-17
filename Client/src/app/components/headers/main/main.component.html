@@ -52,12 +52,10 @@
                   <fa-icon [icon]="faTools"></fa-icon>
                   <span>管理页面</span>
                 </a>
-                <div *igIf="isExamMode === false || canViewAdminPages">
-                  <a ngbDropdownItem routerLink="/auth/profile">
-                    <fa-icon [icon]="faCog"></fa-icon>
-                    <span>更改密码</span>
-                  </a>
-                </div>
+                <a *ngIf="isExamMode===false || (canViewAdminPages | async)" ngbDropdownItem routerLink="/auth/profile">
+                  <fa-icon [icon]="faCog"></fa-icon>
+                  <span>更改密码</span>
+                </a>
                 <a ngbDropdownItem class="text-danger"
                    routerLink="/auth/logout" [state]="{'local': true}">
                   <fa-icon [icon]="faSignOutAlt"></fa-icon>
