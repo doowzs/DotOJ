@@ -48,8 +48,10 @@ export class AdminContestEditorComponent implements OnInit {
   }
 
   public deleteContest() {
-    this.service.deleteSingle(this.contestId).subscribe(() => {
-      this.router.navigate(['/admin/contest']);
-    }, error => console.error(error));
+    if (confirm('Are you sure you want to delete contest #' + this.contestId + '?')) {
+      this.service.deleteSingle(this.contestId).subscribe(() => {
+        this.router.navigate(['/admin/contest']);
+      }, error => console.error(error));
+    }
   }
 }
