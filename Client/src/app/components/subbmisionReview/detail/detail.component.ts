@@ -120,8 +120,8 @@ export class SubmissionReviewDetailComponent implements OnInit {
         for (let i = 1; i < submissions.length; i = i + 1) {
           this.scores.push(this.formBuilder.control("", [Validators.required, Validators.min(0), Validators.max(10)]));
           this.comments.push(this.formBuilder.control("", []));
-          this.timeComplexity_.push(this.formBuilder.control("", [Validators.required, Validators.minLength(5), Validators.maxLength(10000)]));
-          this.spaceComplexity_.push(this.formBuilder.control("", [Validators.required, Validators.minLength(5), Validators.maxLength(10000)]));
+          this.timeComplexity_.push(this.formBuilder.control("", [Validators.required, Validators.minLength(3), Validators.maxLength(10000)]));
+          this.spaceComplexity_.push(this.formBuilder.control("", [Validators.required, Validators.minLength(3), Validators.maxLength(10000)]));
           this.codeSpecifications.push(this.formBuilder.control("", [Validators.required]));
         }
       },(err) => {

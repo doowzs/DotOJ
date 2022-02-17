@@ -103,6 +103,8 @@
             </div>
           </div>
         </div>
+        <br/>
+        <br/>
         <div formArrayName="timeComplexity_">
           <div *ngFor="let submission of submissions; let i=index">
             <div *ngIf="reviewMap.get(submission.id) === reviewId">
@@ -121,6 +123,8 @@
             </div>
           </div>
         </div>
+        <br/>
+        <br/>
         <div formArrayName="spaceComplexity_">
           <div *ngFor="let submission of submissions; let i=index">
             <div *ngIf="reviewMap.get(submission.id) === reviewId">
@@ -139,6 +143,8 @@
             </div>
           </div>
         </div>
+        <br/>
+        <br/>
         <div formArrayName="codeSpecifications">
           <div *ngFor="let submission of submissions; let i=index">
             <div *ngIf="reviewMap.get(submission.id) === reviewId">
@@ -146,11 +152,9 @@
                    [class.cross-validation-error]="codeSpecifications.controls[i].invalid && (codeSpecifications.controls[i].touched || codeSpecifications.controls[i].dirty)"
                    [class.cross-validation-correct]="!(codeSpecifications.controls[i].invalid && (codeSpecifications.controls[i].touched || codeSpecifications.controls[i].dirty))">
                 <p>4，这份代码的可读性是否较高？ </p>
-                <div *ngFor="let item of items">
-                  <input type="checkbox" [formControlName]="item">
-                  <span>{{ item }}</span>
-                <div
-                  *ngIf="codeSpecifications.controls[i].invalid && (codeSpecifications.controls[i].dirty || codeSpecifications.controls[i].touched)"
+                  <input type="radio" value="是" [formControlName]="i">是
+                  <input type="radio" value="否" [formControlName]="i">否
+                <div *ngIf="codeSpecifications.controls[i].invalid && (codeSpecifications.controls[i].dirty || codeSpecifications.controls[i].touched)"
                   class="alert alert-danger">
                   <span *ngIf="codeSpecifications.controls[i].errors?.required"> 需在此填写空间复杂度 </span>
                   <span *ngIf="codeSpecifications.controls[i].errors?.minlength"> 长度不足 </span>
@@ -159,14 +163,15 @@
             </div>
           </div>
         </div>
-        </div>
+        <br/>
+        <br/>
         <div formArrayName="comments">
           <div *ngFor="let submission of submissions; let i=index">
             <div *ngIf="reviewMap.get(submission.id) === reviewId">
               <div class="cross-validation"
                    [class.cross-validation-error]="comments.controls[i].invalid && (comments.controls[i].touched || comments.controls[i].dirty)"
                    [class.cross-validation-correct]="!(comments.controls[i].invalid && (comments.controls[i].touched || comments.controls[i].dirty))">
-                <p>5，对于这份代码，您有什么建议？（优点、不足等）</p>
+                <p>5，（选填）对于这份代码，您有什么建议？（优点、不足等）</p>
                 <textarea class="form-style" rows="5" cols="70%" [formControlName]="i"  placeholder="显示反馈时支持markdown语法"> </textarea>
                 <div
                   *ngIf="comments.controls[i].invalid && (comments.controls[i].dirty || comments.controls[i].touched)"
