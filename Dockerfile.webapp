@@ -1,4 +1,4 @@
-FROM ccr.ccs.tencentyun.com/dotoj/node:14 AS node-base
+FROM reg.nju.edu.cn/psv/dotoj/node:16 AS node-base
 ARG VERSION=latest
 WORKDIR /src
 COPY ./Client ./
@@ -6,7 +6,7 @@ RUN sed -i 's/"version": "1.0.0"/"version": "'"${VERSION}"'"/' /src/package.json
 RUN npm install
 RUN npm run build -- --prod # build:ssr for server side render
 
-FROM ccr.ccs.tencentyun.com/dotoj/env:latest AS build-env
+FROM reg.nju.edu.cn/psv/dotoj/env:latest AS build-env
 ARG VERSION=latest
 WORKDIR /src
 COPY . ./
@@ -15,7 +15,7 @@ COPY --from=node-base /src/dist /src/Server/wwwroot/dist
 RUN sed -i 's/Version = "latest"/Version = "'"${VERSION}"'"/' /src/Shared/Configs/ApplicationConfig.cs
 RUN dotnet publish Server -c Release -o /app/out
 
-FROM ccr.ccs.tencentyun.com/dotoj/runtime:5.0
+FROM reg.nju.edu.cn/psv/dotoj/runtime:6.0
 WORKDIR /app
 COPY --from=build-env /app/out .
 ENTRYPOINT ["dotnet", "Server.dll"]

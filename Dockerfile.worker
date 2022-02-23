@@ -1,10 +1,10 @@
-FROM ccr.ccs.tencentyun.com/dotoj/env:latest AS build-env
+FROM reg.nju.edu.cn/psv/dotoj/env:latest AS build-env
 WORKDIR /src
 
 COPY . ./
 RUN dotnet publish Worker -c Release -o /app/out
 
-FROM ccr.ccs.tencentyun.com/dotoj/sdk:5.0
+FROM reg.nju.edu.cn/psv/dotoj/sdk:6.0
 
 # Build isolate
 RUN apt-get install -y curl wget build-essential libcap-dev

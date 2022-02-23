@@ -4,6 +4,8 @@ Also known as: .OJ, NTOJ, OJ Core, etc.
 
 Yet another online judge built on .NET Core tech stack, with ASP.NET and Angular.
 
+> This branch (`2-njucs`) is for teaching use of CS Dept. at Nanjing University only.
+
 ## Dependencies
 
 DotOJ depends on multiple open-source projects:
@@ -48,7 +50,7 @@ Besides that, for Debian 8+, you also need to add `cgroup_enable=memory swapacco
 
 ### Docker Containers
 
-Docker containers are published in registry and namespace `ccr.ccs.tencentyun.com/dotoj`. There are six containers to build and run services:
+Docker containers are published in registry and namespace `reg.nju.edu.cn/psv/dotoj`. There are six containers to build and run services:
 
 - `sdk`: .NET Core SDK.
 - `runtime`: ASP.NET runtime.

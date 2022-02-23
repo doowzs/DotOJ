@@ -1,11 +1,10 @@
 variables:
-  CI_REGISTRY: ccr.ccs.tencentyun.com
-  ENV_IMAGE: ccr.ccs.tencentyun.com/dotoj/env
-  WEBAPP_IMAGE: ccr.ccs.tencentyun.com/dotoj/webapp
-  WORKER_IMAGE: ccr.ccs.tencentyun.com/dotoj/worker
+  CI_REGISTRY: reg.nju.edu.cn
+  ENV_IMAGE: reg.nju.edu.cn/psv/dotoj/env
+  WEBAPP_IMAGE: reg.nju.edu.cn/psv/dotoj/webapp
+  WORKER_IMAGE: reg.nju.edu.cn/psv/dotoj/worker
 
 stages:
-  - test
   - env
   - build
   - release
@@ -14,30 +13,6 @@ stages:
   before_script:
     - chmod +x ./release.sh
     - echo "${CI_REGISTRY_PASS}" | docker login -u "${CI_REGISTRY_USER}" --password-stdin ${CI_REGISTRY}
-
-test:build:
-  only:
-    - merge_requests
-  when: manual
-  stage: test
-  image: ccr.ccs.tencentyun.com/dotoj/sdk:3.1
-  variables:
-    APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE: 1
-  before_script:
-    - sed -i 's/deb.debian.org/mirrors.aliyun.com/' /etc/apt/sources.list
-    - sed -i 's/security.debian.org/mirrors.aliyun.com/' /etc/apt/sources.list
-    - apt-get update -yqq
-    - apt-get install curl gnupg -yqq
-    - apt-get install build-essential -yqq
-    - curl -sL https://deb.nodesource.com/setup_14.x | bash -
-    - sed -i 's|deb.nodesource.com/node|mirrors.tuna.tsinghua.edu.cn/nodesource/deb|' /etc/apt/sources.list.d/nodesource.list
-    - apt-get update -yqq
-    - apt-get install -y nodejs
-    - npm config set registry https://registry.npm.taobao.org
-  script:
-    - dotnet restore
-    - dotnet publish WebApp -c Release
-    - dotnet publish Worker -c Release
 
 env:docker:
   only:
@@ -89,7 +64,7 @@ release:package:
   image: alpine:latest
   before_script:
     - chmod +x ./release.sh
-    - sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+    - sed -i 's/dl-cdn.alpinelinux.org/mirrors.nju.edu.cn/g' /etc/apk/repositories
     - apk add zip
   script:
     - ./release.sh package release.zip development-${CI_COMMIT_BRANCH}-${CI_COMMIT_SHA} ${CI_COMMIT_TAG:1}
