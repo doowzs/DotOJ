@@ -4,7 +4,7 @@ WORKDIR /src
 COPY ./Client ./
 RUN sed -i 's/"version": "1.0.0"/"version": "'"${VERSION}"'"/' /src/package.json
 RUN npm install
-RUN npm run build -- --prod # build:ssr for server side render
+RUN npm run build -- --configuration production # build:ssr for server side render
 
 FROM reg.nju.edu.cn/psv/dotoj/env:latest AS build-env
 ARG VERSION=latest
