@@ -1,60 +1,51 @@
-variables:
-  CI_REGISTRY: reg.nju.edu.cn
-  ENV_IMAGE: reg.nju.edu.cn/psv/dotoj/env
-  WEBAPP_IMAGE: reg.nju.edu.cn/psv/dotoj/webapp
-  WORKER_IMAGE: reg.nju.edu.cn/psv/dotoj/worker
-
 stages:
   - env
   - build
   - release
 
-.docker_login: &docker-login
+.setup: &setup
   before_script:
-    - chmod +x ./release.sh
-    - echo "${CI_REGISTRY_PASS}" | docker login -u "${CI_REGISTRY_USER}" --password-stdin ${CI_REGISTRY}
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"${CI_REGISTRY}\":{\"auth\":\"$(printf "%s:%s" "${CI_REGISTRY_USER}" "${CI_REGISTRY_PASSWORD}" | base64 | tr -d '\n')\"}}}" > /kaniko/.docker/config.json
 
 env:docker:
   only:
     - tags
   stage: env
-  image: docker:stable
-  variables:
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_TLS_CERTDIR: ''
-  services:
-    - docker:dind
-  <<: *docker-login
+  image: reg.nju.edu.cn/psv/dotoj/kaniko:debug
+  <<: *setup
   script:
-    - ./release.sh env ${ENV_IMAGE} latest
+    - >-
+      /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/Dockerfile.env"
+      --destination "${CI_REGISTRY_IMAGE}/env:latest"
 
 build:webapp:
   only:
     - tags
   stage: build
-  image: docker:stable
-  variables:
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_TLS_CERTDIR: ''
-  services:
-    - docker:dind
-  <<: *docker-login
+  image: reg.nju.edu.cn/psv/dotoj/kaniko:debug
+  <<: *setup
   script:
-    - ./release.sh webapp ${WEBAPP_IMAGE} development-${CI_COMMIT_BRANCH}-${CI_COMMIT_SHA} ${CI_COMMIT_TAG}
+    - >-
+      /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/Dockerfile.webapp"
+      --destination "${CI_REGISTRY_IMAGE}/webapp:${CI_COMMIT_TAG:1}"
 
 build:worker:
   only:
     - tags
   stage: build
-  image: docker:stable
-  variables:
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_TLS_CERTDIR: ''
-  services:
-    - docker:dind
-  <<: *docker-login
+  image: reg.nju.edu.cn/psv/dotoj/kaniko:debug
+  <<: *setup
   script:
-    - ./release.sh worker ${WORKER_IMAGE} development-${CI_COMMIT_BRANCH}-${CI_COMMIT_SHA} ${CI_COMMIT_TAG:1}
+    - >-
+      /kaniko/executor
+      --context "${CI_PROJECT_DIR}"
+      --dockerfile "${CI_PROJECT_DIR}/Dockerfile.worker"
+      --destination "${CI_REGISTRY_IMAGE}/worker:${CI_COMMIT_TAG:1}"
 
 release:package:
   only:
