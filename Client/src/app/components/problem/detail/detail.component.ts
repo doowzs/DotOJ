@@ -4,7 +4,6 @@ import {Title} from '@angular/platform-browser';
 import {Subject} from 'rxjs';
 import {saveAs} from 'file-saver';
 import {take, takeUntil} from 'rxjs/operators';
-import {Label} from "ng2-charts";
 import * as excel from 'exceljs';
 import * as moment from 'moment';
 
@@ -71,12 +70,14 @@ export class ProblemDetailComponent implements OnInit, OnDestroy {
   public scoreMessage: hackInfo[];
   public activePaneId: number = 1;
 
-  public statsChartLabels: Label[] = [];
+  public statsChartLabels: string[] = [];
   public statsChartData: number[] = [];
   public statsChartOptions: ChartOptions = {
     responsive: true,
-    legend: {
-      position: 'left'
+    plugins: {
+      legend: {
+        position: 'left'
+      }
     }
   }
 

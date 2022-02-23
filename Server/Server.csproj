@@ -42,7 +42,7 @@
 
     <Target Name="PublishSpaFiles" AfterTargets="ComputeFilesToPublish">
         <Exec Condition=" !Exists('wwwroot\dist') And !Exists('..\Client\node_modules') " WorkingDirectory="..\Client" Command="npm install" />
-        <Exec Condition=" !Exists('wwwroot\dist') " WorkingDirectory="..\Client" Command="npm run build -- --prod --output-path=../Server/wwwroot/dist" />
+        <Exec Condition=" !Exists('wwwroot\dist') " WorkingDirectory="..\Client" Command="npm run build -- --configuration production --output-path=../Server/wwwroot/dist" />
         <ItemGroup>
             <DistFiles Include="wwwroot\dist\**;" />
             <ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">

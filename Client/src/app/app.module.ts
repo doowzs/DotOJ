@@ -36,7 +36,7 @@ import {ChangelogComponent} from './components/miscellaneous/changelog/changelog
 import {ClipboardModule} from 'ngx-clipboard';
 import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
 import {FontAwesomeModule} from '@fortawesome/angular-fontawesome';
-import {ChartsModule} from 'ng2-charts';
+import {NgChartsModule} from 'ng2-charts';
 import {MarkdownModule} from '../lib/markdown/markdown.module';
 import {EditorModule} from '../lib/editor/editor.module';
 import {VerdictModule} from '../lib/verdict/verdict.module';
@@ -106,7 +106,7 @@ const loadApplicationConfig = (service: ApplicationConfigService) => {
     ClipboardModule,
     NgbModule,
     FontAwesomeModule,
-    ChartsModule,
+    NgChartsModule,
     EditorModule.forRoot(),
     MarkdownModule.forRoot(),
     VerdictModule.forRoot()
