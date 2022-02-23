@@ -12,7 +12,9 @@ env:docker:
   only:
     - tags
   stage: env
-  image: reg.nju.edu.cn/psv/dotoj/kaniko:debug
+  image:
+    name: reg.nju.edu.cn/psv/dotoj/kaniko:debug
+    entrypoint: [""]
   <<: *setup
   script:
     - >-
@@ -25,7 +27,9 @@ build:webapp:
   only:
     - tags
   stage: build
-  image: reg.nju.edu.cn/psv/dotoj/kaniko:debug
+  image:
+    name: reg.nju.edu.cn/psv/dotoj/kaniko:debug
+    entrypoint: [""]
   <<: *setup
   script:
     - >-
@@ -38,7 +42,9 @@ build:worker:
   only:
     - tags
   stage: build
-  image: reg.nju.edu.cn/psv/dotoj/kaniko:debug
+  image:
+    name: reg.nju.edu.cn/psv/dotoj/kaniko:debug
+    entrypoint: [""]
   <<: *setup
   script:
     - >-
