@@ -7,9 +7,7 @@
     "start:dotnet": "echo starting dotnet dev client && ng serve",
     "build": "ng build",
     "build:ssr": "ng run dotoj:server:dev",
-    "test": "ng test",
-    "lint": "ng lint",
-    "e2e": "ng e2e"
+    "lint": "ng lint"
   },
   "private": true,
   "dependencies": {
@@ -40,12 +38,12 @@
     "marked": "^2.0.0",
     "moment": "^2.27.0",
     "ng2-charts": "^2.4.2",
-    "ngx-clipboard": "14.0.0-beta01",
+    "ngx-clipboard": "^14.0.2",
     "oidc-client": "^1.9.1",
     "rxjs": "^6.6.2",
     "tslib": "^2.0.1",
-    "typeface-ubuntu-mono": "0.0.72",
-    "vditor": "3.8.4",
+    "typeface-ubuntu-mono": "1.1.13",
+    "vditor": "^3.8.4",
     "zone.js": "~0.10.2"
   },
   "devDependencies": {
@@ -53,17 +51,7 @@
     "@angular/cli": "^10.2.3",
     "@angular/compiler-cli": "^10.2.5",
     "@angular/language-service": "^10.2.5",
-    "@types/jasmine": "~3.4.4",
-    "@types/jasminewd2": "~2.0.8",
     "@types/node": "^12.12.54",
-    "codelyzer": "^6.0.0",
-    "jasmine-core": "~3.7.0",
-    "jasmine-spec-reporter": "~5.0.0",
-    "karma": "^5.0.9",
-    "karma-chrome-launcher": "~3.1.0",
-    "karma-coverage-istanbul-reporter": "~3.0.2",
-    "karma-jasmine": "~3.3.0",
-    "karma-jasmine-html-reporter": "^1.5.4",
     "typescript": "~3.9"
   },
   "optionalDependencies": {
