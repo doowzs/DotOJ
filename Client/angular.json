@@ -32,7 +32,6 @@
               "node_modules/vditor/dist/index.css"
             ],
             "scripts": [
-              "node_modules/marked/lib/marked.js",
               "node_modules/katex/dist/katex.min.js",
               "node_modules/katex/dist/contrib/auto-render.js"
             ]
@@ -77,30 +76,6 @@
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "browserTarget": "dotoj:build"
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "src/test.ts",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "src/tsconfig.spec.json",
-            "karmaConfig": "src/karma.conf.js",
-            "assets": [
-              "src/assets"
-            ],
-            "styles": [
-              "src/style.less",
-              "node_modules/bootstrap/dist/css/bootstrap.min.css",
-              "node_modules/typeface-ubuntu-mono/index.css",
-              "node_modules/katex/dist/katex.min.css",
-              "node_modules/vditor/dist/index.css"
-            ],
-            "scripts": [
-              "node_modules/marked/lib/marked.js",
-              "node_modules/katex/dist/katex.min.js",
-              "node_modules/katex/dist/contrib/auto-render.js"
-            ]
           }
         },
         "lint": {

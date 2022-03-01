@@ -9,7 +9,7 @@ import { AppModule } from './app/app.module';
 import { environment } from './environments/environment';
 
 export function getBaseUrl() {
-  return document.getElementsByTagName('base')[0].href;
+  return "https://exam.problemsolving.top:8085/";
 }
 
 const providers = [
